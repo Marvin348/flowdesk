@@ -3,6 +3,10 @@
 
 @custom-variant dark (&:is(.dark *));
 
+body {
+  font-family: "Google Sans";
+}
+
 @layer utilities {
   .overlay {
     @apply fixed inset-0 bg-black/30 z-30;
