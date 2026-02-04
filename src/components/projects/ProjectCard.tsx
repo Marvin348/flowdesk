@@ -1,4 +1,5 @@
 import type { ProjectsWithMeta } from "@/type/projectsWithMeta";
+import { EllipsisVertical, Star } from "lucide-react";
 
 type ProjectCardType = {
   project: ProjectsWithMeta;
@@ -18,10 +19,24 @@ const ProjectCard = ({ project }: ProjectCardType) => {
     tasks,
     attachments,
   } = project;
+
+  // später dropdown mit star feature
   return (
     <>
-      <h3>{title}</h3>
-      <p>{status}</p>
+      <div className="flex items-center justify-between border-b pb-2">
+        <h3 className="font-medium">{title}</h3>
+        <button>
+          <EllipsisVertical strokeWidth={1} fill="black" />
+        </button>
+      </div>
+      <div>
+        {users.map((user) => (
+          <p key={user.id}>{user.name}</p>
+        ))}
+
+        <p>{status}</p>
+        <p>{priority}</p>
+      </div>
     </>
   );
 };
