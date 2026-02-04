@@ -1,6 +1,6 @@
-import type { Task } from "@/type/task";
+import type { Project } from "@/type/Project";
 
-export const mockTasks: Task[] = [
+export const mockProjects: Project[] = [
   {
     id: "t1",
     title: "Landingpage UI erstellen",
@@ -9,7 +9,7 @@ export const mockTasks: Task[] = [
     status: "in_progress",
     dueDate: "2026-02-10",
     assigneeIds: ["u1", "u3"],
-    subtaskIds: ["s1", "s2"],
+    taskIds: ["s1", "s2"],
     commentIds: ["c1", "c2"],
     attachmenetIds: ["a1"],
     createdAt: "2026-01-27T08:00:00Z",
@@ -21,7 +21,7 @@ export const mockTasks: Task[] = [
     priority: "medium",
     status: "pending",
     assigneeIds: ["u5"],
-    subtaskIds: ["s3"],
+    taskIds: ["s3"],
     commentIds: ["c3"],
     attachmenetIds: ["a2"],
     createdAt: "2026-01-29T07:30:00Z",
@@ -33,7 +33,7 @@ export const mockTasks: Task[] = [
     priority: "high",
     status: "in_progress",
     assigneeIds: ["u2"],
-    subtaskIds: ["s4"],
+    taskIds: ["s4"],
     commentIds: ["c4"],
     attachmenetIds: ["a3"],
     createdAt: "2026-01-30T13:55:00Z",
@@ -44,7 +44,7 @@ export const mockTasks: Task[] = [
     priority: "low",
     status: "done",
     assigneeIds: ["u8", "u9"],
-    subtaskIds: ["s5"],
+    taskIds: ["s5"],
     commentIds: ["c5"],
     attachmenetIds: ["a4"],
     createdAt: "2026-01-31T10:40:00Z",
@@ -56,7 +56,7 @@ export const mockTasks: Task[] = [
     priority: "medium",
     status: "pending",
     assigneeIds: ["u1", "u5"],
-    subtaskIds: [],
+    taskIds: [],
     commentIds: [],
     attachmenetIds: ["a5"],
     createdAt: "2026-01-20T09:00:00Z",

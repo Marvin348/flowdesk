@@ -1,6 +1,6 @@
-import type { Subtask } from "@/type/subtask";
+import type { Task } from "@/type/subtask";
 
-export const mockSubtasks: Subtask[] = [
+export const mockTasks: Task[] = [
   { id: "s1", title: "Header bauen", completed: true },
   { id: "s2", title: "Footer stylen", completed: false },
   { id: "s3", title: "Auth Middleware", completed: true },

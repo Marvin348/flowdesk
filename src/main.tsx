@@ -5,8 +5,8 @@ import { createBrowserRouter, RouterProvider } from "react-router";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import AppLayout from "@/components/layout/AppLayout";
 import DashboardPage from "@/pages/DashboardPage";
-import TasksPage from "@/pages/TasksPage";
-import CreateTaskPage from "@/pages/CreateTaskPage";
+import ProjectsPage from "@/pages/ProjectsPage";
+import CreateProjectsPage from "@/pages/CreateProjectsPage";
 import TeamPage from "@/pages/TeamPage";
 
 const queryClient = new QueryClient();
@@ -20,12 +20,12 @@ const rounter = createBrowserRouter([
         element: <DashboardPage />,
       },
       {
-        path: "/tasks",
-        element: <TasksPage />,
+        path: "/projects",
+        element: <ProjectsPage />,
       },
       {
         path: "/create",
-        element: <CreateTaskPage />,
+        element: <CreateProjectsPage />,
       },
       {
         path: "/team",

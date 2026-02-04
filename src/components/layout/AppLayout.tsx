@@ -13,12 +13,8 @@ const AppLayout = () => {
       </header>
 
       <div className="flex">
-        
         <aside>
-          <Sidebar
-            onOpen={sidebarOpen}
-            onClose={() => setSidebarOpen(false)}
-          />
+          <Sidebar onOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
         </aside>
 
         <main>
