@@ -1,4 +1,4 @@
-import { mockTasks } from "@/mock/mockSubtasks";
+import { mockTasks } from "@/data/mockSubtasks";
 import type { Task } from "@/type/subtask";
 
 export type TasksSlice = {
@@ -7,5 +7,4 @@ export type TasksSlice = {
 
 export const createTasksSlice = () => ({
   tasks: mockTasks,
-
 });

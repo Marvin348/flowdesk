@@ -1,5 +1,6 @@
 import type { ProjectsWithMeta } from "@/type/projectsWithMeta";
 import { EllipsisVertical, Star } from "lucide-react";
+import AssigneeAvatars from "./user/AssigneeAvatars";
 
 type ProjectCardType = {
   project: ProjectsWithMeta;
@@ -30,9 +31,10 @@ const ProjectCard = ({ project }: ProjectCardType) => {
         </button>
       </div>
       <div>
-        {users.map((user) => (
-          <p key={user.id}>{user.name}</p>
-        ))}
+
+        <div className="mt-4">
+          <AssigneeAvatars users={users} />
+        </div>
 
         <p>{status}</p>
         <p>{priority}</p>

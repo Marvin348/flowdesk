@@ -1,4 +1,4 @@
-import type { Project } from "@/type/Project";
+import type { Project } from "@/type/project";
 
 export const mockProjects: Project[] = [
   {
@@ -8,7 +8,7 @@ export const mockProjects: Project[] = [
     priority: "high",
     status: "in_progress",
     dueDate: "2026-02-10",
-    assigneeIds: ["u1", "u3"],
+    assigneeIds: ["u1", "u3", "u5", "u10"],
     taskIds: ["s1", "s2"],
     commentIds: ["c1", "c2"],
     attachmenetIds: ["a1"],
@@ -43,7 +43,7 @@ export const mockProjects: Project[] = [
     title: "Website-Texte einpflegen",
     priority: "low",
     status: "done",
-    assigneeIds: ["u8", "u9"],
+    assigneeIds: ["u8", "u9", "u4", "u1"],
     taskIds: ["s5"],
     commentIds: ["c5"],
     attachmenetIds: ["a4"],
@@ -55,7 +55,7 @@ export const mockProjects: Project[] = [
     description: "Q2 Features definieren",
     priority: "medium",
     status: "pending",
-    assigneeIds: ["u1", "u5"],
+    assigneeIds: ["u1", "u6"],
     taskIds: [],
     commentIds: [],
     attachmenetIds: ["a5"],

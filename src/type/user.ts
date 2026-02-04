@@ -1,7 +1,9 @@
+import type { AvatarKey } from "@/data/avatar";
+
 export type User = {
   id: string;
   name: string;
   email: string;
-  avatarUrl?: string;
+  avatarKey?: AvatarKey;
   role?: "admin" | "member";
 };

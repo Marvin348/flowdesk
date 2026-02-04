@@ -1,4 +1,4 @@
-import { mockComments } from "@/mock/mockComments";
+import { mockComments } from "@/data/mockComments";
 import type { Comments } from "@/type/comments";
 
 export type CommentsSlice = {
@@ -7,5 +7,4 @@ export type CommentsSlice = {
 
 export const createCommentsSlice = () => ({
   comments: mockComments,
-
 });

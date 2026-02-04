@@ -1,4 +1,4 @@
-import { mockProjects } from "@/mock/mockProjects";
+import { mockProjects } from "@/data/mockProjects";
 import type { Project } from "@/type/Project";
 
 export type ProjectsSlice = {
