@@ -1,4 +1,4 @@
-import Avatar from "@/components/projects/user/Avatar";
+import Avatar from "@/components/projects/avatar/Avatar";
 import type { User } from "@/type/user";
 
 type AvatarProps = {
@@ -19,7 +19,7 @@ const AssigneeAvatars = ({ users }: AvatarProps) => {
       ))}
 
       {remaining > 0 && (
-        <p className="ml-1 flex items-center justify-center text-xs font-semibold">
+        <p className="ml-1 flex items-center justify-center text-xs font-semibold text-muted-foreground">
           +{remaining}
         </p>
       )}

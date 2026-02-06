@@ -5,4 +5,4 @@ export const SIDEBAR_LINKS = [
   { to: "/projects", label: "Projekte", icon: CirclePile },
   { to: "/create", label: "Projekte erstellen", icon: DiamondPlus },
   { to: "/team", label: "Team", icon: Users },
-];
+] as const;

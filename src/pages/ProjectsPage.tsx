@@ -41,7 +41,7 @@ const ProjectsPage = () => {
   console.log("tasksWithMeta", projectsWithMeta);
 
   return (
-    <div>
+    <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
       <ProjectList projects={projectsWithMeta} />
     </div>
   );

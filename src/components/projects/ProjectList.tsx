@@ -1,5 +1,5 @@
 import type { ProjectsWithMeta } from "@/type/projectsWithMeta";
-import ProjectCard from "./ProjectCard";
+import ProjectCard from "./card/ProjectCard";
 
 type ProjectListType = {
   projects: ProjectsWithMeta[];

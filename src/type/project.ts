@@ -10,7 +10,7 @@ export type Project = {
   priority: Priority;
   status: TaskStatus;
 
-  dueDate?: string;
+  dueDate: string;
   assigneeIds: string[];
 
   taskIds: string[];

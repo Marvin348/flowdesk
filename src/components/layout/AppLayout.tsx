@@ -17,7 +17,7 @@ const AppLayout = () => {
           <Sidebar onOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
         </aside>
 
-        <main>
+        <main className="w-full p-6">
           <div>
             <Outlet />
           </div>

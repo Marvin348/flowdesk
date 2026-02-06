@@ -1,5 +1,5 @@
-import { mockTasks } from "@/data/mockSubtasks";
-import type { Task } from "@/type/subtask";
+import { mockTasks } from "@/data/mockTasks";
+import type { Task } from "@/type/task";
 
 export type TasksSlice = {
   tasks: Task[];
