@@ -40,7 +40,6 @@ const ProjectCard = ({ project }: ProjectCardType) => {
   } = project;
 
   const [menuOpen, setMenuOpen] = useState(false);
-
   const [selectedMenuItem, setSelectedMenuItem] = useState<
     keyof typeof MENU_ACTIONS | null
   >(null);

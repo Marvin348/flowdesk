@@ -16,12 +16,22 @@ import {
   type AttachmentsSlice,
 } from "@/store/slices/attachments";
 import { createTasksSlice, type TasksSlice } from "@/store/slices/tasks";
+import {
+  createFilterSlice,
+  type FilterSlice,
+} from "@/store/slices/ui-state/filter";
+import {
+  createSearchQuerySlice,
+  type SearchQuerySlice,
+} from "@/store/slices/ui-state/search";
 
-type AppStore = CommentsSlice &
+export type AppStore = CommentsSlice &
   ProjectsSlice &
   UserSlice &
   AttachmentsSlice &
-  TasksSlice;
+  TasksSlice &
+  FilterSlice &
+  SearchQuerySlice;
 
 export const useAppStore = create<AppStore>()(
   persist(
@@ -31,6 +41,10 @@ export const useAppStore = create<AppStore>()(
       ...createUsersSlice(...a),
       ...createAttachmentsSlice(...a),
       ...createTasksSlice(...a),
+
+      // UI STATE
+      ...createFilterSlice(...a),
+      ...createSearchQuerySlice(...a),
     }),
     {
       name: "AppStore",

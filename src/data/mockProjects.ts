@@ -62,7 +62,7 @@ export const mockProjects: Project[] = [
     assigneeIds: ["u1", "u6"],
     taskIds: ["s17"],
     commentIds: [],
-    attachmenetIds: ["a5"],
+    attachmenetIds: [],
     createdAt: "2026-01-20T09:00:00Z",
     updatedAt: "2026-01-25T16:30:00Z",
   },
