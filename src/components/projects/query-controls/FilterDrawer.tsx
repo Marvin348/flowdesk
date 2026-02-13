@@ -10,12 +10,15 @@ import {
   type ContentFilter,
 } from "@/store/slices/ui-state/filter";
 import { useScrollLock } from "@/hooks/useScrollLock";
+import type { Priority } from "@/type/priority";
 
 type FilterDrawerProps = {
   onClose: () => void;
   isOpen: boolean;
 };
 const FilterDrawer = ({ onClose, isOpen }: FilterDrawerProps) => {
+  useScrollLock(isOpen);
+
   const clearFilter = useAppStore((state) => state.clearFilter);
   const replaceFilter = useAppStore((state) => state.replaceFilter);
 
@@ -26,7 +29,12 @@ const FilterDrawer = ({ onClose, isOpen }: FilterDrawerProps) => {
 
   const clearDraftFilter = () => setDraftFilter(defaultFilter);
 
-  // useScrollLock(true);
+  const togglePriority = (value: Priority) => {
+    setDraftFilter((prev) => ({
+      ...prev,
+      priority: prev.priority === value ? undefined : value,
+    }));
+  };
 
   console.log("draftFilter", draftFilter);
 
@@ -34,7 +42,7 @@ const FilterDrawer = ({ onClose, isOpen }: FilterDrawerProps) => {
     replaceFilter(draftFilter);
     onClose();
   };
-  
+
   const resetFilter = () => {
     clearDraftFilter();
     clearFilter();
@@ -70,7 +78,7 @@ const FilterDrawer = ({ onClose, isOpen }: FilterDrawerProps) => {
                     size="sm"
                     variant="filter_drawer"
                     className="rounded-full"
-                    onClick={() => setFilter({ priority: opt.value })}
+                    onClick={() => togglePriority(opt.value)}
                     data-state={
                       draftFilter.priority === opt.value ? "active" : "inactive"
                     }

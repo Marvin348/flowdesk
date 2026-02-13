@@ -1,11 +1,12 @@
 import { MENU_ACTIONS } from "@/constants/project-card/menu-actions";
+import type { Badge } from "@/store/slices/ui-state/projectBadge";
 
 type ActiveMenuBadgeType = {
-  onSelect: keyof typeof MENU_ACTIONS;
+  badge: Badge;
 };
 
-const ActiveMenuBadge = ({ onSelect }: ActiveMenuBadgeType) => {
-  const Icon = MENU_ACTIONS[onSelect].icon;
+const ActiveMenuBadge = ({ badge }: ActiveMenuBadgeType) => {
+  const Icon = MENU_ACTIONS[badge].icon;
 
   return <Icon stroke="#595959" fill="#D3D3D3" />;
 };

@@ -5,8 +5,6 @@ const SearchInput = () => {
   const searchQuery = useAppStore((state) => state.searchQuery);
   const setSearchQuery = useAppStore((state) => state.setSearchQuery);
 
-  console.log(searchQuery)
-
   return (
     <div className="relative">
       <input

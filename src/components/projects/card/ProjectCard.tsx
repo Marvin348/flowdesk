@@ -15,7 +15,8 @@ import ProjectCardMenu from "@/components/projects/card/ProjectCardMenu";
 import { useRef, useState } from "react";
 import { useOnClickOutside } from "@/hooks/useOnClickOutside";
 import ActiveMenuBadge from "@/components/projects/card/ActiveMenuBadge";
-import type { MENU_ACTIONS } from "@/constants/project-card/menu-actions";
+import { useAppStore } from "@/store";
+import type { Badge } from "@/store/slices/ui-state/projectBadge";
 
 type ProjectCardType = {
   project: ProjectsWithMeta;
@@ -25,7 +26,6 @@ const ProjectCard = ({ project }: ProjectCardType) => {
   const {
     id,
     title,
-    description,
     priority,
     status,
     dueDate,
@@ -37,22 +37,22 @@ const ProjectCard = ({ project }: ProjectCardType) => {
     taskIds,
     attachments,
     attachmenetIds,
+    badge,
   } = project;
 
   const [menuOpen, setMenuOpen] = useState(false);
-  const [selectedMenuItem, setSelectedMenuItem] = useState<
-    keyof typeof MENU_ACTIONS | null
-  >(null);
-
-  const toggleMenu = () => setMenuOpen((prev) => !prev);
-
   const menuRef = useRef<HTMLDivElement>(null);
   useOnClickOutside(menuRef, () => setMenuOpen(false));
 
+  const toggleMenu = () => setMenuOpen((prev) => !prev);
+
   const progress = getProgressResult(taskIds, tasks);
 
-  const handleSelect = (value: keyof typeof MENU_ACTIONS) =>
-    setSelectedMenuItem(value);
+  const toggleActiveBadge = useAppStore((state) => state.toggleActiveBadge);
+
+  const onAction = (value: Badge) => {
+    toggleActiveBadge(id, value);
+  };
 
   return (
     <>
@@ -67,13 +67,14 @@ const ProjectCard = ({ project }: ProjectCardType) => {
             <EllipsisVertical strokeWidth={1} fill="black" />
           </button>
 
-          {selectedMenuItem && <ActiveMenuBadge onSelect={selectedMenuItem} />}
+          {badge && <ActiveMenuBadge badge={badge} />}
         </div>
 
         {menuOpen && (
           <ProjectCardMenu
-            handleSelect={handleSelect}
             onClose={() => setMenuOpen(false)}
+            onAction={onAction}
+            badge={badge}
           />
         )}
       </div>

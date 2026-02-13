@@ -24,6 +24,8 @@ import {
   createSearchQuerySlice,
   type SearchQuerySlice,
 } from "@/store/slices/ui-state/search";
+import type { ProjectBadgeSlice } from "@/store/slices/ui-state/projectBadge";
+import { createProjectBadgeSlice } from "@/store/slices/ui-state/projectBadge";
 
 export type AppStore = CommentsSlice &
   ProjectsSlice &
@@ -31,7 +33,8 @@ export type AppStore = CommentsSlice &
   AttachmentsSlice &
   TasksSlice &
   FilterSlice &
-  SearchQuerySlice;
+  SearchQuerySlice &
+  ProjectBadgeSlice;
 
 export const useAppStore = create<AppStore>()(
   persist(
@@ -45,6 +48,7 @@ export const useAppStore = create<AppStore>()(
       // UI STATE
       ...createFilterSlice(...a),
       ...createSearchQuerySlice(...a),
+      ...createProjectBadgeSlice(...a),
     }),
     {
       name: "AppStore",
@@ -54,6 +58,7 @@ export const useAppStore = create<AppStore>()(
         comments: state.comments,
         attachments: state.attachments,
         tasks: state.tasks,
+        badgeByProjectId: state.badgeByProjectId,
       }),
     },
   ),

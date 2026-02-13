@@ -6,7 +6,7 @@ import { useAppStore } from "@/store";
 import type { ProjectsWithMeta } from "@/type/projectsWithMeta";
 import { useState } from "react";
 import { useFilterProjects } from "@/hooks/useFilterProjects";
-import { useScrollLock } from "@/hooks/useScrollLock";
+import { useProjectsSummary } from "@/hooks/useProjectsSummary";
 
 const ProjectsPage = () => {
   const [filterDrawerOpen, setFilterDrawerOpen] = useState(false);
@@ -20,18 +20,13 @@ const ProjectsPage = () => {
   const searchQuery = useAppStore((state) => state.searchQuery);
   const filter = useAppStore((state) => state).filter;
 
-  console.log("projects", projects);
-  console.log("comments", comments);
-  console.log("users", users);
-  console.log("tasks", tasks);
-  console.log("attachments", attachments);
+  const badgeByProjectId = useAppStore((state) => state.badgeByProjectId);
 
   const commentsMap = new Map(comments.map((com) => [com.id, com]));
   const usersMap = new Map(users.map((user) => [user.id, user]));
   const subtasksMap = new Map(tasks.map((task) => [task.id, task]));
   const attachmentsMap = new Map(attachments.map((att) => [att.id, att]));
 
-  console.log(commentsMap);
 
   const projectsWithMeta: ProjectsWithMeta[] = projects.map((project) => {
     const comments = project.commentIds.map((id) => commentsMap.get(id));
@@ -41,23 +36,30 @@ const ProjectsPage = () => {
       attachmentsMap.get(id),
     );
 
+    const badge = badgeByProjectId[project.id];
+
     return {
       ...project,
       comments,
       users,
       tasks,
       attachments,
+      badge,
     };
   });
 
+  const projectSummary = useProjectsSummary(projectsWithMeta);
+
   const searchedProjects = useSearchProjects(projectsWithMeta, searchQuery);
   const filteredProjects = useFilterProjects(searchedProjects, filter);
+
   console.log("tasksWithMeta", projectsWithMeta);
+  console.log("badgeByProjectId", badgeByProjectId);
 
   return (
     <>
       <div className="mb-6">
-        <FilterPanel onOpen={() => setFilterDrawerOpen(true)} />
+        <FilterPanel onOpen={() => setFilterDrawerOpen(true)} projectSummary={projectSummary} />
       </div>
 
       <FilterDrawer

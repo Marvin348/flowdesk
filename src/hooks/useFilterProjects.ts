@@ -15,8 +15,9 @@ export const useFilterProjects = (
 
     let matchesAttachments = true;
     if (filter.hasAttachments) matchesAttachments = attachmentCount > 0;
-    if (filter.hasAttachments) matchesAttachments = attachmentCount === 0;
-    // const matchesView = !filter.view || pro.
+    if (filter.hasAttachments === false) matchesAttachments = attachmentCount === 0;
+    
+    const matchesBadge = filter.view === "all" || pro.badge === filter.view;
 
-    return matchesPriority && matchesStatus && matchesAttachments;
+    return matchesPriority && matchesStatus && matchesAttachments && matchesBadge;
   });
