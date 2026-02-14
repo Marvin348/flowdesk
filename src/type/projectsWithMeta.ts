@@ -10,5 +10,5 @@ export type ProjectsWithMeta = Project & {
   users: User[];
   tasks: Task[];
   attachments: Attachment[];
-  badge: Badge;
+  badge?: Badge;
 };

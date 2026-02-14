@@ -11,7 +11,6 @@ const Header = ({ onOpen }: HeaderProps) => {
         <Button className="lg:hidden" onClick={onOpen}>
           <Menu />
         </Button>
-        <h2 className="font-bold text-2xl">FlowDesk</h2>
       </div>
     </div>
   );

@@ -1,12 +1,16 @@
 import { SIDEBAR_LINKS } from "@/constants/sidebar-links";
 import { NavLink } from "react-router";
 import { Button } from "@/components/ui/button";
+import logo from "@/assets/logo.svg";
+import { useScrollLock } from "@/hooks/useScrollLock";
 
 type SidebarProps = {
   onOpen: boolean;
   onClose: () => void;
 };
 const Sidebar = ({ onOpen, onClose }: SidebarProps) => {
+  useScrollLock(onOpen);
+
   return (
     <>
       <div
@@ -26,6 +30,11 @@ const Sidebar = ({ onOpen, onClose }: SidebarProps) => {
             X
           </Button>
         </div>
+
+        <div className="mb-12">
+          <img src={logo} alt="FlowDesk" className="w-44" />
+        </div>
+
         <div className="mt-10 lg:mt-0">
           {SIDEBAR_LINKS.map(({ label, to, icon: Icon }) => (
             <NavLink
@@ -33,10 +42,10 @@ const Sidebar = ({ onOpen, onClose }: SidebarProps) => {
               to={to}
               onClick={onClose}
               className={({ isActive }) =>
-                `flex items-center gap-2 my-4 p-2 font-medium  ${isActive ? "border-r-4 border-accent text-accent" : "text-white"}`
+                `flex items-center gap-2 my-4 p-2 font-medium rounded-md ${isActive ? "bg-muted-foreground/10 text-accent" : "text-white"}`
               }
             >
-              <Icon />
+              <Icon size={20} />
               <p>{label}</p>
             </NavLink>
           ))}

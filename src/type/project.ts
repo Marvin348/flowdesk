@@ -15,7 +15,7 @@ export type Project = {
 
   taskIds: string[];
   commentIds: string[];
-  attachmenetIds?: string[];
+  attachmenetIds: string[];
 
   createdAt: string;
   updatedAt?: string;
