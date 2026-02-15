@@ -4,7 +4,7 @@ import type { Badge } from "@/store/slices/ui-state/projectBadge";
 type ProjectCardMenuProps = {
   onClose: () => void;
   onAction: (value: Badge) => void;
-  badge: Badge;
+  badge?: Badge;
 };
 
 const ProjectCardMenu = ({

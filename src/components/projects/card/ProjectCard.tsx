@@ -60,7 +60,7 @@ const ProjectCard = ({ project }: ProjectCardType) => {
         ref={menuRef}
         className="relative flex items-center justify-between border-b pb-2"
       >
-        <h3 className="font-medium">{title}</h3>
+        <h3 className="font-medium truncate">{title}</h3>
 
         <div className="flex items-center gap-2">
           <button className="order-1" onClick={toggleMenu}>

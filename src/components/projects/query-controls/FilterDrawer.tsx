@@ -60,7 +60,7 @@ const FilterDrawer = ({ onClose, isOpen }: FilterDrawerProps) => {
       >
         <div className="p-4">
           <Button
-            className="border rounded-full hover:border-foreground/70 transition duration-200"
+            className="border rounded-full border-foreground/30 transition duration-300 hover:border-foreground/50"
             variant="outline"
             size="icon-sm"
             onClick={onClose}

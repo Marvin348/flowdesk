@@ -1,8 +1,10 @@
 import { SIDEBAR_LINKS } from "@/constants/sidebar-links";
-import { NavLink } from "react-router";
+import { NavLink, Link } from "react-router";
 import { Button } from "@/components/ui/button";
-import logo from "@/assets/logo.svg";
+import logoWhite from "@/assets/logo-white.svg";
 import { useScrollLock } from "@/hooks/useScrollLock";
+import { useProjectsWithMeta } from "@/hooks/useProjectsWithMeta";
+import { Star } from "lucide-react";
 
 type SidebarProps = {
   onOpen: boolean;
@@ -10,6 +12,12 @@ type SidebarProps = {
 };
 const Sidebar = ({ onOpen, onClose }: SidebarProps) => {
   useScrollLock(onOpen);
+
+  const projectsWithMeta = useProjectsWithMeta();
+  const favorites = projectsWithMeta.filter(
+    (project) => project.badge === "favorite",
+  );
+  console.log(favorites);
 
   return (
     <>
@@ -23,7 +31,7 @@ const Sidebar = ({ onOpen, onClose }: SidebarProps) => {
       >
         <div className="flex justify-end lg:hidden">
           <Button
-            className="border border-accent rounded-full"
+            className="border-2 border-muted-foreground/20 rounded-full"
             size="icon-lg"
             onClick={onClose}
           >
@@ -31,8 +39,8 @@ const Sidebar = ({ onOpen, onClose }: SidebarProps) => {
           </Button>
         </div>
 
-        <div className="mb-12">
-          <img src={logo} alt="FlowDesk" className="w-44" />
+        <div className="hidden lg:inline-block mb-12">
+          <img src={logoWhite} alt="FlowDesk" className="w-44" />
         </div>
 
         <div className="mt-10 lg:mt-0">
@@ -50,6 +58,28 @@ const Sidebar = ({ onOpen, onClose }: SidebarProps) => {
             </NavLink>
           ))}
         </div>
+
+        {favorites.length > 0 && (
+          <div className="mt-12 ">
+            <h4 className="mb-3 text-muted-foreground uppercase">Favoriten</h4>
+            <div className="grid grid-cols-1 gap-4">
+              {favorites.map((project) => (
+                <Link
+                  key={project.id}
+                  to="/projects"
+                  className="flex items-center gap-2 text-white"
+                  onClick={onClose}
+                >
+                  <span className="shrink-0 flex items-center justify-center size-8 rounded-full bg-muted-foreground/20">
+                    <Star size={20} stroke="#FF8421" />
+                  </span>
+
+                  <span className="truncate">{project.title}</span>
+                </Link>
+              ))}
+            </div>
+          </div>
+        )}
       </nav>
     </>
   );
