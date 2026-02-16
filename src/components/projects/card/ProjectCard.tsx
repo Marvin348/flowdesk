@@ -44,14 +44,19 @@ const ProjectCard = ({ project }: ProjectCardType) => {
   const menuRef = useRef<HTMLDivElement>(null);
   useOnClickOutside(menuRef, () => setMenuOpen(false));
 
-  const toggleMenu = () => setMenuOpen((prev) => !prev);
-
   const progress = getProgressResult(taskIds, tasks);
 
   const toggleActiveBadge = useAppStore((state) => state.toggleActiveBadge);
 
   const onAction = (value: Badge) => {
     toggleActiveBadge(id, value);
+  };
+
+  const toggleMenu = () => setMenuOpen((prev) => !prev);
+
+  const onMenuClick = (e: React.MouseEvent) => {
+    toggleMenu();
+    e.stopPropagation();
   };
 
   return (
@@ -63,7 +68,7 @@ const ProjectCard = ({ project }: ProjectCardType) => {
         <h3 className="font-medium truncate">{title}</h3>
 
         <div className="flex items-center gap-2">
-          <button className="order-1" onClick={toggleMenu}>
+          <button className="order-1" onClick={onMenuClick}>
             <EllipsisVertical strokeWidth={1} fill="black" />
           </button>
 

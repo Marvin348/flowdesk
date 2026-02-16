@@ -18,7 +18,10 @@ const ProjectCardMenu = ({
   };
 
   return (
-    <div className="absolute top-7 right-2 bg-white border p-1 rounded-md z-10">
+    <div
+      className="absolute top-7 right-2 bg-white border p-1 rounded-md z-10"
+      onClick={(e) => e.stopPropagation()}
+    >
       {Object.values(MENU_ACTIONS).map(({ label, icon: Icon, value }) => {
         const isActiveBadge = badge === value;
         return (

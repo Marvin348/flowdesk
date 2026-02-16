@@ -1,17 +1,23 @@
 import type { ProjectsWithMeta } from "@/type/projectsWithMeta";
-import ProjectCard from "./card/ProjectCard";
-
+import ProjectCard from "@/components/projects/card/ProjectCard";
+import { useNavigate } from "react-router";
 type ProjectListType = {
   projects: ProjectsWithMeta[];
 };
 
 const ProjectList = ({ projects }: ProjectListType) => {
+  const navigate = useNavigate();
+
   return (
     <>
       {projects.map((pro) => (
-        <div key={pro.id} className="border rounded-md p-4">
+        <article
+          key={pro.id}
+          className="border rounded-md p-4 cursor-pointer"
+          onClick={() => navigate(`/project/${pro.id}`)}
+        >
           <ProjectCard project={pro} />
-        </div>
+        </article>
       ))}
     </>
   );

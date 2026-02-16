@@ -8,6 +8,7 @@ import DashboardPage from "@/pages/DashboardPage";
 import ProjectsPage from "@/pages/ProjectsPage";
 import CreateProjectsPage from "@/pages/CreateProjectsPage";
 import TeamPage from "@/pages/TeamPage";
+import ProjectPage from "@/pages/ProjectPage";
 
 const queryClient = new QueryClient();
 
@@ -22,6 +23,10 @@ const rounter = createBrowserRouter([
       {
         path: "/projects",
         element: <ProjectsPage />,
+      },
+      {
+        path: "/project/:id",
+        element: <ProjectPage />,
       },
       {
         path: "/create",
