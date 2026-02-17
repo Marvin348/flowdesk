@@ -59,6 +59,8 @@ const ProjectCard = ({ project }: ProjectCardType) => {
     e.stopPropagation();
   };
 
+  console.log(progress)
+
   return (
     <>
       <div
@@ -122,16 +124,16 @@ const ProjectCard = ({ project }: ProjectCardType) => {
 
       <div className="border-t pt-2 flex items-center justify-end gap-4">
         {attachments && (
-          <button className="flex items-center gap-0.5 text-muted-foreground text-sm">
+          <span className="flex items-center gap-0.5 text-muted-foreground text-sm">
             <Paperclip size={15} />
             {attachmenetIds?.length}
-          </button>
+          </span>
         )}
         {commentIds && (
-          <button className="flex items-center gap-0.5 text-muted-foreground text-sm">
+          <span className="flex items-center gap-0.5 text-muted-foreground text-sm">
             <MessageSquareMore size={15} />
             {commentIds.length}
-          </button>
+          </span>
         )}
       </div>
     </>
