@@ -1,0 +1,51 @@
+import { Button } from "@/components/ui/button";
+import type { User } from "@/type/user";
+import { UserRoundPlus } from "lucide-react";
+import Collaborator from "@/components/projects/details/collaborators/Collaborator";
+
+type CollaboratorsListProps = {
+  users: User[];
+};
+
+const CollaboratorsList = ({ users }: CollaboratorsListProps) => {
+  return (
+    <div className="border rounded-md w-100">
+      {/* HEADER */}
+      <div className="flex items-center justify-between gap-4 bg-muted-foreground/10 p-4">
+        <h4 className="text-lg font-medium">Mitarbeiter</h4>
+        <Button>
+          <UserRoundPlus className="text-accent" />
+          <span>Einladen</span>
+        </Button>
+      </div>
+
+      <div className="relative">
+        {/* SCROLL AREA */}
+        <div className="grid grid-cols-1 p-4 max-h-60 overflow-y-auto custom-scrollbar">
+          {users.map((user) => (
+            <div
+              key={user.id}
+              className="flex items-center py-2 gap-2 border-b last:border-none"
+            >
+              <Collaborator user={user} />
+            </div>
+          ))}
+        </div>
+
+        {/* 👇 BOTTOM FADE */}
+        <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-10 bg-gradient-to-t from-white to-transparent" />
+      </div>
+
+      {/* FOOTER */}
+      <div className="pb-4 px-4">
+        <Button
+          variant="outline"
+          className="w-full hover:bg-muted-foreground/5"
+        >
+          Alle Ansehen ({users.length})
+        </Button>
+      </div>
+    </div>
+  );
+};
+export default CollaboratorsList;

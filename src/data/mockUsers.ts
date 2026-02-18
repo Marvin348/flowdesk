@@ -7,6 +7,7 @@ export const mockUsers: User[] = [
     email: "anna.schmidt@example.com",
     avatarKey: "f10",
     role: "admin",
+    jobTitle: "Frontend Developer",
   },
   {
     id: "u2",
@@ -14,6 +15,7 @@ export const mockUsers: User[] = [
     email: "lukas.weber@example.com",
     avatarKey: "m6",
     role: "member",
+    jobTitle: "Art Director",
   },
   {
     id: "u3",
@@ -21,12 +23,14 @@ export const mockUsers: User[] = [
     email: "mia.fischer@example.com",
     avatarKey: "f6",
     role: "member",
+    jobTitle: "Backend Developer",
   },
   {
     id: "u4",
     name: "Paul Wagner",
     email: "paul.wagner@example.com",
     avatarKey: "m8",
+    jobTitle: "Fullstack Developer",
   },
   {
     id: "u5",
@@ -47,6 +51,7 @@ export const mockUsers: User[] = [
     name: "Sophie Klein",
     email: "sophie.klein@example.com",
     avatarKey: "f1",
+    jobTitle: "Backend Developer",
   },
   {
     id: "u8",
@@ -54,12 +59,14 @@ export const mockUsers: User[] = [
     email: "david.neumann@example.com",
     avatarKey: "m6",
     role: "member",
+    jobTitle: "Motion Designer",
   },
   {
     id: "u9",
     name: "Laura Braun",
     email: "laura.braun@example.com",
     avatarKey: "f11",
+    jobTitle: "QA Engineer",
   },
   {
     id: "u10",

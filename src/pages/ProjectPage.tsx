@@ -1,6 +1,7 @@
 import { useParams } from "react-router";
 import ProjectDetailsHeader from "@/components/projects/details/ProjectDetailsHeader";
 import { useProjectsWithMeta } from "@/hooks/useProjectsWithMeta";
+import CollaboratorsList from "@/components/projects/details/collaborators/CollaboratorsList";
 
 const ProjectPage = () => {
   const { id } = useParams();
@@ -15,9 +16,15 @@ const ProjectPage = () => {
   console.log(project);
   console.log(id);
   return (
-    <div>
-      <ProjectDetailsHeader project={project} />
-    </div>
+    <>
+      <div>
+        <ProjectDetailsHeader project={project} />
+      </div>
+
+      <div>
+        <CollaboratorsList users={project.users}/>
+      </div>
+    </>
   );
 };
 export default ProjectPage;

@@ -6,7 +6,7 @@ type AvatarProps = {
 
 const Avatar = ({ avatarKey }: AvatarProps) => {
   return (
-    <div className="">
+    <>
       {avatarKey ? (
         <img
           src={AVATARS[avatarKey]}
@@ -16,7 +16,7 @@ const Avatar = ({ avatarKey }: AvatarProps) => {
       ) : (
         <div className="size-8 rounded-full bg-gray-300"></div>
       )}
-    </div>
+    </>
   );
 };
 export default Avatar;

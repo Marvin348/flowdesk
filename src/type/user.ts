@@ -6,4 +6,14 @@ export type User = {
   email: string;
   avatarKey?: AvatarKey;
   role?: "admin" | "member";
+  jobTitle?:
+    | "Frontend Developer"
+    | "Designer"
+    | "Project Manager"
+    | "Backend Developer"
+    | "Art Director"
+    | "Fullstack Developer"
+    | "DevOps Engineer"
+    | "QA Engineer"
+    | "Motion Designer";
 };
