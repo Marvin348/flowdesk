@@ -10,9 +10,6 @@ type OpenTaskListProps = {
   users: User[];
 };
 const OpenTaskList = ({ tasks, users }: OpenTaskListProps) => {
-  console.log(tasks);
-  console.log(users);
-
   const [index, setIndex] = useState(0);
   const taskItem = tasks[index];
 

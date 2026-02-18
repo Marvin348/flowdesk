@@ -1,6 +1,6 @@
 import { ListChecks } from "lucide-react";
 
-type Progress = {
+export type Progress = {
   total: number;
   completed: number;
   percent: number;
