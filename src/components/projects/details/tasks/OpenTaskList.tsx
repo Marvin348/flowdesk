@@ -20,13 +20,13 @@ const OpenTaskList = ({ tasks, users }: OpenTaskListProps) => {
   const next = () => setIndex((i) => Math.min(i + 1, tasks.length - 1));
 
   return (
-    <div className="border rounded-md w-100">
+    <div className="h-full flex flex-col">
       <div className="flex items-center justify-between gap-4 bg-muted-foreground/10 p-4">
         <h4 className="text-lg font-medium">Offene Aufgaben</h4>
         <CarouselControls prev={prev} next={next} />
       </div>
 
-      <div className="p-4">
+      <div className="flex-1 p-4">
         <OpenTask task={taskItem} users={users} />
       </div>
       <div className="pb-4 px-4">

@@ -17,7 +17,6 @@ const ProjectDetailsHeader = ({ project }: ProjectDetailsHeaderProps) => {
 
   const progress = getProgressResult(taskIds, tasks);
 
-  console.log(progress);
 
   return (
     <div className="flex items-center justify-between gap-3">

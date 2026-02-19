@@ -9,7 +9,7 @@ type CollaboratorsListProps = {
 
 const CollaboratorsList = ({ users }: CollaboratorsListProps) => {
   return (
-    <div className="border rounded-md w-100">
+    <div className="h-full flex flex-col">
       <div className="flex items-center justify-between gap-4 bg-muted-foreground/10 p-4">
         <h4 className="text-lg font-medium">Mitarbeiter</h4>
         <Button>
@@ -18,7 +18,7 @@ const CollaboratorsList = ({ users }: CollaboratorsListProps) => {
         </Button>
       </div>
 
-      <div className="relative">
+      <div className="flex-1 relative">
         <div className="grid grid-cols-1 p-4 max-h-60 overflow-y-auto custom-scrollbar">
           {users.map((user) => (
             <div

@@ -25,12 +25,24 @@ export const useProjectsWithMeta = () => {
       const comments = project.commentIds
         .map((id) => commentsMap.get(id))
         .filter(isDefined);
+
+      const commentsWithUser = comments.map((com) => {
+        const matchesUser = usersMap.get(com.userId);
+
+        return {
+          ...com,
+          user: matchesUser,
+        };
+      });
+
       const users = project.assigneeIds
         .map((id) => usersMap.get(id))
         .filter(isDefined);
+
       const tasks = project.taskIds
         .map((id) => tasksMap.get(id))
         .filter(isDefined);
+
       const attachments = project.attachmenetIds
         ?.map((id) => attachmentsMap.get(id))
         .filter(isDefined);
@@ -39,7 +51,7 @@ export const useProjectsWithMeta = () => {
 
       return {
         ...project,
-        comments,
+        comments: commentsWithUser,
         users,
         tasks,
         attachments,
