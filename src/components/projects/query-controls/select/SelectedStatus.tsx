@@ -9,11 +9,11 @@ import {
 } from "@/components/ui/select";
 import { STATUS_OPTIONS } from "@/constants/status-options";
 import type { ContentFilter } from "@/store/slices/ui-state/filter";
-import type { TaskStatus } from "@/type/taskStatus";
+import type { StatusBase } from "@/type/StatusBase";
 
 type SelectedStatusProps = {
   setFilter: (value: ContentFilter) => void;
-  value?: TaskStatus;
+  value?: StatusBase;
 };
 
 const SelectedStatus = ({ setFilter, value }: SelectedStatusProps) => {
@@ -21,7 +21,7 @@ const SelectedStatus = ({ setFilter, value }: SelectedStatusProps) => {
     <Select
       value={value ?? ""}
       onValueChange={(value) =>
-        setFilter({ status: value === "" ? undefined : (value as TaskStatus) })
+        setFilter({ status: value === "" ? undefined : (value as StatusBase) })
       }
     >
       <SelectTrigger className="w-full">

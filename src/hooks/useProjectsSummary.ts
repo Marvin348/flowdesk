@@ -23,7 +23,7 @@ export const useProjectsSummary = (projectsWithMeta: ProjectsWithMeta[]) => {
         acc.byBadges[project.badge] += 1;
       }
 
-      acc.byStatus[project.status] += 1;
+      acc.byStatus[project.projectStatus] += 1;
 
       return acc;
     },

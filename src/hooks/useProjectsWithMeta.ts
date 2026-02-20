@@ -3,6 +3,7 @@ import type { ProjectsWithMeta } from "@/type/projectsWithMeta";
 import { getArrayLookup } from "@/utils/getArrayLookup";
 import { isDefined } from "@/utils/isDefined";
 import { useMemo } from "react";
+import { groupBy } from "@/utils/groupBy";
 
 export const useProjectsWithMeta = () => {
   const projects = useAppStore((state) => state.projects);
@@ -12,60 +13,68 @@ export const useProjectsWithMeta = () => {
   const attachments = useAppStore((state) => state.attachments);
   const badgeByProjectId = useAppStore((state) => state.badgeByProjectId);
 
-  const commentsMap = useMemo(() => getArrayLookup(comments), [comments]);
-  const usersMap = useMemo(() => getArrayLookup(users), [users]);
-  const tasksMap = useMemo(() => getArrayLookup(tasks), [tasks]);
-  const attachmentsMap = useMemo(
-    () => getArrayLookup(attachments),
-    [attachments],
-  );
+  const usersById = getArrayLookup(users);
+  const tasksByProjectId = groupBy(tasks, (t) => t.projectId);
+  const commentsByTaskId = groupBy(comments, (com) => com.taskId);
+  const attachmentsByTaskId = groupBy(attachments, (att) => att.taskId);
 
-  const projectsWithMeta: ProjectsWithMeta[] = useMemo(() => {
-    return projects.map((project) => {
-      const comments = project.commentIds
-        .map((id) => commentsMap.get(id))
+  const projectsWithMeta: ProjectsWithMeta[] = projects.map((pro) => {
+    const tasks = tasksByProjectId.get(pro.id) ?? [];
+
+    const badge = badgeByProjectId[pro.id];
+
+    const enrichedTasks = tasks.map((task) => {
+      const comments = commentsByTaskId.get(task.id) ?? [];
+      const attachments = attachmentsByTaskId.get(task.id) ?? [];
+
+      const collaborators = task.collaboratorIds
+        .map((user) => usersById.get(user))
         .filter(isDefined);
-
-      const commentsWithUser = comments.map((com) => {
-        const matchesUser = usersMap.get(com.userId);
-
-        return {
-          ...com,
-          user: matchesUser,
-        };
-      });
-
-      const users = project.assigneeIds
-        .map((id) => usersMap.get(id))
-        .filter(isDefined);
-
-      const tasks = project.taskIds
-        .map((id) => tasksMap.get(id))
-        .filter(isDefined);
-
-      const attachments = project.attachmenetIds
-        ?.map((id) => attachmentsMap.get(id))
-        .filter(isDefined);
-
-      const badge = badgeByProjectId[project.id];
 
       return {
-        ...project,
-        comments: commentsWithUser,
-        users,
-        tasks,
+        ...task,
+        comments,
         attachments,
-        badge,
+        collaborators,
       };
     });
-  }, [
-    projects,
-    commentsMap,
-    usersMap,
-    tasksMap,
-    attachmentsMap,
-    badgeByProjectId,
-  ]);
+
+    const counts = enrichedTasks.reduce(
+      (acc, task) => {
+        acc.commentCount += task.comments.length;
+        acc.attachmentCount += task.attachments.length;
+
+        for (const userId of task.collaboratorIds) {
+          acc.uniqueUserIds.add(userId);
+        }
+
+        return acc;
+      },
+      {
+        commentCount: 0,
+        attachmentCount: 0,
+        uniqueUserIds: new Set<string>(),
+      },
+    );
+
+    const meta = {
+      taskCount: enrichedTasks.length,
+      commentCount: counts.commentCount,
+      attachmentCount: counts.attachmentCount,
+      userCount: counts.uniqueUserIds.size,
+    };
+
+    const collaboratorIds = tasks.flatMap((t) => t.collaboratorIds);
+    const teamUserIds = Array.from(new Set(collaboratorIds));
+
+    return {
+      ...pro,
+      badge,
+      tasks: enrichedTasks,
+      teamUserIds,
+      meta,
+    };
+  });
 
   return projectsWithMeta;
 };

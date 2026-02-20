@@ -1,5 +1,5 @@
 import type { Priority } from "@/type/priority";
-import type { TaskStatus } from "@/type/taskStatus";
+import type { StatusBase } from "@/type/StatusBase";
 import type { AppStore } from "@/store";
 import type { StateCreator } from "zustand";
 
@@ -7,7 +7,7 @@ export type ProjectViewFilter = "all" | "favorite" | "pinned" | "archived";
 
 export type ContentFilter = {
   priority?: Priority;
-  status?: TaskStatus;
+  status?: StatusBase;
   hasAttachments?: boolean;
   view?: ProjectViewFilter;
 };

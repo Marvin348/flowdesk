@@ -4,10 +4,10 @@ import { UserRoundPlus } from "lucide-react";
 import Collaborator from "@/components/projects/details/collaborators/Collaborator";
 
 type CollaboratorsListProps = {
-  users: User[];
+  collaborators: User[];
 };
 
-const CollaboratorsList = ({ users }: CollaboratorsListProps) => {
+const CollaboratorsList = ({ collaborators }: CollaboratorsListProps) => {
   return (
     <div className="h-full flex flex-col">
       <div className="flex items-center justify-between gap-4 bg-muted-foreground/10 p-4">
@@ -20,7 +20,7 @@ const CollaboratorsList = ({ users }: CollaboratorsListProps) => {
 
       <div className="flex-1 relative">
         <div className="grid grid-cols-1 p-4 max-h-60 overflow-y-auto custom-scrollbar">
-          {users.map((user) => (
+          {collaborators.map((user) => (
             <div
               key={user.id}
               className="flex items-center py-2 gap-2 border-b last:border-none"
@@ -38,7 +38,7 @@ const CollaboratorsList = ({ users }: CollaboratorsListProps) => {
           variant="outline"
           className="w-full hover:bg-muted-foreground/5"
         >
-          Alle Ansehen ({users.length})
+          Alle Ansehen ({collaborators.length})
         </Button>
       </div>
     </div>

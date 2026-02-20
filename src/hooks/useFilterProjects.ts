@@ -9,15 +9,18 @@ export const useFilterProjects = (
     const matchesPriority =
       !filter.priority || pro.priority === filter.priority;
 
-    const matchesStatus = !filter.status || pro.status === filter.status;
+    const matchesStatus = !filter.status || pro.projectStatus === filter.status;
 
-    const attachmentCount = pro.attachmenetIds?.length ?? 0;
+    const attachmentCount = pro.meta.attachmentCount;
 
     let matchesAttachments = true;
     if (filter.hasAttachments) matchesAttachments = attachmentCount > 0;
-    if (filter.hasAttachments === false) matchesAttachments = attachmentCount === 0;
-    
+    if (filter.hasAttachments === false)
+      matchesAttachments = attachmentCount === 0;
+
     const matchesBadge = filter.view === "all" || pro.badge === filter.view;
 
-    return matchesPriority && matchesStatus && matchesAttachments && matchesBadge;
+    return (
+      matchesPriority && matchesStatus && matchesAttachments && matchesBadge
+    );
   });

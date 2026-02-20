@@ -3,10 +3,10 @@ import ProjectDetailsHeader from "@/components/projects/details/ProjectDetailsHe
 import { useProjectsWithMeta } from "@/hooks/useProjectsWithMeta";
 import CollaboratorsList from "@/components/projects/details/collaborators/CollaboratorsList";
 import OpenTaskList from "@/components/projects/details/tasks/OpenTaskList";
-import ProgressBar from "@/components/projects/card/ProgressBar";
 import { getProgressResult } from "@/utils/getProgressResult";
 import ProgressBarCard from "@/components/projects/details/ProgressBarCard";
 import CommentsList from "@/components/projects/details/comments/CommentsList";
+import { useUsersByIds } from "@/hooks/useUsersByIds";
 
 const ProjectPage = () => {
   const { id } = useParams();
@@ -18,24 +18,29 @@ const ProjectPage = () => {
 
   if (!project) return;
 
-  const progress = getProgressResult(project.taskIds, project.tasks);
+  const progress = getProgressResult(project.tasks, project.tasks);
+
+  const teamUsers = useUsersByIds(project.teamUserIds);
 
   console.log(project);
+
+  const allCommentsPerProject = project.tasks.flatMap((t) => t.comments);
+  console.log("allCommentsPerProject", allCommentsPerProject);
+  console.log("teamUsers", teamUsers);
+  console.log("projectTasks", project.tasks);
   return (
     <>
       <div>
         <ProjectDetailsHeader project={project} />
       </div>
 
-      <div
-        className="mt-8 grid gap-6 grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 auto-rows-[170px]"
-      >
+      <div className="mt-8 grid gap-6 grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 auto-rows-[170px]">
         <div className="border rounded-md h-full row-span-2">
-          <CollaboratorsList users={project.users} />
+          <CollaboratorsList collaborators={teamUsers} />
         </div>
 
         <div className="border rounded-md h-full row-span-2">
-          <OpenTaskList tasks={project.tasks} users={project.users} />
+          <OpenTaskList tasks={project.tasks} users={teamUsers} />
         </div>
 
         <div className="border rounded-md h-full xl:col-start-3 xl:row-span-1">
@@ -43,7 +48,7 @@ const ProjectPage = () => {
         </div>
 
         <div className="border rounded-md h-full row-span-3">
-          <CommentsList comments={project.comments} />
+          <CommentsList comments={allCommentsPerProject} />
         </div>
       </div>
     </>

@@ -17,6 +17,7 @@ import { useOnClickOutside } from "@/hooks/useOnClickOutside";
 import ActiveMenuBadge from "@/components/projects/card/ActiveMenuBadge";
 import { useAppStore } from "@/store";
 import type { Badge } from "@/store/slices/ui-state/projectBadge";
+import { useUsersByIds } from "@/hooks/useUsersByIds";
 
 type ProjectCardType = {
   project: ProjectsWithMeta;
@@ -27,16 +28,12 @@ const ProjectCard = ({ project }: ProjectCardType) => {
     id,
     title,
     priority,
-    status,
+    projectStatus,
     dueDate,
+    meta,
     createdAt,
-    comments,
-    commentIds,
-    users,
+    teamUserIds,
     tasks,
-    taskIds,
-    attachments,
-    attachmenetIds,
     badge,
   } = project;
 
@@ -44,7 +41,9 @@ const ProjectCard = ({ project }: ProjectCardType) => {
   const menuRef = useRef<HTMLDivElement>(null);
   useOnClickOutside(menuRef, () => setMenuOpen(false));
 
-  const progress = getProgressResult(taskIds, tasks);
+  const progress = getProgressResult(tasks, tasks);
+
+  const teamUsers = useUsersByIds(teamUserIds);
 
   const toggleActiveBadge = useAppStore((state) => state.toggleActiveBadge);
 
@@ -58,8 +57,6 @@ const ProjectCard = ({ project }: ProjectCardType) => {
     toggleMenu();
     e.stopPropagation();
   };
-
-  console.log(progress)
 
   return (
     <>
@@ -94,7 +91,7 @@ const ProjectCard = ({ project }: ProjectCardType) => {
         <div className="flex items-center justify-between gap-4">
           <div>
             <p className="mb-1 text-xs text-muted-foreground">Team</p>
-            <AssigneeAvatars users={users} />
+            <AssigneeAvatars users={teamUsers} />
           </div>
 
           <div>
@@ -108,10 +105,10 @@ const ProjectCard = ({ project }: ProjectCardType) => {
 
         <div className="mt-4 flex items-center gap-2">
           <p
-            style={{ backgroundColor: STATUS_OPTIONS[status].color }}
+            style={{ backgroundColor: STATUS_OPTIONS[projectStatus].color }}
             className="p-1 px-1.5 rounded-xl text-xs "
           >
-            {STATUS_OPTIONS[status].label}
+            {STATUS_OPTIONS[projectStatus].label}
           </p>
           <p
             style={{ backgroundColor: PRIORITY_OPTIONS[priority].color }}
@@ -123,16 +120,16 @@ const ProjectCard = ({ project }: ProjectCardType) => {
       </div>
 
       <div className="border-t pt-2 flex items-center justify-end gap-4">
-        {attachments && (
+        {meta.attachmentCount > 0 && (
           <span className="flex items-center gap-0.5 text-muted-foreground text-sm">
             <Paperclip size={15} />
-            {attachmenetIds?.length}
+            {meta.attachmentCount}
           </span>
         )}
-        {commentIds && (
+        {meta.commentCount > 0 && (
           <span className="flex items-center gap-0.5 text-muted-foreground text-sm">
             <MessageSquareMore size={15} />
-            {commentIds.length}
+            {meta.commentCount}
           </span>
         )}
       </div>

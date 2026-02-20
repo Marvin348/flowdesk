@@ -8,15 +8,17 @@ import ActiveMenuBadge from "@/components/projects/card/ActiveMenuBadge";
 import AssigneeAvatars from "@/components/projects/avatar/AssigneeAvatars";
 import { Button } from "@/components/ui/button";
 import { formatDate } from "@/utils/formatDate";
+import { useUsersByIds } from "@/hooks/useUsersByIds";
 
 type ProjectDetailsHeaderProps = {
   project: ProjectsWithMeta;
 };
 const ProjectDetailsHeader = ({ project }: ProjectDetailsHeaderProps) => {
-  const { title, status, users, tasks, taskIds, updatedAt, badge } = project;
+  const { title, projectStatus, teamUserIds, tasks, updatedAt, badge } = project;
 
-  const progress = getProgressResult(taskIds, tasks);
+  const progress = getProgressResult(tasks, tasks);
 
+  const teamUsers = useUsersByIds(teamUserIds);
 
   return (
     <div className="flex items-center justify-between gap-3">
@@ -33,10 +35,10 @@ const ProjectDetailsHeader = ({ project }: ProjectDetailsHeaderProps) => {
         {badge && <ActiveMenuBadge badge={badge} />}
 
         <span
-          style={{ backgroundColor: STATUS_OPTIONS[status].color }}
+          style={{ backgroundColor: STATUS_OPTIONS[projectStatus].color }}
           className="hidden sm:inline-block px-2 rounded-full text-sm"
         >
-          {STATUS_OPTIONS[status].label}
+          {STATUS_OPTIONS[projectStatus].label}
         </span>
 
         <div className="hidden xl:flex items-center gap-2 ml-4">
@@ -63,7 +65,7 @@ const ProjectDetailsHeader = ({ project }: ProjectDetailsHeaderProps) => {
       <div className="flex items-center gap-3">
         <div className="hidden md:flex items-center gap-2">
           <p className="text-muted-foreground text-sm">Mitarbeiter</p>
-          <AssigneeAvatars users={users} />
+          <AssigneeAvatars users={teamUsers} />
         </div>
 
         <Button className="bg-accent hover:bg-accent/95" size="sm">

@@ -4,7 +4,7 @@ import SearchInput from "@/components/projects/query-controls/SearchInput";
 import { Button } from "@/components/ui/button";
 import { Filter } from "lucide-react";
 import { useAppStore } from "@/store";
-import type { TaskStatus } from "@/type/taskStatus";
+import type { StatusBase } from "@/type/StatusBase";
 import type { ProjectsSummary } from "@/hooks/useProjectsSummary";
 
 type FilterPanelProps = {
@@ -16,7 +16,7 @@ const FilterPanel = ({ onOpen, projectSummary }: FilterPanelProps) => {
   const filter = useAppStore((state) => state.filter);
   const setFilter = useAppStore((state) => state.setFilter);
 
-  const toggleStatusFilter = (value: TaskStatus) => {
+  const toggleStatusFilter = (value: StatusBase) => {
     const isActive = filter.status === value;
 
     setFilter({

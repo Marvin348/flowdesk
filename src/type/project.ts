@@ -1,5 +1,5 @@
 import type { Priority } from "@/type/priority";
-import type { TaskStatus } from "@/type/taskStatus";
+import type { StatusBase } from "@/type/StatusBase";
 
 export type Project = {
   id: string;
@@ -8,14 +8,14 @@ export type Project = {
   description?: string;
 
   priority: Priority;
-  status: TaskStatus;
+  projectStatus: StatusBase;
 
   dueDate: string;
-  assigneeIds: string[];
+  // assigneeIds: string[];
 
-  taskIds: string[];
-  commentIds: string[];
-  attachmenetIds: string[];
+  // taskIds: string[];
+  // commentIds: string[];
+  // attachmenetIds: string[];
 
   createdAt: string;
   updatedAt?: string;
