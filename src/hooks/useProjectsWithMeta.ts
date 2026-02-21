@@ -13,10 +13,19 @@ export const useProjectsWithMeta = () => {
   const attachments = useAppStore((state) => state.attachments);
   const badgeByProjectId = useAppStore((state) => state.badgeByProjectId);
 
-  const usersById = getArrayLookup(users);
-  const tasksByProjectId = groupBy(tasks, (t) => t.projectId);
-  const commentsByTaskId = groupBy(comments, (com) => com.taskId);
-  const attachmentsByTaskId = groupBy(attachments, (att) => att.taskId);
+  const usersById = useMemo(() => getArrayLookup(users), [users]);
+  const tasksByProjectId = useMemo(
+    () => groupBy(tasks, (t) => t.projectId),
+    [tasks],
+  );
+  const commentsByTaskId = useMemo(
+    () => groupBy(comments, (com) => com.taskId),
+    [comments],
+  );
+  const attachmentsByTaskId = useMemo(
+    () => groupBy(attachments, (att) => att.taskId),
+    [attachments],
+  );
 
   const projectsWithMeta: ProjectsWithMeta[] = projects.map((pro) => {
     const tasks = tasksByProjectId.get(pro.id) ?? [];
@@ -64,8 +73,7 @@ export const useProjectsWithMeta = () => {
       userCount: counts.uniqueUserIds.size,
     };
 
-    const collaboratorIds = tasks.flatMap((t) => t.collaboratorIds);
-    const teamUserIds = Array.from(new Set(collaboratorIds));
+    const teamUserIds = Array.from(counts.uniqueUserIds);
 
     return {
       ...pro,

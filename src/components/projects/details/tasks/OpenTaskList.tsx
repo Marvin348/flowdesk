@@ -26,9 +26,13 @@ const OpenTaskList = ({ tasks, users }: OpenTaskListProps) => {
         <CarouselControls prev={prev} next={next} />
       </div>
 
-      <div className="flex-1 p-4">
-        <OpenTask task={taskItem} users={users} />
+      <div className="flex-1 relative">
+        <div className="p-4">
+          <OpenTask task={taskItem} users={users} />
+        </div>
+        <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-10 bg-gradient-to-t from-background to-transparent" />
       </div>
+
       <div className="pb-4 px-4">
         <Button
           variant="outline"

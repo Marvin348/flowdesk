@@ -30,7 +30,7 @@ const CollaboratorsList = ({ collaborators }: CollaboratorsListProps) => {
           ))}
         </div>
 
-        <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-10 bg-gradient-to-t from-white to-transparent" />
+        <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-10 bg-gradient-to-t from-background to-transparent" />
       </div>
 
       <div className="pb-4 px-4">

@@ -22,12 +22,11 @@ const ProjectPage = () => {
 
   const teamUsers = useUsersByIds(project.teamUserIds);
 
-  console.log(project);
-
   const allCommentsPerProject = project.tasks.flatMap((t) => t.comments);
   console.log("allCommentsPerProject", allCommentsPerProject);
   console.log("teamUsers", teamUsers);
   console.log("projectTasks", project.tasks);
+  console.log("project", project)
   return (
     <>
       <div>
