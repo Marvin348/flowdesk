@@ -41,7 +41,7 @@ const ProjectCard = ({ project }: ProjectCardType) => {
   const menuRef = useRef<HTMLDivElement>(null);
   useOnClickOutside(menuRef, () => setMenuOpen(false));
 
-  const progress = getProgressResult(tasks, tasks);
+  const progress = getProgressResult(tasks);
 
   const teamUsers = useUsersByIds(teamUserIds);
 

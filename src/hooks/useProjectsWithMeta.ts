@@ -4,13 +4,16 @@ import { getArrayLookup } from "@/utils/getArrayLookup";
 import { isDefined } from "@/utils/isDefined";
 import { useMemo } from "react";
 import { groupBy } from "@/utils/groupBy";
+import { useProjectDomainData } from "@/queries/useProjectDomainData";
+import { useProjects } from "@/queries/useProjects";
 
 export const useProjectsWithMeta = () => {
-  const projects = useAppStore((state) => state.projects);
-  const comments = useAppStore((state) => state.comments);
-  const users = useAppStore((state) => state.users);
-  const tasks = useAppStore((state) => state.tasks);
-  const attachments = useAppStore((state) => state.attachments);
+  const { data: projects = [] } = useProjects();
+
+  const {
+    data: { users, tasks, comments, attachments },
+  } = useProjectDomainData();
+
   const badgeByProjectId = useAppStore((state) => state.badgeByProjectId);
 
   const usersById = useMemo(() => getArrayLookup(users), [users]);

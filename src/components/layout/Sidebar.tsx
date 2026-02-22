@@ -3,8 +3,9 @@ import { NavLink, Link } from "react-router";
 import { Button } from "@/components/ui/button";
 import logoWhite from "@/assets/logo-white.svg";
 import { useScrollLock } from "@/hooks/useScrollLock";
-import { useProjectsWithMeta } from "@/hooks/useProjectsWithMeta";
 import { Star } from "lucide-react";
+import { useAppStore } from "@/store";
+import { useCoreData } from "@/queries/useCoreData";
 
 type SidebarProps = {
   onOpen: boolean;
@@ -13,11 +14,21 @@ type SidebarProps = {
 const Sidebar = ({ onOpen, onClose }: SidebarProps) => {
   useScrollLock(onOpen);
 
-  const projectsWithMeta = useProjectsWithMeta();
-  const favorites = projectsWithMeta.filter(
+  const { projects } = useCoreData();
+  const badgeByProjectId = useAppStore((state) => state.badgeByProjectId);
+
+  const projectWithBadge = projects.map((pro) => {
+    return {
+      ...pro,
+      badge: badgeByProjectId[pro.id],
+    };
+  });
+
+  const favorites = projectWithBadge.filter(
     (project) => project.badge === "favorite",
   );
-  console.log(favorites);
+
+  console.log("projectWithBadge", projectWithBadge);
 
   return (
     <>

@@ -1,7 +1,9 @@
 import type { Task } from "@/type/task";
 import type { TaskWithMeta } from "@/type/taskWithMeta";
 
-export const getProgressResult = (taskIds: TaskWithMeta[], tasks: Task[]) => {
+export const getProgressResult = (tasks: Task[]) => {
+  const total = tasks.length;
+
   const result = tasks.reduce(
     (acc, task) => {
       if (task.completed) {
@@ -16,8 +18,6 @@ export const getProgressResult = (taskIds: TaskWithMeta[], tasks: Task[]) => {
       total: 0,
     },
   );
-
-  const total = taskIds.length;
 
   result.total = total;
   result.percent = total ? Math.round((result.completed / total) * 100) : 0;

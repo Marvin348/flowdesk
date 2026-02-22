@@ -14,9 +14,10 @@ type ProjectDetailsHeaderProps = {
   project: ProjectsWithMeta;
 };
 const ProjectDetailsHeader = ({ project }: ProjectDetailsHeaderProps) => {
-  const { title, projectStatus, teamUserIds, tasks, updatedAt, badge } = project;
+  const { title, projectStatus, teamUserIds, tasks, updatedAt, badge } =
+    project;
 
-  const progress = getProgressResult(tasks, tasks);
+  const progress = getProgressResult(tasks);
 
   const teamUsers = useUsersByIds(teamUserIds);
 

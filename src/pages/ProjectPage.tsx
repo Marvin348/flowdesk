@@ -1,4 +1,4 @@
-import { data, useParams } from "react-router";
+import { useParams } from "react-router";
 import ProjectDetailsHeader from "@/components/projects/details/ProjectDetailsHeader";
 import { useProjectsWithMeta } from "@/hooks/useProjectsWithMeta";
 import CollaboratorsList from "@/components/projects/details/collaborators/CollaboratorsList";
@@ -7,21 +7,18 @@ import { getProgressResult } from "@/utils/getProgressResult";
 import ProgressBarCard from "@/components/projects/details/ProgressBarCard";
 import CommentsList from "@/components/projects/details/comments/CommentsList";
 import { useUsersByIds } from "@/hooks/useUsersByIds";
-import { useProjects } from "@/queries/useProjects";
 
 const ProjectPage = () => {
   const { id } = useParams();
 
-  if (!id) return;
-
   const projectsWithMeta = useProjectsWithMeta();
   const project = projectsWithMeta.find((project) => project.id === id);
 
-  if (!project) return;
+  const teamUsers = useUsersByIds(project?.teamUserIds ?? []);
 
-  const progress = getProgressResult(project.tasks, project.tasks);
+  if (!project) return null;
 
-  const teamUsers = useUsersByIds(project.teamUserIds);
+  const progress = getProgressResult(project.tasks);
 
   const allCommentsPerProject = project.tasks.flatMap((t) => t.comments);
   console.log("allCommentsPerProject", allCommentsPerProject);
@@ -37,9 +34,6 @@ const ProjectPage = () => {
   // };
 
   // fetchExample().then((data) => console.log("data", data));
-
-  const { data, isLoading, error } = useProjects();
-  console.log("projectsssss", data);
 
   return (
     <>

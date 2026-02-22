@@ -1,10 +1,10 @@
-import { useAppStore } from "@/store";
 import { getArrayLookup } from "@/utils/getArrayLookup";
 import { useMemo } from "react";
 import { isDefined } from "@/utils/isDefined";
+import { useUsers } from "@/queries/useUsers";
 
 export const useUsersByIds = (ids: string[]) => {
-  const users = useAppStore((state) => state.users);
+  const { data: users = [] } = useUsers();
 
   const usersById = useMemo(() => getArrayLookup(users), [users]);
 

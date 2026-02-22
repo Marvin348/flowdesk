@@ -2,8 +2,13 @@ import { Outlet } from "react-router";
 import Sidebar from "@/components/layout/Sidebar";
 import Header from "@/components/layout/Header";
 import { useState } from "react";
+import { useCoreData } from "@/queries/useCoreData";
 const AppLayout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  const { projects } = useCoreData();
+
+  console.log("projects", projects);
 
   return (
     <div>
