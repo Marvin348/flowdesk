@@ -5,10 +5,7 @@ import { useAppStore } from "@/store";
 import SelectedStatus from "@/components/projects/query-controls/select/SelectedStatus";
 import SelectedView from "@/components/projects/query-controls/select/SelectedView";
 import { useState } from "react";
-import {
-  defaultFilter,
-  type ContentFilter,
-} from "@/store/slices/ui-state/filter";
+import { defaultFilter, type ContentFilter } from "@/store/slices/filter";
 import { useScrollLock } from "@/hooks/useScrollLock";
 import type { Priority } from "@/type/priority";
 

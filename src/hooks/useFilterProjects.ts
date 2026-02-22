@@ -1,5 +1,5 @@
 import type { ProjectsWithMeta } from "@/type/projectsWithMeta";
-import type { ContentFilter } from "@/store/slices/ui-state/filter";
+import type { ContentFilter } from "@/store/slices/filter";
 
 export const useFilterProjects = (
   projectsWithMeta: ProjectsWithMeta[],

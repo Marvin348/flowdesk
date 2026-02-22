@@ -1,5 +1,5 @@
 import type { Project } from "@/type/project";
-import type { Badge } from "@/store/slices/ui-state/projectBadge";
+import type { Badge } from "@/store/slices/projectBadge";
 import type { TaskWithMeta } from "./taskWithMeta";
 
 export type ProjectsWithMeta = Project & {

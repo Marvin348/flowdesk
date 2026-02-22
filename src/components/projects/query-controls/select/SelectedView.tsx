@@ -8,10 +8,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { FILTER_VIEW_OPTIONS } from "@/constants/filter/view-options";
-import type {
-  ContentFilter,
-  ProjectViewFilter,
-} from "@/store/slices/ui-state/filter";
+import type { ContentFilter, ProjectViewFilter } from "@/store/slices/filter";
 
 type SelectedViewProps = {
   value?: ProjectViewFilter;
@@ -19,7 +16,6 @@ type SelectedViewProps = {
 };
 
 const SelectedView = ({ value, setFilter }: SelectedViewProps) => {
-
   return (
     <Select
       value={value ?? ""}

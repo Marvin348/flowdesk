@@ -16,7 +16,7 @@ import { useRef, useState } from "react";
 import { useOnClickOutside } from "@/hooks/useOnClickOutside";
 import ActiveMenuBadge from "@/components/projects/card/ActiveMenuBadge";
 import { useAppStore } from "@/store";
-import type { Badge } from "@/store/slices/ui-state/projectBadge";
+import type { Badge } from "@/store/slices/projectBadge";
 import { useUsersByIds } from "@/hooks/useUsersByIds";
 
 type ProjectCardType = {

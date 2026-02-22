@@ -8,7 +8,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { STATUS_OPTIONS } from "@/constants/status-options";
-import type { ContentFilter } from "@/store/slices/ui-state/filter";
+import type { ContentFilter } from "@/store/slices/filter";
 import type { StatusBase } from "@/type/StatusBase";
 
 type SelectedStatusProps = {

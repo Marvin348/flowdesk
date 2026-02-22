@@ -137,7 +137,7 @@
       "title": "Mobile App MVP",
       "description": "Grundfunktionen, Auth, Feed, Push Notifications.",
       "priority": "high",
-      "projectStatus": "pending",
+      "projectStatus": "in_progress",
       "dueDate": "2026-04-05T16:00:00.000Z",
       "createdAt": "2026-01-20T09:00:00.000Z"
     },
@@ -240,9 +240,9 @@
       "id": "t5",
       "projectId": "p1",
       "title": "SEO: Titles/Meta/Structured Data",
-      "completed": false,
+      "completed": true,
       "dueDate": "2026-03-07T17:00:00.000Z",
-      "taskStatus": "pending",
+      "taskStatus": "done",
       "collaboratorIds": ["u10", "u4"]
     },
     {
@@ -258,9 +258,9 @@
       "id": "t7",
       "projectId": "p2",
       "title": "Feed Screen (MVP)",
-      "completed": false,
+      "completed": true,
       "dueDate": "2026-03-18T17:00:00.000Z",
-      "taskStatus": "pending",
+      "taskStatus": "done",
       "collaboratorIds": ["u5", "u2"]
     },
     {
@@ -269,7 +269,7 @@
       "title": "Push Notifications: Setup + Topics",
       "completed": false,
       "dueDate": "2026-03-25T17:00:00.000Z",
-      "taskStatus": "pending",
+      "taskStatus": "in_progress",
       "collaboratorIds": ["u7", "u13"]
     },
     {

@@ -1,5 +1,5 @@
 import { MENU_ACTIONS } from "@/constants/project-card/menu-actions";
-import type { Badge } from "@/store/slices/ui-state/projectBadge";
+import type { Badge } from "@/store/slices/projectBadge";
 
 type ActiveMenuBadgeType = {
   badge: Badge;

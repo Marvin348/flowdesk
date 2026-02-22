@@ -15,7 +15,7 @@ const OpenTaskList = ({ tasks, users }: OpenTaskListProps) => {
 
   if (!taskItem) return null;
 
-  console.log(taskItem);
+  console.log("taskItem", taskItem);
   const prev = () => setIndex((i) => Math.max(i - 1, 0));
   const next = () => setIndex((i) => Math.min(i + 1, tasks.length - 1));
 

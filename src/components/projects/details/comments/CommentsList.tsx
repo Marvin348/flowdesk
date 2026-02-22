@@ -2,15 +2,15 @@ import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import Comment from "@/components/projects/details/comments/Comment";
 import type { CommentsWithUser } from "@/type/commentsWithUser";
-import { useAppStore } from "@/store";
 import { useMemo } from "react";
+import { useUsers } from "@/queries/useUsers";
 
 type CommentsListProps = {
   comments: CommentsWithUser[];
 };
 
 const CommentsList = ({ comments }: CommentsListProps) => {
-  const users = useAppStore((state) => state.users);
+  const { data: users = [] } = useUsers();
 
   const userByIds = useMemo(
     () => new Map(users.map((user) => [user.id, user])),
