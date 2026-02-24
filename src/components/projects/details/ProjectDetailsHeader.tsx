@@ -1,5 +1,5 @@
 import type { ProjectsWithMeta } from "@/type/projectsWithMeta";
-import { getProgressResult } from "@/utils/getProgressResult";
+import { getProgressResult, type Progress } from "@/utils/getProgressResult";
 getProgressResult;
 import { STATUS_OPTIONS } from "@/constants/status-options";
 import { Link } from "react-router";
@@ -12,12 +12,11 @@ import { useUsersByIds } from "@/hooks/useUsersByIds";
 
 type ProjectDetailsHeaderProps = {
   project: ProjectsWithMeta;
+  progress: Progress
 };
-const ProjectDetailsHeader = ({ project }: ProjectDetailsHeaderProps) => {
+const ProjectDetailsHeader = ({ project, progress }: ProjectDetailsHeaderProps) => {
   const { title, projectStatus, teamUserIds, tasks, updatedAt, badge } =
     project;
-
-  const progress = getProgressResult(tasks);
 
   const teamUsers = useUsersByIds(teamUserIds);
 
@@ -65,7 +64,7 @@ const ProjectDetailsHeader = ({ project }: ProjectDetailsHeaderProps) => {
 
       <div className="flex items-center gap-3">
         <div className="hidden md:flex items-center gap-2">
-          <p className="text-muted-foreground text-sm">Mitarbeiter</p>
+          <p className="text-muted-foreground text-sm">Team</p>
           <AssigneeAvatars users={teamUsers} />
         </div>
 

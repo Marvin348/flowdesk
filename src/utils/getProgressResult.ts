@@ -1,5 +1,6 @@
 import type { Task } from "@/type/task";
-import type { TaskWithMeta } from "@/type/taskWithMeta";
+
+export type Progress = ReturnType<typeof getProgressResult>;
 
 export const getProgressResult = (tasks: Task[]) => {
   const total = tasks.length;

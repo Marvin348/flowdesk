@@ -7,8 +7,22 @@ import { getProgressResult } from "@/utils/getProgressResult";
 import ProgressBarCard from "@/components/projects/details/ProgressBarCard";
 import CommentsList from "@/components/projects/details/comments/CommentsList";
 import { useUsersByIds } from "@/hooks/useUsersByIds";
+import ProjectTabs from "@/components/projects/details/tabs/ProjectTabs";
+import { useState } from "react";
+import AttachmentsView from "@/components/projects/details/views/attachmentsView/AttachmentsView";
+import ListView from "@/components/projects/details/views/listView/ListView";
+import Overview from "@/components/projects/details/views/overview/Overview";
+
+export type ActiveTab =
+  | "overview"
+  | "list"
+  | "files"
+  | "collaborators"
+  | "settings";
 
 const ProjectPage = () => {
+  const [activeTab, setActiveTab] = useState<ActiveTab>("overview");
+
   const { id } = useParams();
 
   const projectsWithMeta = useProjectsWithMeta();
@@ -20,43 +34,40 @@ const ProjectPage = () => {
 
   const progress = getProgressResult(project.tasks);
 
-  const allCommentsPerProject = project.tasks.flatMap((t) => t.comments);
-  console.log("allCommentsPerProject", allCommentsPerProject);
+  const attachments = project.tasks.flatMap((t) => t.attachments);
+  console.log(attachments);
+
+  const onClick = (value: ActiveTab) => setActiveTab(value);
+
+  const TabResult = () => {
+    switch (activeTab) {
+      case "overview":
+        return <Overview project={project} progress={progress} />;
+
+      case "files":
+        return <AttachmentsView attachments={attachments} />;
+
+      case "list":
+        return <ListView tasks={project.tasks} />;
+    }
+  };
+
   console.log("teamUsers", teamUsers);
   console.log("projectTasks", project.tasks);
   console.log("project", project);
 
-  // const fetchExample = async () => {
-  //   const res = await fetch("http://localhost:30001/projects");
-  //   const data = await res.json();
-
-  //   return data;
-  // };
-
-  // fetchExample().then((data) => console.log("data", data));
-
   return (
     <>
-      <div>
-        <ProjectDetailsHeader project={project} />
+      <div className="mb-6">
+        <ProjectDetailsHeader project={project} progress={progress} />
       </div>
 
-      <div className="mt-8 grid gap-6 grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 auto-rows-[170px]">
-        <div className="border rounded-md h-full row-span-2">
-          <CollaboratorsList collaborators={teamUsers} />
-        </div>
+      <div>
+        <ProjectTabs activeTab={activeTab} onChange={onClick} />
+      </div>
 
-        <div className="border rounded-md h-full row-span-2">
-          <OpenTaskList tasks={project.tasks} users={teamUsers} />
-        </div>
-
-        <div className="border rounded-md h-full xl:col-start-3 xl:row-span-1">
-          <ProgressBarCard progress={progress} />
-        </div>
-
-        <div className="border rounded-md h-full row-span-3">
-          <CommentsList comments={allCommentsPerProject} />
-        </div>
+      <div className="mt-6">
+        <TabResult />
       </div>
     </>
   );
