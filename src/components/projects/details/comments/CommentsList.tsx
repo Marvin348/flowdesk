@@ -22,7 +22,7 @@ const CommentsList = ({ comments }: CommentsListProps) => {
       <div className="flex items-center justify-between gap-4 bg-muted-foreground/10 p-4">
         <h4 className="text-lg font-medium">Kommentare</h4>
         <Button>
-          <Plus className="text-accent" /> <span>Kommentar</span>
+          <Plus className="text-accent" /> <span>Kommentare</span>
         </Button>
       </div>
 
@@ -40,6 +40,11 @@ const CommentsList = ({ comments }: CommentsListProps) => {
               </div>
             );
           })}
+          {comments.length === 0 && (
+            <div className="h-full flex items-center justify-center">
+              Keine Kommentare
+            </div>
+          )}
         </div>
         <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-10 bg-gradient-to-t from-background to-transparent" />
       </div>

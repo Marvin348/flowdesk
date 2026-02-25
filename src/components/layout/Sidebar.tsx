@@ -77,12 +77,12 @@ const Sidebar = ({ onOpen, onClose }: SidebarProps) => {
               {favorites.map((project) => (
                 <Link
                   key={project.id}
-                  to="/projects"
+                  to={`/project/${project.id}`}
                   className="flex items-center gap-2 text-white"
                   onClick={onClose}
                 >
                   <span className="shrink-0 flex items-center justify-center size-8 rounded-full bg-muted-foreground/20">
-                    <Star size={20} stroke="#FF8421" />
+                    <Star size={20} className="text-accent" />
                   </span>
 
                   <span className="truncate">{project.title}</span>

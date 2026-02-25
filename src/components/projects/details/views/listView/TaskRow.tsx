@@ -8,7 +8,7 @@ const TaskRow = ({ task }: { task: TaskWithMeta }) => {
 
   return (
     <div className="py-4 grid grid-cols-1 md:grid-cols-3 items-center gap-4 border-b last:border-none">
-      <p className="font-medium truncate">{title}</p>
+      <p className="truncate">{title}</p>
 
       <div className="md:justify-self-center">
         <AssigneeAvatars users={collaborators} />

@@ -2,8 +2,9 @@ import { ChevronDown } from "lucide-react";
 import { STATUS_OPTIONS } from "@/constants/status-options";
 import { useState } from "react";
 import type { StatusBase } from "@/type/StatusBase";
-import TaskRow from "./TaskRow";
+import TaskRow from "@/components/projects/details/views/listView/TaskRow";
 import type { TaskWithMeta } from "@/type/taskWithMeta";
+import { ChevronsUpDown } from "lucide-react";
 
 const ListView = ({ tasks }: { tasks: TaskWithMeta[] }) => {
   const [openStatus, setOpenStatus] = useState<StatusBase | null>(null);
@@ -26,18 +27,21 @@ const ListView = ({ tasks }: { tasks: TaskWithMeta[] }) => {
           );
 
           return (
-            <div
-              key={opt.value}
-              className=" border-b py-4"
-              onClick={() => toggleOpenStatus(opt.value)}
-            >
-              <button className="flex items-center gap-4">
+            <div key={opt.value} className=" border-b py-4">
+              <button
+                className="w-full flex items-center gap-4"
+                onClick={() => toggleOpenStatus(opt.value)}
+              >
                 <span className="border p-0.5 rounded-full hover:bg-muted-foreground/5 transform">
                   <ChevronDown
                     className={`transform duration-200 ${openStatus === opt.value ? "rotate-180" : ""} text-surface/80`}
                   />
                 </span>
                 {opt.label}
+
+                <span className="text-muted-foreground font-medium">
+                  {filteredByStatus.length}
+                </span>
               </button>
 
               {openStatus === opt.value && (
@@ -45,6 +49,7 @@ const ListView = ({ tasks }: { tasks: TaskWithMeta[] }) => {
                   {filteredByStatus.map((task) => (
                     <TaskRow key={task.id} task={task} />
                   ))}
+                  {filteredByStatus.length === 0 && <div>Noch keine Daten</div>}
                 </div>
               )}
             </div>
