@@ -1,9 +1,9 @@
-import { useUsers } from "@/queries/useUsers";
-import { useComments } from "@/queries/useComments";
-import { useAttachments } from "@/queries/useAttachments";
-import { useTasks } from "@/queries/useTasks";
+import { useUsers } from "@/queries/users/useUsers";
+import { useComments } from "@/queries/comments/useComments";
+import { useAttachments } from "@/queries/attachments/useAttachments";
+import { useTasks } from "@/queries/tasks/useTasks";
 
-export const useProjectDomainData = () => {
+export const useProjectDomainAll = () => {
   const {
     data: users = [],
     isLoading: usersIsLoading,

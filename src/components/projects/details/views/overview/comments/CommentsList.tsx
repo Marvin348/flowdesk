@@ -3,7 +3,7 @@ import { Plus } from "lucide-react";
 import Comment from "@/components/projects/details/views/overview/comments/Comment";
 import type { CommentsWithUser } from "@/type/commentsWithUser";
 import { useMemo } from "react";
-import { useUsers } from "@/queries/useUsers";
+import { useUsers } from "@/queries/users/useUsers";
 
 type CommentsListProps = {
   comments: CommentsWithUser[];

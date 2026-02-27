@@ -1,7 +1,7 @@
 import { getArrayLookup } from "@/utils/getArrayLookup";
 import { useMemo } from "react";
 import { isDefined } from "@/utils/isDefined";
-import { useUsers } from "@/queries/useUsers";
+import { useUsers } from "@/queries/users/useUsers";
 
 export const useUsersByIds = (ids: string[]) => {
   const { data: users = [] } = useUsers();

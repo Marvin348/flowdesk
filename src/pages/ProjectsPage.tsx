@@ -7,7 +7,7 @@ import { useState } from "react";
 import { useFilterProjects } from "@/hooks/useFilterProjects";
 import { useProjectsSummary } from "@/hooks/useProjectsSummary";
 import ViewToggle from "@/components/projects/view-controls/ViewToggle";
-import { useProjectsListVM } from "@/hooks/useProjectsList";
+import { useProjectsListVM } from "@/domain/projects/useProjectsList";
 
 export type View = "card" | "list";
 const defaultView: View = "card";

@@ -1,6 +1,6 @@
 import { useParams } from "react-router";
 import ProjectDetailsHeader from "@/components/projects/details/ProjectDetailsHeader";
-import { useProjectDetailsVM } from "@/hooks/useProjectDetails";
+import { useProjectDetailsVM } from "@/domain/projects/useProjectDetails";
 import { getProgressResult } from "@/utils/getProgressResult";
 import { useUsersByIds } from "@/hooks/useUsersByIds";
 import ProjectTabs from "@/components/projects/details/tabs/ProjectTabs";
@@ -23,9 +23,11 @@ const ProjectPage = () => {
   const [isAddTaskOpen, setIsAddTaskOpen] = useState(false);
 
   const { id } = useParams();
-
-  const projectsWithMeta = useProjectDetailsVM();
-  const project = projectsWithMeta.find((project) => project.id === id);
+  const projectId = id ?? "";
+  
+  const projectDetailsVM = useProjectDetailsVM(projectId);
+  
+  const project = projectDetailsVM.find((project) => project.id === id);
 
   const teamUsers = useUsersByIds(project?.teamUserIds ?? []);
 

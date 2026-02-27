@@ -1,5 +1,5 @@
-import { useProjectDomainData } from "@/queries/useProjectDomainData";
-import { useProjects } from "@/queries/useProjects";
+import { useProjectDomainAll } from "@/domain/projects/useProjectDomainAll";
+import { useProjects } from "@/queries/projects/useProjects";
 import { useAppStore } from "@/store";
 import { useMemo } from "react";
 import { groupBy } from "@/utils/groupBy";
@@ -9,7 +9,7 @@ export const useProjectsListVM = () => {
   const { data: projects = [] } = useProjects();
   const {
     data: { tasks, comments, attachments },
-  } = useProjectDomainData();
+  } = useProjectDomainAll();
 
   const badgeByProjectId = useAppStore((state) => state.badgeByProjectId);
 

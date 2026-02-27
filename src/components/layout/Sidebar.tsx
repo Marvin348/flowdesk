@@ -5,7 +5,7 @@ import logoWhite from "@/assets/logo-white.svg";
 import { useScrollLock } from "@/hooks/useScrollLock";
 import { Star } from "lucide-react";
 import { useAppStore } from "@/store";
-import { useCoreData } from "@/queries/useCoreData";
+import { useCoreData } from "@/domain/projects/useCoreData";
 
 type SidebarProps = {
   onOpen: boolean;

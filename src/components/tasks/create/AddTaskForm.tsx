@@ -33,7 +33,7 @@ const AddTaskForm = () => {
         <input
           type="date"
           placeholder="Wähle ein Datum"
-          className="border rounded-md p-2 text-surface/80"
+          className="border rounded-md p-2"
         />
       </div>
 
@@ -51,7 +51,7 @@ const AddTaskForm = () => {
         <input
           type="text"
           placeholder="Tags wählen"
-          className="text-surface/80 border rounded-md p-2"
+          className="border rounded-md p-2"
         />
       </div>
 
