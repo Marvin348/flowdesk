@@ -1,4 +1,4 @@
-import type { ProjectsWithMeta } from "@/type/projectsWithMeta";
+import type { ProjectsList } from "@/type/projectsList";
 
 export type ProjectsSummary = {
   total: number;
@@ -14,10 +14,10 @@ export type ProjectsSummary = {
   };
 };
 
-export const useProjectsSummary = (projectsWithMeta: ProjectsWithMeta[]) => {
-  const total = projectsWithMeta.length;
+export const useProjectsSummary = (projectsList: ProjectsList[]) => {
+  const total = projectsList.length;
 
-  const projectSummary: ProjectsSummary = projectsWithMeta.reduce(
+  const projectSummary: ProjectsSummary = projectsList.reduce(
     (acc, project) => {
       if (project.badge) {
         acc.byBadges[project.badge] += 1;

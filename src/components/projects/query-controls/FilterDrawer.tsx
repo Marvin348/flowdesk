@@ -33,8 +33,6 @@ const FilterDrawer = ({ onClose, isOpen }: FilterDrawerProps) => {
     }));
   };
 
-  console.log("draftFilter", draftFilter);
-
   const onClick = () => {
     replaceFilter(draftFilter);
     onClose();

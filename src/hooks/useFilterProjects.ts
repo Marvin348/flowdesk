@@ -1,8 +1,8 @@
-import type { ProjectsWithMeta } from "@/type/projectsWithMeta";
 import type { ContentFilter } from "@/store/slices/filter";
+import type { ProjectsList } from "@/type/projectsList";
 
 export const useFilterProjects = (
-  projectsWithMeta: ProjectsWithMeta[],
+  projectsWithMeta: ProjectsList[],
   filter: ContentFilter,
 ) =>
   projectsWithMeta.filter((pro) => {

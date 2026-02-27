@@ -8,6 +8,8 @@ const AppLayout = () => {
 
   const { projects } = useCoreData();
 
+  console.log(projects)
+
   return (
     <div>
       <header className="p-2 px-4 border-b lg:hidden">

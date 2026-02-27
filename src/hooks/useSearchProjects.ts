@@ -1,7 +1,7 @@
-import type { ProjectsWithMeta } from "@/type/projectsWithMeta";
+import type { ProjectsList } from "@/type/projectsList";
 
 export const useSearchProjects = (
-  projectsWithMeta: ProjectsWithMeta[],
+  projectsWithMeta: ProjectsList[],
   searchQuery: string,
 ) =>
   projectsWithMeta.filter(

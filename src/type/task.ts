@@ -1,4 +1,4 @@
-import type{ StatusBase } from "@/type/StatusBase";
+import type { StatusBase } from "@/type/StatusBase";
 export type Task = {
   id: string;
   projectId: string;
@@ -7,4 +7,6 @@ export type Task = {
   dueDate: string;
   taskStatus: StatusBase;
   collaboratorIds: string[];
+  description?: string;
+  tags?: string;
 };

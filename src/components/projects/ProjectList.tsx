@@ -1,8 +1,8 @@
-import type { ProjectsWithMeta } from "@/type/projectsWithMeta";
 import ProjectCard from "@/components/projects/card/ProjectCard";
 import { useNavigate } from "react-router";
+import type { ProjectsList } from "@/type/projectsList";
 type ProjectListType = {
-  projects: ProjectsWithMeta[];
+  projects: ProjectsList[];
 };
 
 const ProjectList = ({ projects }: ProjectListType) => {

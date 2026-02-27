@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
-import Comment from "@/components/projects/details/comments/Comment";
+import Comment from "@/components/projects/details/views/overview/comments/Comment";
 import type { CommentsWithUser } from "@/type/commentsWithUser";
 import { useMemo } from "react";
 import { useUsers } from "@/queries/useUsers";

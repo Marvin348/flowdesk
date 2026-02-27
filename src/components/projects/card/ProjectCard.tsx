@@ -1,4 +1,3 @@
-import type { ProjectsWithMeta } from "@/type/projectsWithMeta";
 import {
   EllipsisVertical,
   Calendar,
@@ -10,7 +9,6 @@ import { formatDate } from "@/utils/formatDate";
 import { STATUS_OPTIONS } from "@/constants/status-options";
 import { PRIORITY_OPTIONS } from "@/constants/priority-options";
 import ProgressBar from "@/components/projects/card/ProgressBar";
-import { getProgressResult } from "@/utils/getProgressResult";
 import ProjectCardMenu from "@/components/projects/card/ProjectCardMenu";
 import { useRef, useState } from "react";
 import { useOnClickOutside } from "@/hooks/useOnClickOutside";
@@ -18,9 +16,10 @@ import ActiveMenuBadge from "@/components/projects/card/ActiveMenuBadge";
 import { useAppStore } from "@/store";
 import type { Badge } from "@/store/slices/projectBadge";
 import { useUsersByIds } from "@/hooks/useUsersByIds";
+import type { ProjectsList } from "@/type/projectsList";
 
 type ProjectCardType = {
-  project: ProjectsWithMeta;
+  project: ProjectsList;
 };
 
 const ProjectCard = ({ project }: ProjectCardType) => {
@@ -32,16 +31,14 @@ const ProjectCard = ({ project }: ProjectCardType) => {
     dueDate,
     meta,
     createdAt,
+    progress,
     teamUserIds,
-    tasks,
     badge,
   } = project;
 
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   useOnClickOutside(menuRef, () => setMenuOpen(false));
-
-  const progress = getProgressResult(tasks);
 
   const teamUsers = useUsersByIds(teamUserIds);
 

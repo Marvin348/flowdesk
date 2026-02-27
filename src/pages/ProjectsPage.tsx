@@ -6,8 +6,8 @@ import { useAppStore } from "@/store";
 import { useState } from "react";
 import { useFilterProjects } from "@/hooks/useFilterProjects";
 import { useProjectsSummary } from "@/hooks/useProjectsSummary";
-import { useProjectsWithMeta } from "@/hooks/useProjectsWithMeta";
 import ViewToggle from "@/components/projects/view-controls/ViewToggle";
+import { useProjectsListVM } from "@/hooks/useProjectsList";
 
 export type View = "card" | "list";
 const defaultView: View = "card";
@@ -19,14 +19,13 @@ const ProjectsPage = () => {
   const searchQuery = useAppStore((state) => state.searchQuery);
   const filter = useAppStore((state) => state).filter;
 
-  const projectsWithMeta = useProjectsWithMeta();
-  const projectSummary = useProjectsSummary(projectsWithMeta);
+  const projectsListVM = useProjectsListVM();
+  const projectSummary = useProjectsSummary(projectsListVM);
 
-  const searchedProjects = useSearchProjects(projectsWithMeta, searchQuery);
+  const searchedProjects = useSearchProjects(projectsListVM, searchQuery);
   const filteredProjects = useFilterProjects(searchedProjects, filter);
 
-  console.log("projectsWithMeta", projectsWithMeta);
-  console.log(cardView);
+  console.log("projectsListVM", projectsListVM);
 
   return (
     <>

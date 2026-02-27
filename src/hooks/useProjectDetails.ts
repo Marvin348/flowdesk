@@ -7,7 +7,7 @@ import { groupBy } from "@/utils/groupBy";
 import { useProjectDomainData } from "@/queries/useProjectDomainData";
 import { useProjects } from "@/queries/useProjects";
 
-export const useProjectsWithMeta = () => {
+export const useProjectDetailsVM = () => {
   const { data: projects = [] } = useProjects();
 
   const {

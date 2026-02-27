@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import type { User } from "@/type/user";
 import { UserRoundPlus } from "lucide-react";
-import Collaborator from "@/components/projects/details/collaborators/Collaborator";
+import Collaborator from "@/components/projects/details/views/overview/collaborators/Collaborator";
 
 type CollaboratorsListProps = {
   collaborators: User[];

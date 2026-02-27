@@ -24,7 +24,7 @@ const SelectedStatus = ({ setFilter, value }: SelectedStatusProps) => {
         setFilter({ status: value === "" ? undefined : (value as StatusBase) })
       }
     >
-      <SelectTrigger className="w-full">
+      <SelectTrigger className="w-full text-surface/80">
         <SelectValue placeholder="Wähle einen Status" />
       </SelectTrigger>
       <SelectContent>
