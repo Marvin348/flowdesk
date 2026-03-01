@@ -11,6 +11,9 @@ body {
   .overlay {
     @apply fixed inset-0 bg-black/30 z-30;
   }
+  .error-text {
+    @apply text-red-700 text-xs
+  }
 }
 
 .custom-scrollbar {

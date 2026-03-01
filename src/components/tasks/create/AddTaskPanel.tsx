@@ -30,7 +30,7 @@ const AddTaskPanel = ({ onOpen, onClose }: AddTaskPanelProps) => {
             </button>
           </div>
           <div className="mt-4">
-            <AddTaskForm />
+            <AddTaskForm onClose={onClose}/>
           </div>
         </div>
       </div>

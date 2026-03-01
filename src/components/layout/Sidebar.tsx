@@ -28,8 +28,6 @@ const Sidebar = ({ onOpen, onClose }: SidebarProps) => {
     (project) => project.badge === "favorite",
   );
 
-  console.log("projectWithBadge", projectWithBadge);
-
   return (
     <>
       <div

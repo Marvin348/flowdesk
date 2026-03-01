@@ -4,7 +4,6 @@ import { getArrayLookup } from "@/utils/getArrayLookup";
 import { isDefined } from "@/utils/isDefined";
 import { useMemo } from "react";
 import { groupBy } from "@/utils/groupBy";
-import { useProjectDomainAll } from "@/domain/projects/useProjectDomainAll";
 import { useProjects } from "@/queries/projects/useProjects";
 import { useProjectDomain } from "./useProjectDomain";
 
