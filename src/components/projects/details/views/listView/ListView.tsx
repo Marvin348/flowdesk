@@ -4,7 +4,6 @@ import { useState } from "react";
 import type { StatusBase } from "@/type/StatusBase";
 import TaskRow from "@/components/projects/details/views/listView/TaskRow";
 import type { TaskWithMeta } from "@/type/taskWithMeta";
-import { ChevronsUpDown } from "lucide-react";
 
 const ListView = ({ tasks }: { tasks: TaskWithMeta[] }) => {
   const [openStatus, setOpenStatus] = useState<StatusBase | null>(null);

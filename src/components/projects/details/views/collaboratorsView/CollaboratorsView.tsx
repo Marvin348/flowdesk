@@ -15,7 +15,7 @@ const CollaboratorsView = ({ collaborator }: { collaborator: User[] }) => {
           {collaborator.map((coll) => (
             <div
               key={coll.id}
-              className="p-2 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 items-center gap-4 border-b"
+              className="p-2 grid grid-cols-[1fr_auto] sm:grid-cols-[1fr_1fr_1fr_auto]  items-center gap-4 border-b"
             >
               <div className="min-w-0 flex items-center gap-4">
                 <Avatar avatarKey={coll.avatarKey} />
@@ -25,9 +25,11 @@ const CollaboratorsView = ({ collaborator }: { collaborator: User[] }) => {
                 </div>
               </div>
 
-              <div className="min-w-0 hidden sm:block">
+              <div className="min-w-0 hidden truncate sm:block">
                 <button className="min-w-0 w-full flex flex-col items-start">
-                  <span className="truncate font-medium text-sm">{coll.email}</span>
+                  <span className="truncate font-medium text-sm">
+                    {coll.email}
+                  </span>
 
                   <span className="mt-1 flex items-center gap-1 text-xs font-medium text-blue-600">
                     <Copy className="size-4" /> Copy

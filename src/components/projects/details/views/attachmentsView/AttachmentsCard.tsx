@@ -10,11 +10,11 @@ const AttachmentsCard = ({ attachment }: { attachment: Attachment }) => {
           <File className="text-surface/80" />
           <p>{fileName}</p>
         </div>
-        <div>
-          <button className="text-muted-foreground transform duration-300 hover:text-surface/90">
+        <div className="text-surface/80">
+          <button className="transform duration-300 hover:text-surface/90">
             <Download className="size-5"/>
           </button>
-          <button className="ml-3 text-muted-foreground transform duration-300 hover:text-red-600">
+          <button className="ml-3 transform duration-300 hover:text-red-600">
             <Trash2 className="size-5"/>
           </button>
         </div>

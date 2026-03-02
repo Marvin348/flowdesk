@@ -5,9 +5,10 @@ import { useScrollLock } from "@/hooks/useScrollLock";
 type AddTaskPanelProps = {
   onOpen: boolean;
   onClose: () => void;
+  projectId: string;
 };
 
-const AddTaskPanel = ({ onOpen, onClose }: AddTaskPanelProps) => {
+const AddTaskPanel = ({ onOpen, onClose, projectId }: AddTaskPanelProps) => {
   useScrollLock(onOpen);
 
   return (
@@ -29,8 +30,9 @@ const AddTaskPanel = ({ onOpen, onClose }: AddTaskPanelProps) => {
               <X />
             </button>
           </div>
+          
           <div className="mt-4">
-            <AddTaskForm onClose={onClose}/>
+            <AddTaskForm onClose={onClose} projectId={projectId}/>
           </div>
         </div>
       </div>

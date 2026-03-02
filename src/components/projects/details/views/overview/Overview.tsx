@@ -21,8 +21,7 @@ const Overview = ({
   collaborator,
   onOpen,
 }: OverviewProps) => {
-  // console.log("COLLA", project.tasks.flatMap((task) => task.collaborators));
-
+  
   const allCommentsPerProject = project.tasks.flatMap((t) => t.comments);
   return (
     <div

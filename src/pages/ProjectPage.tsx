@@ -84,6 +84,7 @@ const ProjectPage = () => {
       <AddTaskPanel
         onOpen={isAddTaskOpen}
         onClose={() => setIsAddTaskOpen(false)}
+        projectId={projectId}
       />
     </>
   );

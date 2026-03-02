@@ -207,7 +207,10 @@
       "completed": true,
       "dueDate": "2026-01-12T17:00:00.000Z",
       "taskStatus": "done",
-      "collaboratorIds": ["u4", "u2"]
+      "collaboratorIds": [
+        "u4",
+        "u2"
+      ]
     },
     {
       "id": "t2",
@@ -216,7 +219,11 @@
       "completed": false,
       "dueDate": "2026-02-26T17:00:00.000Z",
       "taskStatus": "in_progress",
-      "collaboratorIds": ["u1", "u5", "u12"]
+      "collaboratorIds": [
+        "u1",
+        "u5",
+        "u12"
+      ]
     },
     {
       "id": "t3",
@@ -225,7 +232,10 @@
       "completed": false,
       "dueDate": "2026-02-28T17:00:00.000Z",
       "taskStatus": "in_progress",
-      "collaboratorIds": ["u8", "u6"]
+      "collaboratorIds": [
+        "u8",
+        "u6"
+      ]
     },
     {
       "id": "t4",
@@ -234,7 +244,10 @@
       "completed": false,
       "dueDate": "2026-03-02T17:00:00.000Z",
       "taskStatus": "pending",
-      "collaboratorIds": ["u1", "u7"]
+      "collaboratorIds": [
+        "u1",
+        "u7"
+      ]
     },
     {
       "id": "t5",
@@ -243,7 +256,10 @@
       "completed": true,
       "dueDate": "2026-03-07T17:00:00.000Z",
       "taskStatus": "done",
-      "collaboratorIds": ["u10", "u4"]
+      "collaboratorIds": [
+        "u10",
+        "u4"
+      ]
     },
     {
       "id": "t6",
@@ -252,7 +268,10 @@
       "completed": false,
       "dueDate": "2026-03-10T17:00:00.000Z",
       "taskStatus": "pending",
-      "collaboratorIds": ["u15", "u11"]
+      "collaboratorIds": [
+        "u15",
+        "u11"
+      ]
     },
     {
       "id": "t7",
@@ -261,7 +280,10 @@
       "completed": true,
       "dueDate": "2026-03-18T17:00:00.000Z",
       "taskStatus": "done",
-      "collaboratorIds": ["u5", "u2"]
+      "collaboratorIds": [
+        "u5",
+        "u2"
+      ]
     },
     {
       "id": "t8",
@@ -270,7 +292,10 @@
       "completed": false,
       "dueDate": "2026-03-25T17:00:00.000Z",
       "taskStatus": "in_progress",
-      "collaboratorIds": ["u7", "u13"]
+      "collaboratorIds": [
+        "u7",
+        "u13"
+      ]
     },
     {
       "id": "t9",
@@ -279,7 +304,11 @@
       "completed": false,
       "dueDate": "2026-03-03T17:00:00.000Z",
       "taskStatus": "pending",
-      "collaboratorIds": ["u11", "u3", "u4"]
+      "collaboratorIds": [
+        "u11",
+        "u3",
+        "u4"
+      ]
     },
     {
       "id": "t10",
@@ -288,7 +317,10 @@
       "completed": true,
       "dueDate": "2026-01-22T17:00:00.000Z",
       "taskStatus": "done",
-      "collaboratorIds": ["u2", "u6"]
+      "collaboratorIds": [
+        "u2",
+        "u6"
+      ]
     },
     {
       "id": "t11",
@@ -297,7 +329,10 @@
       "completed": false,
       "dueDate": "2026-02-22T17:00:00.000Z",
       "taskStatus": "in_progress",
-      "collaboratorIds": ["u5", "u12"]
+      "collaboratorIds": [
+        "u5",
+        "u12"
+      ]
     },
     {
       "id": "t12",
@@ -306,7 +341,10 @@
       "completed": false,
       "dueDate": "2026-02-27T17:00:00.000Z",
       "taskStatus": "in_progress",
-      "collaboratorIds": ["u1", "u10"]
+      "collaboratorIds": [
+        "u1",
+        "u10"
+      ]
     },
     {
       "id": "t13",
@@ -315,7 +353,11 @@
       "completed": false,
       "dueDate": "2026-03-01T17:00:00.000Z",
       "taskStatus": "pending",
-      "collaboratorIds": ["u2", "u6", "u1"]
+      "collaboratorIds": [
+        "u2",
+        "u6",
+        "u1"
+      ]
     },
     {
       "id": "t14",
@@ -324,7 +366,10 @@
       "completed": false,
       "dueDate": "2026-02-24T17:00:00.000Z",
       "taskStatus": "in_progress",
-      "collaboratorIds": ["u3", "u11"]
+      "collaboratorIds": [
+        "u3",
+        "u11"
+      ]
     },
     {
       "id": "t15",
@@ -333,7 +378,11 @@
       "completed": false,
       "dueDate": "2026-03-06T17:00:00.000Z",
       "taskStatus": "in_progress",
-      "collaboratorIds": ["u7", "u13", "u3"]
+      "collaboratorIds": [
+        "u7",
+        "u13",
+        "u3"
+      ]
     },
     {
       "id": "t16",
@@ -342,7 +391,10 @@
       "completed": false,
       "dueDate": "2026-03-12T17:00:00.000Z",
       "taskStatus": "pending",
-      "collaboratorIds": ["u11", "u3"]
+      "collaboratorIds": [
+        "u11",
+        "u3"
+      ]
     },
     {
       "id": "t17",
@@ -351,7 +403,10 @@
       "completed": false,
       "dueDate": "2026-03-18T17:00:00.000Z",
       "taskStatus": "pending",
-      "collaboratorIds": ["u4", "u7"]
+      "collaboratorIds": [
+        "u4",
+        "u7"
+      ]
     },
     {
       "id": "t18",
@@ -360,7 +415,10 @@
       "completed": false,
       "dueDate": "2026-02-28T17:00:00.000Z",
       "taskStatus": "in_progress",
-      "collaboratorIds": ["u9", "u5"]
+      "collaboratorIds": [
+        "u9",
+        "u5"
+      ]
     },
     {
       "id": "t19",
@@ -369,7 +427,10 @@
       "completed": false,
       "dueDate": "2026-03-15T17:00:00.000Z",
       "taskStatus": "pending",
-      "collaboratorIds": ["u9", "u12"]
+      "collaboratorIds": [
+        "u9",
+        "u12"
+      ]
     },
     {
       "id": "t20",
@@ -378,7 +439,10 @@
       "completed": false,
       "dueDate": "2026-03-22T17:00:00.000Z",
       "taskStatus": "pending",
-      "collaboratorIds": ["u9", "u7"]
+      "collaboratorIds": [
+        "u9",
+        "u7"
+      ]
     },
     {
       "id": "t21",
@@ -387,7 +451,11 @@
       "completed": false,
       "dueDate": "2026-03-05T17:00:00.000Z",
       "taskStatus": "pending",
-      "collaboratorIds": ["u6", "u8", "u2"]
+      "collaboratorIds": [
+        "u6",
+        "u8",
+        "u2"
+      ]
     },
     {
       "id": "t22",
@@ -396,7 +464,10 @@
       "completed": false,
       "dueDate": "2026-03-08T17:00:00.000Z",
       "taskStatus": "pending",
-      "collaboratorIds": ["u10", "u4"]
+      "collaboratorIds": [
+        "u10",
+        "u4"
+      ]
     },
     {
       "id": "t23",
@@ -405,7 +476,10 @@
       "completed": false,
       "dueDate": "2026-03-10T17:00:00.000Z",
       "taskStatus": "pending",
-      "collaboratorIds": ["u1", "u7"]
+      "collaboratorIds": [
+        "u1",
+        "u7"
+      ]
     },
     {
       "id": "t24",
@@ -414,7 +488,10 @@
       "completed": true,
       "dueDate": "2026-01-20T17:00:00.000Z",
       "taskStatus": "done",
-      "collaboratorIds": ["u7", "u13"]
+      "collaboratorIds": [
+        "u7",
+        "u13"
+      ]
     },
     {
       "id": "t25",
@@ -423,7 +500,11 @@
       "completed": false,
       "dueDate": "2026-02-25T17:00:00.000Z",
       "taskStatus": "in_progress",
-      "collaboratorIds": ["u11", "u3", "u7"]
+      "collaboratorIds": [
+        "u11",
+        "u3",
+        "u7"
+      ]
     },
     {
       "id": "t26",
@@ -432,7 +513,10 @@
       "completed": false,
       "dueDate": "2026-02-27T17:00:00.000Z",
       "taskStatus": "in_progress",
-      "collaboratorIds": ["u13", "u7"]
+      "collaboratorIds": [
+        "u13",
+        "u7"
+      ]
     },
     {
       "id": "t27",
@@ -441,7 +525,10 @@
       "completed": false,
       "dueDate": "2026-03-03T17:00:00.000Z",
       "taskStatus": "pending",
-      "collaboratorIds": ["u7", "u11"]
+      "collaboratorIds": [
+        "u7",
+        "u11"
+      ]
     },
     {
       "id": "t28",
@@ -450,7 +537,10 @@
       "completed": true,
       "dueDate": "2026-01-10T17:00:00.000Z",
       "taskStatus": "done",
-      "collaboratorIds": ["u4", "u1"]
+      "collaboratorIds": [
+        "u4",
+        "u1"
+      ]
     },
     {
       "id": "t29",
@@ -459,7 +549,10 @@
       "completed": true,
       "dueDate": "2026-01-18T17:00:00.000Z",
       "taskStatus": "done",
-      "collaboratorIds": ["u1", "u6"]
+      "collaboratorIds": [
+        "u1",
+        "u6"
+      ]
     },
     {
       "id": "t30",
@@ -468,7 +561,10 @@
       "completed": true,
       "dueDate": "2026-01-22T17:00:00.000Z",
       "taskStatus": "done",
-      "collaboratorIds": ["u4", "u10"]
+      "collaboratorIds": [
+        "u4",
+        "u10"
+      ]
     },
     {
       "id": "t31",
@@ -477,7 +573,11 @@
       "completed": false,
       "dueDate": "2026-03-04T17:00:00.000Z",
       "taskStatus": "pending",
-      "collaboratorIds": ["u12", "u2", "u9"]
+      "collaboratorIds": [
+        "u12",
+        "u2",
+        "u9"
+      ]
     },
     {
       "id": "t32",
@@ -486,7 +586,42 @@
       "completed": false,
       "dueDate": "2026-03-08T17:00:00.000Z",
       "taskStatus": "pending",
-      "collaboratorIds": ["u3", "u7", "u4"]
+      "collaboratorIds": [
+        "u3",
+        "u7",
+        "u4"
+      ]
+    },
+    {
+      "id": "a54a8a2d-b40d-447d-a529-8b308de2b23e",
+      "projectId": "p1",
+      "title": "Test",
+      "completed": false,
+      "dueDate": "2026-03-03",
+      "taskStatus": "pending",
+      "collaboratorIds": [
+        "u1"
+      ],
+      "description": "",
+      "tags": [],
+      "reminderAt": "none"
+    },
+    {
+      "id": "92e44edc-fa31-4d41-8978-93fb1b0dbda8",
+      "projectId": "p1",
+      "title": "first Task",
+      "completed": false,
+      "dueDate": "2026-03-27",
+      "taskStatus": "pending",
+      "collaboratorIds": [
+        "u15"
+      ],
+      "description": "Bitte unbedingt schnell fertig machen.",
+      "tags": [
+        "first",
+        "tags"
+      ],
+      "reminderAt": "30 minutes before"
     }
   ],
   "attachments": [

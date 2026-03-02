@@ -30,7 +30,7 @@ export const useProjectDetailsVM = (projectId: string) => {
     [attachments],
   );
 
-  const projectsWithMeta: ProjectsWithMeta[] = projects.map((pro) => {
+  const useProjectDetailsVM: ProjectsWithMeta[] = projects.map((pro) => {
     const tasks = tasksByProjectId.get(pro.id) ?? [];
 
     const badge = badgeByProjectId[pro.id];
@@ -39,7 +39,7 @@ export const useProjectDetailsVM = (projectId: string) => {
       const comments = commentsByTaskId.get(task.id) ?? [];
       const attachments = attachmentsByTaskId.get(task.id) ?? [];
 
-      const collaborators = task.collaboratorIds
+      const collaborators = (task.collaboratorIds ?? [])
         .map((user) => usersById.get(user))
         .filter(isDefined);
 
@@ -87,5 +87,5 @@ export const useProjectDetailsVM = (projectId: string) => {
     };
   });
 
-  return projectsWithMeta;
+  return useProjectDetailsVM;
 };

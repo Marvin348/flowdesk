@@ -15,7 +15,6 @@ const OpenTaskList = ({ tasks, users }: OpenTaskListProps) => {
 
   if (!taskItem) return null;
 
-  console.log("taskItem", taskItem);
   const prev = () => setIndex((i) => Math.max(i - 1, 0));
   const next = () => setIndex((i) => Math.min(i + 1, tasks.length - 1));
 
@@ -38,7 +37,7 @@ const OpenTaskList = ({ tasks, users }: OpenTaskListProps) => {
           variant="outline"
           className=" w-full hover:bg-muted-foreground/5"
         >
-          Alle Ansehen
+          Alle Ansehen ({tasks.length})
         </Button>
       </div>
     </div>

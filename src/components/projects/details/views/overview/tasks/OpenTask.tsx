@@ -2,7 +2,6 @@ import type { Task } from "@/type/task";
 import AssigneeAvatars from "@/components/projects/avatar/AssigneeAvatars";
 import type { User } from "@/type/user";
 import { formatDate } from "@/utils/formatDate";
-import { STATUS_OPTIONS } from "@/constants/status-options";
 
 type OpenTaskProps = {
   task: Task;
@@ -28,14 +27,12 @@ const OpenTask = ({ task, users }: OpenTaskProps) => {
         </div>
       </div>
 
-      <div className="mt-2">
-        <span
-          className="px-2 rounded-full text-sm"
-          style={{ backgroundColor: STATUS_OPTIONS[task.taskStatus].color }}
-        >
-          {STATUS_OPTIONS[task.taskStatus].label}
-        </span>
-      </div>
+      {task.description && (
+        <div className="mt-4">
+          <p className="text-muted-foreground text-sm mb-1">Beschreibung</p>
+          <p>{task.description}</p>
+        </div>
+      )}
     </>
   );
 };

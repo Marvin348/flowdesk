@@ -73,10 +73,12 @@ const Sidebar = ({ onOpen, onClose }: SidebarProps) => {
             <h4 className="mb-3 text-muted-foreground uppercase">Favoriten</h4>
             <div className="grid grid-cols-1 gap-4">
               {favorites.map((project) => (
-                <Link
+                <NavLink
                   key={project.id}
                   to={`/project/${project.id}`}
-                  className="flex items-center gap-2 text-white"
+                  className={({ isActive }) =>
+                    `flex items-center gap-2 p-2 rounded-md text-white ${isActive ? "bg-muted-foreground/10" : ""}`
+                  }
                   onClick={onClose}
                 >
                   <span className="shrink-0 flex items-center justify-center size-8 rounded-full bg-muted-foreground/20">
@@ -84,7 +86,7 @@ const Sidebar = ({ onOpen, onClose }: SidebarProps) => {
                   </span>
 
                   <span className="truncate">{project.title}</span>
-                </Link>
+                </NavLink>
               ))}
             </div>
           </div>

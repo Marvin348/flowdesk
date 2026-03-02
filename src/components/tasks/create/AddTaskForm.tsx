@@ -6,18 +6,28 @@ import { z } from "zod";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
+import { useCreateTask } from "@/mutations/task/useCreateTask";
+import type { CreateTaskInput } from "@/type/createTaskInput";
 
-const AddTaskForm = ({ onClose }: { onClose: () => void }) => {
+type AddTaskFormProps = {
+  onClose: () => void;
+  projectId: string;
+};
+
+const AddTaskForm = ({ onClose, projectId }: AddTaskFormProps) => {
   const [tagsInput, setTagsInput] = useState("");
 
+  const { mutate, isPending, error } = useCreateTask(projectId);
+
   const formSchema = z.object({
-    title: z.string().min(2, "Titel eingeben"),
-    collaborators: z.array(z.string()).min(1, "Mitarbeiter angeben"),
-    date: z.string().date(),
+    title: z.string().min(3, "Titel eingeben"),
+    collaboratorIds: z.array(z.string()).min(1, "Mitarbeiter angeben"),
+    dueDate: z.string().date(),
     tags: z
       .array(z.string().min(3, "Tag min. 3 Zeichen"))
-      .max(3, "Maximal 3 Tags"),
-    reminder: z.string().optional(),
+      .max(3, "Maximal 3 Tags")
+      .optional(),
+    reminderAt: z.string().optional(),
     description: z.string().optional(),
   });
 
@@ -32,12 +42,22 @@ const AddTaskForm = ({ onClose }: { onClose: () => void }) => {
     setValue,
   } = useForm<FormFields>({
     resolver: zodResolver(formSchema),
-    defaultValues: { tags: [], reminder: "none", collaborators: [] },
+    defaultValues: { tags: [], reminderAt: "none", collaboratorIds: [] },
   });
 
   const onSubmit = (data: FormFields) => {
-    console.log("DATA", data);
-    onClose();
+    const input: CreateTaskInput = {
+      projectId,
+      ...data,
+    };
+
+    console.log("INPUT", input);
+
+    mutate(input, {
+      onSuccess: () => {
+        onClose();
+      },
+    });
   };
 
   const tags = watch("tags") ?? [];
@@ -69,6 +89,8 @@ const AddTaskForm = ({ onClose }: { onClose: () => void }) => {
     );
   };
 
+  console.log("collaboratorIds", watch("collaboratorIds"));
+
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="text-surface/90">
       <div className="pb-4 border-b">
@@ -83,7 +105,7 @@ const AddTaskForm = ({ onClose }: { onClose: () => void }) => {
 
       <div className="mt-6">
         <Controller
-          name="collaborators"
+          name="collaboratorIds"
           control={control}
           render={({ field, fieldState }) => (
             <CollaboratorMultiSelectField
@@ -143,12 +165,14 @@ const AddTaskForm = ({ onClose }: { onClose: () => void }) => {
           <CalendarClock className="size-4" /> Datum
         </label>
         <input
-          {...register("date")}
+          {...register("dueDate")}
           type="date"
           placeholder="Wähle ein Datum"
           className="w-full border rounded-md p-2"
         />
-        {errors.date && <p className="error-text">{errors.date?.message}</p>}
+        {errors.dueDate && (
+          <p className="error-text">{errors.dueDate?.message}</p>
+        )}
       </div>
 
       <div className="mt-4 grid grid-cols-2 text-sm">
@@ -157,7 +181,7 @@ const AddTaskForm = ({ onClose }: { onClose: () => void }) => {
         </label>
 
         <Controller
-          name="reminder"
+          name="reminderAt"
           control={control}
           render={({ field }) => (
             <SelectedReminder
