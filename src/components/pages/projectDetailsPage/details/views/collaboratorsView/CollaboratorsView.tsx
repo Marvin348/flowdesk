@@ -7,7 +7,7 @@ const CollaboratorsView = ({ collaborator }: { collaborator: User[] }) => {
     <div>
       <div>CollaboratorsView</div>
       <div className="border rounded-md">
-        <div className="p-2 bg-muted-foreground/10">
+        <div className="p-2 bg-muted-foreground/10 rounded-md">
           <span>Email</span>
           <span>Type</span>
         </div>
@@ -15,7 +15,7 @@ const CollaboratorsView = ({ collaborator }: { collaborator: User[] }) => {
           {collaborator.map((coll) => (
             <div
               key={coll.id}
-              className="p-2 grid grid-cols-[1fr_auto] sm:grid-cols-[1fr_1fr_1fr_auto]  items-center gap-4 border-b"
+              className="p-2 grid grid-cols-[1fr_auto] sm:grid-cols-[1fr_1fr_1fr_auto]  items-center gap-4 border-b last:border-none"
             >
               <div className="min-w-0 flex items-center gap-4">
                 <Avatar avatarKey={coll.avatarKey} />

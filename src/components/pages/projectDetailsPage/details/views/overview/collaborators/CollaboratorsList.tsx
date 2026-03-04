@@ -1,18 +1,22 @@
 import { Button } from "@/components/ui/button";
 import type { User } from "@/type/user";
 import { UserRoundPlus } from "lucide-react";
-import Collaborator from "@/components/projects/details/views/overview/collaborators/Collaborator";
+import Collaborator from "@/components/pages/projectDetailsPage/details/views/overview/collaborators/Collaborator";
 
 type CollaboratorsListProps = {
   collaborators: User[];
+  inviteOpen: () => void;
 };
 
-const CollaboratorsList = ({ collaborators }: CollaboratorsListProps) => {
+const CollaboratorsList = ({
+  collaborators,
+  inviteOpen,
+}: CollaboratorsListProps) => {
   return (
     <div className="h-full flex flex-col">
       <div className="flex items-center justify-between gap-4 bg-muted-foreground/10 p-4">
         <h4 className="text-lg font-medium">Mitarbeiter</h4>
-        <Button>
+        <Button onClick={inviteOpen}>
           <UserRoundPlus className="text-accent" />
           <span>Einladen</span>
         </Button>

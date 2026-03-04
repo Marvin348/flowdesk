@@ -8,7 +8,7 @@ import { useProjects } from "@/queries/projects/useProjects";
 import { useProjectDomain } from "./useProjectDomain";
 
 export const useProjectDetailsVM = (projectId: string) => {
-  const { data: projects = [] } = useProjects();
+  const { data: projects = [] } = useProjects(projectId);
 
   const {
     data: { users, tasks, comments, attachments },
@@ -51,13 +51,15 @@ export const useProjectDetailsVM = (projectId: string) => {
       };
     });
 
+    const teamUserIdSet = new Set<string>(pro.invitedUserIds ?? []);
+
     const counts = enrichedTasks.reduce(
       (acc, task) => {
         acc.commentCount += task.comments.length;
         acc.attachmentCount += task.attachments.length;
 
         for (const userId of task.collaboratorIds) {
-          acc.uniqueUserIds.add(userId);
+          teamUserIdSet.add(userId);
         }
 
         return acc;
@@ -65,25 +67,24 @@ export const useProjectDetailsVM = (projectId: string) => {
       {
         commentCount: 0,
         attachmentCount: 0,
-        uniqueUserIds: new Set<string>(),
       },
     );
+
+    const teamUserIds = Array.from(teamUserIdSet);
 
     const meta = {
       taskCount: enrichedTasks.length,
       commentCount: counts.commentCount,
       attachmentCount: counts.attachmentCount,
-      userCount: counts.uniqueUserIds.size,
+      userCount: teamUserIds.length,
     };
-
-    const teamUserIds = Array.from(counts.uniqueUserIds);
 
     return {
       ...pro,
       badge,
       tasks: enrichedTasks,
-      teamUserIds,
       meta,
+      teamUserIds,
     };
   });
 

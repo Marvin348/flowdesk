@@ -1,7 +1,7 @@
 import CarouselControls from "@/components/ui/CarouselControls";
 import type { Task } from "@/type/task";
 import type { User } from "@/type/user";
-import OpenTask from "@/components/projects/details/views/overview/tasks/OpenTask";
+import OpenTask from "@/components/pages/projectDetailsPage/details/views/overview/tasks/OpenTask";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 

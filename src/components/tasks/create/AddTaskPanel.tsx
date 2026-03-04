@@ -6,9 +6,10 @@ type AddTaskPanelProps = {
   onOpen: boolean;
   onClose: () => void;
   projectId: string;
+  teamUserIds: string[];
 };
 
-const AddTaskPanel = ({ onOpen, onClose, projectId }: AddTaskPanelProps) => {
+const AddTaskPanel = ({ onOpen, onClose, projectId, teamUserIds }: AddTaskPanelProps) => {
   useScrollLock(onOpen);
 
   return (
@@ -32,7 +33,7 @@ const AddTaskPanel = ({ onOpen, onClose, projectId }: AddTaskPanelProps) => {
           </div>
           
           <div className="mt-4">
-            <AddTaskForm onClose={onClose} projectId={projectId}/>
+            <AddTaskForm onClose={onClose} projectId={projectId} teamUserIds={teamUserIds}/>
           </div>
         </div>
       </div>

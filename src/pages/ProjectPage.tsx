@@ -1,15 +1,16 @@
 import { useParams } from "react-router";
-import ProjectDetailsHeader from "@/components/projects/details/ProjectDetailsHeader";
+import ProjectDetailsHeader from "@/components/pages/projectDetailsPage/details/ProjectDetailsHeader";
 import { useProjectDetailsVM } from "@/domain/projects/useProjectDetails";
 import { getProgressResult } from "@/utils/getProgressResult";
 import { useUsersByIds } from "@/hooks/useUsersByIds";
-import ProjectTabs from "@/components/projects/details/tabs/ProjectTabs";
+import ProjectTabs from "@/components/pages/projectDetailsPage/details/tabs/ProjectTabs";
 import { useState } from "react";
-import AttachmentsView from "@/components/projects/details/views/attachmentsView/AttachmentsView";
-import ListView from "@/components/projects/details/views/listView/ListView";
-import Overview from "@/components/projects/details/views/overview/Overview";
-import CollaboratorsView from "@/components/projects/details/views/collaboratorsView/CollaboratorsView";
+import AttachmentsView from "@/components/pages/projectDetailsPage/details/views/attachmentsView/AttachmentsView";
+import ListView from "@/components/pages/projectDetailsPage/details/views/listView/ListView";
+import Overview from "@/components/pages/projectDetailsPage/details/views/overview/Overview";
+import CollaboratorsView from "@/components/pages/projectDetailsPage/details/views/collaboratorsView/CollaboratorsView";
 import AddTaskPanel from "@/components/tasks/create/AddTaskPanel";
+import InviteUserModal from "@/components/collaborators/InviteUserModal";
 
 export type ActiveTab =
   | "overview"
@@ -21,12 +22,13 @@ export type ActiveTab =
 const ProjectPage = () => {
   const [activeTab, setActiveTab] = useState<ActiveTab>("overview");
   const [isAddTaskOpen, setIsAddTaskOpen] = useState(false);
+  const [isInviteOpen, setIsInviteOpen] = useState(false);
 
   const { id } = useParams();
   const projectId = id ?? "";
-  
+
   const projectDetailsVM = useProjectDetailsVM(projectId);
-  
+
   const project = projectDetailsVM.find((project) => project.id === id);
 
   const teamUsers = useUsersByIds(project?.teamUserIds ?? []);
@@ -49,6 +51,7 @@ const ProjectPage = () => {
             progress={progress}
             collaborator={teamUsers}
             onOpen={() => setIsAddTaskOpen(true)}
+            inviteOpen={() => setIsInviteOpen(true)}
           />
         );
 
@@ -63,14 +66,16 @@ const ProjectPage = () => {
     }
   };
 
-  console.log("teamUsers", teamUsers);
-  console.log("projectTasks", project.tasks);
   console.log("project", project);
 
   return (
     <>
       <div className="mb-6">
-        <ProjectDetailsHeader project={project} progress={progress} />
+        <ProjectDetailsHeader
+          project={project}
+          progress={progress}
+          onOpen={() => setIsInviteOpen(true)}
+        />
       </div>
 
       <div>
@@ -85,7 +90,18 @@ const ProjectPage = () => {
         onOpen={isAddTaskOpen}
         onClose={() => setIsAddTaskOpen(false)}
         projectId={projectId}
+        teamUserIds={project.teamUserIds ?? []}
       />
+
+      {isInviteOpen && (
+        <InviteUserModal
+          onClose={() => setIsInviteOpen(false)}
+          onInviteOpen={isInviteOpen}
+          teamUserIds={project?.teamUserIds ?? []}
+          invitedUserIds={project.invitedUserIds ?? []}
+          projectId={projectId}
+        />
+      )}
     </>
   );
 };

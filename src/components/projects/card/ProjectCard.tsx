@@ -31,8 +31,8 @@ const ProjectCard = ({ project }: ProjectCardType) => {
     dueDate,
     meta,
     createdAt,
-    progress,
     teamUserIds,
+    progress,
     badge,
   } = project;
 

@@ -12,11 +12,15 @@ import { useUsersByIds } from "@/hooks/useUsersByIds";
 
 type ProjectDetailsHeaderProps = {
   project: ProjectsWithMeta;
-  progress: Progress
+  progress: Progress;
+  onOpen: () => void;
 };
-const ProjectDetailsHeader = ({ project, progress }: ProjectDetailsHeaderProps) => {
-  const { title, projectStatus, teamUserIds, tasks, updatedAt, badge } =
-    project;
+const ProjectDetailsHeader = ({
+  project,
+  progress,
+  onOpen,
+}: ProjectDetailsHeaderProps) => {
+  const { title, projectStatus, teamUserIds, tasks, updatedAt, badge } = project;
 
   const teamUsers = useUsersByIds(teamUserIds);
 
@@ -68,7 +72,11 @@ const ProjectDetailsHeader = ({ project, progress }: ProjectDetailsHeaderProps) 
           <AssigneeAvatars users={teamUsers} />
         </div>
 
-        <Button className="bg-accent hover:bg-accent/95" size="sm">
+        <Button
+          className="bg-accent hover:bg-accent/95"
+          size="sm"
+          onClick={onOpen}
+        >
           <UserRoundPlus />
           <span className="hidden sm:inline">Einladen</span>
         </Button>

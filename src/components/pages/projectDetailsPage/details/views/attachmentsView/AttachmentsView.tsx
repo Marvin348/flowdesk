@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import type { Attachment } from "@/type/attachment";
 import { Plus } from "lucide-react";
-import AttachmentsCard from "@/components/projects/details/views/attachmentsView/AttachmentsCard";
+import AttachmentsCard from "@/components/pages/projectDetailsPage/details/views/attachmentsView/AttachmentsCard";
 
 type AttachmentsViewProps = {
   attachments: Attachment[];

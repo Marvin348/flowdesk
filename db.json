@@ -130,7 +130,14 @@
       "projectStatus": "in_progress",
       "dueDate": "2026-03-15T17:00:00.000Z",
       "createdAt": "2026-01-05T08:15:00.000Z",
-      "updatedAt": "2026-02-10T15:40:00.000Z"
+      "updatedAt": "2026-02-10T15:40:00.000Z",
+      "invitedUserIds": [
+        "u4",
+        "u2",
+        "u1",
+        "u5",
+        "u12"
+      ]
     },
     {
       "id": "p2",
@@ -139,7 +146,17 @@
       "priority": "high",
       "projectStatus": "in_progress",
       "dueDate": "2026-04-05T16:00:00.000Z",
-      "createdAt": "2026-01-20T09:00:00.000Z"
+      "createdAt": "2026-01-20T09:00:00.000Z",
+      "invitedUserIds": [
+        "u15",
+        "u11",
+        "u5",
+        "u2",
+        "u7",
+        "u13",
+        "u3",
+        "u4"
+      ]
     },
     {
       "id": "p3",
@@ -149,7 +166,16 @@
       "projectStatus": "in_progress",
       "dueDate": "2026-03-01T17:00:00.000Z",
       "createdAt": "2025-12-15T12:00:00.000Z",
-      "updatedAt": "2026-02-12T10:25:00.000Z"
+      "updatedAt": "2026-03-04T17:02:39.841Z",
+      "invitedUserIds": [
+        "u2",
+        "u6",
+        "u5",
+        "u12",
+        "u1",
+        "u10",
+        "u7"
+      ]
     },
     {
       "id": "p4",
@@ -158,7 +184,14 @@
       "priority": "medium",
       "projectStatus": "in_progress",
       "dueDate": "2026-03-20T17:00:00.000Z",
-      "createdAt": "2026-01-08T07:30:00.000Z"
+      "createdAt": "2026-01-08T07:30:00.000Z",
+      "invitedUserIds": [
+        "u3",
+        "u11",
+        "u7",
+        "u13",
+        "u4"
+      ]
     },
     {
       "id": "p5",
@@ -167,7 +200,13 @@
       "priority": "low",
       "projectStatus": "pending",
       "dueDate": "2026-04-30T16:00:00.000Z",
-      "createdAt": "2026-02-01T08:00:00.000Z"
+      "createdAt": "2026-02-01T08:00:00.000Z",
+      "invitedUserIds": [
+        "u9",
+        "u2",
+        "u3"
+      ],
+      "updatedAt": "2026-03-04T16:14:15.495Z"
     },
     {
       "id": "p6",
@@ -176,7 +215,12 @@
       "priority": "medium",
       "projectStatus": "pending",
       "dueDate": "2026-05-10T16:00:00.000Z",
-      "createdAt": "2026-02-05T11:30:00.000Z"
+      "createdAt": "2026-02-05T11:30:00.000Z",
+      "invitedUserIds": [
+        "u6",
+        "u8",
+        "u2"
+      ]
     },
     {
       "id": "p7",
@@ -186,7 +230,15 @@
       "projectStatus": "in_progress",
       "dueDate": "2026-03-05T17:00:00.000Z",
       "createdAt": "2026-01-12T13:00:00.000Z",
-      "updatedAt": "2026-02-15T08:10:00.000Z"
+      "updatedAt": "2026-03-04T16:39:03.615Z",
+      "invitedUserIds": [
+        "u7",
+        "u13",
+        "u11",
+        "u3",
+        "u2",
+        "u8"
+      ]
     },
     {
       "id": "p8",
@@ -196,7 +248,11 @@
       "projectStatus": "done",
       "dueDate": "2026-01-31T17:00:00.000Z",
       "createdAt": "2025-11-10T08:00:00.000Z",
-      "updatedAt": "2026-01-25T16:45:00.000Z"
+      "updatedAt": "2026-03-04T06:39:21.180Z",
+      "invitedUserIds": [
+        "u4",
+        "u1"
+      ]
     }
   ],
   "tasks": [
@@ -620,6 +676,50 @@
       "tags": [
         "first",
         "tags"
+      ],
+      "reminderAt": "30 minutes before"
+    },
+    {
+      "id": "dfafc4d7-1b98-4f1d-ac54-1795f40ebb87",
+      "projectId": "p1",
+      "title": "TEST",
+      "completed": false,
+      "dueDate": "2026-03-04",
+      "taskStatus": "pending",
+      "collaboratorIds": [
+        "u3"
+      ],
+      "description": "",
+      "tags": [],
+      "reminderAt": "none"
+    },
+    {
+      "id": "3690f8ad-d97a-4615-aed8-e2054448725f",
+      "projectId": "p5",
+      "title": "TEST",
+      "completed": false,
+      "dueDate": "2026-03-04",
+      "taskStatus": "pending",
+      "collaboratorIds": [
+        "u1"
+      ],
+      "description": "",
+      "tags": [],
+      "reminderAt": "none"
+    },
+    {
+      "id": "268823ce-a68e-4e66-b945-f71a7e85bf88",
+      "projectId": "p7",
+      "title": "TESTING",
+      "completed": false,
+      "dueDate": "2026-03-26",
+      "taskStatus": "pending",
+      "collaboratorIds": [
+        "u6"
+      ],
+      "description": "",
+      "tags": [
+        "website"
       ],
       "reminderAt": "30 minutes before"
     }

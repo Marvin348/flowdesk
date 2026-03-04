@@ -31,6 +31,8 @@ export const useProjectsListVM = () => {
 
     const badge = badgeByProjectId[pro.id];
 
+    const teamUserIdSet = new Set<string>(pro.invitedUserIds);
+
     const counts = tasks.reduce(
       (acc, task) => {
         acc.commentCount += (commentsByTaskId.get(task.id) ?? []).length;
@@ -41,7 +43,7 @@ export const useProjectsListVM = () => {
         }
 
         for (const userId of task.collaboratorIds) {
-          acc.uniqueUserIds.add(userId);
+          teamUserIdSet.add(userId);
         }
 
         return acc;
@@ -50,16 +52,17 @@ export const useProjectsListVM = () => {
         commentCount: 0,
         attachmentCount: 0,
         completedTaskCount: 0,
-        uniqueUserIds: new Set<string>(),
       },
     );
+
+    const teamUserIds = Array.from(teamUserIdSet);
 
     const meta = {
       taskCount: tasks.length,
       commentCount: counts.commentCount,
       attachmentCount: counts.attachmentCount,
       completedTaskCount: counts.completedTaskCount,
-      userCount: counts.uniqueUserIds.size,
+      userCount: teamUserIds.length,
     };
 
     const progress = {
@@ -70,14 +73,12 @@ export const useProjectsListVM = () => {
         : 0,
     };
 
-    const teamUserIds = Array.from(counts.uniqueUserIds);
-
     return {
       ...pro,
       badge,
       meta,
-      teamUserIds,
       progress,
+      teamUserIds,
     };
   });
 

@@ -1,7 +1,7 @@
-import CollaboratorsList from "@/components/projects/details/views/overview/collaborators/CollaboratorsList";
-import OpenTaskList from "@/components/projects/details/views/overview/tasks/OpenTaskList";
-import ProgressBarCard from "@/components/projects/details/views/overview/ProgressBarCard";
-import CommentsList from "@/components/projects/details/views/overview/comments/CommentsList";
+import CollaboratorsList from "@/components/pages/projectDetailsPage/details/views/overview/collaborators/CollaboratorsList";
+import OpenTaskList from "@/components/pages/projectDetailsPage/details/views/overview/tasks/OpenTaskList";
+import ProgressBarCard from "@/components/pages/projectDetailsPage/details/views/overview/ProgressBarCard";
+import CommentsList from "@/components/pages/projectDetailsPage/details/views/overview/comments/CommentsList";
 import type { ProjectsWithMeta } from "@/type/projectsWithMeta";
 import type { Progress } from "@/utils/getProgressResult";
 import type { User } from "@/type/user";
@@ -13,6 +13,7 @@ type OverviewProps = {
   progress: Progress;
   collaborator: User[];
   onOpen: () => void;
+  inviteOpen: () => void;
 };
 
 const Overview = ({
@@ -20,15 +21,15 @@ const Overview = ({
   progress,
   collaborator,
   onOpen,
+  inviteOpen,
 }: OverviewProps) => {
-  
   const allCommentsPerProject = project.tasks.flatMap((t) => t.comments);
   return (
     <div
       className={`grid gap-6 grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 auto-rows-[170px]`}
     >
       <div className="border rounded-md h-full row-span-2">
-        <CollaboratorsList collaborators={collaborator} />
+        <CollaboratorsList collaborators={collaborator} inviteOpen={inviteOpen}/>
       </div>
 
       <div className="border rounded-md h-full row-span-2">

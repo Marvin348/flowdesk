@@ -12,9 +12,10 @@ import type { CreateTaskInput } from "@/type/createTaskInput";
 type AddTaskFormProps = {
   onClose: () => void;
   projectId: string;
+  teamUserIds: string[];
 };
 
-const AddTaskForm = ({ onClose, projectId }: AddTaskFormProps) => {
+const AddTaskForm = ({ onClose, projectId, teamUserIds }: AddTaskFormProps) => {
   const [tagsInput, setTagsInput] = useState("");
 
   const { mutate, isPending, error } = useCreateTask(projectId);
@@ -51,8 +52,6 @@ const AddTaskForm = ({ onClose, projectId }: AddTaskFormProps) => {
       ...data,
     };
 
-    console.log("INPUT", input);
-
     mutate(input, {
       onSuccess: () => {
         onClose();
@@ -88,9 +87,7 @@ const AddTaskForm = ({ onClose, projectId }: AddTaskFormProps) => {
       },
     );
   };
-
-  console.log("collaboratorIds", watch("collaboratorIds"));
-
+  
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="text-surface/90">
       <div className="pb-4 border-b">
@@ -112,6 +109,7 @@ const AddTaskForm = ({ onClose, projectId }: AddTaskFormProps) => {
               value={field.value}
               onChange={field.onChange}
               error={fieldState.error?.message}
+              teamUserIds={teamUserIds}
             />
           )}
         />

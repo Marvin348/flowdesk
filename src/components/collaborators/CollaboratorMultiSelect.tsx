@@ -78,7 +78,7 @@ const CollaboratorMultiSelect = ({
                 </div>
               ))}
               {maxFilteredUsers.length === 0 && (
-                <p className="p-2">Keine Daten</p>
+                <p className="p-2">Keine Daten gefunden</p>
               )}
             </>
           </div>

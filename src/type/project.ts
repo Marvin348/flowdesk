@@ -11,11 +11,7 @@ export type Project = {
   projectStatus: StatusBase;
 
   dueDate: string;
-  // assigneeIds: string[];
-
-  // taskIds: string[];
-  // commentIds: string[];
-  // attachmenetIds: string[];
+  invitedUserIds: string[];
 
   createdAt: string;
   updatedAt?: string;
