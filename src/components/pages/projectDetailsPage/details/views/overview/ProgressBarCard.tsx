@@ -1,6 +1,7 @@
 import ProgressBar, {
   type Progress,
 } from "@/components/projects/card/ProgressBar";
+import OverviewCardHeader from "./ui/OverviewCardHeader";
 
 type ProgressBarCardProps = {
   progress: Progress;
@@ -9,10 +10,7 @@ type ProgressBarCardProps = {
 const ProgressBarCard = ({ progress }: ProgressBarCardProps) => {
   return (
     <>
-      <div className="flex items-center justify-between gap-4 bg-muted-foreground/10 p-4">
-        <h4 className="text-lg font-medium">Progress</h4>
-      </div>
-
+    <OverviewCardHeader title="Progress"/>
       <div className="p-4">
         <ProgressBar progress={progress} />
         <p className="mt-3 text-foreground/90">

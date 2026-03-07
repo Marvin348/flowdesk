@@ -5,9 +5,8 @@ import { Copy, EllipsisVertical, ShieldUser, UserRound } from "lucide-react";
 const CollaboratorsView = ({ collaborator }: { collaborator: User[] }) => {
   return (
     <div>
-      <div>CollaboratorsView</div>
       <div className="border rounded-md">
-        <div className="p-2 bg-muted-foreground/10 rounded-md">
+        <div className="p-2 bg-muted-foreground/10 rounded-t-md">
           <span>Email</span>
           <span>Type</span>
         </div>

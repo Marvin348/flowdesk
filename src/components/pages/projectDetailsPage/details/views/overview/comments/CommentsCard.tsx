@@ -1,32 +1,36 @@
 import { Button } from "@/components/ui/button";
+import OverviewCard from "../ui/OverviewCard";
+import OverviewCardBody from "../ui/OverviewCardBody";
+import OverviewCardFooter from "../ui/OverviewCardFooter";
+import OverviewCardHeader from "../ui/OverviewCardHeader";
 import { Plus } from "lucide-react";
-import Comment from "@/components/pages/projectDetailsPage/details/views/overview/comments/Comment";
+import Comment from "./Comment";
 import type { CommentsWithUser } from "@/type/commentsWithUser";
-import { useMemo } from "react";
 import { useUsers } from "@/queries/users/useUsers";
+import { useMemo } from "react";
 
-type CommentsListProps = {
+type CommentsCardProps = {
   comments: CommentsWithUser[];
 };
 
-const CommentsList = ({ comments }: CommentsListProps) => {
+const CommentsCard = ({ comments }: CommentsCardProps) => {
   const { data: users = [] } = useUsers();
 
   const userByIds = useMemo(
     () => new Map(users.map((user) => [user.id, user])),
     [users],
   );
-
   return (
-    <div className="h-full flex flex-col">
-      <div className="flex items-center justify-between gap-4 bg-muted-foreground/10 p-4">
-        <h4 className="text-lg font-medium">Kommentare</h4>
-        <Button>
-          <Plus className="text-accent" /> <span>Kommentare</span>
-        </Button>
-      </div>
-
-      <div className="flex-1 min-h-0 relative">
+    <OverviewCard>
+      <OverviewCardHeader
+        title="Kommentare"
+        action={
+          <Button>
+            <Plus className="text-accent" /> <span>Kommentare</span>
+          </Button>
+        }
+      />
+      <OverviewCardBody>
         <div className="p-4 h-full overflow-y-auto custom-scrollbar">
           {comments.map((com) => {
             const user = userByIds.get(com.userId);
@@ -46,18 +50,9 @@ const CommentsList = ({ comments }: CommentsListProps) => {
             </div>
           )}
         </div>
-        <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-10 bg-gradient-to-t from-background to-transparent" />
-      </div>
-
-      <div className="pb-4 px-4">
-        <Button
-          variant="outline"
-          className="w-full hover:bg-muted-foreground/5"
-        >
-          Alle Ansehen ({comments.length})
-        </Button>
-      </div>
-    </div>
+      </OverviewCardBody>
+      <OverviewCardFooter />
+    </OverviewCard>
   );
 };
-export default CommentsList;
+export default CommentsCard;

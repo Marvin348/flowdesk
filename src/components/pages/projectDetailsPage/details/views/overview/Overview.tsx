@@ -1,12 +1,12 @@
-import CollaboratorsList from "@/components/pages/projectDetailsPage/details/views/overview/collaborators/CollaboratorsList";
-import OpenTaskList from "@/components/pages/projectDetailsPage/details/views/overview/tasks/OpenTaskList";
 import ProgressBarCard from "@/components/pages/projectDetailsPage/details/views/overview/ProgressBarCard";
-import CommentsList from "@/components/pages/projectDetailsPage/details/views/overview/comments/CommentsList";
 import type { ProjectsWithMeta } from "@/type/projectsWithMeta";
 import type { Progress } from "@/utils/getProgressResult";
 import type { User } from "@/type/user";
-import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
+import { getUserWorkload } from "@/utils/workload/getUserWorkload";
+import CollaboratorsCard from "./collaborators/CollaboratorsCard";
+import OpenTasksCard from "./tasks/OpenTasksCard";
+import CommentsCard from "./comments/CommentsCard";
+import WorkloadCard from "./workload/WorkloadCard";
 
 type OverviewProps = {
   project: ProjectsWithMeta;
@@ -24,36 +24,39 @@ const Overview = ({
   inviteOpen,
 }: OverviewProps) => {
   const allCommentsPerProject = project.tasks.flatMap((t) => t.comments);
+
+  const workloadStats = getUserWorkload(project.tasks);
+
   return (
     <div
-      className={`grid gap-6 grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 auto-rows-[170px]`}
+      className={`grid gap-6 grid-cols-1 md:grid-cols-2 xl:grid-cols-3 auto-rows-auto md:auto-rows-[170px]`}
     >
-      <div className="border rounded-md h-full row-span-2">
-        <CollaboratorsList collaborators={collaborator} inviteOpen={inviteOpen}/>
+      <div className="h-full  md:row-span-2">
+        <CollaboratorsCard
+          collaborators={collaborator}
+          inviteOpen={inviteOpen}
+        />
       </div>
 
-      <div className="border rounded-md h-full row-span-2">
-        <OpenTaskList tasks={project.tasks} users={collaborator} />
+      <div className="h-full md:row-span-2">
+        <OpenTasksCard tasks={project.tasks} users={collaborator} />
       </div>
 
       <div className="border rounded-md h-full xl:col-start-3 xl:row-span-1">
         <ProgressBarCard progress={progress} />
       </div>
 
-      <div className="border rounded-md h-full row-span-3">
-        <CommentsList comments={allCommentsPerProject} />
+      <div className="h-full xl:col-start-3 xl:row-start-2  xl:row-span-3">
+        <CommentsCard comments={allCommentsPerProject} />
       </div>
 
-      {/**TESTING SECTION */}
-      <div className="border rounded-md h-full col-span-2 row-span-2">
-        <div className="flex items-center justify-between gap-4 bg-muted-foreground/10 p-4">
-          <h4 className="text-lg font-medium">Demo Section</h4>
-          <Button onClick={onOpen}>
-            <Plus className="text-accent" /> <span>Aufgabe</span>
-          </Button>
-        </div>
+      <div className="h-full md:col-span-2 xl:row-span-2">
+        <WorkloadCard
+          stats={workloadStats.slice(0, 4)}
+          onOpen={onOpen}
+          variant="compact"
+        />
       </div>
-      {/**TESTING SECTION */}
     </div>
   );
 };

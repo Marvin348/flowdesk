@@ -11,13 +11,16 @@ import Overview from "@/components/pages/projectDetailsPage/details/views/overvi
 import CollaboratorsView from "@/components/pages/projectDetailsPage/details/views/collaboratorsView/CollaboratorsView";
 import AddTaskPanel from "@/components/tasks/create/AddTaskPanel";
 import InviteUserModal from "@/components/collaborators/InviteUserModal";
+import WorkloadTable from "@/components/pages/projectDetailsPage/details/views/overview/workload/WorkloadTable";
+import { getUserWorkload } from "@/utils/workload/getUserWorkload";
 
 export type ActiveTab =
   | "overview"
   | "list"
   | "files"
   | "collaborators"
-  | "settings";
+  | "settings"
+  | "workload";
 
 const ProjectPage = () => {
   const [activeTab, setActiveTab] = useState<ActiveTab>("overview");
@@ -35,6 +38,7 @@ const ProjectPage = () => {
 
   if (!project) return [];
 
+  const workloadStats = getUserWorkload(project.tasks);
   const progress = getProgressResult(project.tasks);
 
   const attachments = project.tasks.flatMap((t) => t.attachments);
@@ -63,6 +67,14 @@ const ProjectPage = () => {
 
       case "collaborators":
         return <CollaboratorsView collaborator={teamUsers} />;
+
+      case "workload":
+        return (
+          <WorkloadTable
+            stats={workloadStats}
+            variant="full"
+          />
+        );
     }
   };
 
