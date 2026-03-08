@@ -1,11 +1,13 @@
 import { useUsers } from "@/queries/users/useUsers";
 import CollaboratorMultiSelect from "@/components/collaborators/CollaboratorMultiSelect";
+import type { User } from "@/type/user";
 
 type CollaboratorMultiSelectFieldProps = {
   value: string[];
   onChange: (next: string[]) => void;
   error?: string;
   teamUserIds: string[];
+  mode?: "invite" | "task";
 };
 
 const CollaboratorMultiSelectField = ({
@@ -13,10 +15,28 @@ const CollaboratorMultiSelectField = ({
   onChange,
   error,
   teamUserIds,
+  mode,
 }: CollaboratorMultiSelectFieldProps) => {
   const { data: users = [] } = useUsers();
 
-  const invitableUsers = users.filter((user) => !teamUserIds.includes(user.id));
+  // // included in the project | for add task panel
+  // const allowed = users.filter((u) => teamUserIds.includes(u.id));
+  // console.log("allowed", allowed);
+
+  // // for invite modal
+  // const excluded = users.filter((u) => !teamUserIds.includes(u.id));
+  // console.log("excluded", excluded);
+
+  let selectableUsers: User[];
+  let disabledUserIds: string[];
+
+  if (mode === "invite") {
+    selectableUsers = users;
+    disabledUserIds = teamUserIds;
+  } else {
+    selectableUsers = users.filter((u) => teamUserIds.includes(u.id));
+    disabledUserIds = [];
+  }
 
   return (
     <div className="p-2 border rounded-md">
@@ -24,9 +44,10 @@ const CollaboratorMultiSelectField = ({
       <div className="mt-1">
         <div>
           <CollaboratorMultiSelect
-            users={invitableUsers}
+            users={selectableUsers}
             value={value}
             onChange={onChange}
+            disabledUserIds={disabledUserIds}
           />
         </div>
       </div>

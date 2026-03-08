@@ -53,6 +53,7 @@ const InviteUserModal = ({
                 value={selectedUserIds}
                 onChange={setSelectedIds}
                 teamUserIds={teamUserIds}
+                mode="invite"
               />
             </div>
 

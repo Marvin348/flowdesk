@@ -3,8 +3,8 @@ import {
   Grid3x3,
   Files,
   UserStar,
-  Settings,
   BriefcaseBusiness,
+  Settings,
 } from "lucide-react";
 
 export const TAB_VIEW_OPTIONS = [

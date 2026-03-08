@@ -1,13 +1,11 @@
-import type { Task } from "@/type/task";
 import AssigneeAvatars from "@/components/projects/avatar/AssigneeAvatars";
-import type { User } from "@/type/user";
 import { formatDate } from "@/utils/formatDate";
+import type { TaskWithMeta } from "@/type/taskWithMeta";
 
 type OpenTaskProps = {
-  task: Task;
-  users: User[];
+  task: TaskWithMeta;
 };
-const OpenTask = ({ task, users }: OpenTaskProps) => {
+const OpenTask = ({ task }: OpenTaskProps) => {
   return (
     <>
       <div>
@@ -18,7 +16,9 @@ const OpenTask = ({ task, users }: OpenTaskProps) => {
       <div className="flex items-center justify-between mt-2">
         <div>
           <p className="text-muted-foreground text-sm mb-1">Team</p>
-          <AssigneeAvatars users={users} />
+          <div>
+            <AssigneeAvatars users={task.collaborators} />
+          </div>
         </div>
 
         <div>

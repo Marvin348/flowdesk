@@ -11,16 +11,20 @@ type CollaboratorMultiSelectProps = {
   users: User[];
   value: string[];
   onChange: (next: string[]) => void;
+  disabledUserIds?: string[];
 };
 
 const CollaboratorMultiSelect = ({
   users,
   value,
   onChange,
+  disabledUserIds,
 }: CollaboratorMultiSelectProps) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [input, setInput] = useState("");
   const selectedIds = value;
+
+  const disabledIds = disabledUserIds ?? [];
 
   const dropdownRef = useRef<HTMLDivElement>(null);
   useOnClickOutside(dropdownRef, () => setIsDropdownOpen(false));
@@ -35,6 +39,7 @@ const CollaboratorMultiSelect = ({
 
   const getSelectUserById = (id: string) => {
     if (selectedIds.includes(id)) return;
+    if (disabledIds.includes(id)) return;
 
     onChange([...selectedIds, id]);
     setIsDropdownOpen(false);
@@ -67,16 +72,27 @@ const CollaboratorMultiSelect = ({
         {isDropdownOpen && (
           <div className="absolute top-12 border bg-white p-1 w-full rounded-md shadow-2xl text-sm text-surface/90 z-30">
             <>
-              {maxFilteredUsers.map((user) => (
-                <div
-                  key={user.id}
-                  className="flex items-center gap-2 p-2 cursor-pointer rounded-md hover:bg-surface/5"
-                  onClick={() => getSelectUserById(user.id)}
-                >
-                  <Avatar avatarKey={user.avatarKey} />
-                  <p>{user.name}</p>
-                </div>
-              ))}
+              {maxFilteredUsers.map((user) => {
+                const isDisabled = disabledUserIds?.includes(user.id);
+                console.log("isDisabled", isDisabled);
+                return (
+                  <div
+                    key={user.id}
+                    className={`flex items-center gap-2 p-2 rounded-md ${
+                      isDisabled
+                        ? "cursor-not-allowed opacity-60"
+                        : "cursor-pointer hover:bg-surface/5"
+                    }`}
+                    onClick={() => getSelectUserById(user.id)}
+                  >
+                    <Avatar avatarKey={user.avatarKey} />
+                    <p>{user.name}</p>
+                    {isDisabled && (
+                      <p className="text-xs error-text">Im Projekt</p>
+                    )}
+                  </div>
+                );
+              })}
               {maxFilteredUsers.length === 0 && (
                 <p className="p-2">Keine Daten gefunden</p>
               )}

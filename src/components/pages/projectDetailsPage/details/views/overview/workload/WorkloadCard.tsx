@@ -1,9 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { type UserWorkload } from "@/utils/workload/getUserWorkload";
-import Avatar from "@/components/projects/avatar/Avatar";
-import { getWorkloadStatus } from "@/utils/workload/ui/getWorkloadStatus";
-import { WORKLOAD_STATUS } from "@/constants/workload/workload-status";
 import OverviewCardBody from "../ui/OverviewCardBody";
 import OverviewCardFooter from "../ui/OverviewCardFooter";
 import OverviewCardHeader from "../ui/OverviewCardHeader";
@@ -14,10 +11,10 @@ type WorkloadProps = {
   stats: UserWorkload[];
   onOpen: () => void;
   variant?: "compact" | "full";
+  onMore: () => void;
 };
 
-const WorkloadCard = ({ stats, onOpen, variant }: WorkloadProps) => {
-  console.log("stats", stats);
+const WorkloadCard = ({ stats, onOpen, variant, onMore }: WorkloadProps) => {
 
   return (
     <OverviewCard>
@@ -32,11 +29,11 @@ const WorkloadCard = ({ stats, onOpen, variant }: WorkloadProps) => {
 
       <OverviewCardBody>
         <div className="p-4">
-          <WorkloadTable stats={stats} variant={variant}/>
+          <WorkloadTable stats={stats} variant={variant} />
         </div>
       </OverviewCardBody>
 
-      <OverviewCardFooter />
+      <OverviewCardFooter onClick={onMore} />
     </OverviewCard>
   );
 };

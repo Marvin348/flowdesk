@@ -36,15 +36,16 @@ const ProjectPage = () => {
 
   const teamUsers = useUsersByIds(project?.teamUserIds ?? []);
 
-  if (!project) return [];
+  if (!project) return <div>Projekt nicht gefunden</div>;;
 
   const workloadStats = getUserWorkload(project.tasks);
   const progress = getProgressResult(project.tasks);
 
   const attachments = project.tasks.flatMap((t) => t.attachments);
-  console.log(attachments);
 
   const onClick = (value: ActiveTab) => setActiveTab(value);
+
+  const onNavigateTab = (tab: ActiveTab) => setActiveTab(tab);
 
   const TabViewResult = () => {
     switch (activeTab) {
@@ -56,6 +57,7 @@ const ProjectPage = () => {
             collaborator={teamUsers}
             onOpen={() => setIsAddTaskOpen(true)}
             inviteOpen={() => setIsInviteOpen(true)}
+            onNavigate={onNavigateTab}
           />
         );
 
@@ -69,12 +71,7 @@ const ProjectPage = () => {
         return <CollaboratorsView collaborator={teamUsers} />;
 
       case "workload":
-        return (
-          <WorkloadTable
-            stats={workloadStats}
-            variant="full"
-          />
-        );
+        return <WorkloadTable stats={workloadStats} variant="full" />;
     }
   };
 

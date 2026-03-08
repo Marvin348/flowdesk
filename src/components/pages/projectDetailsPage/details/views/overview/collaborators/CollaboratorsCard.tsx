@@ -10,11 +10,13 @@ import { Button } from "@/components/ui/button";
 type CollaboratorsCardProps = {
   collaborators: User[];
   inviteOpen: () => void;
+  onMore: () => void;
 };
 
 const CollaboratorsCard = ({
   collaborators,
   inviteOpen,
+  onMore,
 }: CollaboratorsCardProps) => {
   return (
     <OverviewCard>
@@ -39,7 +41,7 @@ const CollaboratorsCard = ({
           ))}
         </div>
       </OverviewCardBody>
-      <OverviewCardFooter />
+      <OverviewCardFooter onClick={onMore} />
     </OverviewCard>
   );
 };

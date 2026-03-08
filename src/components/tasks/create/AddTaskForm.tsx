@@ -25,7 +25,7 @@ const AddTaskForm = ({ onClose, projectId, teamUserIds }: AddTaskFormProps) => {
     collaboratorIds: z.array(z.string()).min(1, "Mitarbeiter angeben"),
     dueDate: z.string().date(),
     tags: z
-      .array(z.string().min(3, "Tag min. 3 Zeichen"))
+      .array(z.string().min(2, "Tag min. 2 Zeichen"))
       .max(3, "Maximal 3 Tags")
       .optional(),
     reminderAt: z.string().optional(),
@@ -109,7 +109,8 @@ const AddTaskForm = ({ onClose, projectId, teamUserIds }: AddTaskFormProps) => {
               value={field.value}
               onChange={field.onChange}
               error={fieldState.error?.message}
-              teamUserIds={teamUserIds}
+              teamUserIds={teamUserIds as string[]}
+              mode="task"
             />
           )}
         />
@@ -127,9 +128,9 @@ const AddTaskForm = ({ onClose, projectId, teamUserIds }: AddTaskFormProps) => {
               onChange={(e) => setTagsInput(e.target.value)}
               placeholder="Tags..."
               className="w-full border rounded-md p-2 pr-8"
-              disabled={tags.length >= 3}
+              disabled={tags.length >= 2}
             />
-            {tagsInput?.length >= 3 && (
+            {tagsInput?.length >= 2 && (
               <button
                 className="absolute top-0 bottom-0 right-2"
                 type="button"

@@ -40,7 +40,7 @@ export const useProjectDetailsVM = (projectId: string) => {
       const attachments = attachmentsByTaskId.get(task.id) ?? [];
 
       const collaborators = (task.collaboratorIds ?? [])
-        .map((user) => usersById.get(user))
+        .map((userId) => usersById.get(userId))
         .filter(isDefined);
 
       return {

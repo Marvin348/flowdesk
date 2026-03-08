@@ -7,6 +7,7 @@ import CollaboratorsCard from "./collaborators/CollaboratorsCard";
 import OpenTasksCard from "./tasks/OpenTasksCard";
 import CommentsCard from "./comments/CommentsCard";
 import WorkloadCard from "./workload/WorkloadCard";
+import type { ActiveTab } from "@/pages/ProjectPage";
 
 type OverviewProps = {
   project: ProjectsWithMeta;
@@ -14,6 +15,7 @@ type OverviewProps = {
   collaborator: User[];
   onOpen: () => void;
   inviteOpen: () => void;
+  onNavigate: (tab: ActiveTab) => void;
 };
 
 const Overview = ({
@@ -22,10 +24,13 @@ const Overview = ({
   collaborator,
   onOpen,
   inviteOpen,
+  onNavigate,
 }: OverviewProps) => {
   const allCommentsPerProject = project.tasks.flatMap((t) => t.comments);
 
   const workloadStats = getUserWorkload(project.tasks);
+
+  // collaborator === const teamUsers = useUsersByIds(project?.teamUserIds ?? []);
 
   return (
     <div
@@ -35,11 +40,15 @@ const Overview = ({
         <CollaboratorsCard
           collaborators={collaborator}
           inviteOpen={inviteOpen}
+          onMore={() => onNavigate("collaborators")}
         />
       </div>
 
       <div className="h-full md:row-span-2">
-        <OpenTasksCard tasks={project.tasks} users={collaborator} />
+        <OpenTasksCard
+          tasks={project.tasks}
+          onMore={() => onNavigate("list")}
+        />
       </div>
 
       <div className="border rounded-md h-full xl:col-start-3 xl:row-span-1">
@@ -55,6 +64,7 @@ const Overview = ({
           stats={workloadStats.slice(0, 4)}
           onOpen={onOpen}
           variant="compact"
+          onMore={() => onNavigate("workload")}
         />
       </div>
     </div>
