@@ -4,11 +4,12 @@ import { Button } from "@/components/ui/button";
 type CarouselControlsProps = {
   prev: () => void;
   next: () => void;
+  action?: React.ReactNode;
 };
 
-const CarouselControls = ({ prev, next }: CarouselControlsProps) => {
+const CarouselControls = ({ prev, next, action }: CarouselControlsProps) => {
   return (
-    <div className="flex gap-2">
+    <div className="flex items-center gap-2">
       <Button
         variant="outline"
         size="icon-sm"
@@ -17,6 +18,7 @@ const CarouselControls = ({ prev, next }: CarouselControlsProps) => {
       >
         <ChevronLeft />
       </Button>
+      {action}
       <Button
         variant="outline"
         size="icon-sm"

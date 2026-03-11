@@ -36,7 +36,7 @@ const Sidebar = ({ onOpen, onClose }: SidebarProps) => {
       ></div>
 
       <nav
-        className={`fixed top-0 bottom-0 bg-surface p-4 rounded-r-md transform duration-300 ease-in-out z-100 w-65 ${onOpen ? "translate-x-0" : "-translate-x-full"} lg:static lg:min-h-screen lg:translate-x-0`}
+        className={`fixed top-0 bottom-0 bg-surface p-4  transform duration-300 ease-in-out z-100 w-65 ${onOpen ? "translate-x-0" : "-translate-x-full"} lg:static lg:min-h-screen lg:translate-x-0`}
       >
         <div className="flex justify-end lg:hidden">
           <Button
@@ -59,7 +59,7 @@ const Sidebar = ({ onOpen, onClose }: SidebarProps) => {
               to={to}
               onClick={onClose}
               className={({ isActive }) =>
-                `flex items-center gap-2 my-4 p-2 font-medium rounded-md ${isActive ? "bg-muted-foreground/10 text-accent" : "text-white"}`
+                `flex items-center gap-2 my-4 p-2 rounded-md ${isActive ? "bg-muted-foreground/10 text-accent" : "text-white"}`
               }
             >
               <Icon size={20} />

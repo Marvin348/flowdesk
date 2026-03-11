@@ -8,6 +8,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { useCreateTask } from "@/mutations/task/useCreateTask";
 import type { CreateTaskInput } from "@/type/createTaskInput";
+import { Spinner } from "@/components/ui/spinner";
 
 type AddTaskFormProps = {
   onClose: () => void;
@@ -41,6 +42,7 @@ const AddTaskForm = ({ onClose, projectId, teamUserIds }: AddTaskFormProps) => {
     formState: { errors },
     control,
     setValue,
+    reset,
   } = useForm<FormFields>({
     resolver: zodResolver(formSchema),
     defaultValues: { tags: [], reminderAt: "none", collaboratorIds: [] },
@@ -54,9 +56,15 @@ const AddTaskForm = ({ onClose, projectId, teamUserIds }: AddTaskFormProps) => {
 
     mutate(input, {
       onSuccess: () => {
+        reset();
         onClose();
       },
     });
+  };
+
+  const handleClose = () => {
+    reset();
+    onClose();
   };
 
   const tags = watch("tags") ?? [];
@@ -87,7 +95,7 @@ const AddTaskForm = ({ onClose, projectId, teamUserIds }: AddTaskFormProps) => {
       },
     );
   };
-  
+
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="text-surface/90">
       <div className="pb-4 border-b">
@@ -205,7 +213,7 @@ const AddTaskForm = ({ onClose, projectId, teamUserIds }: AddTaskFormProps) => {
           variant="outline"
           type="button"
           className="hover:bg-surface/5"
-          onClick={onClose}
+          onClick={handleClose}
         >
           Schließen
         </Button>
@@ -214,7 +222,7 @@ const AddTaskForm = ({ onClose, projectId, teamUserIds }: AddTaskFormProps) => {
           className="bg-accent hover:bg-accent/95 w-30"
           type="submit"
         >
-          Sichern
+          Sichern {isPending && <Spinner />}
         </Button>
       </div>
     </form>

@@ -13,7 +13,6 @@ export const createTask = async (input: CreateTaskInput): Promise<Task> => {
     id: crypto.randomUUID(),
     projectId: input.projectId,
     title: input.title,
-    completed: false,
     dueDate: input.dueDate,
     taskStatus: "pending",
     collaboratorIds: input.collaboratorIds,

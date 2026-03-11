@@ -3,7 +3,7 @@ export type Task = {
   id: string;
   projectId: string;
   title: string;
-  completed: boolean;
+  // completed: boolean;
   dueDate: string;
   taskStatus: StatusBase;
   collaboratorIds: string[];

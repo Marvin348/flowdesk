@@ -7,7 +7,7 @@ export const getProgressResult = (tasks: Task[]) => {
 
   const result = tasks.reduce(
     (acc, task) => {
-      if (task.completed) {
+      if (task.taskStatus === "done") {
         acc.completed += 1;
       }
 
