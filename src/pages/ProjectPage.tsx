@@ -1,4 +1,4 @@
-import { useParams } from "react-router";
+import { useParams, useSearchParams } from "react-router";
 import ProjectDetailsHeader from "@/components/pages/projectDetailsPage/details/ProjectDetailsHeader";
 import { useProjectDetailsVM } from "@/domain/projects/useProjectDetails";
 import { getProgressResult } from "@/utils/getProgressResult";
@@ -23,9 +23,13 @@ export type ActiveTab =
   | "workload";
 
 const ProjectPage = () => {
-  const [activeTab, setActiveTab] = useState<ActiveTab>("overview");
+  const [searchParams, setSeatchParams] = useSearchParams();
   const [isAddTaskOpen, setIsAddTaskOpen] = useState(false);
   const [isInviteOpen, setIsInviteOpen] = useState(false);
+
+  const activeTab = (searchParams.get("tab") as ActiveTab) ?? "overview";
+
+  const navigateTab = (tab: ActiveTab) => setSeatchParams({ tab });
 
   const { id } = useParams();
   const projectId = id ?? "";
@@ -36,16 +40,12 @@ const ProjectPage = () => {
 
   const teamUsers = useUsersByIds(project?.teamUserIds ?? []);
 
-  if (!project) return <div>Projekt nicht gefunden</div>;;
+  if (!project) return <div>Projekt nicht gefunden</div>;
 
   const workloadStats = getUserWorkload(project.tasks);
   const progress = getProgressResult(project.tasks);
 
   const attachments = project.tasks.flatMap((t) => t.attachments);
-
-  const onClick = (value: ActiveTab) => setActiveTab(value);
-
-  const onNavigateTab = (tab: ActiveTab) => setActiveTab(tab);
 
   const TabViewResult = () => {
     switch (activeTab) {
@@ -57,7 +57,7 @@ const ProjectPage = () => {
             collaborator={teamUsers}
             onOpen={() => setIsAddTaskOpen(true)}
             inviteOpen={() => setIsInviteOpen(true)}
-            onNavigate={onNavigateTab}
+            onNavigate={navigateTab}
           />
         );
 
@@ -88,7 +88,7 @@ const ProjectPage = () => {
       </div>
 
       <div>
-        <ProjectTabs activeTab={activeTab} onChange={onClick} />
+        <ProjectTabs activeTab={activeTab} onChange={navigateTab} />
       </div>
 
       <div className="mt-6">
