@@ -1,20 +1,15 @@
-import { useTasks } from "@/queries/tasks/useTasks";
 import { useComments } from "@/queries/comments/useComments";
 import { useAttachments } from "@/queries/attachments/useAttachments";
 import { useUsers } from "@/queries/users/useUsers";
+import { useProjectTasks } from "@/queries/tasks/useProjectTasks";
+import { getArrayLookup } from "@/utils/getArrayLookup";
 
 export const useProjectDomain = (projectId: string) => {
   const {
     data: tasks = [],
     isLoading: tasksIsLoading,
     error: tasksError,
-  } = useTasks(projectId);
-
-  const {
-    data: users = [],
-    isLoading: usersIsLoading,
-    error: usersError,
-  } = useUsers();
+  } = useProjectTasks(projectId);
 
   const {
     data: comments = [],
@@ -28,6 +23,20 @@ export const useProjectDomain = (projectId: string) => {
     error: attachmentsError,
   } = useAttachments();
 
+  const {
+    data: users = [],
+    isLoading: usersIsLoading,
+    error: usersError,
+  } = useUsers();
+
+  const taskIds = getArrayLookup(tasks);
+
+  const projectComments = comments.filter((com) => taskIds.get(com.taskId));
+
+  const projectAttachments = attachments.filter((att) =>
+    taskIds.get(att.taskId));
+
+
   const isLoading =
     usersIsLoading ||
     commentsIsLoading ||
@@ -37,7 +46,12 @@ export const useProjectDomain = (projectId: string) => {
   const error = usersError ?? commentsError ?? tasksError ?? attachmentsError;
 
   return {
-    data: { users, comments, tasks, attachments },
+    data: {
+      tasks,
+      users,
+      comments: projectComments,
+      attachments: projectAttachments,
+    },
     isLoading,
     error,
   };

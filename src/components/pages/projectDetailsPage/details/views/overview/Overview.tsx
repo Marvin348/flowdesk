@@ -26,11 +26,11 @@ const Overview = ({
   inviteOpen,
   onNavigate,
 }: OverviewProps) => {
+
   const allCommentsPerProject = project.tasks.flatMap((t) => t.comments);
 
   const workloadStats = getUserWorkload(project.tasks);
 
-  // collaborator === const teamUsers = useUsersByIds(project?.teamUserIds ?? []);
 
   return (
     <div

@@ -4,6 +4,7 @@ import {
   Files,
   UserStar,
   BriefcaseBusiness,
+  MessageSquareMore,
   Settings,
 } from "lucide-react";
 
@@ -12,6 +13,7 @@ export const TAB_VIEW_OPTIONS = [
   { label: "Liste", value: "list", icon: List },
   { label: "Anhänge", value: "files", icon: Files },
   { label: "Team", value: "collaborators", icon: UserStar },
+  { label: "Kommentare", value: "comments", icon: MessageSquareMore },
   { label: "Auslastung", value: "workload", icon: BriefcaseBusiness },
   { label: "Einstellungen", value: "settings", icon: Settings },
 ] as const;

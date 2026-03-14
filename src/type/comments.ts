@@ -4,4 +4,5 @@ export type Comments = {
   userId: string;
   message: string;
   createdAt: string;
+  parentCommentId?: string
 };

@@ -38,7 +38,7 @@ export const useProjectsListVM = () => {
         acc.commentCount += (commentsByTaskId.get(task.id) ?? []).length;
         acc.attachmentCount += (attachmentsByTaskId.get(task.id) ?? []).length;
 
-        if (task.completed) {
+        if (task.taskStatus === "done") {
           acc.completedTaskCount += 1;
         }
 

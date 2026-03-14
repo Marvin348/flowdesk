@@ -13,6 +13,7 @@ import AddTaskPanel from "@/components/tasks/create/AddTaskPanel";
 import InviteUserModal from "@/components/collaborators/InviteUserModal";
 import WorkloadTable from "@/components/pages/projectDetailsPage/details/views/overview/workload/WorkloadTable";
 import { getUserWorkload } from "@/utils/workload/getUserWorkload";
+import CommentsView from "@/components/pages/projectDetailsPage/details/views/commentsView/CommentsView";
 
 export type ActiveTab =
   | "overview"
@@ -20,7 +21,8 @@ export type ActiveTab =
   | "files"
   | "collaborators"
   | "settings"
-  | "workload";
+  | "workload"
+  | "comments";
 
 const ProjectPage = () => {
   const [searchParams, setSeatchParams] = useSearchParams();
@@ -47,6 +49,8 @@ const ProjectPage = () => {
 
   const attachments = project.tasks.flatMap((t) => t.attachments);
 
+  const allCommentsPerProject = project.tasks.flatMap((t) => t.comments);
+
   const TabViewResult = () => {
     switch (activeTab) {
       case "overview":
@@ -72,6 +76,9 @@ const ProjectPage = () => {
 
       case "workload":
         return <WorkloadTable stats={workloadStats} variant="full" />;
+
+      case "comments":
+        return <CommentsView comments={allCommentsPerProject}/>;
     }
   };
 
@@ -91,9 +98,9 @@ const ProjectPage = () => {
         <ProjectTabs activeTab={activeTab} onChange={navigateTab} />
       </div>
 
-      <div className="mt-6">
+      <section className="mt-6">
         <TabViewResult />
-      </div>
+      </section>
 
       <AddTaskPanel
         onOpen={isAddTaskOpen}

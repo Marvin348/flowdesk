@@ -2,10 +2,10 @@ import { fetchProjects } from "@/api/projects";
 import type { Project } from "@/type/project";
 import { useQuery } from "@tanstack/react-query";
 
-export const useProjects = () => {
+export const useProject = (id: string) => {
   const { data, isLoading, error } = useQuery<Project[], Error>({
-    queryKey: ["projects"],
-    queryFn: () => fetchProjects(),
+    queryKey: ["projects", id],
+    queryFn: () => fetchProjects(id),
   });
 
   return { data, isLoading, error };

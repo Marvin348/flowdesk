@@ -4,11 +4,11 @@ import { getArrayLookup } from "@/utils/getArrayLookup";
 import { isDefined } from "@/utils/isDefined";
 import { useMemo } from "react";
 import { groupBy } from "@/utils/groupBy";
-import { useProjects } from "@/queries/projects/useProjects";
 import { useProjectDomain } from "./useProjectDomain";
+import { useProject } from "@/queries/projects/useProject";
 
 export const useProjectDetailsVM = (projectId: string) => {
-  const { data: projects = [] } = useProjects(projectId);
+  const { data: projects = [] } = useProject(projectId);
 
   const {
     data: { users, tasks, comments, attachments },
