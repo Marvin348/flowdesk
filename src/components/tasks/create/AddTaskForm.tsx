@@ -7,7 +7,7 @@ import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { useCreateTask } from "@/mutations/task/useCreateTask";
-import type { CreateTaskInput } from "@/type/createTaskInput";
+import type { CreateTaskInput } from "@/type/inputs/createTaskInput";
 import { Spinner } from "@/components/ui/spinner";
 
 type AddTaskFormProps = {

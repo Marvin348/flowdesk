@@ -1,6 +1,6 @@
 import { useUsers } from "@/queries/users/useUsers";
-import type { Comments } from "@/type/comments";
-import type { CommentsWithUser } from "@/type/commentsWithUser";
+import type { Comments } from "@/type/domain/comments";
+import type { CommentsWithUser } from "@/type/view-models/commentWithUser";
 import { useMemo } from "react";
 
 export const useCommentsWithUsers = (

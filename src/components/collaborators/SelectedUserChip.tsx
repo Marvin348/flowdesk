@@ -1,4 +1,4 @@
-import type { User } from "@/type/user";
+import type { User } from "@/type/domain/user";
 import Avatar from "@/components/projects/avatar/Avatar";
 import { X } from "lucide-react";
 

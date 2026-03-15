@@ -1,4 +1,4 @@
-import type { ProjectsList } from "@/type/projectsList";
+import type { ProjectsList } from "@/type/view-models/projectsList";
 
 export type ProjectsSummary = {
   total: number;

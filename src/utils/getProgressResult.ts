@@ -1,4 +1,4 @@
-import type { Task } from "@/type/task";
+import type { Task } from "@/type/domain/task";
 
 export type Progress = ReturnType<typeof getProgressResult>;
 

@@ -1,5 +1,5 @@
-import type { TaskWithMeta } from "@/type/taskWithMeta";
-import type { User } from "@/type/user";
+import type { TaskWithMeta } from "@/type/view-models/taskWithMeta";
+import type { User } from "@/type/domain/user";
 
 export type UserWorkloadStats = {
   totalTasks: number;

@@ -1,6 +1,6 @@
 import CommentForm from "@/components/pages/projectDetailsPage/details/views/commentsView/CommentForm";
-import { ArrowDown, ArrowDownUp, ChevronDown } from "lucide-react";
-import type { Comments } from "@/type/comments";
+import { ArrowDown } from "lucide-react";
+import type { Comments } from "@/type/domain/comments";
 import { useState } from "react";
 import CommentsHeader from "./CommentsHeader";
 import CommentThreadList from "./CommentThreadList";
@@ -10,7 +10,7 @@ type CommentsViewProps = {
 };
 
 const CommentsView = ({ comments }: CommentsViewProps) => {
-  const COMMENTS_PER_PAGE = 10;
+  const COMMENTS_PER_PAGE = 8;
 
   const [visibleCount, setVisibleCount] = useState(COMMENTS_PER_PAGE);
 
@@ -26,7 +26,6 @@ const CommentsView = ({ comments }: CommentsViewProps) => {
       </div>
 
       <div>
-        {/* <CommentsList comments={maxComments} /> */}
         <CommentThreadList comments={maxComments} />
       </div>
 

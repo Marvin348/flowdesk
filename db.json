@@ -1005,6 +1005,38 @@
       "createdAt": "2026-02-16T09:25:00.000Z"
     },
     {
+      "id": "c100",
+      "taskId": "t6",
+      "userId": "u5",
+      "message": "Email + OTP klingt gut für den Start. UX-seitig sollten wir aber eine klare Fehlermeldung bei abgelaufenen Codes anzeigen.",
+      "createdAt": "2026-02-15T12:25:00.000Z",
+      "parentCommentId": "c11"
+    },
+    {
+      "id": "c101",
+      "taskId": "t6",
+      "userId": "u7",
+      "message": "Guter Punkt mit dem Rate Limiting. Vielleicht auch ein kleines Cooldown-UI einbauen.",
+      "createdAt": "2026-02-15T12:32:00.000Z",
+      "parentCommentId": "c12"
+    },
+    {
+      "id": "c102",
+      "taskId": "t9",
+      "userId": "u13",
+      "message": "Cursor-based passt gut. Wichtig wäre, dass der Cursor auch stabil bleibt wenn neue Items reinkommen.",
+      "createdAt": "2026-02-16T09:18:00.000Z",
+      "parentCommentId": "c14"
+    },
+    {
+      "id": "c103",
+      "taskId": "t9",
+      "userId": "u2",
+      "message": "Wenn wir cursor-based machen, sollten wir im API Contract auch Beispiele für Requests/Responses ergänzen.",
+      "createdAt": "2026-02-16T09:40:00.000Z",
+      "parentCommentId": "c15"
+    },
+    {
       "id": "c16",
       "taskId": "t11",
       "userId": "u5",

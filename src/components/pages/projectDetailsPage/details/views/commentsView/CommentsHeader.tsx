@@ -1,4 +1,4 @@
-import type { Comments } from "@/type/comments";
+import type { Comments } from "@/type/domain/comments";
 import { ArrowDownUp, ChevronDown } from "lucide-react";
 
 const CommentsHeader = ({ comments }: { comments: Comments[] }) => {

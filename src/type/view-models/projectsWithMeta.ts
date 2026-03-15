@@ -1,4 +1,4 @@
-import type { Project } from "@/type/project";
+import type { Project } from "@/type/domain/project";
 import type { Badge } from "@/store/slices/projectBadge";
 import type { TaskWithMeta } from "./taskWithMeta";
 

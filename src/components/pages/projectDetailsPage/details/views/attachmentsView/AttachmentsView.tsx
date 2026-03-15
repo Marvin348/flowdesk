@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import type { Attachment } from "@/type/attachment";
+import type { Attachment } from "@/type/domain/attachment";
 import { Plus } from "lucide-react";
 import AttachmentsCard from "@/components/pages/projectDetailsPage/details/views/attachmentsView/AttachmentsCard";
 

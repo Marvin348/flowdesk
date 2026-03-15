@@ -16,7 +16,7 @@ import ActiveMenuBadge from "@/components/projects/card/ActiveMenuBadge";
 import { useAppStore } from "@/store";
 import type { Badge } from "@/store/slices/projectBadge";
 import { useUsersByIds } from "@/hooks/useUsersByIds";
-import type { ProjectsList } from "@/type/projectsList";
+import type { ProjectsList } from "@/type/view-models/projectsList";
 
 type ProjectCardType = {
   project: ProjectsList;

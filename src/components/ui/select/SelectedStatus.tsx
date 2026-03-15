@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/select";
 import { STATUS_OPTIONS } from "@/constants/status-options";
 import type { ContentFilter } from "@/store/slices/filter";
-import type { StatusBase } from "@/type/StatusBase";
+import type { StatusBase } from "@/type/domain/StatusBase";
 
 type SelectedStatusProps = {
   setFilter: (value: ContentFilter) => void;

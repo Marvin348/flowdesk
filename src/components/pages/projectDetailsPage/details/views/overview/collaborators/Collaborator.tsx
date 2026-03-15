@@ -1,4 +1,4 @@
-import type { User } from "@/type/user";
+import type { User } from "@/type/domain/user";
 import Avatar from "@/components/projects/avatar/Avatar";
 import { EllipsisVertical } from "lucide-react";
 
@@ -20,7 +20,7 @@ const Collaborator = ({ user }: CollaboratorProps) => {
         </div>
 
         <button>
-          <EllipsisVertical strokeWidth={1} fill="black"/>
+          <EllipsisVertical strokeWidth={1} fill="black" />
         </button>
       </div>
     </>

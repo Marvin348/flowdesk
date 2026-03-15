@@ -1,5 +1,5 @@
 import { apiClient } from "@/api/client";
-import type { Project } from "@/type/project";
+import type { Project } from "@/type/domain/project";
 
 export type UpdateProjectMembersInput = {
   projectId: string;

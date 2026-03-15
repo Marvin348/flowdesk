@@ -1,4 +1,4 @@
-import type { TaskWithMeta } from "@/type/taskWithMeta";
+import type { TaskWithMeta } from "@/type/view-models/taskWithMeta";
 import { STATUS_OPTIONS } from "@/constants/status-options";
 import AssigneeAvatars from "@/components/projects/avatar/AssigneeAvatars";
 import { formatDate } from "@/utils/formatDate";

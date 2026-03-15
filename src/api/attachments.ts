@@ -1,4 +1,4 @@
-import type { Attachment } from "@/type/attachment";
+import type { Attachment } from "@/type/domain/attachment";
 import { apiClient } from "@/api/client";
 
 export const fetchAttachments = async (

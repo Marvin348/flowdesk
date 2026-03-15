@@ -1,23 +1,23 @@
-import type { CommentsWithUser } from "@/type/commentsWithUser";
+import type { CommentWithUser } from "@/type/view-models/commentWithUser";
 import Avatar from "@/components/projects/avatar/Avatar";
 import { formatDate } from "@/utils/formatDate";
 import { Reply } from "lucide-react";
 import { useState } from "react";
 import ReplyForm from "./thread/ReplyForm";
 
-const CommentThreadItem = ({ comment }: { comment: CommentsWithUser }) => {
+const CommentThreadItem = ({ comment }: { comment: CommentWithUser }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const { user, message, createdAt } = comment;
+  const { id, taskId, user, message, createdAt, replies } = comment;
 
   const toggleReblyBtn = () => setIsOpen((prev) => !prev);
 
   return (
-    <div className="flex gap-2 pb-10">
+    <article className="flex gap-2 pb-6">
       <div className="shrink-0">
         <Avatar avatarKey={user?.avatarKey} />
       </div>
 
-      <div>
+      <div className="flex-1">
         <div className="flex items-center gap-3">
           <p className="font-medium">{user?.name}</p>
           <p className="text-xs text-muted-foreground">
@@ -28,16 +28,28 @@ const CommentThreadItem = ({ comment }: { comment: CommentsWithUser }) => {
 
         <div className="my-1 flex items-center gap-6 text-muted-foreground">
           <button
-            className="flex items-center gap-1 text-sm hover:text-surface"
+            className="flex items-center gap-1 text-xs transition-all duration-300 hover:text-surface"
             onClick={toggleReblyBtn}
           >
             <Reply className="size-4" /> Antworten
           </button>
         </div>
 
-        {isOpen && <ReplyForm />}
+        <div
+          className={`overflow-hidden transition-all duration-400 max-w-md ${isOpen ? "max-h-40 opacity-100" : "max-h-0 opacity-0"}`}
+        >
+          <ReplyForm commentId={id} taskId={taskId} />
+        </div>
+
+        {replies && (
+          <div className="mt-2">
+            {replies.map((re) => (
+              <CommentThreadItem key={re.id} comment={re} />
+            ))}
+          </div>
+        )}
       </div>
-    </div>
+    </article>
   );
 };
 export default CommentThreadItem;

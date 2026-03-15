@@ -1,10 +1,9 @@
 import Avatar from "@/components/projects/avatar/Avatar";
-import type { CommentsWithUser } from "@/type/commentsWithUser";
+import type { CommentWithUser } from "@/type/view-models/commentWithUser";
 import { formatDate } from "@/utils/formatDate";
 
-
-const OverviewCommentItem = ({comment}: {comment: CommentsWithUser}) => {
-    const { user, message, createdAt } = comment;
+const OverviewCommentItem = ({ comment }: { comment: CommentWithUser }) => {
+  const { user, message, createdAt } = comment;
 
   return (
     <div className="flex gap-2 border-b last:border-none py-2">
@@ -17,5 +16,5 @@ const OverviewCommentItem = ({comment}: {comment: CommentsWithUser}) => {
       </div>
     </div>
   );
-}
-export default OverviewCommentItem
+};
+export default OverviewCommentItem;

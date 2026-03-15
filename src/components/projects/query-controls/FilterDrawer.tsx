@@ -7,7 +7,7 @@ import SelectedView from "@/components/ui/select/SelectedView";
 import { useState } from "react";
 import { defaultFilter, type ContentFilter } from "@/store/slices/filter";
 import { useScrollLock } from "@/hooks/useScrollLock";
-import type { Priority } from "@/type/priority";
+import type { Priority } from "@/type/domain/priority";
 
 type FilterDrawerProps = {
   onClose: () => void;

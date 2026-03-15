@@ -1,4 +1,4 @@
-import type { ProjectsWithMeta } from "@/type/projectsWithMeta";
+import type { ProjectsWithMeta } from "@/type/view-models/projectsWithMeta";
 import { getProgressResult, type Progress } from "@/utils/getProgressResult";
 getProgressResult;
 import { STATUS_OPTIONS } from "@/constants/status-options";
@@ -20,7 +20,8 @@ const ProjectDetailsHeader = ({
   progress,
   onOpen,
 }: ProjectDetailsHeaderProps) => {
-  const { title, projectStatus, teamUserIds, tasks, updatedAt, badge } = project;
+  const { title, projectStatus, teamUserIds, tasks, updatedAt, badge } =
+    project;
 
   const teamUsers = useUsersByIds(teamUserIds);
 

@@ -1,6 +1,6 @@
-import type { Task } from "@/type/task";
+import type { Task } from "@/type/domain/task";
 import { apiClient } from "@/api/client";
-import type { CreateTaskInput } from "@/type/createTaskInput";
+import type { CreateTaskInput } from "@/type/inputs/createTaskInput";
 
 export const fetchTasks = async (projectId?: string): Promise<Task[]> => {
   const url = projectId ? `/tasks?projectId=${projectId}` : "/tasks";

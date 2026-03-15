@@ -3,7 +3,7 @@ import { useProjects } from "@/queries/projects/useProjects";
 import { useAppStore } from "@/store";
 import { useMemo } from "react";
 import { groupBy } from "@/utils/groupBy";
-import type { ProjectsList } from "@/type/projectsList";
+import type { ProjectsList } from "@/type/view-models/projectsList";
 
 export const useProjectsListVM = () => {
   const { data: projects = [] } = useProjects();

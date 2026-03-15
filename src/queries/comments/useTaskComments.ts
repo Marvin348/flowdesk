@@ -1,6 +1,6 @@
 import { fetchComments } from "@/api/comments";
 import { useQuery } from "@tanstack/react-query";
-import type { Comments } from "@/type/comments";
+import type { Comments } from "@/type/domain/comments";
 
 export const useTaskComments = (taskId: string) => {
   const { data, isLoading, error } = useQuery<Comments[], Error>({

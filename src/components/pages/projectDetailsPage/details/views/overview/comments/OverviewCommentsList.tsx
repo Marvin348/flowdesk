@@ -1,5 +1,5 @@
 import { useCommentsWithUsers } from "@/hooks/useCommentsWithUsers";
-import type { Comments } from "@/type/comments";
+import type { Comments } from "@/type/domain/comments";
 import OverviewCommentItem from "./OverviewCommentItem";
 
 const OverviewCommentsList = ({ comments }: { comments: Comments[] }) => {

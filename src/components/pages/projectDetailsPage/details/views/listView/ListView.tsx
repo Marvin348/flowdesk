@@ -1,9 +1,9 @@
 import { ChevronDown } from "lucide-react";
 import { STATUS_OPTIONS } from "@/constants/status-options";
 import { useState } from "react";
-import type { StatusBase } from "@/type/StatusBase";
+import type { StatusBase } from "@/type/domain/StatusBase";
 import TaskRow from "@/components/pages/projectDetailsPage/details/views/listView/TaskRow";
-import type { TaskWithMeta } from "@/type/taskWithMeta";
+import type { TaskWithMeta } from "@/type/view-models/taskWithMeta";
 
 const ListView = ({ tasks }: { tasks: TaskWithMeta[] }) => {
   const [openStatus, setOpenStatus] = useState<StatusBase | null>(null);

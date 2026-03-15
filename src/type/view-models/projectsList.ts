@@ -1,5 +1,5 @@
 import type { Progress } from "@/utils/getProgressResult";
-import type { Project } from "./project";
+import type { Project } from "../domain/project";
 import type { Badge } from "@/store/slices/projectBadge";
 
 export type ProjectsList = Project & {

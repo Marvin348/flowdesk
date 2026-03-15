@@ -5,7 +5,7 @@ import OverviewCardFooter from "../ui/OverviewCardFooter";
 import { useState } from "react";
 import OpenTask from "./OpenTask";
 import CarouselControls from "@/components/ui/CarouselControls";
-import type { TaskWithMeta } from "@/type/taskWithMeta";
+import type { TaskWithMeta } from "@/type/view-models/taskWithMeta";
 
 type OpenTasksCardProps = {
   tasks: TaskWithMeta[];
@@ -29,7 +29,7 @@ const OpenTasksCard = ({ tasks, onMore }: OpenTasksCardProps) => {
       />
       <OverviewCardBody>
         <div className="p-4">
-          <OpenTask task={taskItem}/>
+          <OpenTask task={taskItem} />
         </div>
       </OverviewCardBody>
       <OverviewCardFooter onClick={onMore} />

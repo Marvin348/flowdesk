@@ -1,5 +1,5 @@
 import { fetchAttachments } from "@/api/attachments";
-import type { Attachment } from "@/type/attachment";
+import type { Attachment } from "@/type/domain/attachment";
 import { useQuery } from "@tanstack/react-query";
 
 export const useTaskAttachments = (taskId: string) => {

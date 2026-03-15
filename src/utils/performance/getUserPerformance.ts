@@ -1,5 +1,5 @@
-import type { Task } from "@/type/task";
-import type { User } from "@/type/user";
+import type { Task } from "@/type/domain/task";
+import type { User } from "@/type/domain/user";
 
 export type UserPerformance = User & {
   stats: {

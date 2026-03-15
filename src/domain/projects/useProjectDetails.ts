@@ -1,5 +1,5 @@
 import { useAppStore } from "@/store";
-import type { ProjectsWithMeta } from "@/type/projectsWithMeta";
+import type { ProjectsWithMeta } from "@/type/view-models/projectsWithMeta";
 import { getArrayLookup } from "@/utils/getArrayLookup";
 import { isDefined } from "@/utils/isDefined";
 import { useMemo } from "react";

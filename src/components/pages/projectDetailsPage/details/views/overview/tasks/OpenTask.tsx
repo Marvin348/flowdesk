@@ -1,6 +1,6 @@
 import AssigneeAvatars from "@/components/projects/avatar/AssigneeAvatars";
 import { formatDate } from "@/utils/formatDate";
-import type { TaskWithMeta } from "@/type/taskWithMeta";
+import type { TaskWithMeta } from "@/type/view-models/taskWithMeta";
 
 type OpenTaskProps = {
   task: TaskWithMeta;

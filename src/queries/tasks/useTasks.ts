@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { fetchTasks } from "@/api/tasks";
-import type { Task } from "@/type/task";
+import type { Task } from "@/type/domain/task";
 
 export const useTasks = () => {
   const { data, isLoading, error } = useQuery<Task[], Error>({

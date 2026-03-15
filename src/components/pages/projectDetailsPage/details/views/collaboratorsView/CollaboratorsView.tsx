@@ -1,5 +1,5 @@
 import Avatar from "@/components/projects/avatar/Avatar";
-import type { User } from "@/type/user";
+import type { User } from "@/type/domain/user";
 import { Copy, EllipsisVertical, ShieldUser, UserRound } from "lucide-react";
 
 const CollaboratorsView = ({ collaborator }: { collaborator: User[] }) => {

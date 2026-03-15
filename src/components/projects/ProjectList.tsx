@@ -1,6 +1,6 @@
 import ProjectCard from "@/components/projects/card/ProjectCard";
 import { useNavigate } from "react-router";
-import type { ProjectsList } from "@/type/projectsList";
+import type { ProjectsList } from "@/type/view-models/projectsList";
 type ProjectListType = {
   projects: ProjectsList[];
 };

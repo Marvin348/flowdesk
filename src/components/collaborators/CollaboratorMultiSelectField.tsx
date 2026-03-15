@@ -1,6 +1,6 @@
 import { useUsers } from "@/queries/users/useUsers";
 import CollaboratorMultiSelect from "@/components/collaborators/CollaboratorMultiSelect";
-import type { User } from "@/type/user";
+import type { User } from "@/type/domain/user";
 
 type CollaboratorMultiSelectFieldProps = {
   value: string[];
