@@ -49,7 +49,7 @@ const ProjectPage = () => {
 
   const attachments = project.tasks.flatMap((t) => t.attachments);
 
-  const allCommentsPerProject = project.tasks.flatMap((t) => t.comments);
+  // const allCommentsPerProject = project.tasks.flatMap((t) => t.comments);
 
   const TabViewResult = () => {
     switch (activeTab) {
@@ -78,7 +78,11 @@ const ProjectPage = () => {
         return <WorkloadTable stats={workloadStats} variant="full" />;
 
       case "comments":
-        return <CommentsView comments={allCommentsPerProject}/>;
+        return (
+          <CommentsView
+            tasks={project.tasks}
+          />
+        );
     }
   };
 

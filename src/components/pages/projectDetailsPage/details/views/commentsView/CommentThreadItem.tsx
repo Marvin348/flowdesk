@@ -1,13 +1,13 @@
-import type { CommentWithUser } from "@/type/view-models/commentWithUser";
 import Avatar from "@/components/projects/avatar/Avatar";
 import { formatDate } from "@/utils/formatDate";
 import { Reply } from "lucide-react";
 import { useState } from "react";
 import ReplyForm from "./thread/ReplyForm";
+import type { CommentThreadNode } from "@/type/view-models/commentThreadNode";
 
-const CommentThreadItem = ({ comment }: { comment: CommentWithUser }) => {
+const CommentThreadItem = ({ comment }: { comment: CommentThreadNode }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const { id, taskId, user, message, createdAt, replies } = comment;
+  const { id, taskId, user, message, createdAt, replies, taskTitle } = comment;
 
   const toggleReblyBtn = () => setIsOpen((prev) => !prev);
 
@@ -24,9 +24,10 @@ const CommentThreadItem = ({ comment }: { comment: CommentWithUser }) => {
             {formatDate(createdAt)}
           </p>
         </div>
+        <p className="my-0.5 text-xs text-surface/90">{taskTitle}</p>
         <p>{message}</p>
 
-        <div className="my-1 flex items-center gap-6 text-muted-foreground">
+        <div className="mt-1 flex items-center gap-6 text-muted-foreground">
           <button
             className="flex items-center gap-1 text-xs transition-all duration-300 hover:text-surface"
             onClick={toggleReblyBtn}

@@ -1,11 +1,11 @@
 import { useUsers } from "@/queries/users/useUsers";
 import type { Comments } from "@/type/domain/comments";
-import type { CommentsWithUser } from "@/type/view-models/commentWithUser";
+import type { CommentWithUser } from "@/type/view-models/commentWithUser";
 import { useMemo } from "react";
 
 export const useCommentsWithUsers = (
   comments: Comments[],
-): CommentsWithUser[] => {
+): CommentWithUser[] => {
   const { data: users = [] } = useUsers();
 
   const userByIds = useMemo(

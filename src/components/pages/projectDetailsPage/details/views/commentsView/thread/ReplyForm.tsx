@@ -24,6 +24,7 @@ const ReplyForm = ({
       message: message,
       parentCommentId: commentId,
     };
+
     mutate(input, {
       onSuccess: () => {
         setMessage("");
@@ -38,14 +39,16 @@ const ReplyForm = ({
         value={message}
         onChange={(e) => setMessage(e.target.value)}
       ></textarea>
-      <Button
-        size="xs"
-        className="bg-accent hover:bg-accent/95 w-20 rounded-full"
-        type="submit"
-        disabled={isPending}
-      >
-        Senden {isPending && <Spinner />}
-      </Button>
+      <div className="text-right">
+        <Button
+          size="xs"
+          className="bg-accent hover:bg-accent/95 w-20 rounded-full"
+          type="submit"
+          disabled={isPending}
+        >
+          Posten {isPending && <Spinner />}
+        </Button>
+      </div>
       {error && (
         <p className="error-text">Kommentar konnte nicht gesendet werden</p>
       )}

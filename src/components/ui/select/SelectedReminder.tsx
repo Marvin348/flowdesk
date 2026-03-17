@@ -33,7 +33,7 @@ const SelectedReminder = ({ value, onChange }: SelectedReminderProps) => {
             <SelectItem
               value={opt.value}
               key={opt.value}
-              className="focus:bg-surface/10"
+              className="focus:bg-surface/5"
             >
               {opt.label}
             </SelectItem>

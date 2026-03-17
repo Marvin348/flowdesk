@@ -1,35 +1,36 @@
 import CommentForm from "@/components/pages/projectDetailsPage/details/views/commentsView/CommentForm";
 import { ArrowDown } from "lucide-react";
-import type { Comments } from "@/type/domain/comments";
 import { useState } from "react";
 import CommentsHeader from "./CommentsHeader";
 import CommentThreadList from "./CommentThreadList";
+import type { TaskWithMeta } from "@/type/view-models/taskWithMeta";
 
 type CommentsViewProps = {
-  comments: Comments[];
+  tasks: TaskWithMeta[];
 };
 
-const CommentsView = ({ comments }: CommentsViewProps) => {
+const CommentsView = ({ tasks }: CommentsViewProps) => {
   const COMMENTS_PER_PAGE = 8;
-
   const [visibleCount, setVisibleCount] = useState(COMMENTS_PER_PAGE);
 
-  const maxComments = comments.slice(0, visibleCount);
+  const allComments = tasks.flatMap((task) => task.comments);
+  const maxComments = allComments.slice(0, visibleCount);
+
   return (
     <>
       <div className="border-b pb-8">
-        <CommentForm />
+        <CommentForm tasks={tasks}/>
       </div>
 
       <div className="my-8">
-        <CommentsHeader comments={comments} />
+        <CommentsHeader comments={allComments} />
       </div>
 
       <div>
-        <CommentThreadList comments={maxComments} />
+        <CommentThreadList comments={maxComments} tasks={tasks} />
       </div>
 
-      {visibleCount < comments.length && (
+      {visibleCount < allComments.length && (
         <button
           className="flex items-center gap-1 text-accent hover:text-accent/90"
           onClick={() => setVisibleCount((prev) => prev + COMMENTS_PER_PAGE)}
