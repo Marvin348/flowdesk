@@ -15,5 +15,4 @@ export const TAB_VIEW_OPTIONS = [
   { label: "Team", value: "collaborators", icon: UserStar },
   { label: "Kommentare", value: "comments", icon: MessageSquareMore },
   { label: "Auslastung", value: "workload", icon: BriefcaseBusiness },
-  { label: "Einstellungen", value: "settings", icon: Settings },
 ] as const;

@@ -4,26 +4,32 @@ import { useState } from "react";
 import CommentsHeader from "./CommentsHeader";
 import CommentThreadList from "./CommentThreadList";
 import type { TaskWithMeta } from "@/type/view-models/taskWithMeta";
+import { getSortedComments } from "@/utils/comments/getSortedComments";
 
-type CommentsViewProps = {
-  tasks: TaskWithMeta[];
-};
+export type SortOrder = "newest" | "oldest";
 
-const CommentsView = ({ tasks }: CommentsViewProps) => {
+const CommentsView = ({ tasks }: {tasks: TaskWithMeta[]}) => {
   const COMMENTS_PER_PAGE = 8;
   const [visibleCount, setVisibleCount] = useState(COMMENTS_PER_PAGE);
+  const [sortOrder, setSortOrder] = useState<SortOrder>("newest");
 
   const allComments = tasks.flatMap((task) => task.comments);
-  const maxComments = allComments.slice(0, visibleCount);
+
+  const toggleSortOrder = () =>
+    setSortOrder((prev) => (prev === "newest" ? "oldest" : "newest"));
+
+  const sortedComments = getSortedComments(allComments, sortOrder);
+
+  const maxComments = sortedComments.slice(0, visibleCount);
 
   return (
     <>
       <div className="border-b pb-8">
-        <CommentForm tasks={tasks}/>
+        <CommentForm tasks={tasks} />
       </div>
 
       <div className="my-8">
-        <CommentsHeader comments={allComments} />
+        <CommentsHeader comments={allComments} toggleOrder={toggleSortOrder} sortOrder={sortOrder}/>
       </div>
 
       <div>
@@ -32,7 +38,7 @@ const CommentsView = ({ tasks }: CommentsViewProps) => {
 
       {visibleCount < allComments.length && (
         <button
-          className="flex items-center gap-1 text-accent hover:text-accent/90"
+          className="flex items-center m-auto gap-1 text-accent hover:text-accent/90"
           onClick={() => setVisibleCount((prev) => prev + COMMENTS_PER_PAGE)}
         >
           Mehr Anzeigen <ArrowDown className="size-5" />

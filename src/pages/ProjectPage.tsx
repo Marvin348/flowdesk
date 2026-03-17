@@ -20,7 +20,6 @@ export type ActiveTab =
   | "list"
   | "files"
   | "collaborators"
-  | "settings"
   | "workload"
   | "comments";
 
@@ -78,11 +77,7 @@ const ProjectPage = () => {
         return <WorkloadTable stats={workloadStats} variant="full" />;
 
       case "comments":
-        return (
-          <CommentsView
-            tasks={project.tasks}
-          />
-        );
+        return <CommentsView tasks={project.tasks} />;
     }
   };
 

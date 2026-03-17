@@ -53,7 +53,7 @@ export const createCommentReply = async (
   const res = await apiClient.post(`/comments`, {
     id: crypto.randomUUID(),
     taskId: input.taskId,
-    userId: "u3", // TESTING
+    userId: "u3", // TEST
     message: input.message,
     parentCommentId: input.parentCommentId,
     createdAt: new Date().toISOString(),
