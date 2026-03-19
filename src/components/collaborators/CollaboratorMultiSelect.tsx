@@ -74,7 +74,7 @@ const CollaboratorMultiSelect = ({
             <>
               {maxFilteredUsers.map((user) => {
                 const isDisabled = disabledUserIds?.includes(user.id);
-                console.log("isDisabled", isDisabled);
+
                 return (
                   <div
                     key={user.id}

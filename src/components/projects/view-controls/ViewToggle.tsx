@@ -1,4 +1,3 @@
-import { Button } from "@/components/ui/button";
 import type { View } from "@/pages/ProjectsPage";
 import { List, Grid3x3 } from "lucide-react";
 
@@ -9,25 +8,33 @@ type ViewToggleProps = {
 
 const ViewToggle = ({ value, onChange }: ViewToggleProps) => {
   return (
-    <div>
-      <Button
+    <div className="flex border h-8 rounded-md">
+      <button
         onClick={() => onChange("card")}
-        variant="outline"
-        className="mr-2"
+        className="flex items-center gap-2 px-3
+          border border-transparent rounded-l-md -m-px
+          data-[state=active]:border-accent"
         data-state={value === "card" ? "active" : "inactive"}
       >
-        <Grid3x3 stroke={value === "card" ? "#FF8421" : "black"} />
+        <Grid3x3
+          stroke={value === "card" ? "#FF8421" : "black"}
+          className="size-4"
+        />
         Card
-      </Button>
+      </button>
 
-      <Button
+      <button
+        className="flex items-center rounded-r-md gap-2 px-3 border border-transparent -m-px
+          data-[state=active]:border-accent"
         onClick={() => onChange("list")}
-        variant="outline"
         data-state={value === "list" ? "active" : "inactive"}
       >
-        <List stroke={value === "list" ? "#FF8421" : "black"} />
+        <List
+          stroke={value === "list" ? "#FF8421" : "black"}
+          className="size-4"
+        />
         Liste
-      </Button>
+      </button>
     </div>
   );
 };

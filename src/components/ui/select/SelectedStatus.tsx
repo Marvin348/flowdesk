@@ -8,21 +8,18 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { STATUS_OPTIONS } from "@/constants/status-options";
-import type { ContentFilter } from "@/store/slices/filter";
 import type { StatusBase } from "@/type/domain/StatusBase";
 
 type SelectedStatusProps = {
-  setFilter: (value: ContentFilter) => void;
+  onChange: (value: StatusBase) => void;
   value?: StatusBase;
 };
 
-const SelectedStatus = ({ setFilter, value }: SelectedStatusProps) => {
+const SelectedStatus = ({ onChange, value }: SelectedStatusProps) => {
   return (
     <Select
       value={value ?? ""}
-      onValueChange={(value) =>
-        setFilter({ status: value === "" ? undefined : (value as StatusBase) })
-      }
+      onValueChange={(value) => onChange(value as StatusBase)}
     >
       <SelectTrigger className="w-full text-surface/80">
         <SelectValue placeholder="Wähle einen Status" />
@@ -34,7 +31,8 @@ const SelectedStatus = ({ setFilter, value }: SelectedStatusProps) => {
             <SelectItem
               key={opt.value}
               value={opt.value}
-              onClick={() => setFilter({ status: opt.value })}
+              onClick={() => onChange(opt.value)}
+              className="focus:bg-surface/5"
             >
               {opt.label}
             </SelectItem>

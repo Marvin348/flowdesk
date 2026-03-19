@@ -5,7 +5,6 @@ import {
   UserStar,
   BriefcaseBusiness,
   MessageSquareMore,
-  Settings,
 } from "lucide-react";
 
 export const TAB_VIEW_OPTIONS = [

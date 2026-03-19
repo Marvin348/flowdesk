@@ -45,7 +45,14 @@ const AddTaskForm = ({ onClose, projectId, teamUserIds }: AddTaskFormProps) => {
     reset,
   } = useForm<FormFields>({
     resolver: zodResolver(formSchema),
-    defaultValues: { tags: [], reminderAt: "none", collaboratorIds: [] },
+    defaultValues: {
+      title: "",
+      tags: [],
+      reminderAt: "none",
+      collaboratorIds: [],
+      description: "",
+      dueDate: "",
+    },
   });
 
   const onSubmit = (data: FormFields) => {
@@ -116,9 +123,8 @@ const AddTaskForm = ({ onClose, projectId, teamUserIds }: AddTaskFormProps) => {
             <CollaboratorMultiSelectField
               value={field.value}
               onChange={field.onChange}
+              visibleUserIds={teamUserIds}
               error={fieldState.error?.message}
-              teamUserIds={teamUserIds as string[]}
-              mode="task"
             />
           )}
         />
@@ -126,16 +132,17 @@ const AddTaskForm = ({ onClose, projectId, teamUserIds }: AddTaskFormProps) => {
 
       <div className="mt-4 text-sm">
         <div className="grid grid-cols-2">
-          <label className="flex items-center gap-2">
+          <label htmlFor="tags" className="flex items-center gap-2">
             <Tags className="size-4" /> Tags
           </label>
           <div className="relative">
             <input
+              id="tags"
               type="text"
               value={tagsInput}
               onChange={(e) => setTagsInput(e.target.value)}
               placeholder="Tags..."
-              className="w-full border rounded-md p-2 pr-8"
+              className="form-input !pr-8"
               disabled={tags.length >= 2}
             />
             {tagsInput?.length >= 2 && (
@@ -168,14 +175,15 @@ const AddTaskForm = ({ onClose, projectId, teamUserIds }: AddTaskFormProps) => {
       </div>
 
       <div className="mt-4 grid grid-cols-2 text-sm">
-        <label className="flex items-center gap-2">
+        <label htmlFor="dueDate" className="flex items-center gap-2">
           <CalendarClock className="size-4" /> Datum
         </label>
         <input
           {...register("dueDate")}
+          id="dueDate"
           type="date"
           placeholder="Wähle ein Datum"
-          className="w-full border rounded-md p-2"
+          className="form-input"
         />
         {errors.dueDate && (
           <p className="error-text">{errors.dueDate?.message}</p>
@@ -200,9 +208,12 @@ const AddTaskForm = ({ onClose, projectId, teamUserIds }: AddTaskFormProps) => {
       </div>
 
       <div className="mt-4 border-t pt-4">
-        <label className="mb-1 block text-sm">Beschreibung hinzufügen</label>
+        <label htmlFor="description" className="mb-1 block text-sm">
+          Beschreibung hinzufügen
+        </label>
         <textarea
           {...register("description")}
+          id="description"
           className="w-full h-20 p-2 resize-none rounded-md bg-surface/5"
         />
       </div>

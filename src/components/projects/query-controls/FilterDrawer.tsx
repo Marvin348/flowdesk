@@ -89,7 +89,7 @@ const FilterDrawer = ({ onClose, isOpen }: FilterDrawerProps) => {
               <div className="mt-1">
                 <SelectedStatus
                   value={draftFilter.status}
-                  setFilter={setFilter}
+                  onChange={(status) => setFilter({ status })}
                 />
               </div>
             </div>

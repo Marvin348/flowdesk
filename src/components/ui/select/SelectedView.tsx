@@ -32,7 +32,11 @@ const SelectedView = ({ value, setFilter }: SelectedViewProps) => {
         <SelectGroup>
           <SelectLabel>Eigenschaften</SelectLabel>
           {Object.values(FILTER_VIEW_OPTIONS).map((opt) => (
-            <SelectItem key={opt.value} value={opt.value}>
+            <SelectItem
+              key={opt.value}
+              value={opt.value}
+              className="focus:bg-surface/5"
+            >
               {opt.label}
             </SelectItem>
           ))}

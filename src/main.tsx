@@ -6,7 +6,6 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import AppLayout from "@/components/layout/AppLayout";
 import DashboardPage from "@/pages/DashboardPage";
 import ProjectsPage from "@/pages/ProjectsPage";
-import CreateProjectsPage from "@/pages/CreateProjectsPage";
 import TeamPage from "@/pages/TeamPage";
 import ProjectPage from "@/pages/ProjectPage";
 
@@ -27,10 +26,6 @@ const rounter = createBrowserRouter([
       {
         path: "/project/:id",
         element: <ProjectPage />,
-      },
-      {
-        path: "/create",
-        element: <CreateProjectsPage />,
       },
       {
         path: "/team",

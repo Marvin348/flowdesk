@@ -52,8 +52,7 @@ const InviteUserModal = ({
               <CollaboratorMultiSelectField
                 value={selectedUserIds}
                 onChange={setSelectedIds}
-                teamUserIds={teamUserIds}
-                mode="invite"
+                disabledUserIds={teamUserIds}
               />
             </div>
 
