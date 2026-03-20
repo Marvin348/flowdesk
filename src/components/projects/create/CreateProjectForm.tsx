@@ -2,22 +2,26 @@ import CollaboratorMultiSelectField from "@/components/collaborators/Collaborato
 import { Button } from "@/components/ui/button";
 import SelectedPriority from "@/components/ui/select/SelectedPriority";
 import SelectedStatus from "@/components/ui/select/SelectedStatus";
-import z from "zod";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import type { StatusBase } from "@/type/domain/StatusBase";
-import type { Priority } from "@/type/domain/priority";
+import { useCreateProject } from "@/mutations/project/useCreateProject";
+import { PRIORITY } from "@/type/domain/priority";
+import { STATUSBASE } from "@/type/domain/StatusBase";
+import { Spinner } from "@/components/ui/spinner";
+import z from "zod";
 
 type CreateProjectFormProps = {
   onClose: () => void;
 };
 
 const CreateProjectForm = ({ onClose }: CreateProjectFormProps) => {
+  const { mutate, isPending, error } = useCreateProject();
+
   const formSchema = z.object({
     title: z.string().min(3, "Titel eingeben"),
     dueDate: z.string().min(1, "Deadline wählen"),
-    status: z.string(),
-    priority: z.string,
+    projectStatus: z.enum(STATUSBASE),
+    priority: z.enum(PRIORITY),
     invitedUserIds: z.array(z.string()).min(1, "Mitarbeiter angeben"),
     description: z.string().optional(),
   });
@@ -27,23 +31,41 @@ const CreateProjectForm = ({ onClose }: CreateProjectFormProps) => {
   const {
     register,
     handleSubmit,
-    watch,
     control,
     formState: { errors },
+    reset,
   } = useForm<FormFields>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       title: "",
       dueDate: "",
-      status: "pending",
+      projectStatus: "pending",
       priority: "low",
       invitedUserIds: [],
       description: "",
     },
   });
 
+  const onSubmit = (data: FormFields) => {
+    const input = {
+      ...data,
+    };
+
+    mutate(input, {
+      onSuccess: () => {
+        onClose();
+        reset();
+      },
+    });
+  };
+
+  const handleClose = () => {
+    reset();
+    onClose();
+  };
+
   return (
-    <form className="text-surface/90">
+    <form onSubmit={handleSubmit(onSubmit)} className="text-surface/90">
       <div>
         <div className="mt-6 grid grid-cols-2 items-center gap-6">
           <div>
@@ -55,8 +77,11 @@ const CreateProjectForm = ({ onClose }: CreateProjectFormProps) => {
               id="title"
               type="text"
               className="form-input"
+              placeholder="Name"
             />
-            {errors.title && <p>{errors.title.message}</p>}
+            {errors.title && (
+              <p className="mt-1 error-text">{errors.title.message}</p>
+            )}
           </div>
 
           <div>
@@ -69,21 +94,20 @@ const CreateProjectForm = ({ onClose }: CreateProjectFormProps) => {
               type="date"
               className="form-input"
             />
+            {errors.dueDate && (
+              <p className="mt-1 error-text">{errors.dueDate.message}</p>
+            )}
           </div>
-          {errors.dueDate && <p>{errors.dueDate.message}</p>}
         </div>
 
         <div className="mt-4 grid grid-cols-2 items-center gap-6">
           <div>
             <label className="mb-1 block text-sm">Status</label>
             <Controller
-              name="status"
+              name="projectStatus"
               control={control}
-              render={({ field, fieldState }) => (
-                <SelectedStatus
-                  value={field.value as StatusBase}
-                  onChange={field.onChange}
-                />
+              render={({ field }) => (
+                <SelectedStatus value={field.value} onChange={field.onChange} />
               )}
             />
           </div>
@@ -93,9 +117,9 @@ const CreateProjectForm = ({ onClose }: CreateProjectFormProps) => {
             <Controller
               name="priority"
               control={control}
-              render={({ field, fieldState }) => (
+              render={({ field }) => (
                 <SelectedPriority
-                  value={field.value as Priority}
+                  value={field.value}
                   onChange={field.onChange}
                 />
               )}
@@ -135,7 +159,7 @@ const CreateProjectForm = ({ onClose }: CreateProjectFormProps) => {
           variant="outline"
           type="button"
           className="hover:bg-surface/5"
-          onClick={onClose}
+          onClick={handleClose}
         >
           Schließen
         </Button>
@@ -144,7 +168,7 @@ const CreateProjectForm = ({ onClose }: CreateProjectFormProps) => {
           className="bg-accent hover:bg-accent/95 w-30"
           type="submit"
         >
-          Sichern
+          Sichern {isPending && <Spinner />}
         </Button>
       </div>
     </form>

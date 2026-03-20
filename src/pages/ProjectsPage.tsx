@@ -69,7 +69,7 @@ const ProjectsPage = () => {
         <ProjectList projects={filteredProjects} />
       </div>
 
-      {isModalOpen && <CreateProjectModal onClose={() => setIsModalOpen(false)}/>}
+      {isModalOpen && <CreateProjectModal onClose={() => setIsModalOpen(false)} isOpen={isModalOpen}/>}
     </>
   );
 };

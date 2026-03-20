@@ -28,7 +28,7 @@ const AddTaskPanel = ({ onOpen, onClose, projectId, teamUserIds }: AddTaskPanelP
               className="text-surface/80 hover:text-black"
               onClick={onClose}
             >
-              <X />
+              <X/>
             </button>
           </div>
           

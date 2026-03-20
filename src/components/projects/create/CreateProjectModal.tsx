@@ -1,12 +1,15 @@
 import { FolderOpen } from "lucide-react";
 import CreateProjectForm from "@/components/projects/create/CreateProjectForm";
+import { useScrollLock } from "@/hooks/useScrollLock";
 
 type CreateProjectModalProps = {
   onClose: () => void;
-  // teamUserIds: string[];
+  isOpen: boolean;
 };
 
-const CreateProjectModal = ({ onClose }: CreateProjectModalProps) => {
+const CreateProjectModal = ({ onClose, isOpen }: CreateProjectModalProps) => {
+  useScrollLock(isOpen);
+
   return (
     <div className="overlay flex items-center justify-center">
       <div className="bg-white w-md h-auto rounded-md p-4 z-100">
@@ -19,7 +22,7 @@ const CreateProjectModal = ({ onClose }: CreateProjectModalProps) => {
         </div>
 
         <div>
-          <CreateProjectForm onClose={onClose}/>
+          <CreateProjectForm onClose={onClose} />
         </div>
       </div>
     </div>

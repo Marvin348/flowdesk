@@ -21,7 +21,7 @@ const SelectedStatus = ({ onChange, value }: SelectedStatusProps) => {
       value={value ?? ""}
       onValueChange={(value) => onChange(value as StatusBase)}
     >
-      <SelectTrigger className="w-full text-surface/80">
+      <SelectTrigger className="w-full">
         <SelectValue placeholder="Wähle einen Status" />
       </SelectTrigger>
       <SelectContent>
