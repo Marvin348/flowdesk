@@ -6,9 +6,6 @@ import TeamToolbar from "@/components/pages/teamPage/toolbar/TeamToolbar";
 import { Spinner } from "@/components/ui/spinner";
 import { usePagination } from "@/hooks/usePagination";
 import TeamPagination from "@/components/pages/teamPage/TeamPagination";
-import { getTeamStats } from "@/utils/performance/getTeamStats";
-import OverviewStats from "@/components/performance/OverviewStats";
-import { getTeamStatCards } from "@/utils/performance/getTeamStatCards";
 
 const TeamPage = () => {
   const {
@@ -26,8 +23,6 @@ const TeamPage = () => {
   const error = usersError ?? tasksError;
 
   const userPerformance = getUserPerformance(users, tasks);
-  const teamStats = getTeamStats(userPerformance);
-  const statCards = getTeamStatCards(teamStats);
 
   const { currentPage, setCurrentPage, pageData, totalPages } =
     usePagination(userPerformance);
@@ -36,9 +31,6 @@ const TeamPage = () => {
 
   return (
     <div>
-      <section>
-        <OverviewStats stats={statCards} />
-      </section>
 
       <div className="my-6">
         <TeamToolbar />
