@@ -1,5 +1,6 @@
 import type { Project } from "@/type/domain/project";
 import type { Task } from "@/type/domain/task";
+import { calcPercent } from "@/utils/calcPercent";
 
 export type DashboardOverviewStats = {
   activeProjects: number;
@@ -39,9 +40,7 @@ export const getDashboardOverviewStats = (
   const openTasks =
     stats.byStatusCounts.pending + stats.byStatusCounts.in_progress;
 
-  const completionRate = totalTasks
-    ? Math.round((stats.byStatusCounts.done / totalTasks) * 100)
-    : 0;
+  const completionRate = calcPercent(stats.byStatusCounts.done, totalTasks);
 
   return {
     activeProjects,

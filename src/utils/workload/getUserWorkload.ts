@@ -1,5 +1,6 @@
 import type { TaskWithMeta } from "@/type/view-models/taskWithMeta";
 import type { User } from "@/type/domain/user";
+import { calcPercent } from "@/utils/calcPercent";
 
 export type UserWorkloadStats = {
   totalTasks: number;
@@ -43,9 +44,10 @@ export const getUserWorkload = (tasks: TaskWithMeta[]) => {
     const openCount =
       stats.byStatusCounts.pending + stats.byStatusCounts.in_progress;
 
-    const progressPercent = stats.totalTasks
-      ? Math.round((stats.byStatusCounts.done / stats.totalTasks) * 100)
-      : 0;
+    const progressPercent = calcPercent(
+      stats.byStatusCounts.done,
+      stats.totalTasks,
+    );
 
     return {
       ...stats,

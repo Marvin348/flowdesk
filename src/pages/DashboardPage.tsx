@@ -1,8 +1,11 @@
 import { useProjectDomainAll } from "@/domain/projects/useProjectDomainAll";
 import { useCoreData } from "@/domain/projects/useCoreData";
-import { getDashboardOverviewStats } from "@/utils/overview/getDashboardOverviewStats";
+import { getDashboardOverviewStats } from "@/utils/dashboard/getDashboardOverviewStats";
 import DashboardStats from "@/components/pages/dashboardPage/stats/DashboardStats";
-import { getDashboardStatCards } from "@/utils/overview/getDashboardStatCards";
+import { mapDashboardStatCards } from "@/utils/dashboard/mapDashboardStatCards";
+import { getTaskStatusDistribution } from "@/utils/dashboard/getTaskStatusDistribution";
+import TaskStatusDistribution from "@/components/pages/dashboardPage/statusDistribution/TaskStatusDistribution";
+import { mapTaskStatusDistributionToItems } from "@/utils/dashboard/mapTaskStatusDistributionToItems";
 
 const DashboardPage = () => {
   const {
@@ -12,13 +15,24 @@ const DashboardPage = () => {
   const { projects } = useCoreData();
 
   const dashboardOverviewStats = getDashboardOverviewStats(projects, tasks);
-  const statCards = getDashboardStatCards(dashboardOverviewStats);
+  const statCards = mapDashboardStatCards(dashboardOverviewStats);
+
+  const taskStatusDistribution = getTaskStatusDistribution(tasks);
+  const taskStatusItems = mapTaskStatusDistributionToItems(
+    taskStatusDistribution,
+  );
+
+  console.log("taskStatusItems", taskStatusItems);
 
   return (
     <div>
-      <div>
-        <DashboardStats stats={statCards}/>
-        </div>
+      <section>
+        <DashboardStats stats={statCards} />
+      </section>
+
+      <section className="mt-6">
+        <TaskStatusDistribution items={taskStatusItems} />
+      </section>
     </div>
   );
 };

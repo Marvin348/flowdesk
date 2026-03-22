@@ -1,4 +1,4 @@
-import type { DashboardOverviewStats } from "@/utils/overview/getDashboardOverviewStats";
+import type { DashboardOverviewStats } from "@/utils/dashboard/getDashboardOverviewStats";
 
 export type StatCardItem = {
   id: string;
@@ -7,7 +7,7 @@ export type StatCardItem = {
   iconKey: "projects" | "totalTasks" | "completionRate" | "openTasks";
 };
 
-export const getDashboardStatCards = (
+export const mapDashboardStatCards = (
   stats: DashboardOverviewStats,
 ): StatCardItem[] => {
   return [

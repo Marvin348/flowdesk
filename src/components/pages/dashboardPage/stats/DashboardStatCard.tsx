@@ -1,4 +1,9 @@
-import { Folders, ClipboardClock, TrendingUp, ClipboardList } from "lucide-react";
+import {
+  Folders,
+  ClipboardClock,
+  TrendingUp,
+  ClipboardList,
+} from "lucide-react";
 
 const ICON_LOOKUP = {
   projects: { icon: Folders, color: "#FFD580" },
@@ -7,7 +12,7 @@ const ICON_LOOKUP = {
   totalTasks: { icon: ClipboardList, color: "#DAB1DA" },
 };
 
-import type { StatCardItem } from "@/utils/overview/getDashboardStatCards";
+import type { StatCardItem } from "@/utils/dashboard/mapDashboardStatCards";
 
 const DashboardStatCard = ({ stat }: { stat: StatCardItem }) => {
   const Icon = ICON_LOOKUP[stat.iconKey].icon;

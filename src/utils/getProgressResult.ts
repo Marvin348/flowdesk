@@ -1,4 +1,5 @@
 import type { Task } from "@/type/domain/task";
+import { calcPercent } from "@/utils/calcPercent";
 
 export type Progress = ReturnType<typeof getProgressResult>;
 
@@ -21,7 +22,7 @@ export const getProgressResult = (tasks: Task[]) => {
   );
 
   result.total = total;
-  result.percent = total ? Math.round((result.completed / total) * 100) : 0;
+  result.percent = calcPercent(result.completed, result.total);
 
   return result;
 };
