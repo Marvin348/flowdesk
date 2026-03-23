@@ -14,7 +14,7 @@ const TaskStatusDistributionCard = ({
         }}
       >
         <div className="px-4 pb-2">
-          <p className="mb-2 text-lg text-muted-foreground">{item.label}</p>
+          <p className="mb-2 text-muted-foreground">{item.label}</p>
           <p className="font-semibold text-lg">{item.value}%</p>
         </div>
 

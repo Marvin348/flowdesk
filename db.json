@@ -232,7 +232,8 @@
       "collaboratorIds": [
         "u4",
         "u2"
-      ]
+      ],
+      "taskPriority": "low"
     },
     {
       "id": "t2",
@@ -244,7 +245,8 @@
         "u1",
         "u5",
         "u12"
-      ]
+      ],
+      "taskPriority": "low"
     },
     {
       "id": "t3",
@@ -255,7 +257,8 @@
       "collaboratorIds": [
         "u8",
         "u6"
-      ]
+      ],
+      "taskPriority": "medium"
     },
     {
       "id": "t4",
@@ -266,7 +269,8 @@
       "collaboratorIds": [
         "u1",
         "u7"
-      ]
+      ],
+      "taskPriority": "high"
     },
     {
       "id": "t5",
@@ -277,7 +281,8 @@
       "collaboratorIds": [
         "u10",
         "u4"
-      ]
+      ],
+      "taskPriority": "low"
     },
     {
       "id": "t6",
@@ -288,7 +293,8 @@
       "collaboratorIds": [
         "u15",
         "u11"
-      ]
+      ],
+      "taskPriority": "medium"
     },
     {
       "id": "t7",
@@ -299,7 +305,8 @@
       "collaboratorIds": [
         "u5",
         "u2"
-      ]
+      ],
+      "taskPriority": "high"
     },
     {
       "id": "t8",
@@ -310,7 +317,8 @@
       "collaboratorIds": [
         "u7",
         "u13"
-      ]
+      ],
+      "taskPriority": "high"
     },
     {
       "id": "t9",
@@ -322,7 +330,8 @@
         "u11",
         "u3",
         "u4"
-      ]
+      ],
+      "taskPriority": "high"
     },
     {
       "id": "t10",
@@ -333,7 +342,8 @@
       "collaboratorIds": [
         "u2",
         "u6"
-      ]
+      ],
+      "taskPriority": "medium"
     },
     {
       "id": "t11",
@@ -344,7 +354,8 @@
       "collaboratorIds": [
         "u5",
         "u12"
-      ]
+      ],
+      "taskPriority": "medium"
     },
     {
       "id": "t12",
@@ -355,7 +366,8 @@
       "collaboratorIds": [
         "u1",
         "u10"
-      ]
+      ],
+      "taskPriority": "medium"
     },
     {
       "id": "t13",
@@ -367,7 +379,8 @@
         "u2",
         "u6",
         "u1"
-      ]
+      ],
+      "taskPriority": "low"
     },
     {
       "id": "t14",
@@ -378,7 +391,8 @@
       "collaboratorIds": [
         "u3",
         "u11"
-      ]
+      ],
+      "taskPriority": "low"
     },
     {
       "id": "t15",
@@ -390,7 +404,8 @@
         "u7",
         "u13",
         "u3"
-      ]
+      ],
+      "taskPriority": "low"
     },
     {
       "id": "t16",
@@ -401,7 +416,8 @@
       "collaboratorIds": [
         "u11",
         "u3"
-      ]
+      ],
+      "taskPriority": "medium"
     },
     {
       "id": "t17",
@@ -412,7 +428,8 @@
       "collaboratorIds": [
         "u4",
         "u7"
-      ]
+      ],
+      "taskPriority": "medium"
     },
     {
       "id": "t18",
@@ -423,7 +440,8 @@
       "collaboratorIds": [
         "u9",
         "u5"
-      ]
+      ],
+      "taskPriority": "medium"
     },
     {
       "id": "t19",
@@ -434,7 +452,8 @@
       "collaboratorIds": [
         "u9",
         "u12"
-      ]
+      ],
+      "taskPriority": "low"
     },
     {
       "id": "t20",
@@ -445,7 +464,8 @@
       "collaboratorIds": [
         "u9",
         "u7"
-      ]
+      ],
+      "taskPriority": "low"
     },
     {
       "id": "t21",
@@ -457,7 +477,8 @@
         "u6",
         "u8",
         "u2"
-      ]
+      ],
+      "taskPriority": "high"
     },
     {
       "id": "t22",
@@ -468,7 +489,8 @@
       "collaboratorIds": [
         "u10",
         "u4"
-      ]
+      ],
+      "taskPriority": "medium"
     },
     {
       "id": "t23",
@@ -479,7 +501,8 @@
       "collaboratorIds": [
         "u1",
         "u7"
-      ]
+      ],
+      "taskPriority": "high"
     },
     {
       "id": "t24",
@@ -490,7 +513,8 @@
       "collaboratorIds": [
         "u7",
         "u13"
-      ]
+      ],
+      "taskPriority": "high"
     },
     {
       "id": "t25",
@@ -502,7 +526,8 @@
         "u11",
         "u3",
         "u7"
-      ]
+      ],
+      "taskPriority": "medium"
     },
     {
       "id": "t26",
@@ -513,7 +538,8 @@
       "collaboratorIds": [
         "u13",
         "u7"
-      ]
+      ],
+      "taskPriority": "medium"
     },
     {
       "id": "t27",
@@ -524,7 +550,8 @@
       "collaboratorIds": [
         "u7",
         "u11"
-      ]
+      ],
+      "taskPriority": "low"
     },
     {
       "id": "t28",
@@ -535,7 +562,8 @@
       "collaboratorIds": [
         "u4",
         "u1"
-      ]
+      ],
+      "taskPriority": "low"
     },
     {
       "id": "t29",
@@ -546,7 +574,8 @@
       "collaboratorIds": [
         "u1",
         "u6"
-      ]
+      ],
+      "taskPriority": "low"
     },
     {
       "id": "t30",
@@ -557,7 +586,8 @@
       "collaboratorIds": [
         "u4",
         "u10"
-      ]
+      ],
+      "taskPriority": "medium"
     },
     {
       "id": "t31",
@@ -569,7 +599,8 @@
         "u12",
         "u2",
         "u9"
-      ]
+      ],
+      "taskPriority": "high"
     },
     {
       "id": "t32",
@@ -581,7 +612,8 @@
         "u3",
         "u7",
         "u4"
-      ]
+      ],
+      "taskPriority": "medium"
     },
     {
       "id": "a54a8a2d-b40d-447d-a529-8b308de2b23e",
@@ -594,7 +626,8 @@
       ],
       "description": "",
       "tags": [],
-      "reminderAt": "none"
+      "reminderAt": "none",
+      "taskPriority": "high"
     },
     {
       "id": "92e44edc-fa31-4d41-8978-93fb1b0dbda8",
@@ -610,7 +643,8 @@
         "first",
         "tags"
       ],
-      "reminderAt": "30 minutes before"
+      "reminderAt": "30 minutes before",
+      "taskPriority": "low"
     },
     {
       "id": "dfafc4d7-1b98-4f1d-ac54-1795f40ebb87",
@@ -623,7 +657,8 @@
       ],
       "description": "",
       "tags": [],
-      "reminderAt": "none"
+      "reminderAt": "none",
+      "taskPriority": "low"
     },
     {
       "id": "3690f8ad-d97a-4615-aed8-e2054448725f",
@@ -636,7 +671,8 @@
       ],
       "description": "",
       "tags": [],
-      "reminderAt": "none"
+      "reminderAt": "none",
+      "taskPriority": "medium"
     },
     {
       "id": "268823ce-a68e-4e66-b945-f71a7e85bf88",
@@ -651,7 +687,8 @@
       "tags": [
         "website"
       ],
-      "reminderAt": "30 minutes before"
+      "reminderAt": "30 minutes before",
+      "taskPriority": "high"
     },
     {
       "id": "97e4b89c-0ad4-4f78-b3e2-fc5d4cc9693b",
@@ -667,7 +704,8 @@
       "tags": [
         "testing"
       ],
-      "reminderAt": "none"
+      "reminderAt": "none",
+      "taskPriority": "high"
     },
     {
       "id": "db2598ef-7fac-40b7-a07b-73a6d83db3db",
@@ -685,7 +723,8 @@
         "ui",
         "spinner"
       ],
-      "reminderAt": "1 hour before"
+      "reminderAt": "1 hour before",
+      "taskPriority": "low"
     },
     {
       "id": "f6baa796-12d0-4ba1-8814-469f298912d0",
@@ -703,7 +742,8 @@
         "ui",
         "spinner"
       ],
-      "reminderAt": "none"
+      "reminderAt": "none",
+      "taskPriority": "medium"
     },
     {
       "id": "3dcc1511-42fe-4013-ac67-5f0d37067267",
@@ -716,7 +756,8 @@
       ],
       "description": "",
       "tags": [],
-      "reminderAt": "none"
+      "reminderAt": "none",
+      "taskPriority": "medium"
     }
   ],
   "attachments": [

@@ -23,7 +23,7 @@ const SelectedReminder = ({ value, onChange }: SelectedReminderProps) => {
 
   return (
     <Select value={value} onValueChange={onChange}>
-      <SelectTrigger className="w-full text-surface/80">
+      <SelectTrigger className="w-full">
         <SelectValue placeholder="Reminder wählen" />
       </SelectTrigger>
       <SelectContent position="popper" className="z-100">

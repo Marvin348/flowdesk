@@ -13,10 +13,19 @@ const ListView = ({ tasks }: { tasks: TaskWithMeta[] }) => {
   const toggleOpenStatus = (value: StatusBase) =>
     setOpenStatus((prev) => (prev === value ? null : value));
 
+  const tableHeader = [
+    { label: "Name", value: "name" },
+    { label: "Mitarbeiter", value: "assignee" },
+    { label: "Deadline", value: "dueDate" },
+    { label: "Priorität", value: "priority" },
+  ];
+
   return (
     <>
-      <div className="p-2 bg-muted-foreground/10 rounded-md">
-        Filter by name, assignee annd priority
+      <div className="grid grid-cols-4 p-2 bg-muted-foreground/10 rounded-md">
+        {tableHeader.map((header) => (
+          <p key={header.value}>{header.label}</p>
+        ))}
       </div>
 
       <div className="mt-6">

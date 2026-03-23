@@ -1,7 +1,13 @@
 import CollaboratorMultiSelectField from "@/components/collaborators/CollaboratorMultiSelectField";
 import { Button } from "@/components/ui/button";
 import SelectedReminder from "@/components/ui/select/SelectedReminder";
-import { CalendarClock, Bell, Tags, CircleArrowRight } from "lucide-react";
+import {
+  CalendarClock,
+  Bell,
+  Tags,
+  CircleArrowRight,
+  CircleArrowUp,
+} from "lucide-react";
 import { z } from "zod";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -9,6 +15,8 @@ import { useState } from "react";
 import { useCreateTask } from "@/mutations/task/useCreateTask";
 import type { CreateTaskInput } from "@/type/inputs/createTaskInput";
 import { Spinner } from "@/components/ui/spinner";
+import { PRIORITY } from "@/type/domain/priority";
+import SelectedPriority from "@/components/ui/select/SelectedPriority";
 
 type AddTaskFormProps = {
   onClose: () => void;
@@ -24,11 +32,12 @@ const AddTaskForm = ({ onClose, projectId, teamUserIds }: AddTaskFormProps) => {
   const formSchema = z.object({
     title: z.string().min(3, "Titel eingeben"),
     collaboratorIds: z.array(z.string()).min(1, "Mitarbeiter angeben"),
-    dueDate: z.string().date(),
+    dueDate: z.string().min(1, "Deadline wählen"),
     tags: z
       .array(z.string().min(2, "Tag min. 2 Zeichen"))
       .max(3, "Maximal 3 Tags")
       .optional(),
+    taskPriority: z.enum(PRIORITY),
     reminderAt: z.string().optional(),
     description: z.string().optional(),
   });
@@ -52,6 +61,7 @@ const AddTaskForm = ({ onClose, projectId, teamUserIds }: AddTaskFormProps) => {
       collaboratorIds: [],
       description: "",
       dueDate: "",
+      taskPriority: "low",
     },
   });
 
@@ -145,7 +155,7 @@ const AddTaskForm = ({ onClose, projectId, teamUserIds }: AddTaskFormProps) => {
               className="form-input !pr-8"
               disabled={tags.length >= 2}
             />
-            {tagsInput?.length >= 2 && (
+            {tagsInput?.length >= 2 && ( 
               <button
                 className="absolute top-0 bottom-0 right-2"
                 type="button"
@@ -174,7 +184,7 @@ const AddTaskForm = ({ onClose, projectId, teamUserIds }: AddTaskFormProps) => {
         )}
       </div>
 
-      <div className="mt-4 grid grid-cols-2 text-sm">
+      <div className="mt-2 grid grid-cols-2 text-sm">
         <label htmlFor="dueDate" className="flex items-center gap-2">
           <CalendarClock className="size-4" /> Datum
         </label>
@@ -187,6 +197,23 @@ const AddTaskForm = ({ onClose, projectId, teamUserIds }: AddTaskFormProps) => {
         />
         {errors.dueDate && (
           <p className="error-text">{errors.dueDate?.message}</p>
+        )}
+      </div>
+
+      <div className="mt-4 grid grid-cols-2 text-sm">
+        <label className="flex items-center gap-2">
+          <CircleArrowUp className="size-4" /> Priorität
+        </label>
+
+        <Controller
+          name="taskPriority"
+          control={control}
+          render={({ field }) => (
+            <SelectedPriority value={field.value} onChange={field.onChange} />
+          )}
+        />
+        {errors.taskPriority && (
+          <p className="error-text">{errors.taskPriority?.message}</p>
         )}
       </div>
 

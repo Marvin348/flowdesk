@@ -15,6 +15,7 @@ export const createTask = async (input: CreateTaskInput): Promise<Task> => {
     title: input.title,
     dueDate: input.dueDate,
     taskStatus: "pending",
+    taskPriority: input.taskPriority,
     collaboratorIds: input.collaboratorIds,
     description: input.description,
     tags: input.tags,
