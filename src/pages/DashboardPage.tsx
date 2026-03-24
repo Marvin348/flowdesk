@@ -7,6 +7,7 @@ import { getTaskStatusDistribution } from "@/utils/dashboard/getTaskStatusDistri
 import TaskStatusDistribution from "@/components/pages/dashboardPage/statusDistribution/TaskStatusDistribution";
 import { mapTaskStatusDistributionToItems } from "@/utils/dashboard/mapTaskStatusDistributionToItems";
 import PriorityChartSection from "@/components/pages/dashboardPage/charts/PriorityChartSection";
+import { getTaskPriorityItems } from "@/utils/dashboard/getTaskPriorityItems";
 
 const DashboardPage = () => {
   const {
@@ -23,8 +24,9 @@ const DashboardPage = () => {
     taskStatusDistribution,
   );
 
-  console.log("tasks", tasks)
-  console.log("taskStatusItems", taskStatusItems);
+  const taskPriorityItems = getTaskPriorityItems(tasks);
+
+  console.log("taskPriorityItems", taskPriorityItems)
 
   return (
     <div>
@@ -32,13 +34,15 @@ const DashboardPage = () => {
         <DashboardStats stats={statCards} />
       </section>
 
-      <section className="mt-6">
-        <TaskStatusDistribution items={taskStatusItems} />
+    <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-[2fr_1fr]">
+      <section>
+        <TaskStatusDistribution statusItems={taskStatusItems} />
       </section>
 
-      <section className="mt-6">
-        <PriorityChartSection />
+      <section>
+        <PriorityChartSection priorityItems={taskPriorityItems}/>
       </section>
+    </div>
     </div>
   );
 };

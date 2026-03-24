@@ -13,5 +13,10 @@ export const STATUS_OPTIONS = {
     color: "#ADD8E6",
     icon: ClockFading,
   },
-  done: { label: "Erledigt", value: "done", color: "#90EE90", icon: CircleDot },
+  done: {
+    label: "Erledigt",
+    value: "done",
+    color: "#90EE90",
+    icon: CircleDot,
+  },
 } as const;

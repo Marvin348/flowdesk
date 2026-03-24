@@ -367,7 +367,7 @@
         "u1",
         "u10"
       ],
-      "taskPriority": "medium"
+      "taskPriority": "low"
     },
     {
       "id": "t13",
@@ -417,7 +417,7 @@
         "u11",
         "u3"
       ],
-      "taskPriority": "medium"
+      "taskPriority": "high"
     },
     {
       "id": "t17",
@@ -453,7 +453,7 @@
         "u9",
         "u12"
       ],
-      "taskPriority": "low"
+      "taskPriority": "medium"
     },
     {
       "id": "t20",
@@ -465,7 +465,7 @@
         "u9",
         "u7"
       ],
-      "taskPriority": "low"
+      "taskPriority": "high"
     },
     {
       "id": "t21",
@@ -527,7 +527,7 @@
         "u3",
         "u7"
       ],
-      "taskPriority": "medium"
+      "taskPriority": "high"
     },
     {
       "id": "t26",
@@ -539,7 +539,7 @@
         "u13",
         "u7"
       ],
-      "taskPriority": "medium"
+      "taskPriority": "high"
     },
     {
       "id": "t27",
@@ -575,7 +575,7 @@
         "u1",
         "u6"
       ],
-      "taskPriority": "low"
+      "taskPriority": "high"
     },
     {
       "id": "t30",
@@ -757,7 +757,7 @@
       "description": "",
       "tags": [],
       "reminderAt": "none",
-      "taskPriority": "medium"
+      "taskPriority": "low"
     }
   ],
   "attachments": [

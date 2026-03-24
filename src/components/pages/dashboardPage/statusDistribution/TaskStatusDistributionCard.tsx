@@ -23,7 +23,7 @@ const TaskStatusDistributionCard = ({
           style={{
             background: item.color,
             width: `${item.value}%`,
-            opacity: 0.5,
+            opacity: 0.3,
           }}
         ></div>
       </div>

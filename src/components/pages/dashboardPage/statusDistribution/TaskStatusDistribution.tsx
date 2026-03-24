@@ -3,9 +3,9 @@ import { Ellipsis } from "lucide-react";
 import TaskStatusDistributionCard from "./TaskStatusDistributionCard";
 
 const TaskStatusDistribution = ({
-  items,
+  statusItems,
 }: {
-  items: TaskStatusDistributionItem[];
+  statusItems: TaskStatusDistributionItem[];
 }) => {
   return (
     <div className="p-4 border rounded-md">
@@ -17,7 +17,7 @@ const TaskStatusDistribution = ({
       </div>
 
       <div className="flex items-center">
-        {items.map((item) => (
+        {statusItems.map((item) => (
           <TaskStatusDistributionCard key={item.id} item={item} />
         ))}
       </div>
