@@ -12,7 +12,7 @@ body {
     @apply fixed inset-0 bg-black/30 z-30;
   }
   .error-text {
-    @apply text-red-700 text-xs
+    @apply text-error text-xs
   }
   .form-input {
     @apply w-full border rounded-md h-9 p-3 shadow-xs
@@ -55,6 +55,7 @@ body {
 
   --color-accent: var(--accent);
   --color-surface: var(--surface);
+  --color-error: var(--error);
 
   --color-accent-foreground: var(--accent-foreground);
   --color-destructive: var(--destructive);
@@ -93,6 +94,7 @@ body {
 
   --accent: oklch(0.74 0.18 52);
   --surface: oklch(21.488% 0.01247 248.457);
+  --error: oklch(56% 0.23 27);
 
   --accent-foreground: oklch(0.205 0 0);
   --destructive: oklch(0.577 0.245 27.325);

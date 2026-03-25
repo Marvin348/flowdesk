@@ -29,8 +29,6 @@ const ProjectsPage = () => {
   const filteredProjects = useFilterProjects(searchedProjects, filter);
 
   console.log("projectsListVM", projectsListVM)
-  // const allTeamUserIds = projectsListVM.map((pro) => pro.teamUserIds);
-  // console.log(allTeamUserIds)
 
   return (
     <>

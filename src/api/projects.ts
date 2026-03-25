@@ -24,7 +24,9 @@ export const updateProjectMembers = async (
   return res.data;
 };
 
-export const createProject = async (input: CreateProjectInput): Promise<Project> => {
+export const createProject = async (
+  input: CreateProjectInput,
+): Promise<Project> => {
   const res = await apiClient.post(`/projects`, {
     id: crypto.randomUUID(),
     title: input.title,
@@ -37,6 +39,11 @@ export const createProject = async (input: CreateProjectInput): Promise<Project>
     updatedAt: new Date().toISOString(),
   });
 
+  return res.data;
+};
+
+export const deleteProject = async (id: string): Promise<Project> => {
+  const res = await apiClient.delete(`/projects/${id}`);
   return res.data;
 };
 

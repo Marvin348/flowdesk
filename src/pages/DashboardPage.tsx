@@ -27,7 +27,6 @@ const DashboardPage = () => {
   const taskPriorityItems = getTaskPriorityItems(tasks);
 
   console.log("taskPriorityItems", taskPriorityItems);
-  console.log(tasks)
 
   return (
     <div>

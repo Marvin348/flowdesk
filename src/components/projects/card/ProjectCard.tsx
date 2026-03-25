@@ -17,6 +17,7 @@ import { useAppStore } from "@/store";
 import type { Badge } from "@/store/slices/projectBadge";
 import { useUsersByIds } from "@/hooks/useUsersByIds";
 import type { ProjectsList } from "@/type/view-models/projectsList";
+import DeleteProjectDialog from "./DeleteProjectDialog";
 
 type ProjectCardType = {
   project: ProjectsList;
@@ -38,6 +39,8 @@ const ProjectCard = ({ project }: ProjectCardType) => {
 
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
+  const [isErrorDialogOpen, setIsErrorDialogOpen] = useState(false);
+
   useOnClickOutside(menuRef, () => setMenuOpen(false));
 
   const teamUsers = useUsersByIds(teamUserIds);
@@ -76,9 +79,19 @@ const ProjectCard = ({ project }: ProjectCardType) => {
             onClose={() => setMenuOpen(false)}
             onAction={onAction}
             badge={badge}
+            onDialog={() => setIsErrorDialogOpen(true)}
           />
         )}
       </div>
+
+      {isErrorDialogOpen && (
+        <DeleteProjectDialog
+          projectTitle={title}
+          onClose={() => setIsErrorDialogOpen(false)}
+          isOpen={isErrorDialogOpen}
+          projectId={id}
+        />
+      )}
 
       <div className="my-4">
         <div className="mb-4">
