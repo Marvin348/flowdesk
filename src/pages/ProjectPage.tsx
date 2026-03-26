@@ -79,8 +79,6 @@ const ProjectPage = () => {
     }
   };
 
-  console.log("project", project);
-
   return (
     <>
       <div className="mb-6">

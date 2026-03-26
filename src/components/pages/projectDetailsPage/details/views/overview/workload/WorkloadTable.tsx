@@ -2,14 +2,51 @@ import type { UserWorkload } from "@/utils/workload/getUserWorkload";
 import { getWorkloadStatus } from "@/utils/workload/ui/getWorkloadStatus";
 import { WORKLOAD_STATUS } from "@/constants/workload/workload-status";
 import Avatar from "@/components/projects/avatar/Avatar";
+import { ChevronsUpDown } from "lucide-react";
+import { useState } from "react";
+import { getSortedWorkloadStats } from "@/utils/workload/getSortedWorkloadStats";
 
 type WorkloadTableProps = {
   stats: UserWorkload[];
   variant?: "compact" | "full";
 };
 
+type SortKey = "name" | "total" | "open" | "status";
+
+export type SortedBy = {
+  sortKey?: SortKey;
+  sortDirection?: "asc" | "desc";
+};
+
 const WorkloadTable = ({ stats, variant }: WorkloadTableProps) => {
-  const TABLE_OPTIONS = ["Name", "Total", "Offene", "Status"];
+  const [sortedBy, setSortedBy] = useState<SortedBy | null>(null);
+
+  const toggleSortedBy = (value: SortKey) =>
+    setSortedBy((prev) => {
+      if (prev?.sortKey !== value) {
+        return {
+          sortKey: value,
+          sortDirection: "asc",
+        };
+      }
+
+      return {
+        sortKey: value,
+        sortDirection: prev.sortDirection === "asc" ? "desc" : "asc",
+      };
+    });
+
+  const sortedWorkloadStats = getSortedWorkloadStats(stats, sortedBy);
+
+  const TABLE_OPTIONS = [
+    { label: "Name", value: "name" },
+    { label: "Total", value: "total" },
+    { label: "Offene", value: "open" },
+    { label: "Status", value: "status" },
+  ] as const;
+
+  console.log("sortedBy", sortedBy);
+
   const isFull = variant === "full";
 
   const wrapperClass = isFull ? "border rounded-md overflow-hidden" : "";
@@ -29,12 +66,18 @@ const WorkloadTable = ({ stats, variant }: WorkloadTableProps) => {
     <div className={wrapperClass}>
       <div className={headerClass}>
         {TABLE_OPTIONS.map((opt) => (
-          <p key={opt}>{opt}</p>
+          <button
+            key={opt.value}
+            className="flex items-center gap-1"
+            onClick={() => toggleSortedBy(opt.value)}
+          >
+            {opt.label} <ChevronsUpDown className="size-4 text-surface/80" />
+          </button>
         ))}
       </div>
 
       <div>
-        {stats.map((sta) => {
+        {sortedWorkloadStats.map((sta) => {
           const status = getWorkloadStatus(sta.progressPercent);
 
           return (
@@ -76,7 +119,6 @@ const WorkloadTable = ({ stats, variant }: WorkloadTableProps) => {
                   </span>
                 </div>
               </div>
-
 
               <div className={desktopRowClass}>
                 <div className="flex items-center gap-3 min-w-0">
