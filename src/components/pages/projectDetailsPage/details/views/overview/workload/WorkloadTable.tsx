@@ -68,7 +68,7 @@ const WorkloadTable = ({ stats, variant }: WorkloadTableProps) => {
         {TABLE_OPTIONS.map((opt) => (
           <button
             key={opt.value}
-            className="flex items-center gap-1"
+            className="w-fit flex items-center gap-1"
             onClick={() => toggleSortedBy(opt.value)}
           >
             {opt.label} <ChevronsUpDown className="size-4 text-surface/80" />
