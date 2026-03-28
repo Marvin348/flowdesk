@@ -116,7 +116,7 @@ const ProjectCard = ({ project }: ProjectCardType) => {
         <div className="mt-4 flex items-center gap-2">
           <p
             style={{ backgroundColor: STATUS_OPTIONS[projectStatus].color }}
-            className="p-1 px-1.5 rounded-xl text-xs "
+            className="p-1 px-1.5 rounded-xl text-xs"
           >
             {STATUS_OPTIONS[projectStatus].label}
           </p>
