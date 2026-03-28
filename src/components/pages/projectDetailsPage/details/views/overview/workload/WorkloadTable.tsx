@@ -45,8 +45,6 @@ const WorkloadTable = ({ stats, variant }: WorkloadTableProps) => {
     { label: "Status", value: "status" },
   ] as const;
 
-  console.log("sortedBy", sortedBy);
-
   const isFull = variant === "full";
 
   const wrapperClass = isFull ? "border rounded-md overflow-hidden" : "";
