@@ -9,7 +9,7 @@ FlowDesk is an admin dashboard for managing projects, tasks, and team collaborat
 1. Clone the repository
 
 ```bash
-git clone <your-repo-url>
+git clone https://github.com/Marvin348/flowdesk.git
 cd flowdesk
 ```
 
