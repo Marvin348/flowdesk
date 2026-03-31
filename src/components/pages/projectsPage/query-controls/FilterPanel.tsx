@@ -1,6 +1,6 @@
 import { FILTER_VIEW_OPTIONS } from "@/constants/filter/view-options";
 import { STATUS_OPTIONS } from "@/constants/status-options";
-import SearchInput from "@/components/projects/query-controls/SearchInput";
+import SearchInput from "@/components/pages/projectsPage/query-controls/SearchInput";
 import { Button } from "@/components/ui/button";
 import { Filter } from "lucide-react";
 import { useAppStore } from "@/store";

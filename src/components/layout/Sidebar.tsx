@@ -36,7 +36,7 @@ const Sidebar = ({ onOpen, onClose }: SidebarProps) => {
       ></div>
 
       <nav
-        className={`fixed top-0 bottom-0 bg-surface p-4  transform duration-300 ease-in-out z-100 w-65 ${onOpen ? "translate-x-0" : "-translate-x-full"} lg:static lg:min-h-screen lg:translate-x-0`}
+        className={`fixed top-0 left-0 bottom-0 bg-surface p-4  transform duration-300 ease-in-out z-100 w-65 ${onOpen ? "translate-x-0" : "-translate-x-full"} lg:static lg:min-h-screen lg:translate-x-0`}
       >
         <div className="flex justify-end lg:hidden">
           <Button

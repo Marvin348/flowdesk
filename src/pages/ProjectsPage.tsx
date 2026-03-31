@@ -1,6 +1,6 @@
-import ProjectList from "@/components/projects/ProjectList";
-import FilterDrawer from "@/components/projects/query-controls/FilterDrawer";
-import FilterPanel from "@/components/projects/query-controls/FilterPanel";
+import ProjectList from "@/components/pages/projectsPage/ProjectList";
+import FilterDrawer from "@/components/pages/projectsPage/query-controls/FilterDrawer";
+import FilterPanel from "@/components/pages/projectsPage/query-controls/FilterPanel";
 import { useSearchProjects } from "@/hooks/useSearchProjects";
 import { useAppStore } from "@/store";
 import { useState } from "react";
@@ -9,7 +9,7 @@ import { useProjectsSummary } from "@/hooks/useProjectsSummary";
 import ViewToggle from "@/components/projects/view-controls/ViewToggle";
 import { useProjectsListVM } from "@/domain/projects/useProjectsList";
 import { Button } from "@/components/ui/button";
-import CreateProjectModal from "@/components/projects/create/CreateProjectModal";
+import CreateProjectModal from "@/components/pages/projectsPage/create/CreateProjectModal";
 
 export type View = "card" | "list";
 const defaultView: View = "card";
@@ -28,7 +28,7 @@ const ProjectsPage = () => {
   const searchedProjects = useSearchProjects(projectsListVM, searchQuery);
   const filteredProjects = useFilterProjects(searchedProjects, filter);
 
-  console.log("projectsListVM", projectsListVM)
+  console.log("projectsListVM", projectsListVM);
 
   return (
     <>
@@ -67,7 +67,12 @@ const ProjectsPage = () => {
         <ProjectList projects={filteredProjects} />
       </div>
 
-      {isModalOpen && <CreateProjectModal onClose={() => setIsModalOpen(false)} isOpen={isModalOpen}/>}
+      {isModalOpen && (
+        <CreateProjectModal
+          onClose={() => setIsModalOpen(false)}
+          isOpen={isModalOpen}
+        />
+      )}
     </>
   );
 };

@@ -4,6 +4,12 @@ import type { User } from "@/type/domain/user";
 import { Copy, EllipsisVertical, ShieldUser, UserRound } from "lucide-react";
 import { useState } from "react";
 import { getSortedCollaborators } from "@/utils/collaborators/getSortedCollaborators";
+import CollaboratorActions from "./CollaboratorActions";
+import DeleteCollaboratorDialog from "./DeleteCollaboratorDialog";
+
+type CollaboratorsViewProps = {
+  collaborator: User[];
+};
 
 type SortKey = "name" | "email" | "type";
 
@@ -12,8 +18,13 @@ export type SortedByCollaborators = {
   sortDirection?: "asc" | "desc";
 };
 
-const CollaboratorsView = ({ collaborator }: { collaborator: User[] }) => {
+const CollaboratorsView = ({ collaborator }: CollaboratorsViewProps) => {
   const [sortedBy, setSortedBy] = useState<SortedByCollaborators | null>(null);
+  const [openActionId, setOpenActionId] = useState<string | null>(null);
+  const [selectedCollaboratorId, setSelectedCollaboratorId] = useState<
+    string | null
+  >(null);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const toggleSortedBy = (value: SortKey) =>
     setSortedBy((prev) => {
@@ -31,6 +42,23 @@ const CollaboratorsView = ({ collaborator }: { collaborator: User[] }) => {
     });
 
   const sortedCollaborators = getSortedCollaborators(collaborator, sortedBy);
+
+  const toggleOpenActionId = (id: string) =>
+    setOpenActionId((prev) => (prev === id ? null : id));
+
+  const handleOpenActions = (id: string) => {
+    toggleOpenActionId(id);
+    setSelectedCollaboratorId(id);
+  };
+
+  const handleDeleteClick = () => {
+    setIsDialogOpen(true);
+    setOpenActionId(null);
+  };
+
+  const selectedCollaboratorName =
+    collaborator.find((coll) => coll.id === selectedCollaboratorId)?.name ??
+    "UNKNOWN";
 
   const TABLE_OPTIONS = [
     { label: "Name", value: "name" },
@@ -90,17 +118,34 @@ const CollaboratorsView = ({ collaborator }: { collaborator: User[] }) => {
                 </div>
               </div>
 
-              <button className="min-w-0 justify-self-end">
-                <EllipsisVertical
-                  className="text-surface/80"
-                  strokeWidth={1}
-                  fill="black"
-                />
-              </button>
+              <div className="relative justify-self-end">
+                <button
+                  className="min-w-0 justify-self-end"
+                  onClick={() => handleOpenActions(coll.id)}
+                >
+                  <EllipsisVertical
+                    className="text-surface/80"
+                    strokeWidth={1}
+                    fill="black"
+                  />
+                </button>
+
+                {openActionId === coll.id && (
+                  <CollaboratorActions onDelete={handleDeleteClick} />
+                )}
+              </div>
             </div>
           ))}
         </div>
       </div>
+
+      {isDialogOpen && selectedCollaboratorId && (
+        <DeleteCollaboratorDialog
+          onClose={() => setIsDialogOpen(false)}
+          collaboratorName={selectedCollaboratorName}
+          collaboratorId={selectedCollaboratorId}
+        />
+      )}
     </div>
   );
 };

@@ -1,5 +1,5 @@
 import { FolderOpen } from "lucide-react";
-import CreateProjectForm from "@/components/projects/create/CreateProjectForm";
+import CreateProjectForm from "@/components/pages/projectsPage/create/CreateProjectForm";
 import { useScrollLock } from "@/hooks/useScrollLock";
 
 type CreateProjectModalProps = {

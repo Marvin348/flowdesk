@@ -83,7 +83,7 @@ const ProjectPage = () => {
     <>
       <div className="mb-6">
         <ProjectDetailsHeader
-          project={project} 
+          project={project}
           progress={progress}
           onOpen={() => setIsInviteOpen(true)}
         />

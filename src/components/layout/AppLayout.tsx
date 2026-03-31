@@ -2,24 +2,23 @@ import { Outlet } from "react-router";
 import Sidebar from "@/components/layout/Sidebar";
 import Header from "@/components/layout/Header";
 import { useState } from "react";
-import { useCoreData } from "@/domain/projects/useCoreData";
 const AppLayout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  const { projects } = useCoreData();
-
   return (
-    <div>
+    <div className="min-h-screen">
       <header className="p-2 px-4 border-b lg:hidden">
         <Header onOpen={() => setSidebarOpen(true)} />
       </header>
 
-      <div className="flex">
+      <div className="flex min-h-screen">
         <aside>
+          <div className="sticky top-0 h-screen overflow-y-auto z-100">
           <Sidebar onOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+          </div>
         </aside>
 
-        <main className="w-full p-6">
+        <main className="min-w-0 flex-1 p-6">
           <div>
             <Outlet />
           </div>

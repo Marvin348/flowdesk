@@ -1,6 +1,6 @@
 import ProgressBar, {
   type Progress,
-} from "@/components/projects/card/ProgressBar";
+} from "@/components/pages/projectsPage/card/ProgressBar";
 import OverviewCardHeader from "./ui/OverviewCardHeader";
 
 type ProgressBarCardProps = {

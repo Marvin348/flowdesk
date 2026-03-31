@@ -1,8 +1,9 @@
 import { useState } from "react";
-import CollaboratorMultiSelectField from "./CollaboratorMultiSelectField";
+import CollaboratorMultiSelectField from "@/components/collaborators/CollaboratorMultiSelectField";
 import { Button } from "@/components/ui/button";
 import { useScrollLock } from "@/hooks/useScrollLock";
 import { useUpdateProjectMembers } from "@/mutations/project/useUpdateProjectMembers";
+import { Spinner } from "@/components/ui/spinner";
 
 type InviteUserModalProps = {
   onClose: () => void;
@@ -71,7 +72,7 @@ const InviteUserModal = ({
                 className="bg-accent hover:bg-accent/95 w-30"
                 type="submit"
               >
-                Einladen
+                Einladen {isPending && <Spinner />}
               </Button>
             </div>
           </form>
