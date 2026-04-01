@@ -19,7 +19,7 @@ const CommentThreadItem = ({ comment }: { comment: CommentThreadNode }) => {
 
       <div className="flex-1">
         <div className="flex items-center gap-3">
-          <p className="font-medium">{user?.name}</p>
+          <p className="font-medium">{user?.name ?? "UNKNOWN"}</p>
           <p className="text-xs text-muted-foreground">
             {formatDate(createdAt)}
           </p>

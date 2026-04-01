@@ -4,7 +4,7 @@ import OverviewCommentItem from "./OverviewCommentItem";
 
 const OverviewCommentsList = ({ comments }: { comments: Comments[] }) => {
   const commentsWithUser = useCommentsWithUsers(comments);
-  // useCommentsWithUsers hook in 2 Listen (hier, CommentThreadList)
+  // useCommentsWithUsers hook called twice (here, CommentThreadList)
 
   return (
     <div className="p-4">

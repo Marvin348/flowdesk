@@ -38,10 +38,10 @@ const CommentsView = ({ tasks }: {tasks: TaskWithMeta[]}) => {
 
       {visibleCount < allComments.length && (
         <button
-          className="flex items-center m-auto gap-1 text-accent hover:text-accent/90"
+          className="flex items-center m-auto gap-1 text-accent text-sm hover:text-accent/90"
           onClick={() => setVisibleCount((prev) => prev + COMMENTS_PER_PAGE)}
         >
-          Mehr Anzeigen <ArrowDown className="size-5" />
+          Mehr Anzeigen <ArrowDown className="size-4" />
         </button>
       )}
     </>

@@ -54,7 +54,10 @@ const Overview = ({
       </div>
 
       <div className="h-full xl:col-start-3 xl:row-start-2  xl:row-span-3">
-        <CommentsCard comments={allCommentsPerProject} />
+        <CommentsCard
+          comments={allCommentsPerProject}
+          onMore={() => onNavigate("comments")}
+        />
       </div>
 
       <div className="h-full md:col-span-2 xl:row-span-2">

@@ -9,17 +9,18 @@ import OverviewCommentsList from "./OverviewCommentsList";
 
 type CommentsCardProps = {
   comments: Comments[];
+  onMore: () => void;
 };
 
-const CommentsCard = ({ comments }: CommentsCardProps) => {
-  const maxComments = comments.slice(0, 4);
+const CommentsCard = ({ comments, onMore }: CommentsCardProps) => {
+  const maxComments = comments.slice(0, 5);
 
   return (
     <OverviewCard>
       <OverviewCardHeader
         title="Kommentare"
         action={
-          <Button>
+          <Button onClick={onMore}>
             <Plus className="text-accent" /> <span>Kommentare</span>
           </Button>
         }
@@ -27,7 +28,7 @@ const CommentsCard = ({ comments }: CommentsCardProps) => {
       <OverviewCardBody>
         <OverviewCommentsList comments={maxComments} />
       </OverviewCardBody>
-      <OverviewCardFooter />
+      <OverviewCardFooter onClick={onMore} />
     </OverviewCard>
   );
 };

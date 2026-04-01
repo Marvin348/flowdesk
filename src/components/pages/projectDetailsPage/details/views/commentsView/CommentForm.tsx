@@ -19,16 +19,15 @@ const CommentForm = ({ tasks }: { tasks: Task[] }) => {
     };
   });
 
-
   const handleOnChange = (value: string) => {
     setSelectedTaskId(value);
     setTaskErrorMessage(null);
-  }
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    setTaskErrorMessage(null)
+    setTaskErrorMessage(null);
 
     if (!selectedTaskId) {
       setTaskErrorMessage("Aufgabe auswählen");
@@ -61,20 +60,10 @@ const CommentForm = ({ tasks }: { tasks: Task[] }) => {
           onChange={(e) => setMessage(e.target.value)}
         />
 
-        {taskErrorMessage && (
-          <p className="error-text">{taskErrorMessage}</p>
-        )}
+        {taskErrorMessage && <p className="error-text">{taskErrorMessage}</p>}
         <div className="flex items-center justify-between">
-          <div className="flex items-center text-surface/60">
-            {/* <div className="pr-4 border-r">
-              <button
-                type="button"
-                className="size-8 font-semibold rounded-md hover:text-surface hover:bg-surface/5"
-              >
-                @
-              </button>
-            </div> */}
 
+          <div className="flex items-center text-surface/60">
             <div className="w-50">
               <SelectedTask
                 options={taskOption}
