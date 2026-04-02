@@ -1,7 +1,7 @@
 import type { UserPerformance } from "@/utils/performance/getUserPerformance";
 import { getWorkloadStatus } from "@/utils/workload/ui/getWorkloadStatus";
 import { WORKLOAD_STATUS } from "@/constants/workload/workload-status";
-import Avatar from "@/components/projects/avatar/Avatar";
+import Avatar from "@/components/users/avatar/Avatar";
 
 type TeamPerformanceItemProps = {
   item: UserPerformance;

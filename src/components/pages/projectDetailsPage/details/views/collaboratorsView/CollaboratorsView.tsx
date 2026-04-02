@@ -1,11 +1,14 @@
-import Avatar from "@/components/projects/avatar/Avatar";
+import Avatar from "@/components/users/avatar/Avatar";
 import { ChevronsUpDown } from "lucide-react";
 import type { User } from "@/type/domain/user";
-import { Copy, EllipsisVertical, ShieldUser, UserRound } from "lucide-react";
-import { useState } from "react";
+import { Copy, EllipsisVertical } from "lucide-react";
+import { useRef, useState } from "react";
 import { getSortedCollaborators } from "@/utils/collaborators/getSortedCollaborators";
 import CollaboratorActions from "./CollaboratorActions";
 import DeleteCollaboratorDialog from "./DeleteCollaboratorDialog";
+import ChangeUserRoleDialog from "@/components/users/actions/ChangeUserRoleDialog";
+import { USER_ROLE_OPTIONS } from "@/constants/user/user-role-options";
+import { useOnClickOutside } from "@/hooks/useOnClickOutside";
 
 type CollaboratorsViewProps = {
   collaborator: User[];
@@ -18,13 +21,18 @@ export type SortedByCollaborators = {
   sortDirection?: "asc" | "desc";
 };
 
+export type Actions = "change_role" | "reassign_tasks" | "delete";
+
 const CollaboratorsView = ({ collaborator }: CollaboratorsViewProps) => {
   const [sortedBy, setSortedBy] = useState<SortedByCollaborators | null>(null);
   const [openActionId, setOpenActionId] = useState<string | null>(null);
   const [selectedCollaboratorId, setSelectedCollaboratorId] = useState<
     string | null
   >(null);
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [activeAction, setActiveAction] = useState<Actions | null>(null);
+  const actionRef = useRef<HTMLDivElement>(null);
+
+  useOnClickOutside(actionRef, () => setOpenActionId(null));
 
   const toggleSortedBy = (value: SortKey) =>
     setSortedBy((prev) => {
@@ -51,14 +59,19 @@ const CollaboratorsView = ({ collaborator }: CollaboratorsViewProps) => {
     setSelectedCollaboratorId(id);
   };
 
-  const handleDeleteClick = () => {
-    setIsDialogOpen(true);
+  const onAction = (key: Actions) => {
+    setActiveAction(key);
     setOpenActionId(null);
   };
 
-  const selectedCollaboratorName =
+  const handleOnClose = () => setActiveAction(null);
+
+  const currentName =
     collaborator.find((coll) => coll.id === selectedCollaboratorId)?.name ??
     "UNKNOWN";
+  const currentRole =
+    collaborator.find((coll) => coll.id === selectedCollaboratorId)?.role ??
+    "member";
 
   const TABLE_OPTIONS = [
     { label: "Name", value: "name" },
@@ -82,68 +95,83 @@ const CollaboratorsView = ({ collaborator }: CollaboratorsViewProps) => {
         </div>
 
         <div>
-          {sortedCollaborators.map((coll) => (
-            <div
-              key={coll.id}
-              className="p-2 grid grid-cols-[1fr_auto] sm:grid-cols-[2fr_2fr_1fr_1fr]  items-center gap-4 border-b last:border-none"
-            >
-              <div className="min-w-0 flex items-center gap-4">
-                <Avatar avatarKey={coll.avatarKey} />
-                <div>
-                  <p className="truncate">{coll.name}</p>
-                  <p className="text-surface/80 text-sm ">{coll.jobTitle}</p>
+          {sortedCollaborators.map((coll) => {
+            const option = USER_ROLE_OPTIONS[coll.role];
+
+            const CollaboratorIcon = option.icon;
+            const collaboratorLabel = option.label;
+
+            return (
+              <div
+                key={coll.id}
+                className="p-2 grid grid-cols-[1fr_auto] sm:grid-cols-[2fr_2fr_1fr_1fr]  items-center gap-4 border-b last:border-none"
+              >
+                <div className="min-w-0 flex items-center gap-4">
+                  <Avatar avatarKey={coll.avatarKey} />
+                  <div>
+                    <p className="truncate">{coll.name}</p>
+                    <p className="text-surface/80 text-sm ">{coll.jobTitle}</p>
+                  </div>
                 </div>
-              </div>
 
-              <div className="min-w-0 hidden truncate sm:flex">
-                <button className="min-w-0 w-full flex flex-col items-start">
-                  <span className="truncate font-medium text-sm">
-                    {coll.email}
-                  </span>
+                <div className="min-w-0 hidden truncate sm:flex">
+                  <button className="min-w-0 w-full flex flex-col items-start">
+                    <span className="truncate font-medium text-sm">
+                      {coll.email}
+                    </span>
 
-                  <span className="mt-1 flex items-center gap-1 text-xs font-medium text-blue-600">
-                    <Copy className="size-4" /> Copy
-                  </span>
-                </button>
-              </div>
-
-              <div className="min-w-0 hidden md:flex items-center">
-                <div className="flex items-center gap-2 text-surface/80">
-                  {coll.role === "admin" ? (
-                    <ShieldUser className="size-4" />
-                  ) : (
-                    <UserRound className="size-4" />
-                  )}
-                  <p className="text-surface truncate">{coll.role}</p>
+                    <span className="mt-1 flex items-center gap-1 text-xs font-medium text-blue-600">
+                      <Copy className="size-4" /> Copy
+                    </span>
+                  </button>
                 </div>
-              </div>
 
-              <div className="relative justify-self-end">
-                <button
-                  className="min-w-0 justify-self-end"
-                  onClick={() => handleOpenActions(coll.id)}
+                <div className="min-w-0 hidden md:flex items-center">
+                  <div className="flex items-center gap-2 ">
+                    <CollaboratorIcon className="text-surface/80 size-4" />
+                    <p className="truncate ">{collaboratorLabel}</p>
+                  </div>
+                </div>
+
+                <div
+                  className="relative justify-self-end"
+                  ref={openActionId === coll.id ? actionRef : null}
                 >
-                  <EllipsisVertical
-                    className="text-surface/80"
-                    strokeWidth={1}
-                    fill="black"
-                  />
-                </button>
+                  <button
+                    className="min-w-0 justify-self-end"
+                    onClick={() => handleOpenActions(coll.id)}
+                  >
+                    <EllipsisVertical
+                      className="text-surface/80"
+                      strokeWidth={1}
+                      fill="black"
+                    />
+                  </button>
 
-                {openActionId === coll.id && (
-                  <CollaboratorActions onDelete={handleDeleteClick} />
-                )}
+                  {openActionId === coll.id && (
+                    <CollaboratorActions onAction={onAction} />
+                  )}
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
 
-      {isDialogOpen && selectedCollaboratorId && (
+      {activeAction === "delete" && selectedCollaboratorId && (
         <DeleteCollaboratorDialog
-          onClose={() => setIsDialogOpen(false)}
-          collaboratorName={selectedCollaboratorName}
+          onClose={handleOnClose}
+          collaboratorName={currentName}
           collaboratorId={selectedCollaboratorId}
+        />
+      )}
+
+      {activeAction === "change_role" && selectedCollaboratorId && (
+        <ChangeUserRoleDialog
+          onClose={handleOnClose}
+          userName={currentName}
+          currentRole={currentRole}
+          userId={selectedCollaboratorId}
         />
       )}
     </div>

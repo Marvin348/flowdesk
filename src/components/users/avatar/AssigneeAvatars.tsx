@@ -1,4 +1,4 @@
-import Avatar from "@/components/projects/avatar/Avatar";
+import Avatar from "@/components/users/avatar/Avatar";
 import type { User } from "@/type/domain/user";
 
 type AvatarProps = {

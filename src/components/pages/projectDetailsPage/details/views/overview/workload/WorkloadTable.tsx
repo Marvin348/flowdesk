@@ -1,7 +1,7 @@
 import type { UserWorkload } from "@/utils/workload/getUserWorkload";
 import { getWorkloadStatus } from "@/utils/workload/ui/getWorkloadStatus";
 import { WORKLOAD_STATUS } from "@/constants/workload/workload-status";
-import Avatar from "@/components/projects/avatar/Avatar";
+import Avatar from "@/components/users/avatar/Avatar";
 import { ChevronsUpDown } from "lucide-react";
 import { useState } from "react";
 import { getSortedWorkloadStats } from "@/utils/workload/getSortedWorkloadStats";

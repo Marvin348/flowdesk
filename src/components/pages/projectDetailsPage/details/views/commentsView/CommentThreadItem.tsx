@@ -1,4 +1,4 @@
-import Avatar from "@/components/projects/avatar/Avatar";
+import Avatar from "@/components/users/avatar/Avatar";
 import { formatDate } from "@/utils/formatDate";
 import { Reply } from "lucide-react";
 import { useState } from "react";

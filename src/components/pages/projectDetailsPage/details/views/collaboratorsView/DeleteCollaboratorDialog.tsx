@@ -37,7 +37,13 @@ const DeleteCollaboratorDialog = ({
         )} */}
 
         <div className="flex items-center justify-between">
-          <Button onClick={onClose}>Abbrechen</Button>
+          <Button
+            onClick={onClose}
+            className="hover:bg-surface/5"
+            variant="outline"
+          >
+            Abbrechen
+          </Button>
           <Button className="bg-error text-white hover:bg-error/90">
             Löschen
           </Button>

@@ -1,4 +1,4 @@
-import Avatar from "@/components/projects/avatar/Avatar";
+import Avatar from "@/components/users/avatar/Avatar";
 import type { CommentWithUser } from "@/type/view-models/commentWithUser";
 import { formatDate } from "@/utils/formatDate";
 

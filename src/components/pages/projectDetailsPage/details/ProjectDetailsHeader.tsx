@@ -5,7 +5,7 @@ import { STATUS_OPTIONS } from "@/constants/status-options";
 import { Link } from "react-router";
 import { ArrowLeft, UserRoundPlus, History } from "lucide-react";
 import ActiveMenuBadge from "@/components/pages/projectsPage/card/ActiveMenuBadge";
-import AssigneeAvatars from "@/components/projects/avatar/AssigneeAvatars";
+import AssigneeAvatars from "@/components/users/avatar/AssigneeAvatars";
 import { Button } from "@/components/ui/button";
 import { formatDate } from "@/utils/formatDate";
 import { useUsersByIds } from "@/hooks/useUsersByIds";
