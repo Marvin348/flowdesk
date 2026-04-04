@@ -6,7 +6,11 @@ const TaskStatusDistributionCard = ({
   item: TaskStatusDistributionItem;
 }) => {
   return (
-    <div className="flex-1">
+    <div
+      style={{
+        width: `${item.value}%`,
+      }}
+    >
       <div
         className="mt-6"
         style={{
@@ -22,7 +26,6 @@ const TaskStatusDistributionCard = ({
           className="h-8 rounded-r-md"
           style={{
             background: item.color,
-            width: `${item.value}%`,
             opacity: 0.3,
           }}
         ></div>

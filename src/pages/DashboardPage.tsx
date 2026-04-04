@@ -8,6 +8,8 @@ import TaskStatusDistribution from "@/components/pages/dashboardPage/statusDistr
 import { mapTaskStatusDistributionToItems } from "@/utils/dashboard/mapTaskStatusDistributionToItems";
 import PriorityChartSection from "@/components/pages/dashboardPage/charts/PriorityChartSection";
 import { getTaskPriorityItems } from "@/utils/dashboard/getTaskPriorityItems";
+import UpcomingTasks from "@/components/pages/dashboardPage/upcomingTasks/UpcomingTasks";
+import { getUpcomingTasks } from "@/utils/dashboard/tasks/getUpcomingTasks";
 
 const DashboardPage = () => {
   const {
@@ -26,23 +28,24 @@ const DashboardPage = () => {
 
   const taskPriorityItems = getTaskPriorityItems(tasks);
 
-  console.log("taskPriorityItems", taskPriorityItems);
+  const upcomingTasks = getUpcomingTasks(projects, tasks);
+
+  // md:grid-cols-2
 
   return (
-    <div>
-      <section>
+    <div className="grid grid-cols-1 xl:grid-cols-6 gap-6">
+      <div className="col-span-1 xl:col-span-4 grid gap-6">
         <DashboardStats stats={statCards} />
-      </section>
-
-    <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-[2fr_1fr]">
-      <section>
         <TaskStatusDistribution statusItems={taskStatusItems} />
-      </section>
+      </div>
 
-      <section>
-        <PriorityChartSection priorityItems={taskPriorityItems}/>
-      </section>
-    </div>
+      <div className="col-span-1 xl:col-span-2">
+        <PriorityChartSection priorityItems={taskPriorityItems} />
+      </div>
+
+      <div className="col-span-1 xl:col-span-4">
+        <UpcomingTasks upcomingTasks={upcomingTasks} />
+      </div>
     </div>
   );
 };

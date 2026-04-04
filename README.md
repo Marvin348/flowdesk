@@ -4,6 +4,17 @@ FlowDesk is an admin dashboard for managing projects, tasks, and team collaborat
 
 ⚠️ This project is still a work in progress. Many parts are not fully refactored yet, and the overall direction and features may still evolve.
 
+## Current Setup
+- Frontend consumes a mock API using json-server
+- Focus is currently on UI architecture, state management, and data flow
+- Features are being developed iteratively, with ongoing refinements
+
+## Planned Improvements
+- Replace json-server with a real backend **(Node.js + Express)**
+- Add persistent database (e.g. MongoDB or PostgreSQL)
+- Implement custom REST API routes
+- Improve overall architecture and separation of concerns
+
 ## Installation
 
 1. Clone the repository

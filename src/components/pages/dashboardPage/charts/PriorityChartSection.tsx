@@ -1,6 +1,6 @@
 import PriorityPieChart from "@/components/pages/dashboardPage/charts/PriorityPieChart";
 import type { TaskPriorityItem } from "@/utils/dashboard/getTaskPriorityItems";
-import { Ellipsis } from "lucide-react";
+import { EllipsisVertical } from "lucide-react";
 
 type PriorityChartSectionProps = {
   priorityItems: TaskPriorityItem[];
@@ -8,7 +8,7 @@ type PriorityChartSectionProps = {
 
 const PriorityChartSection = ({ priorityItems }: PriorityChartSectionProps) => {
   return (
-    <div className="border p-4 rounded-md">
+    <section className="border p-4 rounded-md">
       <div className="flex items-start justify-between">
         <div>
           <h3 className="font-medium text-xl">Aufgabenpriorität</h3>
@@ -17,14 +17,14 @@ const PriorityChartSection = ({ priorityItems }: PriorityChartSectionProps) => {
           </p>
         </div>
         <button>
-          <Ellipsis />
+          <EllipsisVertical strokeWidth={1} fill="black"/>
         </button>
       </div>
 
       <div className="">
         <PriorityPieChart data={priorityItems} />
       </div>
-    </div>
+    </section>
   );
 };
 export default PriorityChartSection;

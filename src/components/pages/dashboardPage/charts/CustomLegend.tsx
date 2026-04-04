@@ -6,7 +6,7 @@ const CustomLegend = ({ data }: { data: TaskPriorityItem[] }) => {
       {data.map((entry) => (
         <div key={entry.id} className="flex items-center gap-2">
           <span
-            className="size-4 rounded-full"
+            className="shrink-0 size-4 rounded-full"
             style={{ backgroundColor: entry.color }}
           ></span>
           <p className=" text-muted-foreground">
