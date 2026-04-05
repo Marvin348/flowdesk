@@ -8,7 +8,7 @@ import { getSortedComments } from "@/utils/comments/getSortedComments";
 
 export type SortOrder = "newest" | "oldest";
 
-const CommentsView = ({ tasks }: {tasks: TaskWithMeta[]}) => {
+const CommentsView = ({ tasks }: { tasks: TaskWithMeta[] }) => {
   const COMMENTS_PER_PAGE = 8;
   const [visibleCount, setVisibleCount] = useState(COMMENTS_PER_PAGE);
   const [sortOrder, setSortOrder] = useState<SortOrder>("newest");
@@ -23,13 +23,17 @@ const CommentsView = ({ tasks }: {tasks: TaskWithMeta[]}) => {
   const maxComments = sortedComments.slice(0, visibleCount);
 
   return (
-    <>
+    <section>
       <div className="border-b pb-8">
         <CommentForm tasks={tasks} />
       </div>
 
       <div className="my-8">
-        <CommentsHeader comments={allComments} toggleOrder={toggleSortOrder} sortOrder={sortOrder}/>
+        <CommentsHeader
+          comments={allComments}
+          toggleOrder={toggleSortOrder}
+          sortOrder={sortOrder}
+        />
       </div>
 
       <div>
@@ -44,7 +48,7 @@ const CommentsView = ({ tasks }: {tasks: TaskWithMeta[]}) => {
           Mehr Anzeigen <ArrowDown className="size-4" />
         </button>
       )}
-    </>
+    </section>
   );
 };
 export default CommentsView;

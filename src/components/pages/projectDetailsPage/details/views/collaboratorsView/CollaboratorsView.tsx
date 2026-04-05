@@ -9,6 +9,9 @@ import DeleteCollaboratorDialog from "./DeleteCollaboratorDialog";
 import ChangeUserRoleDialog from "@/components/users/actions/ChangeUserRoleDialog";
 import { USER_ROLE_OPTIONS } from "@/constants/user/user-role-options";
 import { useOnClickOutside } from "@/hooks/useOnClickOutside";
+import BulkCollaboratorActions from "./BulkCollaboratorActions";
+import { COLLABORATOR_TABLE_OPTIONS } from "@/constants/table-header";
+import { updateSort } from "@/utils/updateSort";
 
 type CollaboratorsViewProps = {
   collaborator: User[];
@@ -17,8 +20,8 @@ type CollaboratorsViewProps = {
 type SortKey = "name" | "email" | "type";
 
 export type SortedByCollaborators = {
-  sortKey?: SortKey;
-  sortDirection?: "asc" | "desc";
+  sortKey: SortKey;
+  sortDirection: "asc" | "desc";
 };
 
 export type Actions = "change_role" | "reassign_tasks" | "delete";
@@ -29,26 +32,15 @@ const CollaboratorsView = ({ collaborator }: CollaboratorsViewProps) => {
   const [selectedCollaboratorId, setSelectedCollaboratorId] = useState<
     string | null
   >(null);
+  const [selectedCollaboratorIds, setSelectedCollaboratorIds] = useState<
+    string[]
+  >([]);
   const [activeAction, setActiveAction] = useState<Actions | null>(null);
-  const actionRef = useRef<HTMLDivElement>(null);
 
+  const actionRef = useRef<HTMLDivElement>(null);
   useOnClickOutside(actionRef, () => setOpenActionId(null));
 
-  const toggleSortedBy = (value: SortKey) =>
-    setSortedBy((prev) => {
-      if (prev?.sortKey !== value) {
-        return {
-          sortKey: value,
-          sortDirection: "asc",
-        };
-      }
-
-      return {
-        sortKey: value,
-        sortDirection: prev.sortDirection === "asc" ? "desc" : "asc",
-      };
-    });
-
+  const toggleSortedBy = (value: SortKey) => updateSort(value, setSortedBy);
   const sortedCollaborators = getSortedCollaborators(collaborator, sortedBy);
 
   const toggleOpenActionId = (id: string) =>
@@ -73,17 +65,25 @@ const CollaboratorsView = ({ collaborator }: CollaboratorsViewProps) => {
     collaborator.find((coll) => coll.id === selectedCollaboratorId)?.role ??
     "member";
 
-  const TABLE_OPTIONS = [
-    { label: "Name", value: "name" },
-    { label: "Email", value: "email" },
-    { label: "Type", value: "type" },
-  ] as const;
+  const toggleMultiSelect = (id: string) =>
+    setSelectedCollaboratorIds((prev) =>
+      prev.includes(id)
+        ? prev.filter((collId) => collId !== id)
+        : [...prev, id],
+    );
 
   return (
-    <div>
-      <div className="border rounded-md">
+    <section>
+      {selectedCollaboratorIds.length > 0 && (
+        <BulkCollaboratorActions
+          collaboratorCount={selectedCollaboratorIds.length}
+          onClose={() => setSelectedCollaboratorIds([])}
+        />
+      )}
+
+      <div className="border rounded-md mt-2">
         <div className="grid grid-cols-[2fr_2fr_1fr_1fr]  gap-4 p-2 bg-muted-foreground/10 rounded-t-md">
-          {TABLE_OPTIONS.map((opt) => (
+          {COLLABORATOR_TABLE_OPTIONS.map((opt) => (
             <button
               key={opt.value}
               className="w-fit flex items-center gap-1"
@@ -101,16 +101,32 @@ const CollaboratorsView = ({ collaborator }: CollaboratorsViewProps) => {
             const CollaboratorIcon = option.icon;
             const collaboratorLabel = option.label;
 
+            const isSelected = selectedCollaboratorIds.includes(coll.id);
+
             return (
               <div
                 key={coll.id}
-                className="p-2 grid grid-cols-[1fr_auto] sm:grid-cols-[2fr_2fr_1fr_1fr]  items-center gap-4 border-b last:border-none"
+                className={`p-2 grid grid-cols-[1fr_auto] sm:grid-cols-[2fr_2fr_1fr_1fr]  items-center gap-4 border-b last:border-none ${isSelected && "bg-accent/10"}`}
               >
-                <div className="min-w-0 flex items-center gap-4">
-                  <Avatar avatarKey={coll.avatarKey} />
-                  <div>
-                    <p className="truncate">{coll.name}</p>
-                    <p className="text-surface/80 text-sm ">{coll.jobTitle}</p>
+                <div
+                  className="flex items-center gap-4 cursor-pointer w-fit"
+                  onClick={() => toggleMultiSelect(coll.id)}
+                >
+                  <input
+                    type="checkbox"
+                    checked={isSelected}
+                    readOnly
+                    className="accent-accent"
+                  />
+
+                  <div className="min-w-0 flex items-center gap-4">
+                    <Avatar avatarKey={coll.avatarKey} />
+                    <div>
+                      <p className="truncate">{coll.name}</p>
+                      <p className="text-surface/80 text-sm ">
+                        {coll.jobTitle}
+                      </p>
+                    </div>
                   </div>
                 </div>
 
@@ -174,7 +190,7 @@ const CollaboratorsView = ({ collaborator }: CollaboratorsViewProps) => {
           userId={selectedCollaboratorId}
         />
       )}
-    </div>
+    </section>
   );
 };
 export default CollaboratorsView;

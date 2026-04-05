@@ -5,47 +5,29 @@ import type { StatusBase } from "@/type/domain/StatusBase";
 import TaskRow from "@/components/pages/projectDetailsPage/details/views/listView/TaskRow";
 import type { TaskWithMeta } from "@/type/view-models/taskWithMeta";
 import { getSortedList } from "@/utils/list/getSortedList";
+import { LIST_TABLE_OPTIONS } from "@/constants/table-header";
+import { updateSort } from "@/utils/updateSort";
 
 type SortKey = "task" | "assignee" | "dueDate" | "priority";
 
 export type SortedByList = {
-  sortKey?: SortKey;
-  sortDirection?: "asc" | "desc";
+  sortKey: SortKey;
+  sortDirection: "asc" | "desc";
 };
 
 const ListView = ({ tasks }: { tasks: TaskWithMeta[] }) => {
   const [sortedBy, setSortedBy] = useState<SortedByList | null>(null);
   const [openStatus, setOpenStatus] = useState<StatusBase | null>(null);
 
-  const toggleSortedBy = (value: SortKey) =>
-    setSortedBy((prev) => {
-      if (prev?.sortKey !== value) {
-        return {
-          sortKey: value,
-          sortDirection: "asc",
-        };
-      }
-
-      return {
-        sortKey: value,
-        sortDirection: prev.sortDirection === "asc" ? "desc" : "asc",
-      };
-    });
+  const toggleSortedBy = (value: SortKey) => updateSort(value, setSortedBy);
 
   const toggleOpenStatus = (value: StatusBase) =>
     setOpenStatus((prev) => (prev === value ? null : value));
 
-  const TABLE_OPTIONS = [
-    { label: "Aufgabe", value: "task" },
-    { label: "Mitarbeiter", value: "assignee" },
-    { label: "Deadline", value: "dueDate" },
-    { label: "Priorität", value: "priority" },
-  ] as const;
-
   return (
-    <>
+    <section>
       <div className="grid grid-cols-4 p-2 bg-muted-foreground/10 rounded-md">
-        {TABLE_OPTIONS.map((opt) => (
+        {LIST_TABLE_OPTIONS.map((opt) => (
           <button
             key={opt.value}
             className="w-fit flex items-center gap-1"
@@ -93,7 +75,7 @@ const ListView = ({ tasks }: { tasks: TaskWithMeta[] }) => {
           );
         })}
       </div>
-    </>
+    </section>
   );
 };
 export default ListView;

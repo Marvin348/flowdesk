@@ -1,27 +1,9 @@
-import { Trash2, UserRoundPen, ClipboardList } from "lucide-react";
 import type { Actions } from "./CollaboratorsView";
+import { COLLABORATOR_ACTIONS } from "@/constants/user/user-actions";
 
 type CollaboratorActions = {
   onAction: (value: Actions) => void;
 };
-
-const COLLABORATOR_ACTIONS = [
-  {
-    key: "change_role",
-    label: "Rolle ändern",
-    icon: UserRoundPen,
-  },
-  {
-    key: "reassign_tasks",
-    label: "Aufgabe zuweisen",
-    icon: ClipboardList,
-  },
-  {
-    key: "delete",
-    label: "Löschen",
-    icon: Trash2,
-  },
-] as const;
 
 const CollaboratorActions = ({ onAction }: CollaboratorActions) => {
   return (

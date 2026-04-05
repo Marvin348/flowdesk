@@ -93,9 +93,9 @@ const ProjectPage = () => {
         <ProjectTabs activeTab={activeTab} onChange={navigateTab} />
       </div>
 
-      <section className="mt-6">
+      <div className="mt-6">
         <TabViewResult />
-      </section>
+      </div>
 
       <AddTaskPanel
         onOpen={isAddTaskOpen}

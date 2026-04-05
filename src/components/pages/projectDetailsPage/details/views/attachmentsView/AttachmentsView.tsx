@@ -9,7 +9,7 @@ type AttachmentsViewProps = {
 
 const AttachmentsView = ({ attachments }: AttachmentsViewProps) => {
   return (
-    <div className="border rounded-md">
+    <section className="border rounded-md">
       <div className="flex items-center justify-between p-4 bg-muted-foreground/10">
         <h4 className="font-medium text-lg">Anhänge</h4>
         <Button>
@@ -27,7 +27,7 @@ const AttachmentsView = ({ attachments }: AttachmentsViewProps) => {
           ))}
         </div>
       </div>
-    </div>
+    </section>
   );
 };
 export default AttachmentsView;

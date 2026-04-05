@@ -5,6 +5,8 @@ import Avatar from "@/components/users/avatar/Avatar";
 import { ChevronsUpDown } from "lucide-react";
 import { useState } from "react";
 import { getSortedWorkloadStats } from "@/utils/workload/getSortedWorkloadStats";
+import { WORKLOAD_TABLE_OPTIONS } from "@/constants/table-header";
+import { updateSort } from "@/utils/updateSort";
 
 type WorkloadTableProps = {
   stats: UserWorkload[];
@@ -14,36 +16,15 @@ type WorkloadTableProps = {
 type SortKey = "name" | "total" | "open" | "status";
 
 export type SortedBy = {
-  sortKey?: SortKey;
-  sortDirection?: "asc" | "desc";
+  sortKey: SortKey;
+  sortDirection: "asc" | "desc";
 };
 
 const WorkloadTable = ({ stats, variant }: WorkloadTableProps) => {
   const [sortedBy, setSortedBy] = useState<SortedBy | null>(null);
 
-  const toggleSortedBy = (value: SortKey) =>
-    setSortedBy((prev) => {
-      if (prev?.sortKey !== value) {
-        return {
-          sortKey: value,
-          sortDirection: "asc",
-        };
-      }
-
-      return {
-        sortKey: value,
-        sortDirection: prev.sortDirection === "asc" ? "desc" : "asc",
-      };
-    });
-
+  const toggleSortedBy = (value: SortKey) => updateSort(value, setSortedBy);
   const sortedWorkloadStats = getSortedWorkloadStats(stats, sortedBy);
-
-  const TABLE_OPTIONS = [
-    { label: "Name", value: "name" },
-    { label: "Total", value: "total" },
-    { label: "Offene", value: "open" },
-    { label: "Status", value: "status" },
-  ] as const;
 
   const isFull = variant === "full";
 
@@ -61,9 +42,9 @@ const WorkloadTable = ({ stats, variant }: WorkloadTableProps) => {
     : "sm:hidden border-b last:border-none py-3";
 
   return (
-    <div className={wrapperClass}>
+    <section className={wrapperClass}>
       <div className={headerClass}>
-        {TABLE_OPTIONS.map((opt) => (
+        {WORKLOAD_TABLE_OPTIONS.map((opt) => (
           <button
             key={opt.value}
             className="w-fit flex items-center gap-1"
@@ -154,7 +135,7 @@ const WorkloadTable = ({ stats, variant }: WorkloadTableProps) => {
           );
         })}
       </div>
-    </div>
+    </section>
   );
 };
 export default WorkloadTable;
