@@ -9,19 +9,19 @@ import OverviewCard from "../ui/OverviewCard";
 
 type WorkloadProps = {
   stats: UserWorkload[];
-  onOpen: () => void;
+  onCreateTask: () => void;
   variant?: "compact" | "full";
   onMore: () => void;
 };
 
-const WorkloadCard = ({ stats, onOpen, variant, onMore }: WorkloadProps) => {
+const WorkloadCard = ({ stats, onCreateTask, variant, onMore }: WorkloadProps) => {
 
   return (
     <OverviewCard>
       <OverviewCardHeader
         title="Auslastung"
         action={
-          <Button onClick={onOpen}>
+          <Button onClick={onCreateTask}>
             <Plus className="text-accent" /> <span>Aufgabe</span>
           </Button>
         }

@@ -3,23 +3,30 @@ import AddTaskForm from "./AddTaskForm";
 import { useScrollLock } from "@/hooks/useScrollLock";
 
 type AddTaskPanelProps = {
-  onOpen: boolean;
+  isOpen: boolean;
   onClose: () => void;
   projectId: string;
   teamUserIds: string[];
+  initialCollaboratorIds: string[];
 };
 
-const AddTaskPanel = ({ onOpen, onClose, projectId, teamUserIds }: AddTaskPanelProps) => {
-  useScrollLock(onOpen);
+const AddTaskPanel = ({
+  isOpen,
+  onClose,
+  projectId,
+  teamUserIds,
+  initialCollaboratorIds,
+}: AddTaskPanelProps) => {
+  useScrollLock(isOpen);
 
   return (
     <>
       <div
-        className={`overlay ${onOpen ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0"}`}
+        className={`overlay ${isOpen ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0"}`}
       ></div>
 
       <div
-        className={`fixed right-0 top-0 bottom-0 transition-transform duration-300 ease-in-out ${onOpen ? "translate-x-0" : "translate-x-full"} z-100`}
+        className={`fixed right-0 top-0 bottom-0 transition-transform duration-300 ease-in-out ${isOpen ? "translate-x-0" : "translate-x-full"} z-100`}
       >
         <div className="p-4 h-full w-100 bg-white rounded-l-md">
           <div className="flex items-center justify-between border-b pb-4">
@@ -28,12 +35,18 @@ const AddTaskPanel = ({ onOpen, onClose, projectId, teamUserIds }: AddTaskPanelP
               className="text-surface/80 hover:text-black"
               onClick={onClose}
             >
-              <X/>
+              <X />
             </button>
           </div>
-          
+
           <div className="mt-4">
-            <AddTaskForm onClose={onClose} projectId={projectId} teamUserIds={teamUserIds}/>
+            <AddTaskForm
+              onClose={onClose}
+              projectId={projectId}
+              teamUserIds={teamUserIds}
+              initialCollaboratorIds={initialCollaboratorIds}
+              isOpen={isOpen}
+            />
           </div>
         </div>
       </div>

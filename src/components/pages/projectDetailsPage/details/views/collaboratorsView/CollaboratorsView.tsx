@@ -15,6 +15,10 @@ import { updateSort } from "@/utils/updateSort";
 
 type CollaboratorsViewProps = {
   collaborator: User[];
+  onCreateTask: () => void;
+  selectedCollaboratorIds: string[]
+  toggleBulk: (value: string) => void;
+  onClearSelection: () => void;
 };
 
 type SortKey = "name" | "email" | "type";
@@ -26,15 +30,18 @@ export type SortedByCollaborators = {
 
 export type Actions = "change_role" | "reassign_tasks" | "delete";
 
-const CollaboratorsView = ({ collaborator }: CollaboratorsViewProps) => {
+const CollaboratorsView = ({
+  collaborator,
+  onCreateTask,
+  selectedCollaboratorIds,
+  toggleBulk,
+  onClearSelection,
+}: CollaboratorsViewProps) => {
   const [sortedBy, setSortedBy] = useState<SortedByCollaborators | null>(null);
   const [openActionId, setOpenActionId] = useState<string | null>(null);
   const [selectedCollaboratorId, setSelectedCollaboratorId] = useState<
     string | null
   >(null);
-  const [selectedCollaboratorIds, setSelectedCollaboratorIds] = useState<
-    string[]
-  >([]);
   const [activeAction, setActiveAction] = useState<Actions | null>(null);
 
   const actionRef = useRef<HTMLDivElement>(null);
@@ -65,19 +72,13 @@ const CollaboratorsView = ({ collaborator }: CollaboratorsViewProps) => {
     collaborator.find((coll) => coll.id === selectedCollaboratorId)?.role ??
     "member";
 
-  const toggleMultiSelect = (id: string) =>
-    setSelectedCollaboratorIds((prev) =>
-      prev.includes(id)
-        ? prev.filter((collId) => collId !== id)
-        : [...prev, id],
-    );
-
   return (
     <section>
       {selectedCollaboratorIds.length > 0 && (
         <BulkCollaboratorActions
           collaboratorCount={selectedCollaboratorIds.length}
-          onClose={() => setSelectedCollaboratorIds([])}
+          onClearSelection={onClearSelection}
+          onCreateTask={onCreateTask}
         />
       )}
 
@@ -110,7 +111,7 @@ const CollaboratorsView = ({ collaborator }: CollaboratorsViewProps) => {
               >
                 <div
                   className="flex items-center gap-4 cursor-pointer w-fit"
-                  onClick={() => toggleMultiSelect(coll.id)}
+                  onClick={() => toggleBulk(coll.id)}
                 >
                   <input
                     type="checkbox"

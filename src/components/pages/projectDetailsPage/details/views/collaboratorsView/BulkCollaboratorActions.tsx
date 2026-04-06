@@ -3,13 +3,14 @@ import { X } from "lucide-react";
 
 type BulkCollaboratorActionsProps = {
   collaboratorCount: number;
-  onClose: () => void;
+  onCreateTask: () => void;
+  onClearSelection: () => void;
 };
-
 
 const BulkCollaboratorActions = ({
   collaboratorCount,
-  onClose,
+  onCreateTask,
+  onClearSelection,
 }: BulkCollaboratorActionsProps) => {
   return (
     <div className="flex items-center justify-between">
@@ -20,13 +21,14 @@ const BulkCollaboratorActions = ({
           <button
             className="border flex items-center gap-1.5 p-1 text-sm rounded-md hover:bg-surface/3"
             key={key}
+            onClick={onCreateTask}
           >
             <Icon className="shrink-0 size-4" /> {label}
           </button>
         ))}
         <button
           className="border flex items-center gap-1 p-2 text-sm rounded-md hover:bg-surface/3"
-          onClick={onClose}
+          onClick={onClearSelection}
         >
           <X className="size-4" /> Auswahl aufheben
         </button>

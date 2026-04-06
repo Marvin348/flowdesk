@@ -11,7 +11,7 @@ import {
 import { z } from "zod";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useCreateTask } from "@/mutations/task/useCreateTask";
 import type { CreateTaskInput } from "@/type/inputs/createTaskInput";
 import { Spinner } from "@/components/ui/spinner";
@@ -20,11 +20,19 @@ import SelectedPriority from "@/components/ui/select/SelectedPriority";
 
 type AddTaskFormProps = {
   onClose: () => void;
+  isOpen: boolean;
   projectId: string;
   teamUserIds: string[];
+  initialCollaboratorIds: string[];
 };
 
-const AddTaskForm = ({ onClose, projectId, teamUserIds }: AddTaskFormProps) => {
+const AddTaskForm = ({
+  onClose,
+  isOpen,
+  projectId,
+  teamUserIds,
+  initialCollaboratorIds,
+}: AddTaskFormProps) => {
   const [tagsInput, setTagsInput] = useState("");
 
   const { mutate, isPending, error } = useCreateTask(projectId);
@@ -64,6 +72,20 @@ const AddTaskForm = ({ onClose, projectId, teamUserIds }: AddTaskFormProps) => {
       taskPriority: "low",
     },
   });
+
+  useEffect(() => {
+    if (isOpen) {
+      reset({
+        title: "",
+        tags: [],
+        reminderAt: "none",
+        collaboratorIds: initialCollaboratorIds,
+        description: "",
+        dueDate: "",
+        taskPriority: "low",
+      });
+    }
+  }, [isOpen, initialCollaboratorIds]);
 
   const onSubmit = (data: FormFields) => {
     const input: CreateTaskInput = {
@@ -155,7 +177,7 @@ const AddTaskForm = ({ onClose, projectId, teamUserIds }: AddTaskFormProps) => {
               className="form-input !pr-8"
               disabled={tags.length >= 2}
             />
-            {tagsInput?.length >= 2 && ( 
+            {tagsInput?.length >= 2 && (
               <button
                 className="absolute top-0 bottom-0 right-2"
                 type="button"

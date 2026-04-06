@@ -94,7 +94,10 @@ const CollaboratorMultiSelect = ({
                 );
               })}
               {maxFilteredUsers.length === 0 && (
-                <p className="p-2">Keine Daten gefunden</p>
+                <p className="p-2">
+                  <span className="font-medium">"{input}"</span> Keinen Mitarbeiter
+                  gefunden
+                </p>
               )}
             </>
           </div>

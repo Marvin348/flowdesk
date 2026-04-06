@@ -25,28 +25,37 @@ export type ActiveTab =
 
 const ProjectPage = () => {
   const [searchParams, setSeatchParams] = useSearchParams();
+  const { id } = useParams();
+
   const [isAddTaskOpen, setIsAddTaskOpen] = useState(false);
   const [isInviteOpen, setIsInviteOpen] = useState(false);
+  const [selectedCollaboratorIds, setSelectedCollaboratorIds] = useState<
+    string[]
+  >([]);
 
+  const projectId = id ?? "";
   const activeTab = (searchParams.get("tab") as ActiveTab) ?? "overview";
 
-  const navigateTab = (tab: ActiveTab) => setSeatchParams({ tab });
-
-  const { id } = useParams();
-  const projectId = id ?? "";
-
   const projectDetailsVM = useProjectDetailsVM(projectId);
-
   const project = projectDetailsVM.find((project) => project.id === id);
-
   const teamUsers = useUsersByIds(project?.teamUserIds ?? []);
 
   if (!project) return <div>Projekt nicht gefunden</div>;
 
   const workloadStats = getUserWorkload(project.tasks);
   const progress = getProgressResult(project.tasks);
-
   const attachments = project.tasks.flatMap((t) => t.attachments);
+
+  const toggleCollaboratorSelection = (id: string) =>
+    setSelectedCollaboratorIds((prev) =>
+      prev.includes(id)
+        ? prev.filter((collId) => collId !== id)
+        : [...prev, id],
+    );
+
+  const handleClearSelection = () => setSelectedCollaboratorIds([]);
+  const handleCreateTask = () => setIsAddTaskOpen(true);
+  const navigateTab = (tab: ActiveTab) => setSeatchParams({ tab });
 
   const TabViewResult = () => {
     switch (activeTab) {
@@ -56,7 +65,7 @@ const ProjectPage = () => {
             project={project}
             progress={progress}
             collaborator={teamUsers}
-            onOpen={() => setIsAddTaskOpen(true)}
+            onCreateTask={handleCreateTask}
             inviteOpen={() => setIsInviteOpen(true)}
             onNavigate={navigateTab}
           />
@@ -69,7 +78,15 @@ const ProjectPage = () => {
         return <ListView tasks={project.tasks} />;
 
       case "collaborators":
-        return <CollaboratorsView collaborator={teamUsers} />;
+        return (
+          <CollaboratorsView
+            collaborator={teamUsers}
+            onCreateTask={handleCreateTask}
+            toggleBulk={toggleCollaboratorSelection}
+            selectedCollaboratorIds={selectedCollaboratorIds}
+            onClearSelection={handleClearSelection}
+          />
+        );
 
       case "workload":
         return <WorkloadTable stats={workloadStats} variant="full" />;
@@ -98,10 +115,11 @@ const ProjectPage = () => {
       </div>
 
       <AddTaskPanel
-        onOpen={isAddTaskOpen}
+        isOpen={isAddTaskOpen}
         onClose={() => setIsAddTaskOpen(false)}
         projectId={projectId}
         teamUserIds={project.teamUserIds ?? []}
+        initialCollaboratorIds={selectedCollaboratorIds}
       />
 
       {isInviteOpen && (

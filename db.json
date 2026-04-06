@@ -176,14 +176,7 @@
       "dueDate": "2026-03-01T17:00:00.000Z",
       "createdAt": "2025-12-15T12:00:00.000Z",
       "updatedAt": "2026-03-04T17:02:39.841Z",
-      "invitedUserIds": [
-        "u2",
-        "u6",
-        "u5",
-        "u12",
-        "u1",
-        "u10"
-      ]
+      "invitedUserIds": ["u2", "u6", "u5", "u12", "u1", "u10"]
     },
     {
       "id": "p4",
@@ -193,13 +186,7 @@
       "projectStatus": "in_progress",
       "dueDate": "2026-03-20T17:00:00.000Z",
       "createdAt": "2026-01-08T07:30:00.000Z",
-      "invitedUserIds": [
-        "u3",
-        "u11",
-        "u7",
-        "u13",
-        "u4"
-      ]
+      "invitedUserIds": ["u3", "u11", "u7", "u13", "u4"]
     },
     {
       "id": "p5",
@@ -209,13 +196,7 @@
       "projectStatus": "pending",
       "dueDate": "2026-04-30T16:00:00.000Z",
       "createdAt": "2026-02-01T08:00:00.000Z",
-      "invitedUserIds": [
-        "u9",
-        "u5",
-        "u12",
-        "u7",
-        "u1"
-      ],
+      "invitedUserIds": ["u9", "u5", "u12", "u7", "u1"],
       "updatedAt": "2026-03-04T16:14:15.495Z"
     },
     {
@@ -226,15 +207,7 @@
       "projectStatus": "pending",
       "dueDate": "2026-05-10T16:00:00.000Z",
       "createdAt": "2026-02-05T11:30:00.000Z",
-      "invitedUserIds": [
-        "u6",
-        "u8",
-        "u2",
-        "u10",
-        "u4",
-        "u1",
-        "u7"
-      ]
+      "invitedUserIds": ["u6", "u8", "u2", "u10", "u4", "u1", "u7"]
     },
     {
       "id": "p7",
@@ -245,13 +218,7 @@
       "dueDate": "2026-03-05T17:00:00.000Z",
       "createdAt": "2026-01-12T13:00:00.000Z",
       "updatedAt": "2026-03-04T16:39:03.615Z",
-      "invitedUserIds": [
-        "u7",
-        "u13",
-        "u11",
-        "u3",
-        "u6"
-      ]
+      "invitedUserIds": ["u7", "u13", "u11", "u3", "u6"]
     },
     {
       "id": "p8",
@@ -262,12 +229,7 @@
       "dueDate": "2026-01-31T17:00:00.000Z",
       "createdAt": "2025-11-10T08:00:00.000Z",
       "updatedAt": "2026-03-04T06:39:21.180Z",
-      "invitedUserIds": [
-        "u4",
-        "u1",
-        "u6",
-        "u10"
-      ]
+      "invitedUserIds": ["u4", "u1", "u6", "u10"]
     }
   ],
   "tasks": [
@@ -277,10 +239,7 @@
       "title": "Audit: aktuelle Seiten & Tracking",
       "dueDate": "2026-10-12T17:00:00.000Z",
       "taskStatus": "done",
-      "collaboratorIds": [
-        "u4",
-        "u2"
-      ],
+      "collaboratorIds": ["u4", "u2"],
       "taskPriority": "high"
     },
     {
@@ -289,11 +248,7 @@
       "title": "Neue Landingpage Komponenten bauen",
       "dueDate": "2026-07-26T17:00:00.000Z",
       "taskStatus": "in_progress",
-      "collaboratorIds": [
-        "u1",
-        "u5",
-        "u12"
-      ],
+      "collaboratorIds": ["u1", "u5", "u12"],
       "taskPriority": "medium"
     },
     {
@@ -302,10 +257,7 @@
       "title": "Hero Illustration + Motion Varianten",
       "dueDate": "2026-06-28T17:00:00.000Z",
       "taskStatus": "in_progress",
-      "collaboratorIds": [
-        "u8",
-        "u6"
-      ],
+      "collaboratorIds": ["u8", "u6"],
       "taskPriority": "high"
     },
     {
@@ -314,10 +266,7 @@
       "title": "Performance Budget definieren",
       "dueDate": "2026-06-02T17:00:00.000Z",
       "taskStatus": "pending",
-      "collaboratorIds": [
-        "u1",
-        "u7"
-      ],
+      "collaboratorIds": ["u1", "u7"],
       "taskPriority": "high"
     },
     {
@@ -326,10 +275,7 @@
       "title": "SEO: Titles/Meta/Structured Data",
       "dueDate": "2026-06-07T17:00:00.000Z",
       "taskStatus": "done",
-      "collaboratorIds": [
-        "u10",
-        "u4"
-      ],
+      "collaboratorIds": ["u10", "u4"],
       "taskPriority": "high"
     },
     {
@@ -338,10 +284,7 @@
       "title": "Auth Flow (Login/Signup/Reset)",
       "dueDate": "2026-08-10T17:00:00.000Z",
       "taskStatus": "pending",
-      "collaboratorIds": [
-        "u15",
-        "u11"
-      ],
+      "collaboratorIds": ["u15", "u11"],
       "taskPriority": "high"
     },
     {
@@ -350,10 +293,7 @@
       "title": "Feed Screen (MVP)",
       "dueDate": "2026-05-18T17:00:00.000Z",
       "taskStatus": "done",
-      "collaboratorIds": [
-        "u5",
-        "u2"
-      ],
+      "collaboratorIds": ["u5", "u2"],
       "taskPriority": "medium"
     },
     {
@@ -362,10 +302,7 @@
       "title": "Push Notifications: Setup + Topics",
       "dueDate": "2026-08-25T17:00:00.000Z",
       "taskStatus": "in_progress",
-      "collaboratorIds": [
-        "u7",
-        "u13"
-      ],
+      "collaboratorIds": ["u7", "u13"],
       "taskPriority": "low"
     },
     {
@@ -374,11 +311,7 @@
       "title": "API Contract definieren",
       "dueDate": "2026-08-03T17:00:00.000Z",
       "taskStatus": "pending",
-      "collaboratorIds": [
-        "u11",
-        "u3",
-        "u4"
-      ],
+      "collaboratorIds": ["u11", "u3", "u4"],
       "taskPriority": "medium"
     },
     {
@@ -387,10 +320,7 @@
       "title": "Design Tokens (Color, Spacing, Radius)",
       "dueDate": "2026-08-22T17:00:00.000Z",
       "taskStatus": "done",
-      "collaboratorIds": [
-        "u2",
-        "u6"
-      ],
+      "collaboratorIds": ["u2", "u6"],
       "taskPriority": "medium"
     },
     {
@@ -399,10 +329,7 @@
       "title": "Button/Input/Select Komponenten",
       "dueDate": "2026-07-22T17:00:00.000Z",
       "taskStatus": "in_progress",
-      "collaboratorIds": [
-        "u5",
-        "u12"
-      ],
+      "collaboratorIds": ["u5", "u12"],
       "taskPriority": "medium"
     },
     {
@@ -411,10 +338,7 @@
       "title": "Dokumentationsseite (Storybook/Docs)",
       "dueDate": "2026-07-27T17:00:00.000Z",
       "taskStatus": "in_progress",
-      "collaboratorIds": [
-        "u1",
-        "u10"
-      ],
+      "collaboratorIds": ["u1", "u10"],
       "taskPriority": "low"
     },
     {
@@ -423,11 +347,7 @@
       "title": "Theming: Light/Dark + Brand Variants",
       "dueDate": "2026-07-01T17:00:00.000Z",
       "taskStatus": "pending",
-      "collaboratorIds": [
-        "u2",
-        "u6",
-        "u1"
-      ],
+      "collaboratorIds": ["u2", "u6", "u1"],
       "taskPriority": "medium"
     },
     {
@@ -436,10 +356,7 @@
       "title": "Refactor: User Service entkoppeln",
       "dueDate": "2026-08-24T17:00:00.000Z",
       "taskStatus": "in_progress",
-      "collaboratorIds": [
-        "u3",
-        "u11"
-      ],
+      "collaboratorIds": ["u3", "u11"],
       "taskPriority": "high"
     },
     {
@@ -448,11 +365,7 @@
       "title": "Observability: Tracing + Dashboards",
       "dueDate": "2026-06-06T17:00:00.000Z",
       "taskStatus": "in_progress",
-      "collaboratorIds": [
-        "u7",
-        "u13",
-        "u3"
-      ],
+      "collaboratorIds": ["u7", "u13", "u3"],
       "taskPriority": "high"
     },
     {
@@ -461,10 +374,7 @@
       "title": "DB Indizes & Query Hotspots",
       "dueDate": "2026-06-12T17:00:00.000Z",
       "taskStatus": "pending",
-      "collaboratorIds": [
-        "u11",
-        "u3"
-      ],
+      "collaboratorIds": ["u11", "u3"],
       "taskPriority": "high"
     },
     {
@@ -473,10 +383,7 @@
       "title": "Error Budget + SLOs definieren",
       "dueDate": "2026-07-18T17:00:00.000Z",
       "taskStatus": "pending",
-      "collaboratorIds": [
-        "u4",
-        "u7"
-      ],
+      "collaboratorIds": ["u4", "u7"],
       "taskPriority": "high"
     },
     {
@@ -485,10 +392,7 @@
       "title": "E2E Framework Auswahl + Setup",
       "dueDate": "2026-07-28T17:00:00.000Z",
       "taskStatus": "in_progress",
-      "collaboratorIds": [
-        "u9",
-        "u5"
-      ],
+      "collaboratorIds": ["u9", "u5"],
       "taskPriority": "low"
     },
     {
@@ -497,10 +401,7 @@
       "title": "Smoke Tests (Top 10 Flows)",
       "dueDate": "2026-07-15T17:00:00.000Z",
       "taskStatus": "pending",
-      "collaboratorIds": [
-        "u9",
-        "u12"
-      ],
+      "collaboratorIds": ["u9", "u12"],
       "taskPriority": "medium"
     },
     {
@@ -509,10 +410,7 @@
       "title": "CI Integration (PR checks)",
       "dueDate": "2026-07-22T17:00:00.000Z",
       "taskStatus": "done",
-      "collaboratorIds": [
-        "u9",
-        "u7"
-      ],
+      "collaboratorIds": ["u9", "u7"],
       "taskPriority": "medium"
     },
     {
@@ -521,11 +419,7 @@
       "title": "Key Visuals (Set A/B)",
       "dueDate": "2026-07-05T17:00:00.000Z",
       "taskStatus": "pending",
-      "collaboratorIds": [
-        "u6",
-        "u8",
-        "u2"
-      ],
+      "collaboratorIds": ["u6", "u8", "u2"],
       "taskPriority": "medium"
     },
     {
@@ -534,10 +428,7 @@
       "title": "Landingpage Copy + CTA Varianten",
       "dueDate": "2026-08-08T17:00:00.000Z",
       "taskStatus": "pending",
-      "collaboratorIds": [
-        "u10",
-        "u4"
-      ],
+      "collaboratorIds": ["u10", "u4"],
       "taskPriority": "medium"
     },
     {
@@ -546,10 +437,7 @@
       "title": "Tracking Plan (Events/UTMs)",
       "dueDate": "2026-06-10T17:00:00.000Z",
       "taskStatus": "pending",
-      "collaboratorIds": [
-        "u1",
-        "u7"
-      ],
+      "collaboratorIds": ["u1", "u7"],
       "taskPriority": "high"
     },
     {
@@ -558,10 +446,7 @@
       "title": "Cost Report: Top Services identifizieren",
       "dueDate": "2026-06-20T17:00:00.000Z",
       "taskStatus": "done",
-      "collaboratorIds": [
-        "u7",
-        "u13"
-      ],
+      "collaboratorIds": ["u7", "u13"],
       "taskPriority": "high"
     },
     {
@@ -570,11 +455,7 @@
       "title": "Caching Layer (API Responses)",
       "dueDate": "2026-06-25T17:00:00.000Z",
       "taskStatus": "in_progress",
-      "collaboratorIds": [
-        "u11",
-        "u3",
-        "u7"
-      ],
+      "collaboratorIds": ["u11", "u3", "u7"],
       "taskPriority": "high"
     },
     {
@@ -583,10 +464,7 @@
       "title": "Storage Lifecycle Policies",
       "dueDate": "2026-06-27T17:00:00.000Z",
       "taskStatus": "in_progress",
-      "collaboratorIds": [
-        "u13",
-        "u7"
-      ],
+      "collaboratorIds": ["u13", "u7"],
       "taskPriority": "medium"
     },
     {
@@ -595,10 +473,7 @@
       "title": "Right-sizing (Compute)",
       "dueDate": "2026-06-03T17:00:00.000Z",
       "taskStatus": "pending",
-      "collaboratorIds": [
-        "u7",
-        "u11"
-      ],
+      "collaboratorIds": ["u7", "u11"],
       "taskPriority": "low"
     },
     {
@@ -607,10 +482,7 @@
       "title": "Onboarding Checklist finalisieren",
       "dueDate": "2026-06-10T17:00:00.000Z",
       "taskStatus": "done",
-      "collaboratorIds": [
-        "u4",
-        "u1"
-      ],
+      "collaboratorIds": ["u4", "u1"],
       "taskPriority": "medium"
     },
     {
@@ -619,10 +491,7 @@
       "title": "Team Doku: How we ship",
       "dueDate": "2026-06-18T17:00:00.000Z",
       "taskStatus": "done",
-      "collaboratorIds": [
-        "u1",
-        "u6"
-      ],
+      "collaboratorIds": ["u1", "u6"],
       "taskPriority": "low"
     },
     {
@@ -631,10 +500,7 @@
       "title": "Hiring Pipeline (Stages) definieren",
       "dueDate": "2026-07-22T17:00:00.000Z",
       "taskStatus": "done",
-      "collaboratorIds": [
-        "u4",
-        "u10"
-      ],
+      "collaboratorIds": ["u4", "u10"],
       "taskPriority": "low"
     },
     {
@@ -643,11 +509,7 @@
       "title": "Accessibility: Kontrast & Keyboard Audit",
       "dueDate": "2026-07-04T17:00:00.000Z",
       "taskStatus": "pending",
-      "collaboratorIds": [
-        "u12",
-        "u2",
-        "u9"
-      ],
+      "collaboratorIds": ["u12", "u2", "u9"],
       "taskPriority": "high"
     },
     {
@@ -656,11 +518,88 @@
       "title": "Rate Limiting Regeln dokumentieren",
       "dueDate": "2026-07-08T17:00:00.000Z",
       "taskStatus": "pending",
-      "collaboratorIds": [
-        "u3",
-        "u7",
-        "u4"
-      ],
+      "collaboratorIds": ["u3", "u7", "u4"],
+      "taskPriority": "high"
+    },
+    {
+      "id": "t33",
+      "projectId": "p2",
+      "title": "Profil Screen + Edit Flow",
+      "dueDate": "2026-08-14T17:00:00.000Z",
+      "taskStatus": "in_progress",
+      "collaboratorIds": ["u5", "u11", "u2"],
+      "taskPriority": "medium"
+    },
+    {
+      "id": "t34",
+      "projectId": "p2",
+      "title": "Offline States & Empty Screens definieren",
+      "dueDate": "2026-08-19T17:00:00.000Z",
+      "taskStatus": "pending",
+      "collaboratorIds": ["u2", "u6", "u5"],
+      "taskPriority": "low"
+    },
+    {
+      "id": "t35",
+      "projectId": "p3",
+      "title": "Modal/Drawer/Tooltip Komponenten",
+      "dueDate": "2026-08-05T17:00:00.000Z",
+      "taskStatus": "pending",
+      "collaboratorIds": ["u5", "u12", "u6"],
+      "taskPriority": "medium"
+    },
+    {
+      "id": "t36",
+      "projectId": "p3",
+      "title": "Form Guidelines & Validation Patterns",
+      "dueDate": "2026-08-12T17:00:00.000Z",
+      "taskStatus": "in_progress",
+      "collaboratorIds": ["u1", "u10", "u2"],
+      "taskPriority": "low"
+    },
+    {
+      "id": "t37",
+      "projectId": "p5",
+      "title": "Regression Suite für Checkout & Login",
+      "dueDate": "2026-08-09T17:00:00.000Z",
+      "taskStatus": "pending",
+      "collaboratorIds": ["u9", "u12", "u5"],
+      "taskPriority": "high"
+    },
+    {
+      "id": "t38",
+      "projectId": "p5",
+      "title": "Testdaten Management für E2E Szenarien",
+      "dueDate": "2026-08-16T17:00:00.000Z",
+      "taskStatus": "in_progress",
+      "collaboratorIds": ["u9", "u3", "u11"],
+      "taskPriority": "medium"
+    },
+    {
+      "id": "t39",
+      "projectId": "p6",
+      "title": "Kampagnen-Assets für Social Formate exportieren",
+      "dueDate": "2026-07-18T17:00:00.000Z",
+      "taskStatus": "pending",
+      "collaboratorIds": ["u8", "u6", "u10"],
+      "taskPriority": "medium"
+    },
+    {
+      "id": "t40",
+      "projectId": "p7",
+      "title": "Alerts für Budget Thresholds einrichten",
+      "dueDate": "2026-06-29T17:00:00.000Z",
+      "taskStatus": "pending",
+      "collaboratorIds": ["u7", "u13", "u4"],
+      "taskPriority": "high"
+    },
+    {
+      "id": "t41",
+      "projectId": "p4",
+      "title": "Retry/Timeout Policy für externe Services",
+      "dueDate": "2026-07-14T17:00:00.000Z",
+      "taskStatus": "pending",
+      "collaboratorIds": ["u3", "u11", "u7"],
       "taskPriority": "high"
     }
   ],

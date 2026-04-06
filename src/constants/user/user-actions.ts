@@ -24,9 +24,4 @@ export const BULK_COLLABORATOR_ACTIONS = [
     label: "Aufgabe zuweisen",
     icon: ClipboardList,
   },
-  {
-    key: "change_role",
-    label: "Rolle ändern",
-    icon: UserRoundPen,
-  },
 ] as const;

@@ -20,9 +20,8 @@ const InviteUserModal = ({
   invitedUserIds,
   projectId,
 }: InviteUserModalProps) => {
-  useScrollLock(onInviteOpen);
-
   const [selectedUserIds, setSelectedIds] = useState<string[]>([]);
+  useScrollLock(onInviteOpen);
 
   const { mutate, isPending, error } = useUpdateProjectMembers(projectId);
 

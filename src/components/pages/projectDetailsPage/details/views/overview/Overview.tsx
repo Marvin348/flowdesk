@@ -13,7 +13,7 @@ type OverviewProps = {
   project: ProjectsWithMeta;
   progress: Progress;
   collaborator: User[];
-  onOpen: () => void;
+  onCreateTask: () => void;
   inviteOpen: () => void;
   onNavigate: (tab: ActiveTab) => void;
 };
@@ -22,7 +22,7 @@ const Overview = ({
   project,
   progress,
   collaborator,
-  onOpen,
+  onCreateTask,
   inviteOpen,
   onNavigate,
 }: OverviewProps) => {
@@ -63,7 +63,7 @@ const Overview = ({
       <div className="h-full md:col-span-2 xl:row-span-2">
         <WorkloadCard
           stats={workloadStats.slice(0, 4)}
-          onOpen={onOpen}
+          onCreateTask={onCreateTask}
           variant="compact"
           onMore={() => onNavigate("workload")}
         />
