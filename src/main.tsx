@@ -8,6 +8,7 @@ import DashboardPage from "@/pages/DashboardPage";
 import ProjectsPage from "@/pages/ProjectsPage";
 import TeamPage from "@/pages/TeamPage";
 import ProjectPage from "@/pages/ProjectPage";
+import AccountPage from "./pages/AccountPage";
 
 const queryClient = new QueryClient();
 
@@ -30,6 +31,9 @@ const rounter = createBrowserRouter([
       {
         path: "/team",
         element: <TeamPage />,
+      },
+      { path: "/account", 
+        element: <AccountPage /> 
       },
     ],
   },
