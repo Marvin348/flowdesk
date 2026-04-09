@@ -1,5 +1,6 @@
 import type { Task } from "@/type/domain/task";
 import type { User } from "@/type/domain/user";
+import { calcPercent } from "@/utils/calcPercent";
 
 export type UserPerformance = User & {
   stats: {
@@ -42,9 +43,10 @@ export const getUserPerformance = (
     const openTasks =
       workload.byStatusCounts.pending + workload.byStatusCounts.in_progress;
 
-    const progressPercent = matchesTasks.length
-      ? Math.round((workload.byStatusCounts.done / matchesTasks.length) * 100)
-      : 0;
+    const progressPercent = calcPercent(
+      workload.byStatusCounts.done,
+      matchesTasks.length,
+    );
 
     const stats = {
       tasksCount: matchesTasks.length,

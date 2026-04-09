@@ -2,7 +2,7 @@ import ProgressBarCard from "@/components/pages/projectDetailsPage/details/views
 import type { ProjectsWithMeta } from "@/type/view-models/projectsWithMeta";
 import type { Progress } from "@/utils/getProgressResult";
 import type { User } from "@/type/domain/user";
-import { getUserWorkload } from "@/utils/workload/getUserWorkload";
+import { getProjectUserWorkload } from "@/utils/workload/getProjectUserWorkload";
 import CollaboratorsCard from "./collaborators/CollaboratorsCard";
 import OpenTasksCard from "./tasks/OpenTasksCard";
 import CommentsCard from "./comments/CommentsCard";
@@ -28,7 +28,7 @@ const Overview = ({
 }: OverviewProps) => {
   const allCommentsPerProject = project.tasks.flatMap((t) => t.comments);
 
-  const workloadStats = getUserWorkload(project.tasks);
+  const workloadStats = getProjectUserWorkload(project.tasks);
 
   return (
     <div

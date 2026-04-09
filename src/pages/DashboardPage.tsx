@@ -10,6 +10,9 @@ import PriorityChartSection from "@/components/pages/dashboardPage/charts/Priori
 import { getTaskPriorityItems } from "@/utils/dashboard/getTaskPriorityItems";
 import UpcomingTasks from "@/components/pages/dashboardPage/upcomingTasks/UpcomingTasks";
 import { getUpcomingTasks } from "@/utils/dashboard/tasks/getUpcomingTasks";
+import { getUserPerformance } from "@/utils/performance/getUserPerformance";
+import PerformanceHighlights from "@/components/pages/dashboardPage/performanceHighlights/PerformanceHighlights";
+import { getPerformanceHighlights } from "@/utils/performance/getPerformanceHighlights";
 
 const DashboardPage = () => {
   const {
@@ -30,8 +33,10 @@ const DashboardPage = () => {
 
   const upcomingTasks = getUpcomingTasks(projects, tasks);
 
+  const performance = getUserPerformance(users, tasks);
+  const performanceHighlights = getPerformanceHighlights(performance)
+  
   // md:grid-cols-2
-
   return (
     <div className="grid grid-cols-1 xl:grid-cols-6 gap-6">
       <div className="col-span-1 xl:col-span-4 grid gap-6">
@@ -43,9 +48,14 @@ const DashboardPage = () => {
         <PriorityChartSection priorityItems={taskPriorityItems} />
       </div>
 
+      <div className="xl:col-span-2">
+        <PerformanceHighlights highlights={performanceHighlights}/>
+      </div>
+
       <div className="col-span-1 xl:col-span-4">
         <UpcomingTasks upcomingTasks={upcomingTasks} />
       </div>
+
     </div>
   );
 };

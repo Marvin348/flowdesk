@@ -17,7 +17,7 @@ const PriorityChartSection = ({ priorityItems }: PriorityChartSectionProps) => {
           </p>
         </div>
         <button>
-          <EllipsisVertical strokeWidth={1} fill="black"/>
+          <EllipsisVertical strokeWidth={1} fill="black" />
         </button>
       </div>
 

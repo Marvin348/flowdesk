@@ -12,7 +12,7 @@ import CollaboratorsView from "@/components/pages/projectDetailsPage/details/vie
 import AddTaskPanel from "@/components/tasks/create/AddTaskPanel";
 import InviteUserModal from "@/components/collaborators/InviteUserModal";
 import WorkloadTable from "@/components/pages/projectDetailsPage/details/views/overview/workload/WorkloadTable";
-import { getUserWorkload } from "@/utils/workload/getUserWorkload";
+import { getProjectUserWorkload } from "@/utils/workload/getProjectUserWorkload";
 import CommentsView from "@/components/pages/projectDetailsPage/details/views/commentsView/CommentsView";
 
 export type ActiveTab =
@@ -42,7 +42,7 @@ const ProjectPage = () => {
 
   if (!project) return <div>Projekt nicht gefunden</div>;
 
-  const workloadStats = getUserWorkload(project.tasks);
+  const workloadStats = getProjectUserWorkload(project.tasks);
   const progress = getProgressResult(project.tasks);
   const attachments = project.tasks.flatMap((t) => t.attachments);
 

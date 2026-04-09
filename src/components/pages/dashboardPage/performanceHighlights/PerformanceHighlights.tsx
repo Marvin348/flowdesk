@@ -1,0 +1,30 @@
+import type { PerformanceHighlight } from "@/utils/performance/getPerformanceHighlights";
+import { EllipsisVertical } from "lucide-react";
+import PerformanceHighlightsCard from "@/components/pages/dashboardPage/performanceHighlights/PerformanceHighlightsCard";
+
+type PerformanceHighlightsProps = {
+  highlights: PerformanceHighlight[];
+};
+
+const PerformanceHighlights = ({ highlights }: PerformanceHighlightsProps) => {
+  return (
+    <section className="p-4 border rounded-md h-full">
+      <div className="flex items-center justify-between">
+        <h3 className="font-medium text-xl">Performance Highlights</h3>
+        <button>
+          <EllipsisVertical strokeWidth={1} fill="black" />
+        </button>
+      </div>
+
+      <div className="mt-4">
+        {highlights.map((highlight) => (
+          <PerformanceHighlightsCard
+            key={highlight.type}
+            highlight={highlight}
+          />
+        ))}
+      </div>
+    </section>
+  );
+};
+export default PerformanceHighlights;

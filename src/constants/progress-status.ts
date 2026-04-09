@@ -1,4 +1,4 @@
-export const WORKLOAD_STATUS = {
+export const PROGRESS_STATUS = {
   critical: {
     label: "Überlastet",
     value: "critical",

@@ -310,7 +310,7 @@
       "projectId": "p2",
       "title": "API Contract definieren",
       "dueDate": "2026-08-03T17:00:00.000Z",
-      "taskStatus": "pending",
+      "taskStatus": "done",
       "collaboratorIds": ["u11", "u3", "u4"],
       "taskPriority": "medium"
     },
@@ -364,7 +364,7 @@
       "projectId": "p4",
       "title": "Observability: Tracing + Dashboards",
       "dueDate": "2026-06-06T17:00:00.000Z",
-      "taskStatus": "in_progress",
+      "taskStatus": "done",
       "collaboratorIds": ["u7", "u13", "u3"],
       "taskPriority": "high"
     },
@@ -373,7 +373,7 @@
       "projectId": "p4",
       "title": "DB Indizes & Query Hotspots",
       "dueDate": "2026-06-12T17:00:00.000Z",
-      "taskStatus": "pending",
+      "taskStatus": "done",
       "collaboratorIds": ["u11", "u3"],
       "taskPriority": "high"
     },
@@ -463,7 +463,7 @@
       "projectId": "p7",
       "title": "Storage Lifecycle Policies",
       "dueDate": "2026-06-27T17:00:00.000Z",
-      "taskStatus": "in_progress",
+      "taskStatus": "done",
       "collaboratorIds": ["u13", "u7"],
       "taskPriority": "medium"
     },
@@ -517,7 +517,7 @@
       "projectId": "p4",
       "title": "Rate Limiting Regeln dokumentieren",
       "dueDate": "2026-07-08T17:00:00.000Z",
-      "taskStatus": "pending",
+      "taskStatus": "done",
       "collaboratorIds": ["u3", "u7", "u4"],
       "taskPriority": "high"
     },
@@ -589,7 +589,7 @@
       "projectId": "p7",
       "title": "Alerts für Budget Thresholds einrichten",
       "dueDate": "2026-06-29T17:00:00.000Z",
-      "taskStatus": "pending",
+      "taskStatus": "done",
       "collaboratorIds": ["u7", "u13", "u4"],
       "taskPriority": "high"
     },

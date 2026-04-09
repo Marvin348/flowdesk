@@ -1,4 +1,4 @@
-import type { UserWorkload } from "@/utils/workload/getUserWorkload";
+import type { UserWorkload } from "@/utils/workload/getProjectUserWorkload";
 import type { SortedBy } from "@/components/pages/projectDetailsPage/details/views/overview/workload/WorkloadTable";
 
 export const getSortedWorkloadStats = (

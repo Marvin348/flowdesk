@@ -1,6 +1,6 @@
 import type { UserPerformance } from "@/utils/performance/getUserPerformance";
-import { getWorkloadStatus } from "@/utils/workload/ui/getWorkloadStatus";
-import { WORKLOAD_STATUS } from "@/constants/workload/workload-status";
+import { getStatusFromProgress } from "@/utils/workload/ui/getStatusFromProgress";
+import { PROGRESS_STATUS } from "@/constants/progress-status";
 import Avatar from "@/components/users/avatar/Avatar";
 
 type TeamPerformanceItemProps = {
@@ -13,7 +13,7 @@ const TeamPerformanceItem = ({ item }: TeamPerformanceItemProps) => {
   const minPercent =
     stats.progressPercent === 0 ? "5%" : `${stats.progressPercent}%`;
 
-  const status = getWorkloadStatus(stats.progressPercent);
+  const status = getStatusFromProgress(stats.progressPercent);
 
   return (
     <div className="text-surface/90 border rounded-md p-4">
@@ -39,17 +39,17 @@ const TeamPerformanceItem = ({ item }: TeamPerformanceItemProps) => {
           <span
             className="flex items-center gap-2 text-sm rounded-full px-2 py-0.5"
             style={{
-              color: WORKLOAD_STATUS[status].color,
-              backgroundColor: WORKLOAD_STATUS[status].bg,
+              color: PROGRESS_STATUS[status].color,
+              backgroundColor: PROGRESS_STATUS[status].bg,
             }}
           >
             <span
               className="size-2 shrink-0 rounded-full"
               style={{
-                backgroundColor: WORKLOAD_STATUS[status].color,
+                backgroundColor: PROGRESS_STATUS[status].color,
               }}
             />
-            {WORKLOAD_STATUS[status].label}
+            {PROGRESS_STATUS[status].label}
           </span>
         </p>
       </div>

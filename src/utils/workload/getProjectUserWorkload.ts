@@ -13,7 +13,7 @@ export type UserWorkload = UserWorkloadStats & {
   progressPercent: number;
 };
 
-export const getUserWorkload = (tasks: TaskWithMeta[]) => {
+export const getProjectUserWorkload = (tasks: TaskWithMeta[]) => {
   const statsByUserId = tasks.reduce<Record<string, UserWorkloadStats>>(
     (acc, task) => {
       for (const collaborator of task.collaborators) {

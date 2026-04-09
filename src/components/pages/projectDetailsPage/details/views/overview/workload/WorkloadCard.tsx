@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
-import { type UserWorkload } from "@/utils/workload/getUserWorkload";
+import { type UserWorkload } from "@/utils/workload/getProjectUserWorkload";
 import OverviewCardBody from "../ui/OverviewCardBody";
 import OverviewCardFooter from "../ui/OverviewCardFooter";
 import OverviewCardHeader from "../ui/OverviewCardHeader";
@@ -14,8 +14,12 @@ type WorkloadProps = {
   onMore: () => void;
 };
 
-const WorkloadCard = ({ stats, onCreateTask, variant, onMore }: WorkloadProps) => {
-
+const WorkloadCard = ({
+  stats,
+  onCreateTask,
+  variant,
+  onMore,
+}: WorkloadProps) => {
   return (
     <OverviewCard>
       <OverviewCardHeader

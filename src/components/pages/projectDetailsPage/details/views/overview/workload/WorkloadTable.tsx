@@ -1,6 +1,6 @@
-import type { UserWorkload } from "@/utils/workload/getUserWorkload";
-import { getWorkloadStatus } from "@/utils/workload/ui/getWorkloadStatus";
-import { WORKLOAD_STATUS } from "@/constants/workload/workload-status";
+import type { UserWorkload } from "@/utils/workload/getProjectUserWorkload";
+import { getStatusFromProgress } from "@/utils/workload/ui/getStatusFromProgress";
+import { PROGRESS_STATUS } from "@/constants/progress-status";
 import Avatar from "@/components/users/avatar/Avatar";
 import { ChevronsUpDown } from "lucide-react";
 import { useState } from "react";
@@ -57,7 +57,7 @@ const WorkloadTable = ({ stats, variant }: WorkloadTableProps) => {
 
       <div>
         {sortedWorkloadStats.map((sta) => {
-          const status = getWorkloadStatus(sta.progressPercent);
+          const status = getStatusFromProgress(sta.progressPercent);
 
           return (
             <div key={sta.user.id}>
@@ -84,17 +84,17 @@ const WorkloadTable = ({ stats, variant }: WorkloadTableProps) => {
                   <span
                     className="flex items-center gap-2 rounded-full px-2 py-1"
                     style={{
-                      color: WORKLOAD_STATUS[status].color,
-                      backgroundColor: WORKLOAD_STATUS[status].bg,
+                      color: PROGRESS_STATUS[status].color,
+                      backgroundColor: PROGRESS_STATUS[status].bg,
                     }}
                   >
                     <span
                       className="size-2 shrink-0 rounded-full"
                       style={{
-                        backgroundColor: WORKLOAD_STATUS[status].color,
+                        backgroundColor: PROGRESS_STATUS[status].color,
                       }}
                     />
-                    {WORKLOAD_STATUS[status].label}
+                    {PROGRESS_STATUS[status].label}
                   </span>
                 </div>
               </div>
@@ -114,21 +114,21 @@ const WorkloadTable = ({ stats, variant }: WorkloadTableProps) => {
 
                 <p>{sta.totalTasks}</p>
                 <p>{sta.openCount}</p>
-
+                    
                 <p
                   className="flex w-fit items-center gap-2 rounded-full px-2 py-0.5 text-sm"
                   style={{
-                    color: WORKLOAD_STATUS[status].color,
-                    backgroundColor: WORKLOAD_STATUS[status].bg,
+                    color: PROGRESS_STATUS[status].color,
+                    backgroundColor: PROGRESS_STATUS[status].bg,
                   }}
                 >
                   <span
                     className="size-2 shrink-0 rounded-full"
                     style={{
-                      backgroundColor: WORKLOAD_STATUS[status].color,
+                      backgroundColor: PROGRESS_STATUS[status].color,
                     }}
                   />
-                  {WORKLOAD_STATUS[status].label}
+                  {PROGRESS_STATUS[status].label}
                 </p>
               </div>
             </div>
