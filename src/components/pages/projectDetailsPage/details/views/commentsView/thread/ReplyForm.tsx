@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
-import { useCreateCommentReply } from "@/mutations/comment/usecreateCommentReply";
+import { useCreateComment } from "@/mutations/comment/useCreateComment";
 import { useState } from "react";
 
 const ReplyForm = ({
@@ -12,7 +12,7 @@ const ReplyForm = ({
 }) => {
   const [message, setMessage] = useState("");
 
-  const { mutate, isPending, error } = useCreateCommentReply();
+  const { mutate, isPending, error } = useCreateComment();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();

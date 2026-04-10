@@ -1,4 +1,5 @@
 export type CreateCommentInput = {
-    taskId: string;
-    message: string;
-}
+  taskId: string;
+  message: string;
+  parentCommentId?: string;
+};

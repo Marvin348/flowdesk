@@ -10,7 +10,7 @@ export const useCreateComment = () => {
     mutationFn: createComment,
 
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["comments"] });
+      queryClient.invalidateQueries({ queryKey: ["comments", "details"] });
     },
   });
 };
