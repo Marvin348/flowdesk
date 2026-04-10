@@ -4,6 +4,8 @@ import { useUsers } from "@/queries/users/useUsers";
 import { useProjectTasks } from "@/queries/tasks/useProjectTasks";
 import { getArrayLookup } from "@/utils/getArrayLookup";
 
+// /:id/details
+
 export const useProjectDomain = (projectId: string) => {
   const {
     data: tasks = [],

@@ -1,6 +1,5 @@
 import type { ProjectsWithMeta } from "@/type/view-models/projectsWithMeta";
-import { getProgressResult, type Progress } from "@/utils/getProgressResult";
-getProgressResult;
+import { type Progress } from "@/utils/getProgressResult";
 import { STATUS_OPTIONS } from "@/constants/status-options";
 import { Link } from "react-router";
 import { ArrowLeft, UserRoundPlus, History } from "lucide-react";
@@ -25,6 +24,8 @@ const ProjectDetailsHeader = ({
 
   const teamUsers = useUsersByIds(teamUserIds);
 
+  const statusOption = STATUS_OPTIONS[project.projectStatus];
+
   return (
     <div className="flex items-center justify-between gap-3">
       <div className="flex min-w-0 items-center gap-3">
@@ -39,12 +40,16 @@ const ProjectDetailsHeader = ({
 
         {badge && <ActiveMenuBadge badge={badge} />}
 
-        <span
-          style={{ backgroundColor: STATUS_OPTIONS[projectStatus].color }}
-          className="hidden sm:inline-block px-2 rounded-full text-sm"
-        >
-          {STATUS_OPTIONS[projectStatus].label}
-        </span>
+        {statusOption ? (
+          <span
+            style={{ backgroundColor: STATUS_OPTIONS[projectStatus].color }}
+            className="hidden sm:inline-block px-2 rounded-full text-sm"
+          >
+            {STATUS_OPTIONS[projectStatus].label}
+          </span>
+        ) : (
+          <span>Missing status</span>
+        )}
 
         <div className="hidden xl:flex items-center gap-2 ml-4">
           <div className="bg-gray-200 h-2 rounded-md w-40">

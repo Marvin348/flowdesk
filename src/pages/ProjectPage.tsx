@@ -14,6 +14,7 @@ import InviteUserModal from "@/components/collaborators/InviteUserModal";
 import WorkloadTable from "@/components/pages/projectDetailsPage/details/views/overview/workload/WorkloadTable";
 import { getProjectUserWorkload } from "@/utils/workload/getProjectUserWorkload";
 import CommentsView from "@/components/pages/projectDetailsPage/details/views/commentsView/CommentsView";
+import { Spinner } from "@/components/ui/spinner";
 
 export type ActiveTab =
   | "overview"
@@ -36,11 +37,12 @@ const ProjectPage = () => {
   const projectId = id ?? "";
   const activeTab = (searchParams.get("tab") as ActiveTab) ?? "overview";
 
-  const projectDetailsVM = useProjectDetailsVM(projectId);
-  const project = projectDetailsVM.find((project) => project.id === id);
+  const { project, isLoading, error } = useProjectDetailsVM(projectId);
   const teamUsers = useUsersByIds(project?.teamUserIds ?? []);
 
-  if (!project) return <div>Projekt nicht gefunden</div>;
+  if (isLoading) return <Spinner />;
+  if (error) return <div>Something went wrong</div>;
+  if (!project) return <div>Project not found</div>;
 
   const workloadStats = getProjectUserWorkload(project.tasks);
   const progress = getProgressResult(project.tasks);
@@ -56,6 +58,8 @@ const ProjectPage = () => {
   const handleClearSelection = () => setSelectedCollaboratorIds([]);
   const handleCreateTask = () => setIsAddTaskOpen(true);
   const navigateTab = (tab: ActiveTab) => setSeatchParams({ tab });
+
+  console.log("project", project);
 
   const TabViewResult = () => {
     switch (activeTab) {

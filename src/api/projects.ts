@@ -1,6 +1,8 @@
 import { apiClient } from "@/api/client";
 import type { Project } from "@/type/domain/project";
 import type { CreateProjectInput } from "@/type/inputs/createProjectInput";
+import axios from "axios";
+import type { ProjectDetails } from "@/type/view-models/projectsWithMeta";
 
 export type UpdateProjectMembersInput = {
   projectId: string;
@@ -12,6 +14,20 @@ export const fetchProjects = async (id?: string): Promise<Project[]> => {
   const url = id ? `/projects?id=${id}` : "/projects";
   const res = await apiClient.get(url);
   return res.data;
+};
+
+// new
+export const fetchProject = async (id: string): Promise<Project> => {
+  const res = await axios.get(`http://localhost:3001/projects/${id}`);
+  return res.data;
+};
+
+// new details with all endpoints
+export const fetchProjectDetails = async (
+  id: string,
+): Promise<ProjectDetails> => {
+  const res = await axios.get(`http://localhost:3001/projects/${id}/details`);
+  return res.data.data;
 };
 
 export const updateProjectMembers = async (

@@ -10,7 +10,9 @@ export const useCreateTask = (projectId: string) => {
     mutationFn: createTask,
 
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["tasks", projectId] });
+      queryClient.invalidateQueries({
+        queryKey: ["projects", projectId, "details"],
+      });
     },
   });
 };

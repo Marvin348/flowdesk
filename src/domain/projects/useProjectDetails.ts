@@ -1,18 +1,20 @@
 import { useAppStore } from "@/store";
-import type { ProjectsWithMeta } from "@/type/view-models/projectsWithMeta";
 import { getArrayLookup } from "@/utils/getArrayLookup";
 import { isDefined } from "@/utils/isDefined";
 import { useMemo } from "react";
 import { groupBy } from "@/utils/groupBy";
-import { useProjectDomain } from "./useProjectDomain";
-import { useProject } from "@/queries/projects/useProject";
+import { useProjectDetails } from "@/queries/projects/useProjectDetails";
+import type { ProjectDetailsVM } from "@/type/view-models/projectsWithMeta";
 
-export const useProjectDetailsVM = (projectId: string) => {
-  const { data: projects = [] } = useProject(projectId);
+export const useProjectDetailsVM = (projectId: string): ProjectDetailsVM => {
+  const { data: details, isLoading, error } = useProjectDetails(projectId);
+  console.log("DETAILS", details);
 
-  const {
-    data: { users, tasks, comments, attachments },
-  } = useProjectDomain(projectId);
+  const project = details?.project;
+  const tasks = details?.tasks ?? [];
+  const comments = details?.comments ?? [];
+  const attachments = details?.attachments ?? [];
+  const users = details?.users ?? [];
 
   const badgeByProjectId = useAppStore((state) => state.badgeByProjectId);
 
@@ -30,63 +32,72 @@ export const useProjectDetailsVM = (projectId: string) => {
     [attachments],
   );
 
-  const useProjectDetailsVM: ProjectsWithMeta[] = projects.map((pro) => {
-    const tasks = tasksByProjectId.get(pro.id) ?? [];
-
-    const badge = badgeByProjectId[pro.id];
-
-    const enrichedTasks = tasks.map((task) => {
-      const comments = commentsByTaskId.get(task.id) ?? [];
-      const attachments = attachmentsByTaskId.get(task.id) ?? [];
-
-      const collaborators = (task.collaboratorIds ?? [])
-        .map((userId) => usersById.get(userId))
-        .filter(isDefined);
-
-      return {
-        ...task,
-        comments,
-        attachments,
-        collaborators,
-      };
-    });
-
-    const teamUserIdSet = new Set<string>(pro.invitedUserIds ?? []);
-
-    const counts = enrichedTasks.reduce(
-      (acc, task) => {
-        acc.commentCount += task.comments.length;
-        acc.attachmentCount += task.attachments.length;
-
-        for (const userId of task.collaboratorIds) {
-          teamUserIdSet.add(userId);
-        }
-
-        return acc;
-      },
-      {
-        commentCount: 0,
-        attachmentCount: 0,
-      },
-    );
-
-    const teamUserIds = Array.from(teamUserIdSet);
-
-    const meta = {
-      taskCount: enrichedTasks.length,
-      commentCount: counts.commentCount,
-      attachmentCount: counts.attachmentCount,
-      userCount: teamUserIds.length,
+  if (!project) {
+    return {
+      project: null,
+      isLoading,
+      error,
     };
+  }
+
+  const tasksForProject = tasksByProjectId.get(project.id) ?? [];
+  const badge = badgeByProjectId[project.id];
+
+  const enrichedTasks = tasksForProject.map((task) => {
+    const comments = commentsByTaskId.get(task.id) ?? [];
+    const attachments = attachmentsByTaskId.get(task.id) ?? [];
+
+    const collaborators = (task.collaboratorIds ?? [])
+      .map((userId) => usersById.get(userId))
+      .filter(isDefined);
 
     return {
-      ...pro,
-      badge,
-      tasks: enrichedTasks,
-      meta,
-      teamUserIds,
+      ...task,
+      comments,
+      attachments,
+      collaborators,
     };
   });
 
-  return useProjectDetailsVM;
+  const teamUserIdSet = new Set<string>(project.invitedUserIds ?? []);
+
+  const counts = enrichedTasks.reduce(
+    (acc, task) => {
+      acc.commentCount += task.comments.length;
+      acc.attachmentCount += task.attachments.length;
+
+      for (const userId of task.collaboratorIds) {
+        teamUserIdSet.add(userId);
+      }
+
+      return acc;
+    },
+    {
+      commentCount: 0,
+      attachmentCount: 0,
+    },
+  );
+
+  const teamUserIds = Array.from(teamUserIdSet);
+
+  const meta = {
+    taskCount: enrichedTasks.length,
+    commentCount: counts.commentCount,
+    attachmentCount: counts.attachmentCount,
+    userCount: teamUserIds.length,
+  };
+
+  const projectDetails = {
+    ...project,
+    badge,
+    tasks: enrichedTasks,
+    meta,
+    teamUserIds,
+  };
+
+  return {
+    project: projectDetails,
+    isLoading,
+    error,
+  };
 };
