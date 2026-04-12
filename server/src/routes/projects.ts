@@ -1,31 +1,13 @@
 import express from "express";
 import { readDb } from "../utils/readDb.js";
+import { writeDb } from "../utils/writeDb.js";
+import type { ProjectSummaryDto } from "../../../shared/types/dto/project.js";
 
 const router = express.Router();
 
-// test
 router.get("/", (req, res) => {
   const db = readDb();
-  res.json(db.projects);
-});
-
-// scoped
-router.get("/:id", (req, res) => {
-  const id = req.params.id;
-
-  if (!id) {
-    return res.status(400).json({ error: "Invalid id" });
-  }
-
-  const db = readDb();
-
-  const project = db.projects.find((p) => p.id === id);
-
-  if (!project) {
-    return res.status(404).json({ error: "project not found" });
-  }
-
-  return res.status(200).json({ data: project });
+  res.json({ data: db.projects });
 });
 
 // all endpoints
@@ -61,6 +43,223 @@ router.get("/:id/details", (req, res) => {
       users,
     },
   });
+});
+
+// list vm
+router.get("/summary", (req, res) => {
+  const db = readDb();
+
+  const projects = db.projects;
+  const comments = db.comments;
+  const tasks = db.tasks;
+  const attachments = db.attachments;
+
+  const tasksByProjectId = new Map<string, typeof tasks>();
+  for (const task of tasks) {
+    const existing = tasksByProjectId.get(task.projectId) ?? [];
+    existing.push(task);
+    tasksByProjectId.set(task.projectId, existing);
+  }
+
+  const commentsByTaskId = new Map<string, typeof comments>();
+  for (const comment of comments) {
+    const existing = commentsByTaskId.get(comment.taskId) ?? [];
+    existing.push(comment);
+    commentsByTaskId.set(comment.taskId, existing);
+  }
+
+  const attachmentsByTaskId = new Map<string, typeof attachments>();
+  for (const attachment of attachments) {
+    const existing = attachmentsByTaskId.get(attachment.taskId) ?? [];
+    existing.push(attachment);
+    attachmentsByTaskId.set(attachment.taskId, existing);
+  }
+
+  const projectListItems = projects.map((p): ProjectSummaryDto => {
+    const projectTasks = tasksByProjectId.get(p.id) ?? [];
+
+    const teamUserIdSet = new Set<string>(p.invitedUserIds);
+
+    const counts = projectTasks.reduce(
+      (acc, task) => {
+        acc.commentCount += (commentsByTaskId.get(task.id) ?? []).length;
+        acc.attachmentCount += (attachmentsByTaskId.get(task.id) ?? []).length;
+
+        if (task.taskStatus === "done") {
+          acc.completedTaskCount += 1;
+        }
+
+        for (const userId of task.collaboratorIds) {
+          teamUserIdSet.add(userId);
+        }
+
+        return acc;
+      },
+      {
+        commentCount: 0,
+        attachmentCount: 0,
+        completedTaskCount: 0,
+      },
+    );
+
+    const teamUserIds = Array.from(teamUserIdSet);
+
+    return {
+      id: p.id,
+      title: p.title,
+      priority: p.priority,
+      projectStatus: p.projectStatus,
+      dueDate: p.dueDate,
+      teamUserIds,
+      createdAt: p.createdAt,
+
+      stats: {
+        taskCount: projectTasks.length,
+        commentCount: counts.commentCount,
+        attachmentCount: counts.attachmentCount,
+        completedTaskCount: counts.completedTaskCount,
+        userCount: teamUserIds.length,
+      },
+    };
+  });
+
+  return res.status(200).json({ data: projectListItems });
+});
+
+
+// type ProjectsListResponseDto = ProjectListItemDto[];
+
+// FRONTEND
+// export type ProjectsList = Project & {
+//   badge?: Badge;
+
+//   meta: {
+//     taskCount: number;
+//     commentCount: number;
+//     attachmentCount: number;
+//     completedTaskCount: number;
+//     userCount: number;
+//   };
+//   progress: Progress;
+
+//   teamUserIds: string[];
+// };
+
+// scoped
+router.get("/:id", (req, res) => {
+  const id = req.params.id;
+
+  if (!id) {
+    return res.status(400).json({ error: "Invalid id" });
+  }
+
+  const db = readDb();
+
+  const project = db.projects.find((p) => p.id === id);
+
+  if (!project) {
+    return res.status(404).json({ error: "project not found" });
+  }
+
+  return res.status(200).json({ data: project });
+});
+
+// create new project
+router.post("/", (req, res) => {
+  const {
+    title,
+    priority,
+    projectStatus,
+    dueDate,
+    invitedUserIds,
+    description,
+  } = req.body;
+
+  if (
+    !title ||
+    !priority ||
+    !projectStatus ||
+    !dueDate ||
+    !Array.isArray(invitedUserIds)
+  ) {
+    return res.status(400).json({ error: "Invalid input" });
+  }
+
+  const db = readDb();
+
+  const newProject = {
+    id: crypto.randomUUID(),
+    title,
+    priority,
+    projectStatus,
+    dueDate,
+    invitedUserIds,
+    description,
+    updatedAt: new Date().toISOString(),
+    createdAt: new Date().toISOString(),
+  };
+
+  db.projects.push(newProject);
+
+  writeDb(db);
+
+  return res.status(201).json({ data: newProject });
+});
+
+// delete project
+router.delete("/:id", (req, res) => {
+  const projectId = req.params.id;
+
+  if (!projectId) {
+    return res.status(400).json({ error: "projectId invalid input" });
+  }
+
+  const db = readDb();
+  const index = db.projects.findIndex((p) => p.id === projectId);
+
+  if (index === -1) {
+    return res.status(404).json({ error: "project not found" });
+  }
+
+  const deletedProject = db.projects.splice(index, 1);
+
+  // das reicht aber nicht, ich muss dann alle taskIds finden, die an projectId beliben, und dann alles andere löschn, comments, attachments
+  const taskIdsToDelete = db.tasks
+    .filter((t) => t.projectId === projectId)
+    .map((tIds) => tIds);
+
+  // later
+
+  writeDb(db);
+
+  return res.json({ data: deletedProject[0] });
+});
+
+// update invitedUserIds
+router.patch("/:id", (req, res) => {
+  const projectId = req.params.id;
+  const { userIdsToAdd } = req.body;
+
+  if (!projectId || !Array.isArray(userIdsToAdd)) {
+    return res.status(400).json({ error: "Invalid input" });
+  }
+
+  const db = readDb();
+  const project = db.projects.find((p) => p.id === projectId);
+
+  if (!project) {
+    return res.status(404).json({ error: "project not found" });
+  }
+
+  project.invitedUserIds = Array.from(
+    new Set([...project.invitedUserIds, ...userIdsToAdd]),
+  );
+
+  project.updatedAt = new Date().toISOString();
+
+  writeDb(db);
+
+  return res.status(200).json({ data: project });
 });
 
 export default router;

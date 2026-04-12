@@ -5,10 +5,9 @@ import { Task } from "../types/index.js";
 
 const router = express.Router();
 
-// test
 router.get("/", (req, res) => {
   const db = readDb();
-  res.json(db.tasks);
+  res.json({ data: db.tasks });
 });
 
 // post in details

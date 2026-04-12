@@ -7,7 +7,7 @@ const router = express.Router();
 
 router.get("/", (req, res) => {
   const db = readDb();
-  res.json(db.comments);
+  res.json({data: db.comments});
 });
 
 router.post("/", (req, res) => {

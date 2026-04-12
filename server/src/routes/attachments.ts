@@ -5,7 +5,7 @@ const router = express.Router();
 
 router.get("/", (req, res) => {
   const db = readDb();
-  res.json(db.attachments);
+  res.json({data: db.attachments});
 });
 
 export default router;
