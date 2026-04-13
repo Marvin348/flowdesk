@@ -25,6 +25,7 @@ router.get("/summary", (req: Request<{}, {}, ProjectSummaryDto>, res) => {
   const tasks = db.tasks;
   const attachments = db.attachments;
 
+  // refactor later
   const tasksByProjectId = new Map<string, typeof tasks>();
   for (const task of tasks) {
     const existing = tasksByProjectId.get(task.projectId) ?? [];

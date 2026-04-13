@@ -26,6 +26,9 @@ const WorkloadTable = ({ stats, variant }: WorkloadTableProps) => {
   const toggleSortedBy = (value: SortKey) => updateSort(value, setSortedBy);
   const sortedWorkloadStats = getSortedWorkloadStats(stats, sortedBy);
 
+  if (!stats.length)
+    return <div className="text-center">Keine Daten vorhanden</div>;
+
   const isFull = variant === "full";
 
   const wrapperClass = isFull ? "border rounded-md overflow-hidden" : "";
@@ -114,7 +117,7 @@ const WorkloadTable = ({ stats, variant }: WorkloadTableProps) => {
 
                 <p>{sta.totalTasks}</p>
                 <p>{sta.openCount}</p>
-                    
+
                 <p
                   className="flex w-fit items-center gap-2 rounded-full px-2 py-0.5 text-sm"
                   style={{
