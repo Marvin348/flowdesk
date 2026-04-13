@@ -1,5 +1,5 @@
 import express from "express";
-import { readDb } from "../utils/readDb.js";
+import { readDb } from "@/utils/readDb.js";
 
 const router = express.Router();
 

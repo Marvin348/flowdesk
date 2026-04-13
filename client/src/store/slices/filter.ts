@@ -1,5 +1,5 @@
-import type { Priority } from "@/type/domain/priority";
-import type { StatusBase } from "@/type/domain/StatusBase";
+import type { Priority } from "@shared/types/priority";
+import type { StatusBase } from "@shared/types/StatusBase";
 import type { AppStore } from "@/store";
 import type { StateCreator } from "zustand";
 

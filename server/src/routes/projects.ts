@@ -1,7 +1,13 @@
 import express from "express";
-import { readDb } from "../utils/readDb.js";
-import { writeDb } from "../utils/writeDb.js";
-import type { ProjectSummaryDto } from "../../../shared/types/dto/project.js";
+import { readDb } from "@/utils/readDb.js";
+import { writeDb } from "@/utils/writeDb.js";
+import type {
+  ProjectDetailsDto,
+  ProjectSummaryDto,
+} from "@shared/types/dto/project.js";
+import type { CreateProjectInput } from "@shared/types/inputs/createProjectInput.js";
+import { Project } from "@shared/types/project.js";
+import type { Request, Response } from "express";
 
 const router = express.Router();
 
@@ -10,43 +16,8 @@ router.get("/", (req, res) => {
   res.json({ data: db.projects });
 });
 
-// all endpoints
-router.get("/:id/details", (req, res) => {
-  const projectId = req.params.id;
-
-  if (!projectId) {
-    return res.status(400).json({ error: "Invalid projectId" });
-  }
-
-  const db = readDb();
-
-  const project = db.projects.find((p) => p.id === projectId);
-
-  if (!project) {
-    return res.status(404).json({ error: "project not found" });
-  }
-
-  const tasks = db.tasks.filter((t) => t.projectId === projectId);
-  const tasksByIds = new Set(tasks.map((t) => t.id));
-
-  const comments = db.comments.filter((c) => tasksByIds.has(c.taskId));
-  const attachments = db.attachments.filter((a) => tasksByIds.has(a.taskId));
-
-  const users = db.users;
-
-  return res.status(200).json({
-    data: {
-      project,
-      tasks,
-      comments,
-      attachments,
-      users,
-    },
-  });
-});
-
 // list vm
-router.get("/summary", (req, res) => {
+router.get("/summary", (req: Request<{}, {}, ProjectSummaryDto>, res) => {
   const db = readDb();
 
   const projects = db.projects;
@@ -126,46 +97,8 @@ router.get("/summary", (req, res) => {
   return res.status(200).json({ data: projectListItems });
 });
 
-
-// type ProjectsListResponseDto = ProjectListItemDto[];
-
-// FRONTEND
-// export type ProjectsList = Project & {
-//   badge?: Badge;
-
-//   meta: {
-//     taskCount: number;
-//     commentCount: number;
-//     attachmentCount: number;
-//     completedTaskCount: number;
-//     userCount: number;
-//   };
-//   progress: Progress;
-
-//   teamUserIds: string[];
-// };
-
-// scoped
-router.get("/:id", (req, res) => {
-  const id = req.params.id;
-
-  if (!id) {
-    return res.status(400).json({ error: "Invalid id" });
-  }
-
-  const db = readDb();
-
-  const project = db.projects.find((p) => p.id === id);
-
-  if (!project) {
-    return res.status(404).json({ error: "project not found" });
-  }
-
-  return res.status(200).json({ data: project });
-});
-
 // create new project
-router.post("/", (req, res) => {
+router.post("/", (req: Request<{}, {}, CreateProjectInput>, res) => {
   const {
     title,
     priority,
@@ -187,7 +120,7 @@ router.post("/", (req, res) => {
 
   const db = readDb();
 
-  const newProject = {
+  const newProject: Project = {
     id: crypto.randomUUID(),
     title,
     priority,
@@ -204,6 +137,93 @@ router.post("/", (req, res) => {
   writeDb(db);
 
   return res.status(201).json({ data: newProject });
+});
+
+// details vm
+router.get(
+  "/:id/details",
+  (req: Request<{ id: string }, {}, ProjectDetailsDto>, res) => {
+    const projectId = req.params.id;
+
+    if (!projectId) {
+      return res.status(400).json({ error: "Invalid projectId" });
+    }
+
+    const db = readDb();
+
+    const project = db.projects.find((p) => p.id === projectId);
+
+    if (!project) {
+      return res.status(404).json({ error: "project not found" });
+    }
+
+    const tasks = db.tasks.filter((t) => t.projectId === projectId);
+    const tasksByIds = new Set(tasks.map((t) => t.id));
+
+    const comments = db.comments.filter((c) => tasksByIds.has(c.taskId));
+    const attachments = db.attachments.filter((a) => tasksByIds.has(a.taskId));
+
+    const users = db.users;
+
+    return res.status(200).json({
+      data: {
+        project,
+        tasks,
+        comments,
+        attachments,
+        users,
+      },
+    });
+  },
+);
+
+// PATCH /users/:id/role //chage user globally
+// chage user-role
+router.patch("/:id/members/:userId", (req, res) => {
+  const projectId = req.params.id;
+  const userId = req.params.userId;
+
+  if (!projectId || !userId) {
+    return res.status(400).json({ error: "Invalid input" });
+  }
+
+  const db = readDb();
+  const project = db.projects.find((p) => p.id === projectId);
+
+  if (!project) {
+    return res.status(404).json({ error: "Project not found" });
+  }
+
+  const user = db.users.find((u) => u.id === userId);
+
+  if (!user) {
+    return res.status(404).json({ error: "User not found" });
+  }
+
+  if (!project.invitedUserIds.includes(userId)) {
+    return res.status(400).json({ error: "User not in project" });
+  }
+
+  // not ready
+});
+
+// scoped
+router.get("/:id", (req, res) => {
+  const id = req.params.id;
+
+  if (!id) {
+    return res.status(400).json({ error: "Invalid id" });
+  }
+
+  const db = readDb();
+
+  const project = db.projects.find((p) => p.id === id);
+
+  if (!project) {
+    return res.status(404).json({ error: "project not found" });
+  }
+
+  return res.status(200).json({ data: project });
 });
 
 // delete project
@@ -223,12 +243,15 @@ router.delete("/:id", (req, res) => {
 
   const deletedProject = db.projects.splice(index, 1);
 
-  // das reicht aber nicht, ich muss dann alle taskIds finden, die an projectId beliben, und dann alles andere löschn, comments, attachments
   const taskIdsToDelete = db.tasks
     .filter((t) => t.projectId === projectId)
-    .map((tIds) => tIds);
+    .map((t) => t.id);
 
-  // later
+  const taskIdSet = new Set(taskIdsToDelete);
+
+  db.tasks = db.tasks.filter((t) => !taskIdSet.has(t.id));
+  db.comments = db.comments.filter((c) => !taskIdSet.has(c.taskId));
+  db.attachments = db.attachments.filter((a) => !taskIdSet.has(a.taskId));
 
   writeDb(db);
 

@@ -5,15 +5,27 @@ FlowDesk is an admin dashboard for managing projects, tasks, and team collaborat
 ⚠️ This project is still a work in progress. Many parts are not fully refactored yet, and the overall direction and features may still evolve.
 
 ## Current Setup
-- Frontend consumes a mock API using json-server
+
+- Frontend (React + Vite) connected to a custom Node.js backend
+- Backend is still evolving; some endpoints and data flows may be incomplete or inconsistent
 - Focus is currently on UI architecture, state management, and data flow
 - Features are being developed iteratively, with ongoing refinements
 
+## Notes
+
+- Some features may not work as expected yet
+- Ongoing refactoring of API structure and data handling
+- shared types folder are not fully connected to server and client yet
+
 ## Planned Improvements
-- Replace json-server with a real backend **(Node.js + Express)**
+
+- Stabilize and finalize backend API design
 - Add persistent database (e.g. MongoDB or PostgreSQL)
 - Implement custom REST API routes
+- Optimize data fetching with dedicated endpoints (e.g. dashboard, summaries)
 - Improve overall architecture and separation of concerns
+- react query chache
+- organize shared folder with types
 
 ## Installation
 
@@ -36,10 +48,11 @@ npm install
 npm run dev
 ```
 
-4. Start the mock API (json-server)
+4. Start backend
 
 ```bash
-npx json-server --watch db.json --port 30001
+cd server
+npm run dev
 ```
 
 ## 🛠 Tech Stack

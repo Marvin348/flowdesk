@@ -4,11 +4,11 @@ import OverviewCardBody from "../ui/OverviewCardBody";
 import OverviewCardFooter from "../ui/OverviewCardFooter";
 import OverviewCardHeader from "../ui/OverviewCardHeader";
 import { Plus } from "lucide-react";
-import type { Comments } from "@/type/domain/comments";
+import type { Comment } from "@shared/types/comment";
 import OverviewCommentsList from "./OverviewCommentsList";
 
 type CommentsCardProps = {
-  comments: Comments[];
+  comments: Comment[];
   onMore: () => void;
 };
 

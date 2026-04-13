@@ -1,9 +1,9 @@
-import type { Task } from "@/type/domain/task";
 import { calcPercent } from "@/utils/calcPercent";
+import type { TaskWithMeta } from "@/type/view-models/taskWithMeta";
 
 export type Progress = ReturnType<typeof getProgressResult>;
 
-export const getProgressResult = (tasks: Task[]) => {
+export const getProgressResult = (tasks: TaskWithMeta[]) => {
   const total = tasks.length;
 
   const result = tasks.reduce(

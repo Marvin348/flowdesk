@@ -1,21 +1,15 @@
-import type { Comments } from "@/type/domain/comments";
+import type { Comment } from "@shared/types/comment";
 import { apiClient } from "@/api/client";
-import type { CreateCommentInput } from "@/type/inputs/createCommentInput";
+import type { CreateCommentInput } from "@shared/types/inputs/createCommentInput";
 
-export const fetchComments = async (): Promise<Comments[]> => {
+export const fetchComments = async (): Promise<Comment[]> => {
   const res = await apiClient.get("/comments");
   return res.data.data;
 };
 
-// export const fetchComments = async (taskId?: string): Promise<Comments[]> => {
-//   const url = taskId ? `/comments?taskId=${taskId}` : "/comments";
-//   const res = await apiClient.get(url);
-//   return res.data;
-// };
-
 export const createComment = async (
   input: CreateCommentInput,
-): Promise<Comments> => {
+): Promise<Comment> => {
   const res = await apiClient.post("/comments", input);
 
   return res.data.data;

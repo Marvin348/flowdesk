@@ -2,10 +2,10 @@ import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { useCreateComment } from "@/mutations/comment/useCreateComment";
 import SelectedTask from "@/components/ui/select/SelectedTask";
-import type { Task } from "@/type/domain/task";
 import { Spinner } from "@/components/ui/spinner";
+import type { TaskWithMeta } from "@/type/view-models/taskWithMeta";
 
-const CommentForm = ({ tasks }: { tasks: Task[] }) => {
+const CommentForm = ({ tasks }: { tasks: TaskWithMeta[] }) => {
   const [message, setMessage] = useState("");
   const [selectedTaskId, setSelectedTaskId] = useState("");
   const [taskErrorMessage, setTaskErrorMessage] = useState<string | null>(null);

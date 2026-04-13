@@ -19,7 +19,6 @@ const CommentsView = ({ tasks }: { tasks: TaskWithMeta[] }) => {
     setSortOrder((prev) => (prev === "newest" ? "oldest" : "newest"));
 
   const sortedComments = getSortedComments(allComments, sortOrder);
-
   const maxComments = sortedComments.slice(0, visibleCount);
 
   return (

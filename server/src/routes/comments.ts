@@ -1,16 +1,19 @@
 import express from "express";
-import { readDb } from "../utils/readDb.js";
-import { writeDb } from "../utils/writeDb.js";
-import { Comment } from "../types/index.js";
+import { readDb } from "@/utils/readDb.js";
+import { writeDb } from "@/utils/writeDb.js";
+import { Comment } from "@shared/types/comment.js";
+import type { Request, Response } from "express";
+import type { CreateCommentInput } from "@shared/types/inputs/createCommentInput.js";
 
 const router = express.Router();
 
 router.get("/", (req, res) => {
   const db = readDb();
-  res.json({data: db.comments});
+  res.json({ data: db.comments });
 });
 
-router.post("/", (req, res) => {
+// new comment
+router.post("/", (req: Request<{}, {}, CreateCommentInput>, res) => {
   const { taskId, message, parentCommentId } = req.body;
 
   if (!taskId || !message) {
@@ -25,7 +28,6 @@ router.post("/", (req, res) => {
     return res.status(404).json({ error: "Task not found" });
   }
 
-  // Nur prüfen, WENN es eine Reply ist
   if (parentCommentId) {
     const parentComment = db.comments.find(
       (comment) => comment.id === parentCommentId,
@@ -57,25 +59,5 @@ router.post("/", (req, res) => {
 
   return res.status(201).json({ data: newComment });
 });
-
-// export type Comments = {
-//   id: string;
-//   taskId: string;
-//   userId: string;
-//   message: string;
-//   createdAt: string;
-//   parentCommentId?: string
-// };
-
-// export type CreateCommentInput = {
-//     taskId: string;
-//     message: string;
-// }
-
-// export type CreateCommentReplyInput = {
-//   taskId: string;
-//   message: string;
-//   parentCommentId: string;
-// };
 
 export default router;

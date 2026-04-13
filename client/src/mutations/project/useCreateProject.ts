@@ -1,5 +1,5 @@
-import type { Project } from "@/type/domain/project";
-import type { CreateProjectInput } from "@/type/inputs/createProjectInput";
+import type { Project } from "@shared/types/project";
+import type { CreateProjectInput } from "@shared/types/inputs/createProjectInput";
 import { useQueryClient, useMutation } from "@tanstack/react-query";
 import { createProject } from "@/api/projects";
 

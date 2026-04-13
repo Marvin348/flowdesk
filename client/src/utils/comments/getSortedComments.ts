@@ -1,7 +1,7 @@
 import type { SortOrder } from "@/components/pages/projectDetailsPage/details/views/commentsView/CommentsView";
-import type { Comments } from "@/type/domain/comments";
+import type { Comment } from "@shared/types/comment";
 
-export const getSortedComments = (comments: Comments[], value: SortOrder) => {
+export const getSortedComments = (comments: Comment[], value: SortOrder) => {
   if (value === "newest") {
     return [...comments].sort(
       (a, b) =>

@@ -1,5 +1,5 @@
 import Avatar from "@/components/users/avatar/Avatar";
-import type { User } from "@/type/domain/user";
+import type { User } from "@shared/types/user";
 
 type AvatarProps = {
   users?: User[];

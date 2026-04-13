@@ -4,7 +4,7 @@ import SearchInput from "@/components/pages/projectsPage/query-controls/SearchIn
 import { Button } from "@/components/ui/button";
 import { Filter } from "lucide-react";
 import { useAppStore } from "@/store";
-import type { StatusBase } from "@/type/domain/StatusBase";
+import type { StatusBase } from "@shared/types/StatusBase";
 import type { ProjectsSummary } from "@/hooks/useProjectsSummary";
 
 type FilterPanelProps = {

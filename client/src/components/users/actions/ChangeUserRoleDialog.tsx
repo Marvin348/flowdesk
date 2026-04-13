@@ -5,7 +5,7 @@ import { useState } from "react";
 import { USER_ROLE_OPTIONS } from "@/constants/user/user-role-options";
 import { useChangeUserRole } from "@/mutations/user/useChangeUserRole";
 import { Spinner } from "@/components/ui/spinner";
-import type { UserRole } from "@/type/domain/user";
+import type { UserRole } from "@shared/types/user";
 
 type ChangeUserRoleDialogProps = {
   onClose: () => void;

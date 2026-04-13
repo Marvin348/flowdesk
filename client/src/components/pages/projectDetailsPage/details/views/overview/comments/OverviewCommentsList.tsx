@@ -1,8 +1,8 @@
 import { useCommentsWithUsers } from "@/hooks/useCommentsWithUsers";
-import type { Comments } from "@/type/domain/comments";
+import type { Comment } from "@shared/types/comment";
 import OverviewCommentItem from "./OverviewCommentItem";
 
-const OverviewCommentsList = ({ comments }: { comments: Comments[] }) => {
+const OverviewCommentsList = ({ comments }: { comments: Comment[] }) => {
   const commentsWithUser = useCommentsWithUsers(comments);
   // useCommentsWithUsers hook called twice (here, CommentThreadList)
 

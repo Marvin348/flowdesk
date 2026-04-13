@@ -1,10 +1,10 @@
-import type { User } from "@/type/domain/user";
-import type { Comments } from "@/type/domain/comments";
-import type { Attachment } from "@/type/domain/attachment";
-import type { Task } from "@/type/domain/task";
+import type { User } from "@shared/types/user";
+import type { Comment } from "@shared/types/comment";
+import type { Attachment } from "@shared/types/attachment";
+import type { Task } from "@shared/types/task";
 
 export type TaskWithMeta = Task & {
-  comments: Comments[];
+  comments: Comment[];
   attachments: Attachment[];
   collaborators: User[];
 };

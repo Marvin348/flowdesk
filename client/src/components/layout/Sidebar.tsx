@@ -8,7 +8,7 @@ import logoWhite from "@/assets/logo-white.svg";
 import { useScrollLock } from "@/hooks/useScrollLock";
 import { Star, LogOut } from "lucide-react";
 import { useAppStore } from "@/store";
-import { useCoreData } from "@/domain/projects/useCoreData";
+import { useProjects } from "@/queries/projects/useProjects";
 
 type SidebarProps = {
   onOpen: boolean;
@@ -17,7 +17,8 @@ type SidebarProps = {
 const Sidebar = ({ onOpen, onClose }: SidebarProps) => {
   useScrollLock(onOpen);
 
-  const { projects } = useCoreData();
+  const {data: projects = []} = useProjects();
+
   const badgeByProjectId = useAppStore((state) => state.badgeByProjectId);
 
   const projectWithBadge = projects.map((pro) => {

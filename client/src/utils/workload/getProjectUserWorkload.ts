@@ -1,5 +1,5 @@
 import type { TaskWithMeta } from "@/type/view-models/taskWithMeta";
-import type { User } from "@/type/domain/user";
+import type { User } from "@shared/types/user";
 import { calcPercent } from "@/utils/calcPercent";
 
 export type UserWorkloadStats = {

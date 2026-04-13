@@ -1,4 +1,4 @@
-import type { Project } from "@/type/domain/project";
+import type { Project } from "@shared/types/project";
 import { useQueryClient, useMutation } from "@tanstack/react-query";
 import { deleteProject } from "@/api/projects";
 

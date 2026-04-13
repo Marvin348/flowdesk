@@ -1,9 +1,9 @@
-import type { Comments } from "@/type/domain/comments";
+import type { Comment } from "@shared/types/comment";
 import { ArrowDownUp, ChevronDown } from "lucide-react";
 import type { SortOrder } from "./CommentsView";
 
 type CommentsHeaderProps = {
-  comments: Comments[];
+  comments: Comment[];
   toggleOrder: () => void;
   sortOrder: SortOrder;
 };

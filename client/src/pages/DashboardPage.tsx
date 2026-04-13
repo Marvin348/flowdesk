@@ -1,5 +1,5 @@
 import { useProjectDomainAll } from "@/domain/projects/useProjectDomainAll";
-import { useCoreData } from "@/domain/projects/useCoreData";
+import { useProjects } from "@/queries/projects/useProjects";
 import { getDashboardOverviewStats } from "@/utils/dashboard/getDashboardOverviewStats";
 import DashboardStats from "@/components/pages/dashboardPage/stats/DashboardStats";
 import { mapDashboardStatCards } from "@/utils/dashboard/mapDashboardStatCards";
@@ -15,11 +15,13 @@ import PerformanceHighlights from "@/components/pages/dashboardPage/performanceH
 import { getPerformanceHighlights } from "@/utils/performance/getPerformanceHighlights";
 
 const DashboardPage = () => {
+
+  // refactor later
   const {
     data: { users, comments, tasks, attachments },
   } = useProjectDomainAll();
 
-  const { projects } = useCoreData();
+  const {data: projects = [], isLoading, error} = useProjects()
 
   const dashboardOverviewStats = getDashboardOverviewStats(projects, tasks);
   const statCards = mapDashboardStatCards(dashboardOverviewStats);

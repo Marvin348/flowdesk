@@ -1,6 +1,6 @@
 import { createTask } from "@/api/tasks";
-import type { CreateTaskInput } from "@/type/inputs/createTaskInput";
-import type { Task } from "@/type/domain/task";
+import type { CreateTaskInput } from "@shared/types/inputs/createTaskInput";
+import type { Task } from "@shared/types/task";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 export const useCreateTask = (projectId: string) => {

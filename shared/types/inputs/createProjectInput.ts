@@ -1,5 +1,5 @@
-import type { Priority } from "../priority";
-import type { StatusBase } from "../statusBase";
+import type { Priority } from "../priority.js";
+import type { StatusBase } from "../StatusBase.js";
 
 export type CreateProjectInput = {
   title: string;

@@ -1,6 +1,6 @@
 import Avatar from "@/components/users/avatar/Avatar";
 import { ChevronsUpDown } from "lucide-react";
-import type { User } from "@/type/domain/user";
+import type { User } from "@shared/types/user";
 import { Copy, EllipsisVertical } from "lucide-react";
 import { useRef, useState } from "react";
 import { getSortedCollaborators } from "@/utils/collaborators/getSortedCollaborators";

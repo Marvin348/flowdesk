@@ -1,5 +1,5 @@
 import { fetchProjects } from "@/api/projects";
-import type { Project } from "@/type/domain/project";
+import type { Project } from "@shared/types/project";
 import { useQuery } from "@tanstack/react-query";
 
 export const useProjects = () => {

@@ -8,7 +8,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { STATUS_OPTIONS } from "@/constants/status-options";
-import type { StatusBase } from "@/type/domain/StatusBase";
+import type { StatusBase } from "@shared/types/StatusBase";
 
 type SelectedStatusProps = {
   onChange: (value: StatusBase) => void;

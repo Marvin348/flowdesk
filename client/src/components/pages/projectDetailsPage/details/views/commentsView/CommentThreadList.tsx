@@ -1,13 +1,13 @@
 import { useCommentsWithUsers } from "@/hooks/useCommentsWithUsers";
 import CommentThreadItem from "@/components/pages/projectDetailsPage/details/views/commentsView/CommentThreadItem";
-import type { Comments } from "@/type/domain/comments";
-import type { Task } from "@/type/domain/task";
+import type { Comment } from "@shared/types/comment";
 import { getArrayLookup } from "@/utils/getArrayLookup";
 import type { CommentThreadNode } from "@/type/view-models/commentThreadNode";
+import type { TaskWithMeta } from "@/type/view-models/taskWithMeta";
 
 type CommentThreadListProps = {
-  comments: Comments[];
-  tasks: Task[];
+  comments: Comment[];
+  tasks: TaskWithMeta[];
 };
 
 const CommentThreadList = ({ comments, tasks }: CommentThreadListProps) => {

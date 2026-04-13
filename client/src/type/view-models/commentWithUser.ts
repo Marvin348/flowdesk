@@ -1,6 +1,6 @@
-import type { Comments } from "@/type/domain/comments";
-import type { User } from "@/type/domain/user";
+import type { Comment } from "@shared/types/comment";
+import type { User } from "@shared/types/user";
 
-export type CommentWithUser = Comments & {
+export type CommentWithUser = Comment & {
   user?: User;
 };

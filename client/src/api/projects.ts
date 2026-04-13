@@ -1,24 +1,14 @@
 import { apiClient } from "@/api/client";
-import type { Project } from "@/type/domain/project";
-import type { CreateProjectInput } from "@/type/inputs/createProjectInput";
-import type { ProjectSummaryDto } from "@/type/view-models/projectsList";
-import type { ProjectDetails } from "@/type/view-models/projectsWithMeta";
-
-export type UpdateProjectMembersInput = {
-  projectId: string;
-  userIdsToAdd: string[];
-};
+import type { Project } from "@shared/types/project";
+import type { CreateProjectInput } from "@shared/types/inputs/createProjectInput";
+import type { ProjectSummaryDto } from "@shared/types/dto/project";
+import type { ProjectDetailsDto } from "@shared/types/dto/project";
+import type {UpdateProjectMembersInput} from "@shared/types/inputs/updateProjectMembersInput"
 
 export const fetchProjects = async (): Promise<Project[]> => {
   const res = await apiClient.get("/projects");
   return res.data.data;
 };
-
-// export const fetchProjects = async (id?: string): Promise<Project[]> => {
-//   const url = id ? `/projects?id=${id}` : "/projects";
-//   const res = await apiClient.get(url);
-//   return res.data;
-// };
 
 // new
 export const fetchProject = async (id: string): Promise<Project> => {
@@ -29,18 +19,13 @@ export const fetchProject = async (id: string): Promise<Project> => {
 // new details with all endpoints
 export const fetchProjectDetails = async (
   id: string,
-): Promise<ProjectDetails> => {
+): Promise<ProjectDetailsDto> => {
   const res = await apiClient.get(`/projects/${id}/details`);
   return res.data.data;
 };
 
-// list vm
-export const fetchProjectList = async () => {
-  const res = await apiClient.get("/projects/list");
 
-  return res.data.data;
-};
-
+// fetch summaries
 export const fetchProjectSummaries = async (): Promise<ProjectSummaryDto[]> => {
   const res = await apiClient.get("/projects/summary");
 

@@ -10,6 +10,7 @@ import ViewToggle from "@/components/projects/view-controls/ViewToggle";
 import { useProjectsListVM } from "@/domain/projects/useProjectsList";
 import { Button } from "@/components/ui/button";
 import CreateProjectModal from "@/components/pages/projectsPage/create/CreateProjectModal";
+import { Spinner } from "@/components/ui/spinner";
 
 export type View = "card" | "list";
 const defaultView: View = "card";
@@ -22,7 +23,10 @@ const ProjectsPage = () => {
   const searchQuery = useAppStore((state) => state.searchQuery);
   const filter = useAppStore((state) => state).filter;
 
-  const {projects, isLoading, error} = useProjectsListVM();
+  const { projects, isLoading, error } = useProjectsListVM();
+
+  if (isLoading) return <Spinner />;
+
   const projectSummary = useProjectsSummary(projects);
 
   const searchedProjects = useSearchProjects(projects, searchQuery);

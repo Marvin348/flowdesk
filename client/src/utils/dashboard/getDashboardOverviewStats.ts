@@ -1,5 +1,5 @@
-import type { Project } from "@/type/domain/project";
-import type { Task } from "@/type/domain/task";
+import type { Project } from "@shared/types/project";
+import type { Task } from "@shared/types/task";
 import { calcPercent } from "@/utils/calcPercent";
 
 export type DashboardOverviewStats = {

@@ -1,6 +1,6 @@
-import type { Priority } from "@/type/domain/priority";
-import type { Project } from "@/type/domain/project";
-import type { Task } from "@/type/domain/task";
+import type { Priority } from "@shared/types/priority";
+import type { Project } from "@shared/types/project";
+import type { Task } from "@shared/types/task";
 import { getArrayLookup } from "@/utils/getArrayLookup";
 
 export type UpcomingTask = {

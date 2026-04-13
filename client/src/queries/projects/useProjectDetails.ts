@@ -1,12 +1,13 @@
 import { fetchProjectDetails } from "@/api/projects";
 import { useQuery } from "@tanstack/react-query";
-import type { ProjectDetails } from "@/type/view-models/projectsWithMeta";
+import type { ProjectDetailsDto } from "@shared/types/dto/project";
 
 export const useProjectDetails = (id: string) => {
-  const { data, isLoading, error } = useQuery<ProjectDetails, Error>({
+  const { data, isLoading, error } = useQuery<ProjectDetailsDto, Error>({
     queryKey: ["projects", id, "details"],
     queryFn: () => fetchProjectDetails(id),
   });
 
   return { data, isLoading, error };
 };
+ 

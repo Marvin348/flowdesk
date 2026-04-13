@@ -1,11 +1,11 @@
 import express from "express";
 import cors from "cors";
-import projectsRouter from "./routes/projects.js";
-import tasksRouter from "./routes/tasks.js";
-import usersRouter from "./routes/users.js";
-import attachmentsRouter from "./routes/attachments.js";
-import commentsRouter from "./routes/comments.js";
-import { readDb } from "./utils/readDb.js";
+import projectsRouter from "@/routes/projects.js";
+import tasksRouter from "@/routes/tasks.js";
+import usersRouter from "@/routes/users.js";
+import attachmentsRouter from "@/routes/attachments.js";
+import commentsRouter from "@/routes/comments.js";
+import { readDb } from "@/utils/readDb.js";
 
 const app = express();
 

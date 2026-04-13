@@ -8,7 +8,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { PRIORITY_OPTIONS } from "@/constants/priority-options";
-import type { Priority } from "@/type/domain/priority";
+import type { Priority } from "@shared/types/priority";
 
 type SelectedPriorityProps = {
   value: Priority;

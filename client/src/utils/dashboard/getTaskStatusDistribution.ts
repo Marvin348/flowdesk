@@ -1,4 +1,4 @@
-import type { Task } from "@/type/domain/task";
+import type { Task } from "@shared/types/task";
 import { calcPercent } from "@/utils/calcPercent";
 
 export type TaskStatusDistribution = {

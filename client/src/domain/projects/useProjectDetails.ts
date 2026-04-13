@@ -8,7 +8,6 @@ import type { ProjectDetailsVM } from "@/type/view-models/projectsWithMeta";
 
 export const useProjectDetailsVM = (projectId: string): ProjectDetailsVM => {
   const { data: details, isLoading, error } = useProjectDetails(projectId);
-  console.log("DETAILS", details);
 
   const project = details?.project;
   const tasks = details?.tasks ?? [];

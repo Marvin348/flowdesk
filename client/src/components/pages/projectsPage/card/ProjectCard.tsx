@@ -1,9 +1,3 @@
-import {
-  EllipsisVertical,
-  Calendar,
-  Paperclip,
-  MessageSquareMore,
-} from "lucide-react";
 import AssigneeAvatars from "@/components/users/avatar/AssigneeAvatars";
 import { formatDate } from "@/utils/formatDate";
 import { STATUS_OPTIONS } from "@/constants/status-options";
@@ -18,7 +12,12 @@ import type { Badge } from "@/store/slices/projectBadge";
 import { useUsersByIds } from "@/hooks/useUsersByIds";
 import type { ProjectListVM } from "@/type/view-models/projectsList";
 import DeleteProjectDialog from "./DeleteProjectDialog";
-
+import {
+  EllipsisVertical,
+  Calendar,
+  Paperclip,
+  MessageSquareMore,
+} from "lucide-react";
 
 type ProjectCardType = {
   project: ProjectListVM;

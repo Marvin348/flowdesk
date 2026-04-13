@@ -1,7 +1,7 @@
 import type { Progress } from "@/utils/getProgressResult";
 import type { Badge } from "@/store/slices/projectBadge";
-import type { Priority } from "../domain/priority";
-import type { StatusBase } from "../domain/StatusBase";
+import type { Priority } from "@shared/types/priority";
+import type { StatusBase } from "@shared/types/StatusBase";
 
 export type ProjectListVM = {
   id: string;

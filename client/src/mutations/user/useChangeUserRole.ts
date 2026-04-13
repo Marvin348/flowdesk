@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import type { User } from "@/type/domain/user";
-import type { ChangeUserRoleInput } from "@/type/inputs/changeUserRoleInput";
+import type { User } from "@shared/types/user";
+import type { ChangeUserRoleInput } from "@shared/types/inputs/changeUserRoleInput";
 import { changeUserRole } from "@/api/users";
 
 export const useChangeUserRole = () => {

@@ -1,7 +1,7 @@
 import { ChevronDown, ChevronsUpDown } from "lucide-react";
 import { STATUS_OPTIONS } from "@/constants/status-options";
 import { useState } from "react";
-import type { StatusBase } from "@/type/domain/StatusBase";
+import type { StatusBase } from "@shared/types/StatusBase";
 import TaskRow from "@/components/pages/projectDetailsPage/details/views/listView/TaskRow";
 import type { TaskWithMeta } from "@/type/view-models/taskWithMeta";
 import { getSortedList } from "@/utils/list/getSortedList";

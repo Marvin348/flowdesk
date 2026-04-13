@@ -1,4 +1,4 @@
-import type { Attachment } from "@/type/domain/attachment";
+import type { Attachment } from "@shared/types/attachment";
 import { File, Trash2, Download } from "lucide-react";
 
 const AttachmentsCard = ({ attachment }: { attachment: Attachment }) => {

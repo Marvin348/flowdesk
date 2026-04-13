@@ -1,5 +1,5 @@
 import { fetchProjectSummaries } from "@/api/projects";
-import type { ProjectSummaryDto } from "@/type/view-models/projectsList";
+import type { ProjectSummaryDto } from "@shared/types/dto/project";
 import { useQuery } from "@tanstack/react-query";
 
 export const useProjectSummaries = () => {

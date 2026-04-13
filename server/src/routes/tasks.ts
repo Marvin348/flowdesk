@@ -1,7 +1,9 @@
 import express from "express";
-import { readDb } from "../utils/readDb.js";
-import { writeDb } from "../utils/writeDb.js";
-import { Task } from "../types/index.js";
+import { readDb } from "@/utils/readDb.js";
+import { writeDb } from "@/utils/writeDb.js";
+import { Task } from "@shared/types/task.js";
+import type { Request, Response } from "express";
+import type { CreateTaskInput } from "@shared/types/inputs/createTaskInput.js";
 
 const router = express.Router();
 
@@ -11,7 +13,7 @@ router.get("/", (req, res) => {
 });
 
 // post in details
-router.post("/", (req, res) => {
+router.post("/", (req: Request<{}, {}, CreateTaskInput>, res) => {
   const {
     projectId,
     title,
@@ -43,8 +45,8 @@ router.post("/", (req, res) => {
     taskStatus: "pending",
     collaboratorIds,
     taskPriority,
-    description: description ?? "",
-    tags: tags ?? [],
+    description: description,
+    tags,
     reminderAt: reminderAt ?? "none",
   };
 

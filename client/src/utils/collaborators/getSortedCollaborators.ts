@@ -1,5 +1,5 @@
 import type { SortedByCollaborators } from "@/components/pages/projectDetailsPage/details/views/collaboratorsView/CollaboratorsView";
-import type { User } from "@/type/domain/user";
+import type { User } from "@shared/types/user";
 
 export const getSortedCollaborators = (
   user: User[],

@@ -3,7 +3,7 @@ import OverviewCardBody from "../ui/OverviewCardBody";
 import OverviewCardFooter from "../ui/OverviewCardFooter";
 import OverviewCardHeader from "../ui/OverviewCardHeader";
 import Collaborator from "./Collaborator";
-import type { User } from "@/type/domain/user";
+import type { User } from "@shared/types/user";
 import { UserRoundPlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 

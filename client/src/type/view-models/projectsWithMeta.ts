@@ -1,9 +1,9 @@
-import type { Project } from "@/type/domain/project";
+import type { Project } from "@shared/types/project";
 import type { Badge } from "@/store/slices/projectBadge";
 import type { TaskWithMeta } from "./taskWithMeta";
-import type { Task } from "../domain/task";
-import type { Attachment } from "../domain/attachment";
-import type { User } from "../domain/user";
+import type { Task } from "@shared/types/task";
+import type { Attachment } from "@shared/types/attachment";
+import type { User } from "@shared/types/user";
 
 export type ProjectsWithMeta = Project & {
   tasks: TaskWithMeta[];

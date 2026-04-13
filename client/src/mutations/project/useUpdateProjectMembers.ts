@@ -1,7 +1,7 @@
 import { updateProjectMembers } from "@/api/projects";
-import type { Project } from "@/type/domain/project";
+import type { Project } from "@shared/types/project";
 import { useQueryClient, useMutation } from "@tanstack/react-query";
-import type { UpdateProjectMembersInput } from "@/api/projects";
+import type { UpdateProjectMembersInput } from "@shared/types/inputs/updateProjectMembersInput";
 
 export const useUpdateProjectMembers = (projectId: string) => {
   const queryClient = useQueryClient();
@@ -10,7 +10,9 @@ export const useUpdateProjectMembers = (projectId: string) => {
     mutationFn: updateProjectMembers,
 
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["projects", projectId] });
+      queryClient.invalidateQueries({
+        queryKey: ["projects", projectId, "details"],
+      });
     },
   });
 };

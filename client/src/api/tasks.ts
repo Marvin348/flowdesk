@@ -1,6 +1,6 @@
-import type { Task } from "@/type/domain/task";
+import type { Task } from "@shared/types/task";
 import { apiClient } from "@/api/client";
-import type { CreateTaskInput } from "@/type/inputs/createTaskInput";
+import type { CreateTaskInput } from "@shared/types/inputs/createTaskInput";
 
 export const fetchTasks = async (): Promise<Task[]> => {
   const res = await apiClient.get("/tasks");
@@ -33,6 +33,6 @@ export const fetchTasks = async (): Promise<Task[]> => {
 // with reply
 export const createTask = async (input: CreateTaskInput): Promise<Task> => {
   const res = await apiClient.post("/tasks", input);
-  
+
   return res.data.data;
 };

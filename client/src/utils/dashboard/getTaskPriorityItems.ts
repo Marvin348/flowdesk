@@ -1,6 +1,6 @@
-import type { Task } from "@/type/domain/task";
+import type { Task } from "@shared/types/task";
 import { PRIORITY_OPTIONS } from "@/constants/priority-options";
-import type { Priority } from "@/type/domain/priority";
+import type { Priority } from "@shared/types/priority";
 
 export type TaskPriorityCounts = {
   low: number;

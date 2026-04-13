@@ -1,7 +1,7 @@
 import ProgressBarCard from "@/components/pages/projectDetailsPage/details/views/overview/ProgressBarCard";
 import type { ProjectsWithMeta } from "@/type/view-models/projectsWithMeta";
 import type { Progress } from "@/utils/getProgressResult";
-import type { User } from "@/type/domain/user";
+import type { User } from "@shared/types/user";
 import { getProjectUserWorkload } from "@/utils/workload/getProjectUserWorkload";
 import CollaboratorsCard from "./collaborators/CollaboratorsCard";
 import OpenTasksCard from "./tasks/OpenTasksCard";

@@ -1,7 +1,7 @@
-import type { TeamPerformance } from "@/utils/performance/getUserPerformance";
+import type { UserPerformance } from "@/utils/performance/getUserPerformance";
 import { useState } from "react";
 
-export const usePagination = (teamPerformance: TeamPerformance[]) => {
+export const usePagination = (teamPerformance: UserPerformance[]) => {
   const [currentPage, setCurrentPage] = useState(1);
 
   const itemsPerPage = 6;
