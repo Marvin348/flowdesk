@@ -4,6 +4,8 @@ import { writeDb } from "@/utils/writeDb.js";
 import type {
   ProjectDetailsDto,
   ProjectSummaryDto,
+  ProjectOptionDto,
+  ProjectOptionsDto,
 } from "@shared/types/dto/project.js";
 import type { CreateProjectInput } from "@shared/types/inputs/createProjectInput.js";
 import { Project } from "@shared/types/project.js";
@@ -140,6 +142,108 @@ router.post("/", (req: Request<{}, {}, CreateProjectInput>, res) => {
   return res.status(201).json({ data: newProject });
 });
 
+
+router.get("/options", (req: Request<{}, {}, ProjectOptionsDto>, res) => {
+  const search = typeof req.query.search === "string" ? req.query.search : "";
+  const userId = req.query.userId;
+
+  const db = readDb();
+
+  const projectOption: ProjectOptionDto[] = db.projects.map((p) => {
+    const invitedUserIdsSet = new Set<string>(p.invitedUserIds);
+
+    const isInvited = p.invitedUserIds.some((ids) => ids === userId);
+
+    const users = db.users
+      .filter((u) => invitedUserIdsSet.has(u.id))
+      .map((u) => {
+        return {
+          id: u.id,
+          name: u.name,
+          avatarKey: u.avatarKey,
+        };
+      });
+
+    return {
+      id: p.id,
+      title: p.title,
+      createdAt: p.createdAt,
+      isInvited,
+      users,
+    };
+  });
+
+  const recent = projectOption
+    .sort(
+      (a, b) =>
+        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+    )
+    .slice(0, 3);
+
+  const recentIdSet = new Set(recent.map((p) => p.id));
+
+  const filteredProjectOptions = projectOption
+    .filter((p) => {
+      if (recentIdSet.has(p.id)) return false;
+
+      const matchesSearch =
+        !search || p.title.toLowerCase().includes(search.toLowerCase());
+
+      return matchesSearch;
+    })
+    .slice(0, 5);
+
+  return res.status(200).json({
+    data: {
+      recent: recent,
+      results: search === "" ? [] : filteredProjectOptions,
+    },
+  });
+});
+
+// add new userId to projects
+router.patch("/assign-user", (req, res) => {
+  const { projectIdsToAdd, userId } = req.body;
+
+  if (!Array.isArray(projectIdsToAdd) || typeof userId !== "string") {
+    return res.status(400).json({ error: "Invalid input" });
+  }
+
+  const db = readDb();
+
+  const user = db.users.find((u) => u.id === userId);
+
+  if (!user) {
+    return res.status(404).json({ error: "User not found" });
+  }
+
+  const projectIdsToAddSet = new Set(projectIdsToAdd);
+  const matchesProjects = db.projects.filter((p) =>
+    projectIdsToAddSet.has(p.id),
+  );
+
+  if (projectIdsToAddSet.size !== matchesProjects.length) {
+    return res.status(400).json({ error: "one or more projects are missing" });
+  }
+
+  for (const p of matchesProjects) {
+    const invitedUserIdsSet = new Set(p.invitedUserIds);
+
+    if (invitedUserIdsSet.has(userId)) {
+      return res.status(409).json({ error: "User already in project" });
+    }
+
+    const updatedUserIds = Array.from(new Set([...p.invitedUserIds, userId]));
+
+    p.invitedUserIds = updatedUserIds;
+    p.updatedAt = new Date().toISOString();
+  }
+
+  writeDb(db);
+
+  return res.json({ data: matchesProjects });
+});
+
 // details vm
 router.get(
   "/:id/details",
@@ -208,6 +312,33 @@ router.patch("/:id/members/:userId", (req, res) => {
   // not ready
 });
 
+// update invitedUserIds
+router.patch("/:id/members", (req, res) => {
+  const projectId = req.params.id;
+  const { userIdsToAdd } = req.body;
+
+  if (!projectId || !Array.isArray(userIdsToAdd)) {
+    return res.status(400).json({ error: "Invalid input" });
+  }
+
+  const db = readDb();
+  const project = db.projects.find((p) => p.id === projectId);
+
+  if (!project) {
+    return res.status(404).json({ error: "project not found" });
+  }
+
+  project.invitedUserIds = Array.from(
+    new Set([...project.invitedUserIds, ...userIdsToAdd]),
+  );
+
+  project.updatedAt = new Date().toISOString();
+
+  writeDb(db);
+
+  return res.status(200).json({ data: project });
+});
+
 // scoped
 router.get("/:id", (req, res) => {
   const id = req.params.id;
@@ -257,33 +388,6 @@ router.delete("/:id", (req, res) => {
   writeDb(db);
 
   return res.json({ data: deletedProject[0] });
-});
-
-// update invitedUserIds
-router.patch("/:id", (req, res) => {
-  const projectId = req.params.id;
-  const { userIdsToAdd } = req.body;
-
-  if (!projectId || !Array.isArray(userIdsToAdd)) {
-    return res.status(400).json({ error: "Invalid input" });
-  }
-
-  const db = readDb();
-  const project = db.projects.find((p) => p.id === projectId);
-
-  if (!project) {
-    return res.status(404).json({ error: "project not found" });
-  }
-
-  project.invitedUserIds = Array.from(
-    new Set([...project.invitedUserIds, ...userIdsToAdd]),
-  );
-
-  project.updatedAt = new Date().toISOString();
-
-  writeDb(db);
-
-  return res.status(200).json({ data: project });
 });
 
 export default router;

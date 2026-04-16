@@ -2,25 +2,37 @@ import type { UserPerformance } from "@/utils/performance/getUserPerformance";
 import { getStatusFromProgress } from "@/utils/workload/ui/getStatusFromProgress";
 import { PROGRESS_STATUS } from "@/constants/progress-status";
 import Avatar from "@/components/users/avatar/Avatar";
+import { Folder, ArrowRight } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { USER_ROLE_OPTIONS } from "@/constants/user/user-role-options";
 
 type TeamPerformanceItemProps = {
   item: UserPerformance;
+  onSelectUserId: (value: string) => void;
 };
 
-const TeamPerformanceItem = ({ item }: TeamPerformanceItemProps) => {
-  const { id, name, jobTitle, avatarKey, stats } = item;
+const TeamPerformanceItem = ({
+  item,
+  onSelectUserId,
+}: TeamPerformanceItemProps) => {
+  const { id, name, jobTitle, avatarKey, role, stats } = item;
 
   const minPercent =
     stats.progressPercent === 0 ? "5%" : `${stats.progressPercent}%`;
 
   const status = getStatusFromProgress(stats.progressPercent);
 
+  const UserRoleIcon = USER_ROLE_OPTIONS[role].icon;
+
   return (
     <div className="text-surface/90 border rounded-md p-4">
       <div className="flex items-center gap-4">
         <Avatar avatarKey={avatarKey} size="lg" />
         <div>
-          <p className="text-lg">{name}</p>
+          <div className="flex items-center gap-2">
+            <UserRoleIcon className="size-4 text-surface/80" />
+            <p className="text-lg">{name}</p>
+          </div>
           <p className="text-muted-foreground text-sm">{jobTitle}</p>
         </div>
       </div>
@@ -69,6 +81,22 @@ const TeamPerformanceItem = ({ item }: TeamPerformanceItemProps) => {
             className="bg-accent h-2 rounded-full"
           ></div>
         </div>
+      </div>
+
+      <div className="mt-4 flex justify-between gap-4">
+        <Button
+          variant="outline"
+          className="h-8 rounded-full hover:bg-surface/3"
+          onClick={() => onSelectUserId(id)}
+        >
+          <Folder /> Projekt zuweisen
+        </Button>
+        <Button
+          variant="outline"
+          className="h-8 rounded-full hover:bg-surface/3"
+        >
+          Mehr Infos <ArrowRight />
+        </Button>
       </div>
     </div>
   );

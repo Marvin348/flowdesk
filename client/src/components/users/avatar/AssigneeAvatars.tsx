@@ -1,8 +1,9 @@
 import Avatar from "@/components/users/avatar/Avatar";
 import type { User } from "@shared/types/user";
+import type {ProjectOptionUserDto} from "@shared/types/dto/project"
 
 type AvatarProps = {
-  users?: User[];
+  users?: User[] | ProjectOptionUserDto[];
 };
 
 const AssigneeAvatars = ({ users }: AvatarProps) => {

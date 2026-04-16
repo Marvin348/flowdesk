@@ -6,8 +6,14 @@ import TeamToolbar from "@/components/pages/teamPage/toolbar/TeamToolbar";
 import { Spinner } from "@/components/ui/spinner";
 import { usePagination } from "@/hooks/usePagination";
 import TeamPagination from "@/components/pages/teamPage/TeamPagination";
+import AssignProjectModal from "@/components/pages/teamPage/AssignProjectModal";
+import { useState } from "react";
 
 const TeamPage = () => {
+  const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
+
+  const onSelectUserId = (id: string) => setSelectedUserId(id);
+
   const {
     data: users = [],
     isLoading: usersLoading,
@@ -27,17 +33,24 @@ const TeamPage = () => {
   const { currentPage, setCurrentPage, pageData, totalPages } =
     usePagination(userPerformance);
 
+    const selectedUser = users.find((u) => u.id === selectedUserId);
+    console.log("selectedUser", selectedUser)
+
   if (isLoading) return <Spinner />;
+
+  console.log("selectedUserId", selectedUserId);
 
   return (
     <div>
-
       <div className="my-6">
         <TeamToolbar />
       </div>
 
       <section>
-        <TeamPerformanceList teamPerformance={pageData} />
+        <TeamPerformanceList
+          teamPerformance={pageData}
+          onSelectUserId={onSelectUserId}
+        />
       </section>
 
       <div>
@@ -48,6 +61,13 @@ const TeamPage = () => {
           totalPages={totalPages}
         />
       </div>
+
+      {selectedUserId && (
+        <AssignProjectModal
+          onClose={() => setSelectedUserId(null)}
+          selectedUserId={selectedUserId}
+        />
+      )}
     </div>
   );
 };

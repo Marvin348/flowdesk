@@ -1,5 +1,5 @@
 import type { Priority } from "../priority.js";
-import type { StatusBase } from "../statusBase.js";
+import type { StatusBase } from "../StatusBase.js";
 import type { Project } from "../project.js";
 import type { Task } from "../task.js";
 import type { Attachment } from "../attachment.js";
@@ -29,4 +29,23 @@ export type ProjectDetailsDto = {
   users: User[];
   comments: Comment[];
   attachments: Attachment[];
+};
+
+export type ProjectOptionDto = {
+  id: string;
+  title: string;
+  isInvited: boolean;
+  createdAt: string;
+  users: ProjectOptionUserDto[];
+};
+
+export type ProjectOptionUserDto = {
+  id: string;
+  name: string;
+  avatarKey: string;
+};
+
+export type ProjectOptionsDto = {
+  recent: ProjectOptionDto[];
+  results: ProjectOptionDto[];
 };
