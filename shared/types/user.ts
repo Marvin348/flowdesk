@@ -4,7 +4,7 @@ export type User = {
   id: string;
   name: string;
   email: string;
-  avatarKey?: AvatarKey;
+  avatarKey: AvatarKey;
   role: UserRole;
   jobTitle?:
     | "Frontend Developer"

@@ -1,5 +1,5 @@
 import { Search, FolderPen } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useProjectOptions } from "@/queries/projects/useProjectOptions";
 import { useDebounce } from "@/hooks/useDebounce";
 import { Button } from "@/components/ui/button";
@@ -9,27 +9,31 @@ import { Spinner } from "@/components/ui/spinner";
 
 type AssignProjectModal = {
   onClose: () => void;
-  selectedUserId: string;
+  selectedUser: { id: string; name: string };
 };
 
-const AssignProjectModal = ({
-  onClose,
-  selectedUserId,
-}: AssignProjectModal) => {
+const AssignProjectModal = ({ onClose, selectedUser }: AssignProjectModal) => {
   const [input, setInput] = useState("");
   const [selectedProjectIds, setSelectedProjectIds] = useState<string[]>([]);
 
-  const debounceInput = useDebounce(input, 500);
+  const debounceInput = useDebounce(input, 300);
 
   const { data, isLoading, error } = useProjectOptions(
-    selectedUserId,
+    selectedUser.id,
     debounceInput,
   );
 
   const { mutate, isPending, error: mutateError } = useAssignUserToProjects();
 
+  const inputRef = useRef<HTMLInputElement | null>(null);
+
   const results = data?.results ?? [];
   const recent = data?.recent ?? [];
+  const hasSearched = input.trim().length >= 2;
+
+  useEffect(() => {
+    inputRef.current?.focus();
+  }, []);
 
   const toggleSelectedProjectIds = (id: string) =>
     setSelectedProjectIds((prev) =>
@@ -39,12 +43,12 @@ const AssignProjectModal = ({
     );
 
   const handleSubmit = () => {
-    const input = {
-      userId: selectedUserId,
+    const payload = {
+      userId: selectedUser.id,
       projectIdsToAdd: selectedProjectIds,
     };
 
-    mutate(input, {
+    mutate(payload, {
       onSuccess: () => {
         onClose();
       },
@@ -52,14 +56,10 @@ const AssignProjectModal = ({
   };
 
   const isSelected = (id: string) => selectedProjectIds.includes(id);
-  const hasSearched = input.trim().length > 0;
-
-  console.log("useProjectOptions", data);
-  console.log("selectedProjectIds", selectedProjectIds);
 
   return (
     <div className="overlay flex items-center justify-center">
-      <div className="min-w-[500px] overflow-hidden rounded-md bg-white">
+      <div className="w-[500px] overflow-hidden rounded-md bg-white">
         <div className="p-4 flex items-center gap-4 border-b pb-4">
           <div className="bg-surface/5 p-2 rounded-md">
             <FolderPen />
@@ -67,7 +67,8 @@ const AssignProjectModal = ({
           <div>
             <h3 className="font-medium text-xl">Projekt zuweisen</h3>
             <p className="text-muted-foreground text-sm">
-              Wähle ein oder mehrere Projekte für <span>Anna Weber</span>
+              Wähle ein oder mehrere Projekte für{" "}
+              <span className="font-medium">{selectedUser.name}</span>
             </p>
           </div>
         </div>
@@ -78,7 +79,8 @@ const AssignProjectModal = ({
               value={input}
               onChange={(e) => setInput(e.target.value)}
               type="text"
-              className="w-full h-9 pl-8 border rounded-md focus:outline-none focus:ring-2 focus:ring-accent/90 focus:border-transparent"
+              ref={inputRef}
+              className="w-full h-9 pl-8 border rounded-md"
               placeholder="Suche..."
             />
             <Search className="absolute left-2 top-1/2 transform  -translate-y-1/2 size-4 text-muted-foreground" />
@@ -91,8 +93,7 @@ const AssignProjectModal = ({
             {error && <p className="error-text">Fehler beim Laden</p>}
             {hasSearched && !results.length && (
               <p className="text-muted-foreground text-sm">
-                <span className="font-medium">"{input}"</span> keine Projekt
-                gefunden
+                Keine Treffer gefunden
               </p>
             )}
           </div>

@@ -21,7 +21,7 @@ const PriorityChartSection = ({ priorityItems }: PriorityChartSectionProps) => {
         </button>
       </div>
 
-      <div className="">
+      <div>
         <PriorityPieChart data={priorityItems} />
       </div>
     </section>

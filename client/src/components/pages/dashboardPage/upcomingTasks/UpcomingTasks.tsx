@@ -24,11 +24,17 @@ const UpcomingTasks = ({ upcomingTasks }: UpcomingTasksProps) => {
           </Link>
         </div>
 
-        <div className="mt-4 hidden sm:grid sm:grid-cols-[1.5fr_1fr_1fr_1fr] gap-4 p-2 bg-muted-foreground/10 rounded-t-md">
-          {TABLE_HEADER.map((t) => (
-            <p key={t.value} className="text-muted-foreground">{t.label}</p>
-          ))}
-        </div>
+        {upcomingTasks.length > 0 ? (
+          <div className="mt-4 hidden sm:grid sm:grid-cols-[1.5fr_1fr_1fr_1fr] gap-4 p-2 bg-muted-foreground/10 rounded-t-md">
+            {TABLE_HEADER.map((t) => (
+              <p key={t.value} className="text-muted-foreground">
+                {t.label}
+              </p>
+            ))}
+          </div>
+        ) : (
+          <p className="mt-4 text-center text-muted-foreground">Keine Daten gefunden</p>
+        )}
 
         <div>
           {upcomingTasks.map((item) => (

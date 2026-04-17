@@ -24,6 +24,8 @@ const PerformanceHighlights = ({ highlights }: PerformanceHighlightsProps) => {
           />
         ))}
       </div>
+
+      {!highlights.length && <p className="text-center text-muted-foreground">Keine Daten gefunden</p>}
     </section>
   );
 };

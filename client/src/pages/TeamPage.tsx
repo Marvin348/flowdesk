@@ -10,9 +10,13 @@ import AssignProjectModal from "@/components/pages/teamPage/AssignProjectModal";
 import { useState } from "react";
 
 const TeamPage = () => {
-  const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
+  const [selectedUser, setSelectedUser] = useState<{
+    id: string;
+    name: string;
+  } | null>(null);
 
-  const onSelectUserId = (id: string) => setSelectedUserId(id);
+  const onSelectUser = (id: string, name: string) =>
+    setSelectedUser({ id, name });
 
   const {
     data: users = [],
@@ -33,12 +37,7 @@ const TeamPage = () => {
   const { currentPage, setCurrentPage, pageData, totalPages } =
     usePagination(userPerformance);
 
-    const selectedUser = users.find((u) => u.id === selectedUserId);
-    console.log("selectedUser", selectedUser)
-
   if (isLoading) return <Spinner />;
-
-  console.log("selectedUserId", selectedUserId);
 
   return (
     <div>
@@ -49,7 +48,7 @@ const TeamPage = () => {
       <section>
         <TeamPerformanceList
           teamPerformance={pageData}
-          onSelectUserId={onSelectUserId}
+          onSelectUser={onSelectUser}
         />
       </section>
 
@@ -62,10 +61,10 @@ const TeamPage = () => {
         />
       </div>
 
-      {selectedUserId && (
+      {selectedUser && (
         <AssignProjectModal
-          onClose={() => setSelectedUserId(null)}
-          selectedUserId={selectedUserId}
+          onClose={() => setSelectedUser(null)}
+          selectedUser={selectedUser}
         />
       )}
     </div>

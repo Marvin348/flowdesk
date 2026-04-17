@@ -2,18 +2,18 @@ import type { UserPerformance } from "@/utils/performance/getUserPerformance";
 import { getStatusFromProgress } from "@/utils/workload/ui/getStatusFromProgress";
 import { PROGRESS_STATUS } from "@/constants/progress-status";
 import Avatar from "@/components/users/avatar/Avatar";
-import { Folder, ArrowRight } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { USER_ROLE_OPTIONS } from "@/constants/user/user-role-options";
 
 type TeamPerformanceItemProps = {
   item: UserPerformance;
-  onSelectUserId: (value: string) => void;
+  onSelectUser: (id: string, name: string) => void;
 };
 
 const TeamPerformanceItem = ({
   item,
-  onSelectUserId,
+  onSelectUser,
 }: TeamPerformanceItemProps) => {
   const { id, name, jobTitle, avatarKey, role, stats } = item;
 
@@ -83,18 +83,15 @@ const TeamPerformanceItem = ({
         </div>
       </div>
 
-      <div className="mt-4 flex justify-between gap-4">
+      <div className="mt-4 grid grid-cols-2 gap-4">
         <Button
           variant="outline"
-          className="h-8 rounded-full hover:bg-surface/3"
-          onClick={() => onSelectUserId(id)}
+          className="h-8 px-4 hover:bg-surface/3"
+          onClick={() => onSelectUser(id, name)}
         >
-          <Folder /> Projekt zuweisen
+          Projekt zuweisen
         </Button>
-        <Button
-          variant="outline"
-          className="h-8 rounded-full hover:bg-surface/3"
-        >
+        <Button variant="outline" className="h-8 hover:bg-surface/3">
           Mehr Infos <ArrowRight />
         </Button>
       </div>

@@ -3,12 +3,12 @@ import UserPerformanceItem from "./TeamPerformanceItem";
 
 type TeamPerformanceListProps = {
   teamPerformance: UserPerformance[];
-  onSelectUserId: (id: string) => void;
+  onSelectUser: (id: string, name: string) => void;
 };
 
 const TeamPerformanceList = ({
   teamPerformance,
-  onSelectUserId,
+  onSelectUser,
 }: TeamPerformanceListProps) => {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
@@ -16,7 +16,7 @@ const TeamPerformanceList = ({
         <UserPerformanceItem
           key={u.id}
           item={u}
-          onSelectUserId={onSelectUserId}
+          onSelectUser={onSelectUser}
         />
       ))}
     </div>

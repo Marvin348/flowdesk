@@ -3,7 +3,7 @@ import type { StatusBase } from "../StatusBase.js";
 import type { Project } from "../project.js";
 import type { Task } from "../task.js";
 import type { Attachment } from "../attachment.js";
-import type { User } from "../user.js";
+import type { AvatarKey, User } from "../user.js";
 
 export type ProjectSummaryDto = {
   id: string;
@@ -42,7 +42,7 @@ export type ProjectOptionDto = {
 export type ProjectOptionUserDto = {
   id: string;
   name: string;
-  avatarKey: string;
+  avatarKey: AvatarKey;
 };
 
 export type ProjectOptionsDto = {
