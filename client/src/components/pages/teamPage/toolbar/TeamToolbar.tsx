@@ -1,7 +1,12 @@
 import { Button } from "@/components/ui/button";
 import { Plus, Search } from "lucide-react";
 
-const TeamToolbar = () => {
+type TeamToolbarProps = {
+  search: string;
+  setSearch: (value: string) => void;
+};
+
+const TeamToolbar = ({ search, setSearch }: TeamToolbarProps) => {
   return (
     <div className="flex items-center justify-between">
       <h2 className="text-2xl font-semibold">Alle Teammitglieder</h2>
@@ -9,6 +14,8 @@ const TeamToolbar = () => {
       <div className="flex items-center gap-4">
         <div className="relative">
           <input
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
             type="text"
             className="w-full border rounded-md h-9 pl-8 pr-4"
             placeholder="Suche..."

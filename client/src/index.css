@@ -12,10 +12,13 @@ body {
     @apply fixed inset-0 bg-black/30 z-30;
   }
   .error-text {
-    @apply text-error text-xs
+    @apply text-error text-xs;
   }
   .form-input {
-    @apply w-full border rounded-md h-9 p-3 shadow-xs
+    @apply w-full border rounded-md h-9 p-3 shadow-xs;
+  }
+  .flex-center {
+    @apply flex items-center justify-center h-full;
   }
 }
 

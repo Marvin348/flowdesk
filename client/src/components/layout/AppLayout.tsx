@@ -19,7 +19,7 @@ const AppLayout = () => {
         </aside>
 
         <main className="min-w-0 flex-1 p-6">
-          <div>
+          <div className="h-full">
             <Outlet />
           </div>
         </main>

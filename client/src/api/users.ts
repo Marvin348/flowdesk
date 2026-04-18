@@ -1,9 +1,20 @@
 import type { User } from "@shared/types/user";
 import { apiClient } from "@/api/client";
 import type { ChangeUserRoleInput } from "@shared/types/inputs/changeUserRoleInput";
+import type { TeamMembersResponseDto } from "@shared/types/dto/user";
+import type { TeamMembersInput } from "@shared/types/inputs/teamMemberInput";
 
 export const fetchUsers = async (): Promise<User[]> => {
   const res = await apiClient.get("/users");
+  return res.data.data;
+};
+
+export const fetchTeamMembers = async (
+  input: TeamMembersInput,
+): Promise<TeamMembersResponseDto> => {
+  const res = await apiClient.get(
+    `/users/team?search=${input.search}&page=${input.page}&limit=${input.limit}`,
+  );
   return res.data.data;
 };
 
@@ -15,30 +26,4 @@ export const changeUserRole = async (
     role: input.role,
   });
   return res.data;
-};
-
-// without axios
-export const changeUserRole2 = async (
-  input: ChangeUserRoleInput,
-): Promise<User> => {
-  try {
-    const res = await fetch(`http://localhost:30001/users/${input.id}`, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        role: input.role,
-      }),
-    });
-
-    if (!res.ok) {
-      throw new Error("res was not ok");
-    }
-
-    const data: User = await res.json();
-    return data;
-  } catch (err) {
-    throw err;
-  }
 };

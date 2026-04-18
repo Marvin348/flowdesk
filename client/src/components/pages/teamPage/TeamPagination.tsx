@@ -1,25 +1,52 @@
-import CarouselControls from "@/components/ui/CarouselControls";
+import { Button } from "@/components/ui/button";
+import { ArrowRight, ArrowLeft } from "lucide-react";
 
 type TeamPaginationProps = {
   currentPage: number;
   totalPages: number;
-  prev: () => void;
-  next: () => void;
+  setPage: React.Dispatch<React.SetStateAction<number>>;
 };
 
 const TeamPagination = ({
   currentPage,
   totalPages,
-  prev,
-  next,
+  setPage,
 }: TeamPaginationProps) => {
+  const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
+
+  const prevPage = () => setPage((prev) => Math.max(prev - 1, 1));
+  const nextPage = () => setPage((prev) => Math.min(prev + 1, totalPages));
+  const selectedPage = (pageNumber: number) => setPage(pageNumber);
+
   return (
-    <div>
-      <CarouselControls
-        prev={prev}
-        next={next}
-        action={`${currentPage}/${totalPages}`}
-      />
+    <div className="flex items-center">
+      <Button
+        size="icon-sm"
+        variant="outline"
+        className="hover:bg-surface/5 text-muted-foreground duration-200"
+        onClick={() => prevPage()}
+        disabled={currentPage === 1}
+      >
+        <ArrowLeft />
+      </Button>
+      {pages.map((pageNumber) => (
+        <button
+          key={pageNumber}
+          className={`size-8 rounded-md text-muted-foreground transition duration-200 hover:bg-surface/5 ${currentPage === pageNumber && "font-medium text-surface"}`}
+          onClick={() => selectedPage(pageNumber)}
+        >
+          {pageNumber}
+        </button>
+      ))}
+      <Button
+        size="icon-sm"
+        variant="outline"
+        className="hover:bg-surface/5 text-muted-foreground duration-200"
+        onClick={() => nextPage()}
+        disabled={currentPage === totalPages}
+      >
+        <ArrowRight />
+      </Button>
     </div>
   );
 };

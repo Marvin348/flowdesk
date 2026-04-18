@@ -22,7 +22,7 @@ FlowDesk is an admin dashboard for managing projects, tasks, and team collaborat
 - Stabilize and finalize backend API design
 - Add persistent database (e.g. MongoDB or PostgreSQL)
 - Implement custom REST API routes
-- Optimize data fetching with dedicated endpoints (e.g. dashboard, summaries)
+- Optimize data fetching with dedicated endpoints (e.g. dashboard, summaries, team)
 - Improve overall architecture and separation of concerns
 - react query chache
 - organize shared folder with types
@@ -57,6 +57,12 @@ npm run dev
 
 ## 🛠 Tech Stack
 
+### Backend
+
+- **Node + Express**
+
+### Frontend
+
 - **TypeScript**
 - **React**
 - **Axios**
@@ -65,7 +71,6 @@ npm run dev
 - **TanStack Query** – data fetching & caching
 - **Tailwind CSS** – utility-first styling
 - **Recharts**
-- **shadcn/ui** – accessible UI components
 - **React Router**
-- **LocalStorage** – persistence layer
+- **shadcn/ui** – accessible UI components
 - **Lucide Icons**

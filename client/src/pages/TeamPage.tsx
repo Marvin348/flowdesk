@@ -1,13 +1,11 @@
-import { useUsers } from "@/queries/users/useUsers";
-import { useTasks } from "@/queries/tasks/useTasks";
-import { getUserPerformance } from "@/utils/performance/getUserPerformance";
 import TeamPerformanceList from "@/components/pages/teamPage/TeamPerformanceList";
 import TeamToolbar from "@/components/pages/teamPage/toolbar/TeamToolbar";
 import { Spinner } from "@/components/ui/spinner";
-import { usePagination } from "@/hooks/usePagination";
 import TeamPagination from "@/components/pages/teamPage/TeamPagination";
 import AssignProjectModal from "@/components/pages/teamPage/AssignProjectModal";
 import { useState } from "react";
+import { useTeamMembers } from "@/queries/users/useTeamMembers";
+import { useDebounce } from "@/hooks/useDebounce";
 
 const TeamPage = () => {
   const [selectedUser, setSelectedUser] = useState<{
@@ -15,51 +13,67 @@ const TeamPage = () => {
     name: string;
   } | null>(null);
 
+  const [search, setSearch] = useState("");
+  const [page, setPage] = useState(1);
+
+  const debounceInput = useDebounce(search, 300);
+
   const onSelectUser = (id: string, name: string) =>
     setSelectedUser({ id, name });
 
-  const {
-    data: users = [],
-    isLoading: usersLoading,
-    error: usersError,
-  } = useUsers();
-  const {
-    data: tasks = [],
-    isLoading: tasksLoading,
-    error: tasksError,
-  } = useTasks();
+  const teamMembersInput = {
+    search: debounceInput,
+    page,
+    limit: 6,
+  };
 
-  const isLoading = usersLoading || tasksLoading;
-  const error = usersError ?? tasksError;
+  const { data, isLoading, error } = useTeamMembers(teamMembersInput);
 
-  const userPerformance = getUserPerformance(users, tasks);
+  const teamMembers = data?.items ?? [];
+  const currentPage = page;
+  const totalPages = data?.totalPages ?? 1;
 
-  const { currentPage, setCurrentPage, pageData, totalPages } =
-    usePagination(userPerformance);
-
-  if (isLoading) return <Spinner />;
+  if (isLoading && !teamMembers.length)
+    return (
+      <div className="flex-center">
+        <Spinner />
+      </div>
+    );
+  if (error)
+    return (
+      <div className="flex-center text-muted-foreground">
+        Etwas ist schief gelaufen
+      </div>
+    );
 
   return (
-    <div>
-      <div className="my-6">
-        <TeamToolbar />
+    <div className="flex flex-col min-h-full">
+      <div className="mb-6">
+        <TeamToolbar search={search} setSearch={setSearch} />
       </div>
 
-      <section>
+      <section className="mb-6">
         <TeamPerformanceList
-          teamPerformance={pageData}
+          teamPerformance={teamMembers}
           onSelectUser={onSelectUser}
         />
       </section>
 
-      <div>
-        <TeamPagination
-          currentPage={currentPage}
-          prev={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-          next={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
-          totalPages={totalPages}
-        />
-      </div>
+      {!teamMembers.length && (
+        <div className="flex-center text-muted-foreground">
+          Keine Daten gefunden
+        </div>
+      )}
+
+      {teamMembers.length > 0 && (
+        <div className="flex justify-end mt-auto">
+          <TeamPagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            setPage={setPage}
+          />
+        </div>
+      )}
 
       {selectedUser && (
         <AssignProjectModal

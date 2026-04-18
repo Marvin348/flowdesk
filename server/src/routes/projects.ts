@@ -18,87 +18,92 @@ router.get("/", (req, res) => {
   res.json({ data: db.projects });
 });
 
-// list vm
-router.get("/summary", (req: Request<{}, {}, ProjectSummaryDto>, res) => {
-  const db = readDb();
+// list vm // falsch type
+router.get(
+  "/summary",
+  (req: Request, res: Response<{ data: ProjectSummaryDto[] }>) => {
+    const db = readDb();
 
-  const projects = db.projects;
-  const comments = db.comments;
-  const tasks = db.tasks;
-  const attachments = db.attachments;
+    const projects = db.projects;
+    const comments = db.comments;
+    const tasks = db.tasks;
+    const attachments = db.attachments;
 
-  // refactor later
-  const tasksByProjectId = new Map<string, typeof tasks>();
-  for (const task of tasks) {
-    const existing = tasksByProjectId.get(task.projectId) ?? [];
-    existing.push(task);
-    tasksByProjectId.set(task.projectId, existing);
-  }
+    // refactor later
+    const tasksByProjectId = new Map<string, typeof tasks>();
+    for (const task of tasks) {
+      const existing = tasksByProjectId.get(task.projectId) ?? [];
+      existing.push(task);
+      tasksByProjectId.set(task.projectId, existing);
+    }
 
-  const commentsByTaskId = new Map<string, typeof comments>();
-  for (const comment of comments) {
-    const existing = commentsByTaskId.get(comment.taskId) ?? [];
-    existing.push(comment);
-    commentsByTaskId.set(comment.taskId, existing);
-  }
+    const commentsByTaskId = new Map<string, typeof comments>();
+    for (const comment of comments) {
+      const existing = commentsByTaskId.get(comment.taskId) ?? [];
+      existing.push(comment);
+      commentsByTaskId.set(comment.taskId, existing);
+    }
 
-  const attachmentsByTaskId = new Map<string, typeof attachments>();
-  for (const attachment of attachments) {
-    const existing = attachmentsByTaskId.get(attachment.taskId) ?? [];
-    existing.push(attachment);
-    attachmentsByTaskId.set(attachment.taskId, existing);
-  }
+    const attachmentsByTaskId = new Map<string, typeof attachments>();
+    for (const attachment of attachments) {
+      const existing = attachmentsByTaskId.get(attachment.taskId) ?? [];
+      existing.push(attachment);
+      attachmentsByTaskId.set(attachment.taskId, existing);
+    }
 
-  const projectListItems = projects.map((p): ProjectSummaryDto => {
-    const projectTasks = tasksByProjectId.get(p.id) ?? [];
+    const projectListItems = projects.map((p): ProjectSummaryDto => {
+      const projectTasks = tasksByProjectId.get(p.id) ?? [];
 
-    const teamUserIdSet = new Set<string>(p.invitedUserIds);
+      const teamUserIdSet = new Set<string>(p.invitedUserIds);
 
-    const counts = projectTasks.reduce(
-      (acc, task) => {
-        acc.commentCount += (commentsByTaskId.get(task.id) ?? []).length;
-        acc.attachmentCount += (attachmentsByTaskId.get(task.id) ?? []).length;
+      const counts = projectTasks.reduce(
+        (acc, task) => {
+          acc.commentCount += (commentsByTaskId.get(task.id) ?? []).length;
+          acc.attachmentCount += (
+            attachmentsByTaskId.get(task.id) ?? []
+          ).length;
 
-        if (task.taskStatus === "done") {
-          acc.completedTaskCount += 1;
-        }
+          if (task.taskStatus === "done") {
+            acc.completedTaskCount += 1;
+          }
 
-        for (const userId of task.collaboratorIds) {
-          teamUserIdSet.add(userId);
-        }
+          for (const userId of task.collaboratorIds) {
+            teamUserIdSet.add(userId);
+          }
 
-        return acc;
-      },
-      {
-        commentCount: 0,
-        attachmentCount: 0,
-        completedTaskCount: 0,
-      },
-    );
+          return acc;
+        },
+        {
+          commentCount: 0,
+          attachmentCount: 0,
+          completedTaskCount: 0,
+        },
+      );
 
-    const teamUserIds = Array.from(teamUserIdSet);
+      const teamUserIds = Array.from(teamUserIdSet);
 
-    return {
-      id: p.id,
-      title: p.title,
-      priority: p.priority,
-      projectStatus: p.projectStatus,
-      dueDate: p.dueDate,
-      teamUserIds,
-      createdAt: p.createdAt,
+      return {
+        id: p.id,
+        title: p.title,
+        priority: p.priority,
+        projectStatus: p.projectStatus,
+        dueDate: p.dueDate,
+        teamUserIds,
+        createdAt: p.createdAt,
 
-      stats: {
-        taskCount: projectTasks.length,
-        commentCount: counts.commentCount,
-        attachmentCount: counts.attachmentCount,
-        completedTaskCount: counts.completedTaskCount,
-        userCount: teamUserIds.length,
-      },
-    };
-  });
+        stats: {
+          taskCount: projectTasks.length,
+          commentCount: counts.commentCount,
+          attachmentCount: counts.attachmentCount,
+          completedTaskCount: counts.completedTaskCount,
+          userCount: teamUserIds.length,
+        },
+      };
+    });
 
-  return res.status(200).json({ data: projectListItems });
-});
+    return res.status(200).json({ data: projectListItems });
+  },
+);
 
 // create new project
 router.post("/", (req: Request<{}, {}, CreateProjectInput>, res) => {
@@ -142,67 +147,75 @@ router.post("/", (req: Request<{}, {}, CreateProjectInput>, res) => {
   return res.status(201).json({ data: newProject });
 });
 
+router.get(
+  "/options",
+  (req: Request<{}, {}, {}, { search?: string; userId?: string }>, res) => {
+    const search =
+      typeof req.query.search === "string" ? req.query.search.trim() : "";
+    const userId = req.query.userId;
 
-router.get("/options", (req: Request<{}, {}, ProjectOptionsDto>, res) => {
-  const search = typeof req.query.search === "string" ? req.query.search : "";
-  const userId = req.query.userId;
+    const db = readDb();
 
-  const db = readDb();
+    const projectOption: ProjectOptionDto[] = db.projects.map((p) => {
+      const invitedUserIdsSet = new Set<string>(p.invitedUserIds);
 
-  const projectOption: ProjectOptionDto[] = db.projects.map((p) => {
-    const invitedUserIdsSet = new Set<string>(p.invitedUserIds);
+      const isInvited = p.invitedUserIds.some((ids) => ids === userId);
 
-    const isInvited = p.invitedUserIds.some((ids) => ids === userId);
+      const users = db.users
+        .filter((u) => invitedUserIdsSet.has(u.id))
+        .map((u) => {
+          return {
+            id: u.id,
+            name: u.name,
+            avatarKey: u.avatarKey,
+          };
+        });
 
-    const users = db.users
-      .filter((u) => invitedUserIdsSet.has(u.id))
-      .map((u) => {
-        return {
-          id: u.id,
-          name: u.name,
-          avatarKey: u.avatarKey,
-        };
-      });
+      return {
+        id: p.id,
+        title: p.title,
+        createdAt: p.createdAt,
+        isInvited,
+        users,
+      };
+    });
 
-    return {
-      id: p.id,
-      title: p.title,
-      createdAt: p.createdAt,
-      isInvited,
-      users,
-    };
-  });
+    const recent = projectOption
+      .sort(
+        (a, b) =>
+          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+      )
+      .slice(0, 3);
 
-  const recent = projectOption
-    .sort(
-      (a, b) =>
-        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
-    )
-    .slice(0, 3);
+    const recentIdSet = new Set(recent.map((p) => p.id));
 
-  const recentIdSet = new Set(recent.map((p) => p.id));
+    const filteredProjectOptions = projectOption
+      .filter((p) => {
+        if (recentIdSet.has(p.id)) return false;
 
-  const filteredProjectOptions = projectOption
-    .filter((p) => {
-      if (recentIdSet.has(p.id)) return false;
+        const matchesSearch =
+          !search || p.title.toLowerCase().includes(search.toLowerCase());
 
-      const matchesSearch =
-        !search || p.title.toLowerCase().includes(search.toLowerCase());
+        return matchesSearch;
+      })
+      .slice(0, 5);
 
-      return matchesSearch;
-    })
-    .slice(0, 5);
+    return res.status(200).json({
+      data: {
+        recent: recent,
+        results: search === "" ? [] : filteredProjectOptions,
+      },
+    });
+  },
+);
 
-  return res.status(200).json({
-    data: {
-      recent: recent,
-      results: search === "" ? [] : filteredProjectOptions,
-    },
-  });
-});
+type AssignUserInput = {
+  projectIdsToAdd: string[];
+  userId: string;
+};
 
 // add new userId to projects
-router.patch("/assign-user", (req, res) => {
+router.patch("/assign-user", (req: Request<{}, {}, AssignUserInput>, res) => {
   const { projectIdsToAdd, userId } = req.body;
 
   if (!Array.isArray(projectIdsToAdd) || typeof userId !== "string") {
@@ -245,102 +258,105 @@ router.patch("/assign-user", (req, res) => {
 });
 
 // details vm
-router.get(
-  "/:id/details",
-  (req: Request<{ id: string }, {}, ProjectDetailsDto>, res) => {
-    const projectId = req.params.id;
-
-    if (!projectId) {
-      return res.status(400).json({ error: "Invalid projectId" });
-    }
-
-    const db = readDb();
-
-    const project = db.projects.find((p) => p.id === projectId);
-
-    if (!project) {
-      return res.status(404).json({ error: "project not found" });
-    }
-
-    const tasks = db.tasks.filter((t) => t.projectId === projectId);
-    const tasksByIds = new Set(tasks.map((t) => t.id));
-
-    const comments = db.comments.filter((c) => tasksByIds.has(c.taskId));
-    const attachments = db.attachments.filter((a) => tasksByIds.has(a.taskId));
-
-    const users = db.users;
-
-    return res.status(200).json({
-      data: {
-        project,
-        tasks,
-        comments,
-        attachments,
-        users,
-      },
-    });
-  },
-);
-
-// PATCH /users/:id/role //chage user globally
-// chage user-role
-router.patch("/:id/members/:userId", (req, res) => {
+router.get("/:id/details", (req: Request<{ id: string }>, res) => {
   const projectId = req.params.id;
-  const userId = req.params.userId;
 
-  if (!projectId || !userId) {
-    return res.status(400).json({ error: "Invalid input" });
+  if (!projectId) {
+    return res.status(400).json({ error: "Invalid projectId" });
   }
 
   const db = readDb();
-  const project = db.projects.find((p) => p.id === projectId);
 
-  if (!project) {
-    return res.status(404).json({ error: "Project not found" });
-  }
-
-  const user = db.users.find((u) => u.id === userId);
-
-  if (!user) {
-    return res.status(404).json({ error: "User not found" });
-  }
-
-  if (!project.invitedUserIds.includes(userId)) {
-    return res.status(400).json({ error: "User not in project" });
-  }
-
-  // not ready
-});
-
-// update invitedUserIds
-router.patch("/:id/members", (req, res) => {
-  const projectId = req.params.id;
-  const { userIdsToAdd } = req.body;
-
-  if (!projectId || !Array.isArray(userIdsToAdd)) {
-    return res.status(400).json({ error: "Invalid input" });
-  }
-
-  const db = readDb();
   const project = db.projects.find((p) => p.id === projectId);
 
   if (!project) {
     return res.status(404).json({ error: "project not found" });
   }
 
-  project.invitedUserIds = Array.from(
-    new Set([...project.invitedUserIds, ...userIdsToAdd]),
-  );
+  const tasks = db.tasks.filter((t) => t.projectId === projectId);
+  const tasksByIds = new Set(tasks.map((t) => t.id));
 
-  project.updatedAt = new Date().toISOString();
+  const comments = db.comments.filter((c) => tasksByIds.has(c.taskId));
+  const attachments = db.attachments.filter((a) => tasksByIds.has(a.taskId));
 
-  writeDb(db);
+  const users = db.users;
 
-  return res.status(200).json({ data: project });
+  return res.status(200).json({
+    data: {
+      project,
+      tasks,
+      comments,
+      attachments,
+      users,
+    },
+  });
 });
 
+// PATCH /users/:id/role //chage user globally
+// chage user-role
+router.patch(
+  "/:id/members/:userId",
+  (req: Request<{ id: string; userId: string }>, res) => {
+    const projectId = req.params.id;
+    const userId = req.params.userId;
+
+    if (!projectId || !userId) {
+      return res.status(400).json({ error: "Invalid input" });
+    }
+
+    const db = readDb();
+    const project = db.projects.find((p) => p.id === projectId);
+
+    if (!project) {
+      return res.status(404).json({ error: "Project not found" });
+    }
+
+    const user = db.users.find((u) => u.id === userId);
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    if (!project.invitedUserIds.includes(userId)) {
+      return res.status(400).json({ error: "User not in project" });
+    }
+
+    // not ready
+  },
+);
+
+// update invitedUserIds
+router.patch(
+  "/:id/members",
+  (req: Request<{ id: string }, {}, { userIdsToAdd: string[] }>, res) => {
+    const projectId = req.params.id;
+    const { userIdsToAdd } = req.body;
+
+    if (!projectId || !Array.isArray(userIdsToAdd)) {
+      return res.status(400).json({ error: "Invalid input" });
+    }
+
+    const db = readDb();
+    const project = db.projects.find((p) => p.id === projectId);
+
+    if (!project) {
+      return res.status(404).json({ error: "project not found" });
+    }
+
+    project.invitedUserIds = Array.from(
+      new Set([...project.invitedUserIds, ...userIdsToAdd]),
+    );
+
+    project.updatedAt = new Date().toISOString();
+
+    writeDb(db);
+
+    return res.status(200).json({ data: project });
+  },
+);
+
 // scoped
-router.get("/:id", (req, res) => {
+router.get("/:id", (req: Request<{ id: string }>, res) => {
   const id = req.params.id;
 
   if (!id) {
@@ -359,7 +375,7 @@ router.get("/:id", (req, res) => {
 });
 
 // delete project
-router.delete("/:id", (req, res) => {
+router.delete("/:id", (req: Request<{ id: string }>, res) => {
   const projectId = req.params.id;
 
   if (!projectId) {

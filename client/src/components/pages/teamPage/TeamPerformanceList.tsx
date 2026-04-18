@@ -13,11 +13,7 @@ const TeamPerformanceList = ({
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
       {teamPerformance.map((u) => (
-        <UserPerformanceItem
-          key={u.id}
-          item={u}
-          onSelectUser={onSelectUser}
-        />
+        <UserPerformanceItem key={u.id} item={u} onSelectUser={onSelectUser} />
       ))}
     </div>
   );
