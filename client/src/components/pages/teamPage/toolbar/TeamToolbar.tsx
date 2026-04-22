@@ -12,13 +12,13 @@ const TeamToolbar = ({ search, setSearch }: TeamToolbarProps) => {
       <h2 className="text-2xl font-semibold">Alle Teammitglieder</h2>
 
       <div className="flex items-center gap-4">
-        <div className="relative">
+        <div className="relative w-80">
           <input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             type="text"
             className="w-full border rounded-md h-9 pl-8 pr-4"
-            placeholder="Suche..."
+            placeholder="Suche Mitarbeiter"
           />
           <Search className="absolute left-2 top-1/2 transform  -translate-y-1/2 size-4 text-muted-foreground" />
         </div>

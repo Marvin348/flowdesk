@@ -2,26 +2,10 @@ import type { Progress } from "@/utils/getProgressResult";
 import type { Badge } from "@/store/slices/projectBadge";
 import type { Priority } from "@shared/types/priority";
 import type { StatusBase } from "@shared/types/StatusBase";
+import type { ProjectSummariesDto } from "@shared/types/dto/project";
 
-export type ProjectListVM = {
-  id: string;
-  title: string;
-  priority: Priority;
-  projectStatus: StatusBase;
-  teamUserIds: string[];
-  dueDate: string;
-  createdAt: string;
-
+export type ProjectListVM = ProjectSummariesDto & {
   badge?: Badge;
-
-  stats: {
-    taskCount: number;
-    completedTaskCount: number;
-    commentCount: number;
-    attachmentCount: number;
-    userCount: number;
-  };
-
   progress: Progress;
 };
 

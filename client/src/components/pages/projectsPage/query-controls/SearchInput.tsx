@@ -9,8 +9,8 @@ const SearchInput = () => {
     <div className="relative">
       <input
         type="text"
-        className=" w-full h-8 border rounded-md pl-8 pr-4 focus:none"
-        placeholder="Suche Projekte"
+        className="w-full h-8 border rounded-md pl-8 pr-4 focus:none"
+        placeholder="Suche..."
         value={searchQuery}
         onChange={(e) => setSearchQuery(e.target.value)}
       />

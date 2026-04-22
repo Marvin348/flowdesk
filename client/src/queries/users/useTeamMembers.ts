@@ -7,6 +7,7 @@ export const useTeamMembers = (input: TeamMembersInput) => {
   const { data, isLoading, error } = useQuery<TeamMembersResponseDto, Error>({
     queryKey: ["users", "team", input.search, input.page, input.limit],
     queryFn: () => fetchTeamMembers(input),
+    placeholderData: (previousData) => previousData,
   });
 
   return { data, isLoading, error };

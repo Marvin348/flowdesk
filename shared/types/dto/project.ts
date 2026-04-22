@@ -5,7 +5,7 @@ import type { Task } from "../task.js";
 import type { Attachment } from "../attachment.js";
 import type { AvatarKey, User } from "../user.js";
 
-export type ProjectSummaryDto = {
+export type ProjectSummariesDto = {
   id: string;
   title: string;
   priority: Priority;
@@ -21,6 +21,12 @@ export type ProjectSummaryDto = {
     completedTaskCount: number;
     userCount: number;
   };
+};
+
+export type ProjectSummariesResponseDto = {
+  items: ProjectSummariesDto[];
+  currentPage: number;
+  totalPages: number;
 };
 
 export type ProjectDetailsDto = {

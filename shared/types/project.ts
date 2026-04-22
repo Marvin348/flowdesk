@@ -16,3 +16,9 @@ export type Project = {
   createdAt: string;
   updatedAt?: string;
 };
+
+type Preferences = {
+  isFavorite?: boolean;
+  isArchived?: boolean;
+  isPinned?: boolean;
+};

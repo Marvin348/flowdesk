@@ -3,13 +3,18 @@ import { readDb } from "@/utils/readDb.js";
 import { writeDb } from "@/utils/writeDb.js";
 import type {
   ProjectDetailsDto,
-  ProjectSummaryDto,
+  ProjectSummariesDto,
   ProjectOptionDto,
   ProjectOptionsDto,
 } from "@shared/types/dto/project.js";
 import type { CreateProjectInput } from "@shared/types/inputs/createProjectInput.js";
 import { Project } from "@shared/types/project.js";
 import type { Request, Response } from "express";
+import { getProjectsSummary } from "@/utils/projects/getProjectsSummary.js";
+import { getFilteredProjectsList } from "@/utils/projects/getFilteredProjectsList.js";
+import { pagination } from "@/utils/pagination.js";
+import { parseProjectQueryFilter } from "@/parsers/project-query.parsers.js";
+import type { ProjectSummaryQuery } from "@/types/querys/projectSummaryQuery.js";
 
 const router = express.Router();
 
@@ -18,92 +23,43 @@ router.get("/", (req, res) => {
   res.json({ data: db.projects });
 });
 
-// list vm // falsch type
-router.get(
-  "/summary",
-  (req: Request, res: Response<{ data: ProjectSummaryDto[] }>) => {
-    const db = readDb();
 
-    const projects = db.projects;
-    const comments = db.comments;
-    const tasks = db.tasks;
-    const attachments = db.attachments;
+router.get("/summaries", (req: Request<{}, {}, {}, ProjectSummaryQuery>, res) => {
+  const db = readDb();
 
-    // refactor later
-    const tasksByProjectId = new Map<string, typeof tasks>();
-    for (const task of tasks) {
-      const existing = tasksByProjectId.get(task.projectId) ?? [];
-      existing.push(task);
-      tasksByProjectId.set(task.projectId, existing);
-    }
+  const projects = db.projects;
+  const comments = db.comments;
+  const tasks = db.tasks;
+  const attachments = db.attachments;
 
-    const commentsByTaskId = new Map<string, typeof comments>();
-    for (const comment of comments) {
-      const existing = commentsByTaskId.get(comment.taskId) ?? [];
-      existing.push(comment);
-      commentsByTaskId.set(comment.taskId, existing);
-    }
+  const projectListItems = getProjectsSummary(
+    projects,
+    tasks,
+    comments,
+    attachments,
+  );
 
-    const attachmentsByTaskId = new Map<string, typeof attachments>();
-    for (const attachment of attachments) {
-      const existing = attachmentsByTaskId.get(attachment.taskId) ?? [];
-      existing.push(attachment);
-      attachmentsByTaskId.set(attachment.taskId, existing);
-    }
+  const search =
+    typeof req.query.search === "string" ? req.query.search.trim() : "";
 
-    const projectListItems = projects.map((p): ProjectSummaryDto => {
-      const projectTasks = tasksByProjectId.get(p.id) ?? [];
+  const parsedFilter = parseProjectQueryFilter(req.query);
 
-      const teamUserIdSet = new Set<string>(p.invitedUserIds);
+  const filteredProjects = getFilteredProjectsList(
+    projectListItems,
+    search,
+    parsedFilter,
+  );
 
-      const counts = projectTasks.reduce(
-        (acc, task) => {
-          acc.commentCount += (commentsByTaskId.get(task.id) ?? []).length;
-          acc.attachmentCount += (
-            attachmentsByTaskId.get(task.id) ?? []
-          ).length;
+  let page = Number(req.query.page);
+  let limit = Number(req.query.limit);
 
-          if (task.taskStatus === "done") {
-            acc.completedTaskCount += 1;
-          }
+  if (isNaN(page)) page = 1;
+  if (isNaN(limit)) limit = 9;
 
-          for (const userId of task.collaboratorIds) {
-            teamUserIdSet.add(userId);
-          }
+  const paginationItems = pagination(filteredProjects, page, limit);
 
-          return acc;
-        },
-        {
-          commentCount: 0,
-          attachmentCount: 0,
-          completedTaskCount: 0,
-        },
-      );
-
-      const teamUserIds = Array.from(teamUserIdSet);
-
-      return {
-        id: p.id,
-        title: p.title,
-        priority: p.priority,
-        projectStatus: p.projectStatus,
-        dueDate: p.dueDate,
-        teamUserIds,
-        createdAt: p.createdAt,
-
-        stats: {
-          taskCount: projectTasks.length,
-          commentCount: counts.commentCount,
-          attachmentCount: counts.attachmentCount,
-          completedTaskCount: counts.completedTaskCount,
-          userCount: teamUserIds.length,
-        },
-      };
-    });
-
-    return res.status(200).json({ data: projectListItems });
-  },
-);
+  return res.status(200).json({ data: paginationItems });
+});
 
 // create new project
 router.post("/", (req: Request<{}, {}, CreateProjectInput>, res) => {

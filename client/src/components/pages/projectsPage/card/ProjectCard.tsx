@@ -1,16 +1,16 @@
-import AssigneeAvatars from "@/components/users/avatar/AssigneeAvatars";
 import { formatDate } from "@/utils/formatDate";
 import { STATUS_OPTIONS } from "@/constants/status-options";
 import { PRIORITY_OPTIONS } from "@/constants/priority-options";
-import ProgressBar from "@/components/pages/projectsPage/card/ProgressBar";
-import ProjectCardMenu from "@/components/pages/projectsPage/card/ProjectCardMenu";
 import { useRef, useState } from "react";
 import { useOnClickOutside } from "@/hooks/useOnClickOutside";
-import ActiveMenuBadge from "@/components/pages/projectsPage/card/ActiveMenuBadge";
 import { useAppStore } from "@/store";
-import type { Badge } from "@/store/slices/projectBadge";
 import { useUsersByIds } from "@/hooks/useUsersByIds";
+import type { Badge } from "@/store/slices/projectBadge";
 import type { ProjectListVM } from "@/type/view-models/projectsList";
+import ProgressBar from "@/components/pages/projectsPage/card/ProgressBar";
+import ProjectCardMenu from "@/components/pages/projectsPage/card/ProjectCardMenu";
+import ActiveMenuBadge from "@/components/pages/projectsPage/card/ActiveMenuBadge";
+import AssigneeAvatars from "@/components/users/avatar/AssigneeAvatars";
 import DeleteProjectDialog from "./DeleteProjectDialog";
 import {
   EllipsisVertical,

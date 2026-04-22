@@ -15,7 +15,15 @@ FlowDesk is an admin dashboard for managing projects, tasks, and team collaborat
 
 - Some features may not work as expected yet
 - Ongoing refactoring of API structure and data handling
-- shared types folder are not fully connected to server and client yet
+
+#### filter badge
+
+- Favorites, pinned items, etc. are currently handled on the frontend only (via store/localStorage), since they are user-specific and there is no authentication system in place yet.
+
+- Because of this, these values are not available on the backend and therefore cannot be used for filtering.
+
+- This will be addressed once the authentication system is implemented.
+  At the moment, filtering by favorites, pinned items, etc. **is not possible.**
 
 ## Planned Improvements
 

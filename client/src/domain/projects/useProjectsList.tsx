@@ -1,23 +1,14 @@
 import { useAppStore } from "@/store";
-import { useProjectSummaries } from "@/queries/projects/useProjectSummaries";
 import { calcPercent } from "@/utils/calcPercent";
-import type { ProjectsListVM } from "@/type/view-models/projectsList";
 import type { ProjectListVM } from "@/type/view-models/projectsList";
+import type { ProjectSummariesDto } from "@shared/types/dto/project";
 
-export const useProjectsListVM = (): ProjectsListVM => {
-  const { data: projects, isLoading, error } = useProjectSummaries();
-
+export const useProjectsListVM = (
+  projects: ProjectSummariesDto[],
+): ProjectListVM[] => {
   const badgeByProjectId = useAppStore((state) => state.badgeByProjectId);
 
-  if (!projects) {
-    return {
-      projects: [],
-      isLoading,
-      error,
-    };
-  }
-
-  const projectsList = projects.map((pro): ProjectListVM => {
+  const projectsList: ProjectListVM[] = projects.map((pro) => {
     const badge = badgeByProjectId[pro.id];
 
     const progress = {
@@ -33,9 +24,5 @@ export const useProjectsListVM = (): ProjectsListVM => {
     };
   });
 
-  return {
-    projects: projectsList,
-    isLoading,
-    error,
-  };
+  return projectsList;
 };

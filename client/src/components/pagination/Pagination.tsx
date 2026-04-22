@@ -1,17 +1,17 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight, ArrowLeft } from "lucide-react";
 
-type TeamPaginationProps = {
+type PaginationProps = {
   currentPage: number;
   totalPages: number;
   setPage: React.Dispatch<React.SetStateAction<number>>;
 };
 
-const TeamPagination = ({
+const Pagination = ({
   currentPage,
   totalPages,
   setPage,
-}: TeamPaginationProps) => {
+}: PaginationProps) => {
   const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
 
   const prevPage = () => setPage((prev) => Math.max(prev - 1, 1));
@@ -50,4 +50,4 @@ const TeamPagination = ({
     </div>
   );
 };
-export default TeamPagination;
+export default Pagination;

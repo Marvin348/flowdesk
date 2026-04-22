@@ -1,13 +1,12 @@
 import { Button } from "@/components/ui/button";
-import { Search, RotateCcw, X } from "lucide-react";
+import { X } from "lucide-react";
 import { PRIORITY_OPTIONS } from "@/constants/priority-options";
+import { STATUS_OPTIONS } from "@/constants/status-options";
 import { useAppStore } from "@/store";
-import SelectedStatus from "@/components/ui/select/SelectedStatus";
-import SelectedView from "@/components/ui/select/SelectedView";
-import { useState } from "react";
-import { defaultFilter, type ContentFilter } from "@/store/slices/filter";
+import { useRef } from "react";
 import { useScrollLock } from "@/hooks/useScrollLock";
-import type { Priority } from "@shared/types/priority";
+import type { ContentFilter } from "@shared/types/filter/contentFilter";
+import { useOnClickOutside } from "@/hooks/useOnClickOutside";
 
 type FilterDrawerProps = {
   onClose: () => void;
@@ -16,135 +15,114 @@ type FilterDrawerProps = {
 const FilterDrawer = ({ onClose, isOpen }: FilterDrawerProps) => {
   useScrollLock(isOpen);
 
+  const filter = useAppStore((state) => state.filter);
+  const setFilter = useAppStore((state) => state.setFilter);
   const clearFilter = useAppStore((state) => state.clearFilter);
-  const replaceFilter = useAppStore((state) => state.replaceFilter);
 
-  const [draftFilter, setDraftFilter] = useState<ContentFilter>(defaultFilter);
+  const filterRef = useRef<HTMLDivElement>(null);
+  useOnClickOutside(filterRef, () => onClose());
 
-  const setFilter = (filter: ContentFilter) =>
-    setDraftFilter((prev) => ({ ...prev, ...filter }));
+  const toggleFilter = <K extends keyof ContentFilter>(
+    key: K,
+    value: ContentFilter[K],
+  ) => {
+    const isActive = filter[key] === value;
 
-  const clearDraftFilter = () => setDraftFilter(defaultFilter);
-
-  const togglePriority = (value: Priority) => {
-    setDraftFilter((prev) => ({
-      ...prev,
-      priority: prev.priority === value ? undefined : value,
-    }));
+    setFilter({ [key]: isActive ? undefined : value });
   };
 
-  const onClick = () => {
-    replaceFilter(draftFilter);
-    onClose();
-  };
-
-  const resetFilter = () => {
-    clearDraftFilter();
+  const onReset = () => {
     clearFilter();
     onClose();
   };
 
   return (
-    <>
-      <div
-        className={`overlay ${isOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}`}
-      ></div>
+    <div
+      className={
+        "absolute top-5 right-0 w-100 border rounded-md bg-white shadow-xl z-100"
+      }
+      ref={filterRef}
+      onClick={(e) => e.stopPropagation()}
+    >
+      <div className="flex items-center justify-between p-4 border-b">
+        <h3 className="text-xl font-bold">Filter</h3>
+        <button className="text-surface/80 hover:text-black" onClick={onClose}>
+          <X className="size-5" />
+        </button>
+      </div>
 
-      <aside
-        className={`fixed top-0 bottom-0 right-0 bg-white w-70 lg:w-100 rounded-l-md transform duration-300 ease-in-out z-50 ${isOpen ? "translate-x-0" : "translate-x-full"}`}
-      >
-        <div className="p-4">
-          <div className="flex items-center justify-between">
-            <h3 className="text-2xl font-bold">Filter</h3>
-            <Button
-              className="border-none text-surface/80 hover:text-black"
-              variant="outline"
-              size="icon-sm"
-              onClick={onClose}
-            >
-              <X className="size-6" />
-            </Button>
-          </div>
-
-          <div className="mt-8">
-            <h4 className="text-lg font-medium">Priorität</h4>
-            <div className="mt-1 flex justify-between">
-              {Object.values(PRIORITY_OPTIONS).map((opt) => (
-                <Button
-                  key={opt.value}
-                  size="sm"
-                  variant="filter_drawer"
-                  className="rounded-full"
-                  onClick={() => togglePriority(opt.value)}
-                  data-state={
-                    draftFilter.priority === opt.value ? "active" : "inactive"
-                  }
-                >
-                  {opt.label}
-                </Button>
-              ))}
-            </div>
-          </div>
-
-          <div className="mt-6">
-            <h4 className="text-lg font-medium">Status</h4>
-            <div className="mt-1">
-              <SelectedStatus
-                value={draftFilter.status}
-                onChange={(status) => setFilter({ status })}
-              />
-            </div>
-          </div>
-
-          <div className="mt-6">
-            <h4 className="text-lg font-medium">Eigenschaften</h4>
-            <div className="mt-1">
-              <SelectedView value={draftFilter.view} setFilter={setFilter} />
-            </div>
-          </div>
-
-          <div className="mt-6">
-            <h4 className="text-lg font-medium">Anhänge</h4>
-            <div className="mt-1 flex items-center gap-4">
+      <div className="p-4">
+        <div>
+          <h4 className="font-medium">Priorität</h4>
+          <div className="mt-1 flex gap-2 flex-wrap">
+            {Object.values(PRIORITY_OPTIONS).map((opt) => (
               <Button
+                key={opt.value}
                 size="sm"
                 variant="filter_drawer"
                 className="rounded-full"
-                onClick={() => setFilter({ hasAttachments: true })}
-                data-state={draftFilter.hasAttachments ? "active" : "inactive"}
-              >
-                Ja
-              </Button>
-              <Button
-                size="sm"
-                variant="filter_drawer"
-                className="rounded-full"
-                onClick={() => setFilter({ hasAttachments: false })}
+                onClick={() => toggleFilter("priority", opt.value)}
                 data-state={
-                  draftFilter.hasAttachments === false ? "active" : "inactive"
+                  filter.priority === opt.value ? "active" : "inactive"
                 }
               >
-                Nein
+                {opt.label}
               </Button>
-            </div>
+            ))}
           </div>
+        </div>
 
-          <div className="mt-8 flex flex-col gap-2">
+        <div className="mt-6">
+          <h4 className="font-medium">Status</h4>
+          <div className="mt-1 flex gap-2 flex-wrap">
+            {Object.values(STATUS_OPTIONS).map((opt) => (
+              <Button
+                key={opt.value}
+                size="sm"
+                variant="filter_drawer"
+                className="rounded-full"
+                onClick={() => toggleFilter("status", opt.value)}
+                data-state={filter.status === opt.value ? "active" : "inactive"}
+              >
+                {opt.label}
+              </Button>
+            ))}
+          </div>
+        </div>
+
+        <div className="mt-6">
+          <h4 className="font-medium">Anhänge</h4>
+          <div className="mt-1 flex gap-2 flex-wrap">
             <Button
-              className="w-full bg-accent hover:bg-accent/95 text-black font-semibold"
-              onClick={onClick}
+              size="sm"
+              variant="filter_drawer"
+              className="rounded-full"
+              onClick={() => toggleFilter("hasAttachments", true)}
+              data-state={filter.hasAttachments ? "active" : "inactive"}
             >
-              <Search />
-              Anzeigen
+              Mit Anhängen
             </Button>
-            <Button className="w-full" onClick={resetFilter}>
-              <RotateCcw />
-              Zurücksetzten
+            <Button
+              size="sm"
+              variant="filter_drawer"
+              className="rounded-full"
+              onClick={() => toggleFilter("hasAttachments", false)}
+              data-state={
+                filter.hasAttachments === false ? "active" : "inactive"
+              }
+            >
+              Ohne Anhänge
             </Button>
           </div>
         </div>
-      </aside>
-    </>
+      </div>
+
+      <div className="mt-4 p-4 border-t">
+        <button onClick={onReset} className="underline text-sm text-surface/90">
+          Zurücksetzten
+        </button>
+      </div>
+    </div>
   );
 };
 export default FilterDrawer;

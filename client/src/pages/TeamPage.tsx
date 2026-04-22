@@ -1,9 +1,9 @@
 import TeamPerformanceList from "@/components/pages/teamPage/TeamPerformanceList";
 import TeamToolbar from "@/components/pages/teamPage/toolbar/TeamToolbar";
 import { Spinner } from "@/components/ui/spinner";
-import TeamPagination from "@/components/pages/teamPage/TeamPagination";
+import Pagination from "@/components/pagination/Pagination";
 import AssignProjectModal from "@/components/pages/teamPage/AssignProjectModal";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useTeamMembers } from "@/queries/users/useTeamMembers";
 import { useDebounce } from "@/hooks/useDebounce";
 
@@ -33,10 +33,14 @@ const TeamPage = () => {
   const currentPage = page;
   const totalPages = data?.totalPages ?? 1;
 
+  useEffect(() => {
+    setPage(1)
+  }, [search]);
+
   if (isLoading && !teamMembers.length)
     return (
       <div className="flex-center">
-        <Spinner />
+        <Spinner className="size-8 text-accent" />
       </div>
     );
   if (error)
@@ -67,7 +71,7 @@ const TeamPage = () => {
 
       {teamMembers.length > 0 && (
         <div className="flex justify-end mt-auto">
-          <TeamPagination
+          <Pagination
             currentPage={currentPage}
             totalPages={totalPages}
             setPage={setPage}
