@@ -2,11 +2,12 @@ import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
 import { PRIORITY_OPTIONS } from "@/constants/priority-options";
 import { STATUS_OPTIONS } from "@/constants/status-options";
-import { useAppStore } from "@/store";
 import { useRef } from "react";
 import { useScrollLock } from "@/hooks/useScrollLock";
-import type { ContentFilter } from "@shared/types/filter/contentFilter";
 import { useOnClickOutside } from "@/hooks/useOnClickOutside";
+import type { Priority } from "@shared/types/priority";
+import { useProjectQueryState } from "@/hooks/useProjectQueryState";
+import type { StatusBase } from "@shared/types/StatusBase";
 
 type FilterDrawerProps = {
   onClose: () => void;
@@ -15,26 +16,27 @@ type FilterDrawerProps = {
 const FilterDrawer = ({ onClose, isOpen }: FilterDrawerProps) => {
   useScrollLock(isOpen);
 
-  const filter = useAppStore((state) => state.filter);
-  const setFilter = useAppStore((state) => state.setFilter);
-  const clearFilter = useAppStore((state) => state.clearFilter);
+  const { filter, actions } = useProjectQueryState();
+  const resetQueryParams = actions.resetQueryParams;
 
   const filterRef = useRef<HTMLDivElement>(null);
   useOnClickOutside(filterRef, () => onClose());
 
-  const toggleFilter = <K extends keyof ContentFilter>(
-    key: K,
-    value: ContentFilter[K],
-  ) => {
-    const isActive = filter[key] === value;
+  // const toggleFilter = <K extends keyof ContentFilter>(
+  //   key: K,
+  //   value: ContentFilter[K],
+  // ) => {
+  //   const isActive = filter[key] === value;
 
-    setFilter({ [key]: isActive ? undefined : value });
-  };
+  //   setFilter({ [key]: isActive ? undefined : value });
+  // };
 
   const onReset = () => {
-    clearFilter();
+    resetQueryParams();
     onClose();
   };
+
+  console.log("FILTER QUERY", filter);
 
   return (
     <div
@@ -61,7 +63,7 @@ const FilterDrawer = ({ onClose, isOpen }: FilterDrawerProps) => {
                 size="sm"
                 variant="filter_drawer"
                 className="rounded-full"
-                onClick={() => toggleFilter("priority", opt.value)}
+                onClick={() => actions.toggleFilter("priority", opt.value)}
                 data-state={
                   filter.priority === opt.value ? "active" : "inactive"
                 }
@@ -81,7 +83,7 @@ const FilterDrawer = ({ onClose, isOpen }: FilterDrawerProps) => {
                 size="sm"
                 variant="filter_drawer"
                 className="rounded-full"
-                onClick={() => toggleFilter("status", opt.value)}
+                onClick={() => actions.toggleFilter("status", opt.value)}
                 data-state={filter.status === opt.value ? "active" : "inactive"}
               >
                 {opt.label}
@@ -97,7 +99,7 @@ const FilterDrawer = ({ onClose, isOpen }: FilterDrawerProps) => {
               size="sm"
               variant="filter_drawer"
               className="rounded-full"
-              onClick={() => toggleFilter("hasAttachments", true)}
+              onClick={() => actions.toggleFilter("hasAttachments", true)}
               data-state={filter.hasAttachments ? "active" : "inactive"}
             >
               Mit Anhängen
@@ -106,7 +108,7 @@ const FilterDrawer = ({ onClose, isOpen }: FilterDrawerProps) => {
               size="sm"
               variant="filter_drawer"
               className="rounded-full"
-              onClick={() => toggleFilter("hasAttachments", false)}
+              onClick={() => actions.toggleFilter("hasAttachments", false)}
               data-state={
                 filter.hasAttachments === false ? "active" : "inactive"
               }

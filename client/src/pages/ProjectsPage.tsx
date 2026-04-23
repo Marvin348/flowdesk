@@ -4,7 +4,7 @@ import FilterPanel from "@/components/pages/projectsPage/query-controls/FilterPa
 import ViewToggle from "@/components/projects/view-controls/ViewToggle";
 import CreateProjectModal from "@/components/pages/projectsPage/create/CreateProjectModal";
 import { useAppStore } from "@/store";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useProjectsSummary } from "@/hooks/useProjectsSummary";
 import { useProjectsListVM } from "@/domain/projects/useProjectsList";
 import { Button } from "@/components/ui/button";
@@ -12,6 +12,7 @@ import { Spinner } from "@/components/ui/spinner";
 import { useProjectSummaries } from "@/queries/projects/useProjectSummaries";
 import { useDebounce } from "@/hooks/useDebounce";
 import Pagination from "@/components/pagination/Pagination";
+import { useProjectQueryState } from "@/hooks/useProjectQueryState";
 
 export type View = "card" | "list";
 const defaultView: View = "card";
@@ -20,12 +21,11 @@ const ProjectsPage = () => {
   const [filterDrawerOpen, setFilterDrawerOpen] = useState(false);
   const [cardView, setCardView] = useState<View>(defaultView);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [page, setPage] = useState(1);
+
+  const { page, filter, actions } = useProjectQueryState();
 
   const searchQuery = useAppStore((state) => state.searchQuery);
   const debounceSearch = useDebounce(searchQuery, 300);
-
-  const filter = useAppStore((state) => state.filter);
 
   const summariesInput = {
     search: debounceSearch,
@@ -42,10 +42,6 @@ const ProjectsPage = () => {
 
   const projectsListVM = useProjectsListVM(projects);
   const projectSummary = useProjectsSummary(projectsListVM);
-
-  useEffect(() => {
-    setPage(1);
-  }, [searchQuery]);
 
   if (isLoading && !projects.length)
     return (
@@ -113,7 +109,7 @@ const ProjectsPage = () => {
           <Pagination
             currentPage={currentPage}
             totalPages={totalPages}
-            setPage={setPage}
+            setPage={actions.setPage}
           />
         </div>
       )}

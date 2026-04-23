@@ -15,6 +15,7 @@ const FilterPanel = ({ onOpen, projectSummary }: FilterPanelProps) => {
   const setFilter = useAppStore((state) => state.setFilter);
   const hasActiveFilter = useAppStore((state) => state.hasActiveFilter());
 
+  // refactor later
   const enrichedView = FILTER_VIEW_OPTIONS.map((view) => {
     const all = view.value === "all";
 

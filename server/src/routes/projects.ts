@@ -55,7 +55,7 @@ router.get("/summaries", (req: Request<{}, {}, {}, ProjectSummaryQuery>, res) =>
 
   if (isNaN(page)) page = 1;
   if (isNaN(limit)) limit = 9;
-
+ 
   const paginationItems = pagination(filteredProjects, page, limit);
 
   return res.status(200).json({ data: paginationItems });
