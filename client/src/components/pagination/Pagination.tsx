@@ -4,18 +4,14 @@ import { ArrowRight, ArrowLeft } from "lucide-react";
 type PaginationProps = {
   currentPage: number;
   totalPages: number;
-  setPage: React.Dispatch<React.SetStateAction<number>>;
+  setPage: (value: number) => void;
 };
 
-const Pagination = ({
-  currentPage,
-  totalPages,
-  setPage,
-}: PaginationProps) => {
+const Pagination = ({ currentPage, totalPages, setPage }: PaginationProps) => {
   const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
 
-  const prevPage = () => setPage((prev) => Math.max(prev - 1, 1));
-  const nextPage = () => setPage((prev) => Math.min(prev + 1, totalPages));
+  const prevPage = () => setPage(Math.max(currentPage - 1, 1));
+  const nextPage = () => setPage(Math.min(currentPage + 1, totalPages));
   const selectedPage = (pageNumber: number) => setPage(pageNumber);
 
   return (

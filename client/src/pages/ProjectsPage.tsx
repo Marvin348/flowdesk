@@ -3,14 +3,12 @@ import FilterDrawer from "@/components/pages/projectsPage/query-controls/FilterD
 import FilterPanel from "@/components/pages/projectsPage/query-controls/FilterPanel";
 import ViewToggle from "@/components/projects/view-controls/ViewToggle";
 import CreateProjectModal from "@/components/pages/projectsPage/create/CreateProjectModal";
-import { useAppStore } from "@/store";
 import { useState } from "react";
 import { useProjectsSummary } from "@/hooks/useProjectsSummary";
 import { useProjectsListVM } from "@/domain/projects/useProjectsList";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import { useProjectSummaries } from "@/queries/projects/useProjectSummaries";
-import { useDebounce } from "@/hooks/useDebounce";
 import Pagination from "@/components/pagination/Pagination";
 import { useProjectQueryState } from "@/hooks/useProjectQueryState";
 
@@ -22,13 +20,10 @@ const ProjectsPage = () => {
   const [cardView, setCardView] = useState<View>(defaultView);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const { page, filter, actions } = useProjectQueryState();
-
-  const searchQuery = useAppStore((state) => state.searchQuery);
-  const debounceSearch = useDebounce(searchQuery, 300);
+  const { page, search, filter, actions } = useProjectQueryState();
 
   const summariesInput = {
-    search: debounceSearch,
+    search,
     page,
     limit: 9,
     filter,

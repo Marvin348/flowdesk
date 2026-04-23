@@ -6,6 +6,7 @@ import AssignProjectModal from "@/components/pages/teamPage/AssignProjectModal";
 import { useEffect, useState } from "react";
 import { useTeamMembers } from "@/queries/users/useTeamMembers";
 import { useDebounce } from "@/hooks/useDebounce";
+import { useTeamQueryState } from "@/hooks/useTeamQueryState";
 
 const TeamPage = () => {
   const [selectedUser, setSelectedUser] = useState<{
@@ -13,16 +14,20 @@ const TeamPage = () => {
     name: string;
   } | null>(null);
 
-  const [search, setSearch] = useState("");
-  const [page, setPage] = useState(1);
+  const { page, search, actions } = useTeamQueryState();
 
-  const debounceInput = useDebounce(search, 300);
+  const [searchInput, setSearchInput] = useState(search);
+  const debounceInput = useDebounce(searchInput, 300);
+
+  useEffect(() => {
+    actions.setSearch(debounceInput);
+  }, [debounceInput]);
 
   const onSelectUser = (id: string, name: string) =>
     setSelectedUser({ id, name });
 
   const teamMembersInput = {
-    search: debounceInput,
+    search,
     page,
     limit: 6,
   };
@@ -32,10 +37,6 @@ const TeamPage = () => {
   const teamMembers = data?.items ?? [];
   const currentPage = page;
   const totalPages = data?.totalPages ?? 1;
-
-  useEffect(() => {
-    setPage(1)
-  }, [search]);
 
   if (isLoading && !teamMembers.length)
     return (
@@ -53,7 +54,7 @@ const TeamPage = () => {
   return (
     <div className="flex flex-col min-h-full">
       <div className="mb-6">
-        <TeamToolbar search={search} setSearch={setSearch} />
+        <TeamToolbar search={searchInput} setSearch={setSearchInput} />
       </div>
 
       <section className="mb-6">
@@ -69,12 +70,12 @@ const TeamPage = () => {
         </div>
       )}
 
-      {teamMembers.length > 0 && (
+      {teamMembers.length > 0 && totalPages > 1 && (
         <div className="flex justify-end mt-auto">
           <Pagination
             currentPage={currentPage}
             totalPages={totalPages}
-            setPage={setPage}
+            setPage={actions.setPage}
           />
         </div>
       )}

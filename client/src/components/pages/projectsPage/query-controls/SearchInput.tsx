@@ -1,22 +1,30 @@
 import { Search } from "lucide-react";
-import { useAppStore } from "@/store";
+import { useEffect, useState } from "react";
+import { useDebounce } from "@/hooks/useDebounce";
+import { useProjectQueryState } from "@/hooks/useProjectQueryState";
 
 const SearchInput = () => {
-  const searchQuery = useAppStore((state) => state.searchQuery);
-  const setSearchQuery = useAppStore((state) => state.setSearchQuery);
+  const { search, actions } = useProjectQueryState();
+
+  const [searchInput, setSearchInput] = useState(search);
+  const debounceInput = useDebounce(searchInput, 300);
+
+  useEffect(() => {
+    actions.setSearch(debounceInput);
+  }, [debounceInput]);
 
   return (
     <div className="relative">
       <input
         type="text"
-        className="w-full h-8 border rounded-md pl-8 pr-4 focus:none"
+        className="search-input"
         placeholder="Suche..."
-        value={searchQuery}
-        onChange={(e) => setSearchQuery(e.target.value)}
+        value={searchInput}
+        onChange={(e) => setSearchInput(e.target.value)}
       />
       <Search
         size={15}
-        className="absolute top-2 bottom-2 left-2 text-foreground/70 focus:text-black"
+        className="absolute left-2 top-1/2 -translate-y-1/2 text-foreground/70 focus:text-black"
       />
     </div>
   );

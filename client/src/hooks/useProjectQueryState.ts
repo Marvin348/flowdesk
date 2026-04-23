@@ -7,6 +7,7 @@ export const useProjectQueryState = () => {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const page = Number(searchParams.get("page")) || 1;
+  const search = searchParams.get("search") || "";
   const priorityParams = searchParams.get("priority");
   const statusParams = searchParams.get("status");
 
@@ -65,14 +66,17 @@ export const useProjectQueryState = () => {
   };
 
   const setPage = (newPage: number) => setQueryParam("page", String(newPage));
+  const setSearch = (value: string) => setQueryParam("search", value);
 
   const resetQueryParams = () => setSearchParams({ page: "1" });
 
   return {
     page,
+    search,
     filter,
     actions: {
       setPage,
+      setSearch,
       resetQueryParams,
       toggleFilter,
     },

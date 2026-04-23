@@ -17,7 +17,7 @@ const TeamToolbar = ({ search, setSearch }: TeamToolbarProps) => {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             type="text"
-            className="w-full border rounded-md h-9 pl-8 pr-4"
+            className="search-input"
             placeholder="Suche Mitarbeiter"
           />
           <Search className="absolute left-2 top-1/2 transform  -translate-y-1/2 size-4 text-muted-foreground" />
