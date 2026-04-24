@@ -1,7 +1,7 @@
 import { Search } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useDebounce } from "@/hooks/useDebounce";
-import { useProjectQueryState } from "@/hooks/useProjectQueryState";
+import { useProjectQueryState } from "@/hooks/projects/useProjectQueryState";
 
 const SearchInput = () => {
   const { search, actions } = useProjectQueryState();
@@ -22,10 +22,7 @@ const SearchInput = () => {
         value={searchInput}
         onChange={(e) => setSearchInput(e.target.value)}
       />
-      <Search
-        size={15}
-        className="absolute left-2 top-1/2 -translate-y-1/2 text-foreground/70 focus:text-black"
-      />
+      <Search className="absolute left-2 top-1/2 -translate-y-1/2 size-4 text-foreground/70 focus:text-black" />
     </div>
   );
 };

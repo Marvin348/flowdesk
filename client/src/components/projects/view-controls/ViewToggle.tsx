@@ -1,23 +1,22 @@
-import type { View } from "@/pages/ProjectsPage";
 import { List, Grid3x3 } from "lucide-react";
+import { useProjectQueryState } from "@/hooks/projects/useProjectQueryState";
 
-type ViewToggleProps = {
-  value: View;
-  onChange: (next: View) => void;
-};
+export type CardView = "card" | "list";
 
-const ViewToggle = ({ value, onChange }: ViewToggleProps) => {
+const ViewToggle = () => {
+  const { cardView, actions } = useProjectQueryState();
+
   return (
     <div className="flex border h-8 rounded-md">
       <button
-        onClick={() => onChange("card")}
+        onClick={() => actions.setCardView("card")}
         className="flex items-center gap-2 px-3
           border border-transparent rounded-l-md -m-px
           data-[state=active]:border-accent"
-        data-state={value === "card" ? "active" : "inactive"}
+        data-state={cardView === "card" ? "active" : "inactive"}
       >
         <Grid3x3
-          stroke={value === "card" ? "#FF8421" : "black"}
+          stroke={cardView === "card" ? "#FF8421" : "black"}
           className="size-4"
         />
         Card
@@ -26,11 +25,11 @@ const ViewToggle = ({ value, onChange }: ViewToggleProps) => {
       <button
         className="flex items-center rounded-r-md gap-2 px-3 border border-transparent -m-px
           data-[state=active]:border-accent"
-        onClick={() => onChange("list")}
-        data-state={value === "list" ? "active" : "inactive"}
+        onClick={() => actions.setCardView("list")}
+        data-state={cardView === "list" ? "active" : "inactive"}
       >
         <List
-          stroke={value === "list" ? "#FF8421" : "black"}
+          stroke={cardView === "list" ? "#FF8421" : "black"}
           className="size-4"
         />
         Liste

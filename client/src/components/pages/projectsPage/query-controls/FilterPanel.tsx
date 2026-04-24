@@ -13,7 +13,6 @@ type FilterPanelProps = {
 const FilterPanel = ({ onOpen, projectSummary }: FilterPanelProps) => {
   const filter = useAppStore((state) => state.filter);
   const setFilter = useAppStore((state) => state.setFilter);
-  const hasActiveFilter = useAppStore((state) => state.hasActiveFilter());
 
   // refactor later
   const enrichedView = FILTER_VIEW_OPTIONS.map((view) => {
@@ -61,9 +60,6 @@ const FilterPanel = ({ onOpen, projectSummary }: FilterPanelProps) => {
           onClick={onOpen}
         >
           <Filter /> Filter
-          {hasActiveFilter && (
-            <span className="absolute left-1.5 bottom-1.5 size-2 rounded-full bg-accent"></span>
-          )}
         </Button>
       </div>
     </div>

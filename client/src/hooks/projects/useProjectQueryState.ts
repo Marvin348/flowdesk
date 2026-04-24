@@ -1,36 +1,30 @@
+import type { CardView } from "@/components/projects/view-controls/ViewToggle";
 import type { ContentFilter } from "@shared/types/filter/contentFilter";
 import type { Priority } from "@shared/types/priority";
 import type { StatusBase } from "@shared/types/StatusBase";
 import { useSearchParams } from "react-router";
+import {
+  parseCardViewParam,
+  parsePriorityParam,
+  parseStatusParam,
+  parseHasAttachmentsParam,
+} from "@/hooks/projects/projectQueryParsers";
 
 export const useProjectQueryState = () => {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const page = Number(searchParams.get("page")) || 1;
   const search = searchParams.get("search") || "";
+
+  const cardViewParams = searchParams.get("cardView");
   const priorityParams = searchParams.get("priority");
   const statusParams = searchParams.get("status");
+  const hasAttachmentsParams = searchParams.get("hasAttachments");
 
-  const priority: Priority | undefined =
-    priorityParams === "low" ||
-    priorityParams === "medium" ||
-    priorityParams === "high"
-      ? priorityParams
-      : undefined;
-
-  const status: StatusBase | undefined =
-    statusParams === "pending" ||
-    statusParams === "in_progress" ||
-    statusParams === "done"
-      ? statusParams
-      : undefined;
-
-  const hasAttachments =
-    searchParams.get("hasAttachments") === "true"
-      ? true
-      : searchParams.get("hasAttachments") === "false"
-        ? false
-        : undefined;
+  const cardView: CardView = parseCardViewParam(cardViewParams);
+  const priority: Priority | undefined = parsePriorityParam(priorityParams);
+  const status: StatusBase | undefined = parseStatusParam(statusParams);
+  const hasAttachments = parseHasAttachmentsParam(hasAttachmentsParams);
 
   const setQueryParam = (key: string, value?: string) => {
     setSearchParams((prev) => {
@@ -68,16 +62,36 @@ export const useProjectQueryState = () => {
   const setPage = (newPage: number) => setQueryParam("page", String(newPage));
   const setSearch = (value: string) => setQueryParam("search", value);
 
-  const resetQueryParams = () => setSearchParams({ page: "1" });
+  const setCardView = (value: CardView) => {
+    if (value === "card") {
+      setQueryParam("cardView", undefined);
+    } else {
+      setQueryParam("cardView", value);
+    }
+  };
+
+  const resetFilters = () =>
+    setSearchParams((prev) => {
+      const params = new URLSearchParams(prev);
+
+      params.delete("priority");
+      params.delete("status");
+      params.delete("hasAttachments");
+      params.set("page", "1");
+
+      return params;
+    });
 
   return {
     page,
     search,
+    cardView,
     filter,
     actions: {
       setPage,
       setSearch,
-      resetQueryParams,
+      setCardView,
+      resetFilters,
       toggleFilter,
     },
   };

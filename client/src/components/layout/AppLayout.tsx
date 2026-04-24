@@ -2,6 +2,7 @@ import { Outlet } from "react-router";
 import Sidebar from "@/components/layout/Sidebar";
 import Header from "@/components/layout/Header";
 import { useState } from "react";
+
 const AppLayout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
@@ -14,7 +15,10 @@ const AppLayout = () => {
       <div className="flex min-h-screen">
         <aside>
           <div className="sticky top-0 h-screen overflow-y-auto z-100">
-          <Sidebar onOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+            <Sidebar
+              onOpen={sidebarOpen}
+              onClose={() => setSidebarOpen(false)}
+            />
           </div>
         </aside>
 

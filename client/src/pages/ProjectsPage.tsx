@@ -10,17 +10,13 @@ import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import { useProjectSummaries } from "@/queries/projects/useProjectSummaries";
 import Pagination from "@/components/pagination/Pagination";
-import { useProjectQueryState } from "@/hooks/useProjectQueryState";
-
-export type View = "card" | "list";
-const defaultView: View = "card";
+import { useProjectQueryState } from "@/hooks/projects/useProjectQueryState";
 
 const ProjectsPage = () => {
   const [filterDrawerOpen, setFilterDrawerOpen] = useState(false);
-  const [cardView, setCardView] = useState<View>(defaultView);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const { page, search, filter, actions } = useProjectQueryState();
+  const { page, search, cardView, filter, actions } = useProjectQueryState();
 
   const summariesInput = {
     search,
@@ -58,8 +54,8 @@ const ProjectsPage = () => {
         <h2 className="text-2xl font-semibold">Projekte</h2>
 
         <div className="flex items-center gap-4">
-          <div>
-            <ViewToggle value={cardView} onChange={setCardView} />
+          <div className="hidden sm:inline-block">
+            <ViewToggle />
           </div>
           <Button
             className="bg-accent hover:bg-accent/95"
@@ -94,7 +90,7 @@ const ProjectsPage = () => {
       </div>
 
       <section
-        className={`grid  gap-6 mb-6 ${cardView === defaultView ? "grid-cols-1 sm:grid-cols-2 xl:grid-cols-3" : "grid-cols-1"}`}
+        className={`grid  gap-6 mb-6 ${cardView === "card" ? "grid-cols-1 sm:grid-cols-2 xl:grid-cols-3" : "grid-cols-1"}`}
       >
         <ProjectList projects={projectsListVM} />
       </section>

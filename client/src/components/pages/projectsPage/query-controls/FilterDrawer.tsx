@@ -5,9 +5,7 @@ import { STATUS_OPTIONS } from "@/constants/status-options";
 import { useRef } from "react";
 import { useScrollLock } from "@/hooks/useScrollLock";
 import { useOnClickOutside } from "@/hooks/useOnClickOutside";
-import type { Priority } from "@shared/types/priority";
-import { useProjectQueryState } from "@/hooks/useProjectQueryState";
-import type { StatusBase } from "@shared/types/StatusBase";
+import { useProjectQueryState } from "@/hooks/projects/useProjectQueryState";
 
 type FilterDrawerProps = {
   onClose: () => void;
@@ -17,7 +15,6 @@ const FilterDrawer = ({ onClose, isOpen }: FilterDrawerProps) => {
   useScrollLock(isOpen);
 
   const { filter, actions } = useProjectQueryState();
-  const resetQueryParams = actions.resetQueryParams;
 
   const filterRef = useRef<HTMLDivElement>(null);
   useOnClickOutside(filterRef, () => onClose());
@@ -32,11 +29,9 @@ const FilterDrawer = ({ onClose, isOpen }: FilterDrawerProps) => {
   // };
 
   const onReset = () => {
-    resetQueryParams();
+    actions.resetFilters();
     onClose();
   };
-
-  console.log("FILTER QUERY", filter);
 
   return (
     <div

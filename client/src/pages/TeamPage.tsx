@@ -3,10 +3,10 @@ import TeamToolbar from "@/components/pages/teamPage/toolbar/TeamToolbar";
 import { Spinner } from "@/components/ui/spinner";
 import Pagination from "@/components/pagination/Pagination";
 import AssignProjectModal from "@/components/pages/teamPage/AssignProjectModal";
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import { useTeamMembers } from "@/queries/users/useTeamMembers";
-import { useDebounce } from "@/hooks/useDebounce";
 import { useTeamQueryState } from "@/hooks/useTeamQueryState";
+import { useDebounce } from "@/hooks/useDebounce";
 
 const TeamPage = () => {
   const [selectedUser, setSelectedUser] = useState<{
@@ -23,9 +23,6 @@ const TeamPage = () => {
     actions.setSearch(debounceInput);
   }, [debounceInput]);
 
-  const onSelectUser = (id: string, name: string) =>
-    setSelectedUser({ id, name });
-
   const teamMembersInput = {
     search,
     page,
@@ -37,6 +34,9 @@ const TeamPage = () => {
   const teamMembers = data?.items ?? [];
   const currentPage = page;
   const totalPages = data?.totalPages ?? 1;
+
+  const onSelectUser = (id: string, name: string) =>
+    setSelectedUser({ id, name });
 
   if (isLoading && !teamMembers.length)
     return (
@@ -54,7 +54,7 @@ const TeamPage = () => {
   return (
     <div className="flex flex-col min-h-full">
       <div className="mb-6">
-        <TeamToolbar search={searchInput} setSearch={setSearchInput} />
+        <TeamToolbar search={searchInput} onChange={setSearchInput} />
       </div>
 
       <section className="mb-6">

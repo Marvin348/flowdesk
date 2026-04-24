@@ -21,7 +21,7 @@ body {
     @apply flex items-center justify-center h-full;
   }
   .search-input {
-    @apply w-full h-9 border rounded-md pl-8 pr-4;
+    @apply w-full h-9 border rounded-md px-8;
   }
 }
 
