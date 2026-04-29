@@ -7,13 +7,14 @@ export type ProjectsSummary = {
     favorite: number;
     archived: number;
   };
-  byStatus: {
-    pending: number;
-    in_progress: number;
-    done: number;
-  };
+  // byStatus: {
+  //   pending: number;
+  //   in_progress: number;
+  //   done: number;
+  // };
 };
 
+// refactor hook
 export const useProjectsSummary = (projectList: ProjectListVM[]) => {
   const total = projectList.length;
 
@@ -23,7 +24,7 @@ export const useProjectsSummary = (projectList: ProjectListVM[]) => {
         acc.byBadges[project.badge] += 1;
       }
 
-      acc.byStatus[project.projectStatus] += 1;
+      // acc.byStatus[project.projectStatus] += 1;
 
       return acc;
     },
@@ -33,11 +34,12 @@ export const useProjectsSummary = (projectList: ProjectListVM[]) => {
         pinned: 0,
         favorite: 0,
         archived: 0,
-      },
-      byStatus: {
-        pending: 0,
-        in_progress: 0,
-        done: 0,
+        // },
+        // byStatus: {
+        //   pending: 0,
+        //   in_progress: 0,
+        //   done: 0,
+        // },
       },
     },
   );

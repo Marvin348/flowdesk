@@ -7,7 +7,7 @@ import AppLayout from "@/components/layout/AppLayout";
 import DashboardPage from "@/pages/DashboardPage";
 import ProjectsPage from "@/pages/ProjectsPage";
 import TeamPage from "@/pages/TeamPage";
-import ProjectPage from "@/pages/ProjectPage";
+import ProjectDetailsPage from "@/pages/ProjectDetailsPage";
 import AccountPage from "./pages/AccountPage";
 
 const queryClient = new QueryClient();
@@ -26,15 +26,13 @@ const rounter = createBrowserRouter([
       },
       {
         path: "/project/:id",
-        element: <ProjectPage />,
+        element: <ProjectDetailsPage />,
       },
       {
         path: "/team",
         element: <TeamPage />,
       },
-      { path: "/account", 
-        element: <AccountPage /> 
-      },
+      { path: "/account", element: <AccountPage /> },
     ],
   },
 ]);

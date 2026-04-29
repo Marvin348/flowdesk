@@ -1,19 +1,29 @@
 import type { UserPerformance } from "@/utils/performance/getUserPerformance";
 import UserPerformanceItem from "./TeamPerformanceItem";
+import type { SelectedUser } from "@/pages/TeamPage";
 
 type TeamPerformanceListProps = {
   teamPerformance: UserPerformance[];
-  onSelectUser: (id: string, name: string) => void;
+  onShowDetails: (user: SelectedUser) => void;
+  isDetailsOpen: boolean;
 };
 
 const TeamPerformanceList = ({
   teamPerformance,
-  onSelectUser,
+  onShowDetails,
+  isDetailsOpen,
 }: TeamPerformanceListProps) => {
+  // grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
+    <div
+      className={`grid grid-cols-1 gap-6 ${isDetailsOpen ? "xl:grid-cols-2 2xl:grid-cols-3" : "sm:grid-cols-2 xl:grid-cols-3"}`}
+    >
       {teamPerformance.map((u) => (
-        <UserPerformanceItem key={u.id} item={u} onSelectUser={onSelectUser} />
+        <UserPerformanceItem
+          key={u.id}
+          item={u}
+          onShowDetails={onShowDetails}
+        />
       ))}
     </div>
   );

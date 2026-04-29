@@ -24,7 +24,7 @@ export type ActiveTab =
   | "workload"
   | "comments";
 
-const ProjectPage = () => {
+const ProjectDetailsPage = () => {
   const [searchParams, setSeatchParams] = useSearchParams();
   const { id } = useParams();
 
@@ -138,4 +138,4 @@ const ProjectPage = () => {
     </>
   );
 };
-export default ProjectPage;
+export default ProjectDetailsPage;

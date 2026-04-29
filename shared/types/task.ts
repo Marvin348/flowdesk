@@ -12,4 +12,5 @@ export type Task = {
   description?: string;
   tags?: string[];
   reminderAt?: string;
+  completedAt?: string;
 };

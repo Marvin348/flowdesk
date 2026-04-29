@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import AssignProjectItem from "./AssignProjectItem";
 import { useAssignUserToProjects } from "@/mutations/project/useAssignUserToProjects";
 import { Spinner } from "@/components/ui/spinner";
+import { useScrollLock } from "@/hooks/useScrollLock";
 
 type AssignProjectModal = {
   onClose: () => void;
@@ -15,6 +16,8 @@ type AssignProjectModal = {
 const AssignProjectModal = ({ onClose, selectedUser }: AssignProjectModal) => {
   const [input, setInput] = useState("");
   const [selectedProjectIds, setSelectedProjectIds] = useState<string[]>([]);
+
+  useScrollLock(true)
 
   const debounceInput = useDebounce(input, 300);
 

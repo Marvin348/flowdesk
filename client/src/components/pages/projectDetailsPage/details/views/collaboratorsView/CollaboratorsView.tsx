@@ -121,7 +121,7 @@ const CollaboratorsView = ({
                   />
 
                   <div className="min-w-0 flex items-center gap-4">
-                    <Avatar avatarKey={coll.avatarKey} />
+                    <Avatar avatarKey={coll.avatarKey} size="sm"/>
                     <div>
                       <p className="truncate">{coll.name}</p>
                       <p className="text-surface/80 text-sm ">

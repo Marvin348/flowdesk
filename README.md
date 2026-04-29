@@ -4,36 +4,41 @@ FlowDesk is an admin dashboard for managing projects, tasks, and team collaborat
 
 ⚠️ This project is still a work in progress. Many parts are not fully refactored yet, and the overall direction and features may still evolve.
 
-## Current Setup
+## 🚀 Current Setup
 
-- Frontend (React + Vite) connected to a custom Node.js backend
-- Backend is still evolving; some endpoints and data flows may be incomplete or inconsistent
-- Focus is currently on UI architecture, state management, and data flow
+- Fullstack setup with **React (Vite)** frontend and a **custom Node.js / Express** backend
+- Backend handles **search, filtering, pagination, and data shaping**
+- Data is fetched via structured endpoints and optimized with React Query
 - Features are being developed iteratively, with ongoing refinements
 
-## Notes
+## 🧠 Architecture Notes
 
-- Some features may not work as expected yet
-- Ongoing refactoring of API structure and data handling
+- Filtering, search, and pagination are handled **server-side via query parameters**
+- Backend currently uses a **file-based mock database** to simulate real API behavior and data transformations
 
-#### filter badge
+##### Frontend state is **synchronized with the URL**, enabling:
 
-- Favorites, pinned items, etc. are currently handled on the frontend only (via store/localStorage), since they are user-specific and there is no authentication system in place yet.
+- persistent state across refresh
+- shareable links
+- consistent data flow
 
-- Because of this, these values are not available on the backend and therefore cannot be used for filtering.
+## ⚠️ Current Limitations
 
-- This will be addressed once the authentication system is implemented.
-  At the moment, filtering by favorites, pinned items, etc. **is not possible.**
+- No authentication system yet → user-specific data (e.g. favorites, pinned items) is handled on the frontend only
+- These values are not available on the backend and therefore cannot be used for server-side filtering
 
-## Planned Improvements
+## ⏳ Planned Improvements
 
-- Stabilize and finalize backend API design
-- Add persistent database (e.g. MongoDB or PostgreSQL)
-- Implement custom REST API routes
-- Optimize data fetching with dedicated endpoints (e.g. dashboard, summaries, team)
-- Improve overall architecture and separation of concerns
-- react query chache
-- organize shared folder with types
+- Expand REST API with dedicated endpoints (dashboard, team details, etc.)
+- Replace mock DB with a persistent database (MongoDB / PostgreSQL)
+- Add authentication & user-based data handling
+- Improve caching strategy with React Query
+- Refactor shared types and API contracts
+- Add an Activity / History page for project changes, task updates, and user actions
+- Refactor overall structure
+- Create Attachment Tab
+- Implement Framer Motion for animations
+- Finalize layout/theme
 
 ## Installation
 
@@ -74,11 +79,28 @@ npm run dev
 - **TypeScript**
 - **React**
 - **Axios**
-- **Zustand** – global state management
+- **Zustand**
 - **react-hook-form + zod**
-- **TanStack Query** – data fetching & caching
-- **Tailwind CSS** – utility-first styling
+- **TanStack Query**
+- **Tailwind CSS**
 - **Recharts**
 - **React Router**
-- **shadcn/ui** – accessible UI components
-- **Lucide Icons**
+- **shadcn/ui**
+
+## Screenshots
+
+<p align="center">
+  <img src="./screenshots/flowdesk-dashboard.png" width="50%">
+  <img src="./screenshots/flowdesk-details.png" width="50%">
+</p>
+
+<p align="center">
+  <img src="./screenshots/flowdesk-projects.png" width="50%">
+  <img src="./screenshots/flowdesk-collaborator.png" width="50%">
+</p>
+
+<p align="center">
+  <img src="./screenshots/flowdesk-add-task.png" width="50%">
+  <img src="./screenshots/flowdesk-team.png" width="50%">
+</p>
+

@@ -66,7 +66,7 @@ const WorkloadTable = ({ stats, variant }: WorkloadTableProps) => {
             <div key={sta.user.id}>
               <div className={mobileRowClass}>
                 <div className="flex items-center gap-3">
-                  <Avatar avatarKey={sta.user.avatarKey} />
+                  <Avatar avatarKey={sta.user.avatarKey} size="sm" />
                   <div className="min-w-0">
                     <p className="truncate">{sta.user.name}</p>
                     {isFull && sta.user.jobTitle && (
@@ -104,7 +104,7 @@ const WorkloadTable = ({ stats, variant }: WorkloadTableProps) => {
 
               <div className={desktopRowClass}>
                 <div className="flex items-center gap-3 min-w-0">
-                  <Avatar avatarKey={sta.user.avatarKey} />
+                  <Avatar avatarKey={sta.user.avatarKey} size="sm"/>
                   <div className="min-w-0">
                     <p className="truncate">{sta.user.name}</p>
                     {isFull && sta.user.jobTitle && (

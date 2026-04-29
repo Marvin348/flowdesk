@@ -15,7 +15,7 @@ const AssigneeAvatars = ({ users }: AvatarProps) => {
     <div className="flex items-center">
       {visibleUsers?.map((user, index) => (
         <div key={user.id} style={{ marginLeft: index === 0 ? 0 : -12 }}>
-          <Avatar avatarKey={user.avatarKey} />
+          <Avatar avatarKey={user.avatarKey} size="sm"/>
         </div>
       ))}
 

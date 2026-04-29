@@ -23,6 +23,7 @@ const PriorityPieChart = ({ data }: { data: TaskPriorityItem[] }) => {
           dataKey="count"
           cx="50%"
           cy="50%"
+          isAnimationActive={false}
         >
           {data.map((entry) => (
             <Cell key={entry.id} fill={entry.color || "#8884d8"} />

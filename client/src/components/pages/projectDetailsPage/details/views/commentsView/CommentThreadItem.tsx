@@ -14,7 +14,7 @@ const CommentThreadItem = ({ comment }: { comment: CommentThreadNode }) => {
   return (
     <article className="flex gap-2 pb-6">
       <div className="shrink-0">
-        <Avatar avatarKey={user?.avatarKey} />
+        <Avatar avatarKey={user?.avatarKey} size="sm"/>
       </div>
 
       <div className="flex-1">

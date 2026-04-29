@@ -2,17 +2,16 @@ import TeamPerformanceList from "@/components/pages/teamPage/TeamPerformanceList
 import TeamToolbar from "@/components/pages/teamPage/toolbar/TeamToolbar";
 import { Spinner } from "@/components/ui/spinner";
 import Pagination from "@/components/pagination/Pagination";
-import AssignProjectModal from "@/components/pages/teamPage/AssignProjectModal";
 import { useState, useEffect } from "react";
 import { useTeamMembers } from "@/queries/users/useTeamMembers";
 import { useTeamQueryState } from "@/hooks/useTeamQueryState";
 import { useDebounce } from "@/hooks/useDebounce";
+import UserDetails from "@/components/pages/teamPage/UserDetails";
+
+export type SelectedUser = { id: string; name: string };
 
 const TeamPage = () => {
-  const [selectedUser, setSelectedUser] = useState<{
-    id: string;
-    name: string;
-  } | null>(null);
+  const [selectedUser, setSelectedUser] = useState<SelectedUser | null>(null);
 
   const { page, search, actions } = useTeamQueryState();
 
@@ -20,8 +19,14 @@ const TeamPage = () => {
   const debounceInput = useDebounce(searchInput, 300);
 
   useEffect(() => {
-    actions.setSearch(debounceInput);
-  }, [debounceInput]);
+    if (debounceInput !== search) {
+      actions.setSearch(debounceInput);
+    }
+  }, [debounceInput, search]);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [page]);
 
   const teamMembersInput = {
     search,
@@ -34,9 +39,6 @@ const TeamPage = () => {
   const teamMembers = data?.items ?? [];
   const currentPage = page;
   const totalPages = data?.totalPages ?? 1;
-
-  const onSelectUser = (id: string, name: string) =>
-    setSelectedUser({ id, name });
 
   if (isLoading && !teamMembers.length)
     return (
@@ -57,18 +59,30 @@ const TeamPage = () => {
         <TeamToolbar search={searchInput} onChange={setSearchInput} />
       </div>
 
-      <section className="mb-6">
-        <TeamPerformanceList
-          teamPerformance={teamMembers}
-          onSelectUser={onSelectUser}
-        />
-      </section>
+      <div className="flex gap-6">
+        <section className="flex-1 min-w-0 mb-6">
+          <TeamPerformanceList
+            teamPerformance={teamMembers}
+            onShowDetails={setSelectedUser}
+            isDetailsOpen={Boolean(selectedUser)}
+          />
+        </section>
 
-      {!teamMembers.length && (
-        <div className="flex-center text-muted-foreground">
-          Keine Daten gefunden
-        </div>
-      )}
+        {!teamMembers.length && (
+          <div className="flex-center w-full text-muted-foreground">
+            Keine Daten gefunden
+          </div>
+        )}
+
+        {selectedUser && (
+          <aside className="w-[360px] mb-6">
+            <UserDetails
+              selectedUser={selectedUser}
+              onClose={() => setSelectedUser(null)}
+            />
+          </aside>
+        )}
+      </div>
 
       {teamMembers.length > 0 && totalPages > 1 && (
         <div className="flex justify-end mt-auto">
@@ -78,13 +92,6 @@ const TeamPage = () => {
             setPage={actions.setPage}
           />
         </div>
-      )}
-
-      {selectedUser && (
-        <AssignProjectModal
-          onClose={() => setSelectedUser(null)}
-          selectedUser={selectedUser}
-        />
       )}
     </div>
   );

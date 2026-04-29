@@ -7,7 +7,7 @@ import CollaboratorsCard from "./collaborators/CollaboratorsCard";
 import OpenTasksCard from "./tasks/OpenTasksCard";
 import CommentsCard from "./comments/CommentsCard";
 import WorkloadCard from "./workload/WorkloadCard";
-import type { ActiveTab } from "@/pages/ProjectPage";
+import type { ActiveTab } from "@/pages/ProjectDetailsPage";
 
 type OverviewProps = {
   project: ProjectsWithMeta;
