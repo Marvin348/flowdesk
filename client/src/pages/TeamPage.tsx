@@ -1,19 +1,21 @@
 import TeamPerformanceList from "@/components/pages/teamPage/TeamPerformanceList";
-import TeamToolbar from "@/components/pages/teamPage/toolbar/TeamToolbar";
 import { Spinner } from "@/components/ui/spinner";
 import Pagination from "@/components/pagination/Pagination";
 import { useState, useEffect } from "react";
 import { useTeamMembers } from "@/queries/users/useTeamMembers";
-import { useTeamQueryState } from "@/hooks/useTeamQueryState";
+import { useTeamQueryState } from "@/hooks/team/useTeamQueryState";
 import { useDebounce } from "@/hooks/useDebounce";
 import UserDetails from "@/components/pages/teamPage/UserDetails";
+import TeamPageHeader from "@/components/pages/teamPage/header/TeamPageHeader";
+import TeamFilterDrawer from "@/components/pages/teamPage/TeamFilterDrawer";
 
 export type SelectedUser = { id: string; name: string };
 
 const TeamPage = () => {
   const [selectedUser, setSelectedUser] = useState<SelectedUser | null>(null);
+  const [filterDrawerOpen, setFilterDrawerOpen] = useState(false);
 
-  const { page, search, actions } = useTeamQueryState();
+  const { page, search, teamFilter, actions } = useTeamQueryState();
 
   const [searchInput, setSearchInput] = useState(search);
   const debounceInput = useDebounce(searchInput, 300);
@@ -32,6 +34,7 @@ const TeamPage = () => {
     search,
     page,
     limit: 6,
+    filter: teamFilter,
   };
 
   const { data, isLoading, error } = useTeamMembers(teamMembersInput);
@@ -55,11 +58,26 @@ const TeamPage = () => {
 
   return (
     <div className="flex flex-col min-h-full">
-      <div className="mb-6">
-        <TeamToolbar search={searchInput} onChange={setSearchInput} />
+
+      <div className="relative">
+          <TeamPageHeader
+            search={searchInput}
+            setSearch={setSearchInput}
+            onDrawerOpen={() => setFilterDrawerOpen(true)}
+          />
+
+        {filterDrawerOpen && (
+          <TeamFilterDrawer onClose={() => setFilterDrawerOpen(false)} />
+        )}
       </div>
 
-      <div className="flex gap-6">
+      {!teamMembers.length && (
+        <div className="mt-6 flex-center w-full text-muted-foreground">
+          Keine Daten gefunden
+        </div>
+      )}
+
+      <div className="mt-6 flex gap-6">
         <section className="flex-1 min-w-0 mb-6">
           <TeamPerformanceList
             teamPerformance={teamMembers}
@@ -67,12 +85,6 @@ const TeamPage = () => {
             isDetailsOpen={Boolean(selectedUser)}
           />
         </section>
-
-        {!teamMembers.length && (
-          <div className="flex-center w-full text-muted-foreground">
-            Keine Daten gefunden
-          </div>
-        )}
 
         {selectedUser && (
           <aside className="w-[360px] mb-6">

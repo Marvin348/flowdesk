@@ -4,7 +4,7 @@ import type {
 } from "@/utils/performance/getPerformanceHighlights";
 import Avatar from "@/components/users/avatar/Avatar";
 import { PROGRESS_STATUS } from "@/constants/progress-status";
-import { getStatusFromProgress } from "@/utils/workload/ui/getStatusFromProgress";
+import { getStatusFromProgress } from "@shared/utils/getStatusFromProgress";
 
 const PerformanceHighlightsCard = ({
   highlight,

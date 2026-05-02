@@ -15,9 +15,24 @@ export const fetchUsers = async (): Promise<User[]> => {
 export const fetchTeamMembers = async (
   input: TeamMembersInput,
 ): Promise<TeamMembersResponseDto> => {
-  const res = await apiClient.get(
-    `/users/team?search=${input.search}&page=${input.page}&limit=${input.limit}`,
-  );
+  const params = new URLSearchParams({
+    search: input.search,
+    page: String(input.page),
+    limit: String(input.limit),
+  });
+
+  if (input.filter?.role && input.filter.role !== "all") {
+    params.set("role", input.filter.role);
+  }
+  if (input.filter?.activity && input.filter.activity !== "all") {
+    params.set("activity", input.filter.activity);
+  }
+
+  if (input.filter?.sort) params.set("sort", input.filter.sort);
+  if (input.filter?.progress) params.set("progress", input.filter.progress);
+
+  const res = await apiClient.get(`/users/team?${params.toString()}`);
+
   return res.data.data;
 };
 

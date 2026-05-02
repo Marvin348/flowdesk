@@ -1,4 +1,4 @@
-import { House, Users, Folders, CircleUserRound, Settings } from "lucide-react";
+import { House, Users, Folders, CircleUserRound } from "lucide-react";
 
 export const SIDEBAR_MAIN_LINKS = [
   { to: "/", label: "Übersicht", icon: House },

@@ -19,15 +19,6 @@ const FilterDrawer = ({ onClose, isOpen }: FilterDrawerProps) => {
   const filterRef = useRef<HTMLDivElement>(null);
   useOnClickOutside(filterRef, () => onClose());
 
-  // const toggleFilter = <K extends keyof ContentFilter>(
-  //   key: K,
-  //   value: ContentFilter[K],
-  // ) => {
-  //   const isActive = filter[key] === value;
-
-  //   setFilter({ [key]: isActive ? undefined : value });
-  // };
-
   const onReset = () => {
     actions.resetFilters();
     onClose();
@@ -36,7 +27,7 @@ const FilterDrawer = ({ onClose, isOpen }: FilterDrawerProps) => {
   return (
     <div
       className={
-        "absolute top-5 right-0 w-100 border rounded-md bg-white shadow-xl z-100"
+        "absolute top-full right-0 mt-2 w-100 border rounded-md bg-white shadow-xl z-100"
       }
       ref={filterRef}
       onClick={(e) => e.stopPropagation()}

@@ -46,8 +46,6 @@ export const fetchProjectSummaries = async (
   return res.data.data;
 };
 
-// `/projects/summaries?search=${input.search}&priority=${input.priority}&status=${input.status}&hasAttachments=${input.hasAttachments}&page=${input.page}&limit=${input.limit}`,
-
 export const fetchProjectsOptions = async (
   userId: string,
   input: string,

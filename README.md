@@ -30,8 +30,8 @@ FlowDesk is an admin dashboard for managing projects, tasks, and team collaborat
 ## ⏳ Planned Improvements
 
 - Expand REST API with dedicated endpoints (dashboard, team details, etc.)
-- Replace mock DB with a persistent database (MongoDB / PostgreSQL)
-- Add authentication & user-based data handling
+- Replace mock DB with a persistent database (MongoDB)
+- Add authentication & user-based data handling (JWT)
 - Improve caching strategy with React Query
 - Refactor shared types and API contracts
 - Add an Activity / History page for project changes, task updates, and user actions

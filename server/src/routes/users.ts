@@ -5,6 +5,15 @@ import { pagination } from "@/utils/pagination.js";
 import type { Request, Response } from "express";
 import { getFilteredUsers } from "@/utils/user/getFilteredUsers.js";
 import { getUserDetails } from "@/utils/user/getUserDetails.js";
+import { UserRole } from "@shared/types/user.js";
+import type {
+  TeamActivity,
+  TeamProgress,
+  TeamSort,
+} from "@shared/types/teamFilter/teamFilter.js";
+import { parseTeamFilter } from "@/parsers/user-query-parsers.js";
+import { getFilteredTeamMembers } from "@/utils/user/getFilteredTeamMembers.js";
+import { sortTeamMembers } from "@/utils/user/sortTeamMembers.js";
 
 const router = express.Router();
 
@@ -13,10 +22,14 @@ router.get("/", (req, res) => {
   res.json({ data: db.users });
 });
 
-type TeamMembersQuery = {
+export type TeamMembersQuery = {
   search?: string;
   page?: string;
   limit?: string;
+  role?: UserRole;
+  sort?: TeamSort;
+  progress?: TeamProgress;
+  activity?: TeamActivity;
 };
 
 router.get("/team", (req: Request<{}, {}, {}, TeamMembersQuery>, res) => {
@@ -25,8 +38,25 @@ router.get("/team", (req: Request<{}, {}, {}, TeamMembersQuery>, res) => {
 
   const db = readDb();
 
-  const filteredUsers = getFilteredUsers(db.users, search);
-  const userPerformance = getUsersPerformance(filteredUsers, db.tasks);
+  const parsedTeamFilter = parseTeamFilter(req.query);
+
+  const filteredUsers = getFilteredUsers(
+    db.users,
+    search,
+    parsedTeamFilter.role,
+  );
+
+  const teamMembers = getUsersPerformance(filteredUsers, db.tasks);
+
+  const filteredTeamMembers = getFilteredTeamMembers(
+    teamMembers,
+    parsedTeamFilter,
+  );
+
+  const sortedTeamMembers = sortTeamMembers(
+    filteredTeamMembers,
+    parsedTeamFilter.sort,
+  );
 
   let page = Number(req.query.page);
   let limit = Number(req.query.limit);
@@ -34,7 +64,7 @@ router.get("/team", (req: Request<{}, {}, {}, TeamMembersQuery>, res) => {
   if (isNaN(page)) page = 1;
   if (isNaN(limit)) limit = 6;
 
-  const paginationItems = pagination(userPerformance, page, limit);
+  const paginationItems = pagination(sortedTeamMembers, page, limit);
 
   return res.status(200).json({
     data: paginationItems,

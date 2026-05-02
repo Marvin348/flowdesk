@@ -1,5 +1,5 @@
 import type { UserWorkload } from "@/utils/workload/getProjectUserWorkload";
-import { getStatusFromProgress } from "@/utils/workload/ui/getStatusFromProgress";
+import { getStatusFromProgress } from "@shared/utils/getStatusFromProgress";
 import { PROGRESS_STATUS } from "@/constants/progress-status";
 import Avatar from "@/components/users/avatar/Avatar";
 import { ChevronsUpDown } from "lucide-react";
