@@ -32,7 +32,6 @@ export const fetchTeamMembers = async (
   if (input.filter?.progress) params.set("progress", input.filter.progress);
 
   const res = await apiClient.get(`/users/team?${params.toString()}`);
-
   return res.data.data;
 };
 

@@ -68,7 +68,11 @@ const TaskListView = ({ tasks }: { tasks: TaskWithMeta[] }) => {
                   {sortedList.map((task) => (
                     <TaskRow key={task.id} task={task} />
                   ))}
-                  {sortedList.length === 0 && <div>Noch keine Daten</div>}
+                  {sortedList.length === 0 && (
+                    <div className="text-sm text-muted-foreground">
+                      Keine Daten vorhanden
+                    </div>
+                  )}
                 </div>
               )}
             </div>

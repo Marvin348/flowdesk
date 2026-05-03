@@ -27,7 +27,7 @@ const WorkloadTable = ({ stats, variant }: WorkloadTableProps) => {
   const sortedWorkloadStats = getSortedWorkloadStats(stats, sortedBy);
 
   if (!stats.length)
-    return <div className="text-center">Keine Daten vorhanden</div>;
+    return <div className="flex items-center justify-center h-full text-muted-foreground text-sm">Keine Daten vorhanden</div>;
 
   const isFull = variant === "full";
 

@@ -119,6 +119,30 @@
       "avatarKey": "m7",
       "role": "manager",
       "jobTitle": "Fullstack Developer"
+    },
+    {
+      "id": "u16",
+      "name": "Olivia Johnson",
+      "email": "olivia.johnson@example.com",
+      "avatarKey": "f2",
+      "role": "member",
+      "jobTitle": "Motion Designer"
+    },
+    {
+      "id": "u17",
+      "name": "Yuki Tanaka",
+      "email": "yuki.tanaka@example.com",
+      "avatarKey": "f4",
+      "role": "member",
+      "jobTitle": "Art Director"
+    },
+    {
+      "id": "u18",
+      "name": "Milena Petrova",
+      "email": "milena.petrova@example.com",
+      "avatarKey": "f6",
+      "role": "manager",
+      "jobTitle": "Designer"
     }
   ],
   "projects": [
@@ -130,7 +154,7 @@
       "projectStatus": "in_progress",
       "dueDate": "2026-03-15T17:00:00.000Z",
       "createdAt": "2026-01-05T08:15:00.000Z",
-      "updatedAt": "2026-02-10T15:40:00.000Z",
+      "updatedAt": "2026-05-03T11:22:10.039Z",
       "invitedUserIds": [
         "u1",
         "u2",
@@ -166,7 +190,7 @@
         "u4",
         "u6"
       ],
-      "updatedAt": "2026-04-16T14:53:33.124Z"
+      "updatedAt": "2026-05-03T11:29:09.080Z"
     },
     {
       "id": "p3",

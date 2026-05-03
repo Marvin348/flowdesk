@@ -50,7 +50,7 @@ const CommentThreadList = ({ comments, tasks }: CommentThreadListProps) => {
         <CommentThreadItem key={com.id} comment={com} />
       ))}
       {comments.length === 0 && (
-        <div className="h-full flex items-center justify-center">
+        <div className="h-full flex items-center justify-center text-muted-foreground">
           Keine Kommentare
         </div>
       )}

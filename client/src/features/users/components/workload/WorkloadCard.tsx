@@ -32,7 +32,7 @@ const WorkloadCard = ({
       />
 
       <OverviewCardBody>
-        <div className="p-4">
+        <div className="p-4 h-full">
           <WorkloadTable stats={stats} variant={variant} />
         </div>
       </OverviewCardBody>

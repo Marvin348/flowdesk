@@ -59,8 +59,6 @@ const ProjectDetailsPage = () => {
   const handleCreateTask = () => setIsAddTaskOpen(true);
   const navigateTab = (tab: ActiveTab) => setSeatchParams({ tab });
 
-  console.log("project", project);
-
   const TabViewResult = () => {
     switch (activeTab) {
       case "overview":

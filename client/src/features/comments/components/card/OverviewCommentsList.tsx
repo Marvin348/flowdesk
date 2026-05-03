@@ -7,12 +7,12 @@ const OverviewCommentsList = ({ comments }: { comments: Comment[] }) => {
   // useCommentsWithUsers hook called twice (here, CommentThreadList)
 
   return (
-    <div className="p-4">
+    <div className="p-4 h-full">
       {commentsWithUser.map((com) => (
         <OverviewCommentItem key={com.id} comment={com} />
       ))}
       {comments.length === 0 && (
-        <div className="h-full flex items-center justify-center">
+        <div className="h-full flex items-center justify-center text-sm text-muted-foreground">
           Keine Kommentare
         </div>
       )}

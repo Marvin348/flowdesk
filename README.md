@@ -37,6 +37,7 @@ FlowDesk is an admin dashboard for managing projects, tasks, and team collaborat
 - Add an Activity / History page for project changes, task updates, and user actions
 - Refactor overall structure
 - Create Attachment Tab
+- Delete Domain folder completely and only handle in backend 
 - Implement Framer Motion for animations
 - Finalize layout/theme
 
