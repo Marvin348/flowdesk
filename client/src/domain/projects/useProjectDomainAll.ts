@@ -1,8 +1,9 @@
-import { useUsers } from "@/queries/users/useUsers";
-import { useComments } from "@/queries/comments/useComments";
-import { useAttachments } from "@/queries/attachments/useAttachments";
-import { useTasks } from "@/queries/tasks/useTasks";
+import { useUsers } from "@/features/users/hooks/useUsers";
+import { useComments } from "@/features/comments/hooks/useComments";
+import { useAttachments } from "@/features/attachments/hooks/useAttachments";
+import { useTasks } from "@/features/tasks/hooks/useTasks";
 
+// refactor later
 export const useProjectDomainAll = () => {
   const {
     data: users = [],

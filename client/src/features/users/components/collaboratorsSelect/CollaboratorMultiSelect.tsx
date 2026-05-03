@@ -1,0 +1,119 @@
+import type { User } from "@shared/types/user";
+import Avatar from "@/shared/components/ui/avatar/Avatar";
+import { useMemo, useState } from "react";
+import SelectedUserChip from "@/features/users/components/collaboratorsSelect/SelectedUserChip";
+import { getArrayLookup } from "@/shared/utils/getArrayLookup";
+import { isDefined } from "@/shared/utils/isDefined";
+import { useOnClickOutside } from "@/shared/hooks/useOnClickOutside";
+import { useRef } from "react";
+
+type CollaboratorMultiSelectProps = {
+  users: User[];
+  value: string[];
+  onChange: (next: string[]) => void;
+  disabledUserIds?: string[];
+};
+
+const CollaboratorMultiSelect = ({
+  users,
+  value,
+  onChange,
+  disabledUserIds,
+}: CollaboratorMultiSelectProps) => {
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [input, setInput] = useState("");
+  const selectedIds = value;
+
+  const disabledIds = disabledUserIds ?? [];
+
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  useOnClickOutside(dropdownRef, () => setIsDropdownOpen(false));
+
+  const filteredUsers = users.filter(
+    (user) =>
+      !selectedIds.includes(user.id) &&
+      (!input || user.name.toLowerCase().includes(input.toLowerCase())),
+  );
+
+  const maxFilteredUsers = filteredUsers.slice(0, 5);
+
+  const getSelectUserById = (id: string) => {
+    if (selectedIds.includes(id)) return;
+    if (disabledIds.includes(id)) return;
+
+    onChange([...selectedIds, id]);
+    setIsDropdownOpen(false);
+    setInput("");
+  };
+
+  const onRemove = (userId: string) => {
+    if (!selectedIds.includes(userId)) return;
+
+    onChange(selectedIds.filter((id) => id !== userId));
+  };
+
+  const selectedUsers = useMemo(() => {
+    const userById = getArrayLookup(users);
+    return selectedIds.map((id) => userById.get(id)).filter(isDefined);
+  }, [users, selectedIds]);
+
+  return (
+    <div ref={dropdownRef}>
+      <div className="relative">
+        <input
+          value={input}
+          onFocus={() => setIsDropdownOpen(true)}
+          onChange={(e) => setInput(e.target.value)}
+          type="text"
+          placeholder="Suchen..."
+          className="w-full border rounded-md p-2"
+        />
+
+        {isDropdownOpen && (
+          <div className="absolute top-12 border bg-white p-1 w-full rounded-md shadow-2xl text-sm text-surface/90 z-30">
+            <>
+              {maxFilteredUsers.map((user) => {
+                const isDisabled = disabledUserIds?.includes(user.id);
+
+                return (
+                  <div
+                    key={user.id}
+                    className={`flex items-center gap-2 p-2 rounded-md ${
+                      isDisabled
+                        ? "cursor-not-allowed opacity-60"
+                        : "cursor-pointer hover:bg-surface/5"
+                    }`}
+                    onClick={() => getSelectUserById(user.id)}
+                  >
+                    <Avatar avatarKey={user.avatarKey} size="sm" />
+                    <p>{user.name}</p>
+                    {isDisabled && (
+                      <p className="text-xs error-text">Im Projekt</p>
+                    )}
+                  </div>
+                );
+              })}
+              {maxFilteredUsers.length === 0 && (
+                <p className="p-2">
+                  <span className="font-medium">"{input}"</span> Keinen
+                  Mitarbeiter gefunden
+                </p>
+              )}
+            </>
+          </div>
+        )}
+      </div>
+
+      <div className="mt-2 flex flex-wrap gap-3">
+        {selectedUsers.map((user) => (
+          <SelectedUserChip
+            key={user.id}
+            user={user}
+            onRemove={() => onRemove(user.id)}
+          />
+        ))}
+      </div>
+    </div>
+  );
+};
+export default CollaboratorMultiSelect;

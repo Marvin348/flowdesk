@@ -1,14 +1,14 @@
-import ProjectList from "@/components/pages/projectsPage/ProjectList";
-import FilterDrawer from "@/components/pages/projectsPage/query-controls/FilterDrawer";
-import CreateProjectModal from "@/components/pages/projectsPage/create/CreateProjectModal";
+import ProjectList from "@/features/projects/components/projectPage/ProjectList";
+import FilterDrawer from "@/features/projects/components/projectPage/FilterDrawer";
+import CreateProjectModal from "@/features/projects/components/create/CreateProjectModal";
 import { useState } from "react";
-import { useProjectsSummary } from "@/hooks/useProjectsSummary";
-import { useProjectsListVM } from "@/domain/projects/useProjectsList";
-import { Spinner } from "@/components/ui/spinner";
-import { useProjectSummaries } from "@/queries/projects/useProjectSummaries";
-import Pagination from "@/components/pagination/Pagination";
-import { useProjectQueryState } from "@/hooks/projects/useProjectQueryState";
-import ProjectPageHeader from "@/components/pages/projectsPage/header/ProjectPageHeader";
+import { useProjectsSummary } from "@/features/projects/utils/useProjectsSummary";
+import { useProjectsListVM } from "@/features/projects/hooks/vm/useProjectsList";
+import { Spinner } from "@/shared/components/ui/spinner";
+import { useProjectSummaries } from "@/features/projects/hooks/useProjectSummaries";
+import Pagination from "@/shared/components/ui/Pagination";
+import { useProjectQueryState } from "@/features/projects/hooks/useProjectQueryState";
+import ProjectPageHeader from "@/features/projects/components/projectPage/header/ProjectPageHeader";
 
 const ProjectsPage = () => {
   const [filterDrawerOpen, setFilterDrawerOpen] = useState(false);

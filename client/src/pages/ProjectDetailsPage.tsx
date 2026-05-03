@@ -1,20 +1,20 @@
 import { useParams, useSearchParams } from "react-router";
-import ProjectDetailsHeader from "@/components/pages/projectDetailsPage/details/ProjectDetailsHeader";
+import ProjectDetailsHeader from "@/features/projects/components/projectDetailsPage/ProjectDetailsHeader";
 import { useProjectDetailsVM } from "@/domain/projects/useProjectDetails";
-import { getProgressResult } from "@/utils/getProgressResult";
-import { useUsersByIds } from "@/hooks/useUsersByIds";
-import ProjectTabs from "@/components/pages/projectDetailsPage/details/tabs/ProjectTabs";
+import { getProgressResult } from "@/shared/utils/getProgressResult";
+import { useUsersByIds } from "@/features/users/hooks/useUsersByIds";
+import ProjectTabs from "@/features/projects/components/projectDetailsPage/ProjectTabs";
 import { useState } from "react";
-import AttachmentsView from "@/components/pages/projectDetailsPage/details/views/attachmentsView/AttachmentsView";
-import ListView from "@/components/pages/projectDetailsPage/details/views/listView/ListView";
-import Overview from "@/components/pages/projectDetailsPage/details/views/overview/Overview";
-import CollaboratorsView from "@/components/pages/projectDetailsPage/details/views/collaboratorsView/CollaboratorsView";
-import AddTaskPanel from "@/components/tasks/create/AddTaskPanel";
-import InviteUserModal from "@/components/collaborators/InviteUserModal";
-import WorkloadTable from "@/components/pages/projectDetailsPage/details/views/overview/workload/WorkloadTable";
-import { getProjectUserWorkload } from "@/utils/workload/getProjectUserWorkload";
-import CommentsView from "@/components/pages/projectDetailsPage/details/views/commentsView/CommentsView";
-import { Spinner } from "@/components/ui/spinner";
+import AttachmentsView from "@/features/attachments/components/AttachmentsView";
+import ListView from "@/features/tasks/components/taskListView/TaskListView";
+import Overview from "@/features/projects/components/projectDetailsPage/views/Overview";
+import CollaboratorsView from "@/features/users/components/collaboratorsView/CollaboratorsView";
+import AddTaskPanel from "@/features/tasks/components/create/AddTaskPanel";
+import InviteUserModal from "@/features/users/components/collaboratorsSelect/InviteUserModal";
+import WorkloadTable from "@/features/users/components/workload/WorkloadTable";
+import { getProjectUserWorkload } from "@/features/users/utils/workload/getProjectUserWorkload";
+import CommentsView from "@/features/comments/components/CommentsView";
+import { Spinner } from "@/shared/components/ui/spinner";
 
 export type ActiveTab =
   | "overview"

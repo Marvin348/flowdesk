@@ -1,0 +1,36 @@
+import type { TaskWithMeta } from "@/features/tasks/types/taskWithMeta";
+import { STATUS_OPTIONS } from "@/shared/constants/status-options";
+import AssigneeAvatars from "@/shared/components/ui/avatar/AvatarGroup";
+import { formatDate } from "@/shared/utils/formatDate";
+import { PRIORITY_OPTIONS } from "@/shared/constants/priority-options";
+
+const TaskRow = ({ task }: { task: TaskWithMeta }) => {
+  const { title, dueDate, taskStatus, collaborators, taskPriority } = task;
+
+  return (
+    <div className="py-4 grid grid-cols-1 md:grid-cols-4 items-center gap-4 border-b last:border-none">
+      <p className="truncate">{title}</p>
+
+      <div>
+        <AssigneeAvatars users={collaborators} />
+      </div>
+
+      <div className="md:justify-self-start flex items-center gap-4 text-sm">
+        <p>{formatDate(dueDate)}</p>
+        <p
+          style={{ backgroundColor: STATUS_OPTIONS[taskStatus].color }}
+          className="w-fit px-2 rounded-full"
+        >
+          {STATUS_OPTIONS[taskStatus].label}
+        </p>
+      </div>
+      <p
+        style={{ backgroundColor: PRIORITY_OPTIONS[taskPriority].color }}
+        className="text-sm w-fit px-2 rounded-full"
+      >
+        {PRIORITY_OPTIONS[taskPriority].label}
+      </p>
+    </div>
+  );
+};
+export default TaskRow;

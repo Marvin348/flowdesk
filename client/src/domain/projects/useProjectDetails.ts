@@ -1,11 +1,12 @@
 import { useAppStore } from "@/store";
-import { getArrayLookup } from "@/utils/getArrayLookup";
-import { isDefined } from "@/utils/isDefined";
+import { getArrayLookup } from "@/shared/utils/getArrayLookup";
+import { isDefined } from "@/shared/utils/isDefined";
 import { useMemo } from "react";
-import { groupBy } from "@/utils/groupBy";
-import { useProjectDetails } from "@/queries/projects/useProjectDetails";
-import type { ProjectDetailsVM } from "@/type/view-models/projectsWithMeta";
+import { groupBy } from "@/shared/utils/groupBy";
+import { useProjectDetails } from "@/features/projects/hooks/useProjectDetails";
+import type { ProjectDetailsVM } from "@/features/projects/types/projectsWithMeta";
 
+// refactor later
 export const useProjectDetailsVM = (projectId: string): ProjectDetailsVM => {
   const { data: details, isLoading, error } = useProjectDetails(projectId);
 

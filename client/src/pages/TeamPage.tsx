@@ -1,13 +1,13 @@
-import TeamPerformanceList from "@/components/pages/teamPage/TeamPerformanceList";
-import { Spinner } from "@/components/ui/spinner";
-import Pagination from "@/components/pagination/Pagination";
+import TeamPerformanceList from "@/features/users/components/teamPage/TeamPerformanceList";
+import { Spinner } from "@/shared/components/ui/spinner";
+import Pagination from "@/shared/components/ui/Pagination";
 import { useState, useEffect } from "react";
-import { useTeamMembers } from "@/queries/users/useTeamMembers";
-import { useTeamQueryState } from "@/hooks/team/useTeamQueryState";
-import { useDebounce } from "@/hooks/useDebounce";
-import UserDetails from "@/components/pages/teamPage/UserDetails";
-import TeamPageHeader from "@/components/pages/teamPage/header/TeamPageHeader";
-import TeamFilterDrawer from "@/components/pages/teamPage/TeamFilterDrawer";
+import { useTeamMembers } from "@/features/users/hooks/useTeamMembers";
+import { useTeamQueryState } from "@/features/users/hooks/useTeamQueryState";
+import { useDebounce } from "@/shared/hooks/useDebounce";
+import UserDetails from "@/features/users/components/teamPage/UserDetails";
+import TeamPageHeader from "@/features/users/components/teamPage/header/TeamPageHeader";
+import TeamFilterDrawer from "@/features/users/components/teamPage/TeamFilterDrawer";
 
 export type SelectedUser = { id: string; name: string };
 
@@ -58,13 +58,12 @@ const TeamPage = () => {
 
   return (
     <div className="flex flex-col min-h-full">
-
       <div className="relative">
-          <TeamPageHeader
-            search={searchInput}
-            setSearch={setSearchInput}
-            onDrawerOpen={() => setFilterDrawerOpen(true)}
-          />
+        <TeamPageHeader
+          search={searchInput}
+          setSearch={setSearchInput}
+          onDrawerOpen={() => setFilterDrawerOpen(true)}
+        />
 
         {filterDrawerOpen && (
           <TeamFilterDrawer onClose={() => setFilterDrawerOpen(false)} />
