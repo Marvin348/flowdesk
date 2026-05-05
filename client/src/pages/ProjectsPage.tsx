@@ -9,6 +9,7 @@ import { useProjectSummaries } from "@/features/projects/hooks/useProjectSummari
 import Pagination from "@/shared/components/ui/Pagination";
 import { useProjectQueryState } from "@/features/projects/hooks/useProjectQueryState";
 import ProjectPageHeader from "@/features/projects/components/projectPage/header/ProjectPageHeader";
+import ProjectListSkeleton from "@/features/projects/components/projectPage/skeleton/ProjectListSkeleton";
 
 const ProjectsPage = () => {
   const [filterDrawerOpen, setFilterDrawerOpen] = useState(false);
@@ -32,12 +33,7 @@ const ProjectsPage = () => {
   const projectsListVM = useProjectsListVM(projects);
   const projectSummary = useProjectsSummary(projectsListVM);
 
-  if (isLoading && !projects.length)
-    return (
-      <div className="flex-center">
-        <Spinner className="size-8 text-accent" />
-      </div>
-    );
+  if (isLoading && !projects.length) return <ProjectListSkeleton />;
 
   if (error)
     return (

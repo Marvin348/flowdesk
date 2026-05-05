@@ -1,5 +1,4 @@
 import TeamPerformanceList from "@/features/users/components/teamPage/TeamPerformanceList";
-import { Spinner } from "@/shared/components/ui/spinner";
 import Pagination from "@/shared/components/ui/Pagination";
 import { useState, useEffect } from "react";
 import { useTeamMembers } from "@/features/users/hooks/useTeamMembers";
@@ -8,6 +7,7 @@ import { useDebounce } from "@/shared/hooks/useDebounce";
 import UserDetails from "@/features/users/components/teamPage/UserDetails";
 import TeamPageHeader from "@/features/users/components/teamPage/header/TeamPageHeader";
 import TeamFilterDrawer from "@/features/users/components/teamPage/TeamFilterDrawer";
+import TeamPerformanceListSkeleton from "@/features/users/components/teamPage/skeleton/TeamPerformanceListSkeleton";
 
 export type SelectedUser = { id: string; name: string };
 
@@ -43,12 +43,8 @@ const TeamPage = () => {
   const currentPage = page;
   const totalPages = data?.totalPages ?? 1;
 
-  if (isLoading && !teamMembers.length)
-    return (
-      <div className="flex-center">
-        <Spinner className="size-8 text-accent" />
-      </div>
-    );
+  if (isLoading && !teamMembers.length) return <TeamPerformanceListSkeleton />;
+
   if (error)
     return (
       <div className="flex-center text-muted-foreground">
@@ -80,7 +76,7 @@ const TeamPage = () => {
         <section className="flex-1 min-w-0 mb-6">
           <TeamPerformanceList
             teamPerformance={teamMembers}
-            onShowDetails={setSelectedUser}
+            onSelectUser={setSelectedUser}
             isDetailsOpen={Boolean(selectedUser)}
           />
         </section>

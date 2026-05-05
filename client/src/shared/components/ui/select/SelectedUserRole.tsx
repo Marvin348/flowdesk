@@ -22,7 +22,7 @@ const SelectedUserRole = ({ value, onChange }: SelectedUserRoleProps) => {
       </SelectTrigger>
       <SelectContent position="popper">
         <SelectGroup className="z-60">
-          <SelectLabel>Status</SelectLabel>
+          <SelectLabel>Rolle</SelectLabel>
           {Object.values(USER_ROLE_OPTIONS).map((opt) => (
             <SelectItem
               key={opt.value}

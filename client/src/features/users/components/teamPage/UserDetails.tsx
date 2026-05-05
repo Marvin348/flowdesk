@@ -1,5 +1,4 @@
 import { Button } from "@/shared/components/ui/button";
-import { Spinner } from "@/shared/components/ui/spinner";
 import Avatar from "@/shared/components/ui/avatar/Avatar";
 import { useUserDetails } from "@/features/users/hooks/useUserDetails";
 import { UserPen, Mail, BriefcaseBusiness, X, FolderPen } from "lucide-react";
@@ -10,6 +9,8 @@ import AssignProjectModal from "./AssignProjectModal";
 import { useState } from "react";
 import type { SelectedUser } from "@/pages/TeamPage";
 import { PRIORITY_OPTIONS } from "@/shared/constants/priority-options";
+import ChangeUserRoleDialog from "../ChangeUserRoleDialog";
+import UserDetailsSkeleton from "./skeleton/UserDetailsSkeleton";
 
 type UserDetailsProps = {
   selectedUser: SelectedUser;
@@ -18,8 +19,11 @@ type UserDetailsProps = {
 
 const UserDetails = ({ selectedUser, onClose }: UserDetailsProps) => {
   const [isAssignProjectOpen, setIsAssignProjectOpen] = useState(false);
+  const [changeUserRole, setChangeUserRole] = useState(false);
 
   const { data, isLoading, error } = useUserDetails(selectedUser.id);
+
+  if (isLoading) return <UserDetailsSkeleton />;
 
   if (!data)
     return (
@@ -43,12 +47,6 @@ const UserDetails = ({ selectedUser, onClose }: UserDetailsProps) => {
   return (
     <div>
       <div className="border rounded-md">
-        {isLoading && (
-          <div className="flex-center">
-            <Spinner className="text-accent" />
-          </div>
-        )}
-
         {error && (
           <div className="flex-center text-muted-foreground">
             Fehler beim Laden
@@ -73,7 +71,11 @@ const UserDetails = ({ selectedUser, onClose }: UserDetailsProps) => {
               >
                 <FolderPen /> Projekte
               </Button>
-              <Button variant="outline" className="duration-200">
+              <Button
+                variant="outline"
+                className="duration-200"
+                onClick={() => setChangeUserRole(true)}
+              >
                 <UserPen /> Rolle ändern
               </Button>
             </div>
@@ -207,6 +209,14 @@ const UserDetails = ({ selectedUser, onClose }: UserDetailsProps) => {
         <AssignProjectModal
           onClose={() => setIsAssignProjectOpen(false)}
           selectedUser={selectedUser}
+        />
+      )}
+
+      {changeUserRole && (
+        <ChangeUserRoleDialog
+          onClose={() => setChangeUserRole(false)}
+          selectedUser={selectedUser}
+          currentRole={user.role}
         />
       )}
     </div>

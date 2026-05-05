@@ -1,5 +1,6 @@
 import express from "express";
 import { readDb } from "@/utils/readDb.js";
+import { writeDb } from "@/utils/writeDb.js";
 import { getUsersPerformance } from "@/utils/user/getUsersPerformance.js";
 import { pagination } from "@/utils/pagination.js";
 import type { Request, Response } from "express";
@@ -90,5 +91,42 @@ router.get("/:id/details", (req, res) => {
 
   return res.status(200).json({ data: userDetails });
 });
+
+router.patch(
+  "/:id",
+  (req: Request<{ id: string }, {}, { role: UserRole }>, res) => {
+    const userId = req.params.id;
+    const { role } = req.body;
+
+    if (!userId) {
+      return res.status(400).json({ error: "Invalid input" });
+    }
+
+    const isValidRole =
+      role === "admin" || role === "member" || role === "manager";
+
+    if (!isValidRole) {
+      return res.status(400).json({ error: "Invalid role" });
+    }
+
+    const db = readDb();
+
+    const user = db.users.find((u) => u.id === userId);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    if (user.role === role) {
+      return res.status(400).json({ error: "User already has this role" });
+    }
+
+    user.role = role;
+
+    writeDb(db);
+
+    return res.status(200).json({ data: user });
+  },
+);
 
 export default router;

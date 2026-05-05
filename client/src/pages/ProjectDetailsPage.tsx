@@ -14,7 +14,7 @@ import InviteUserModal from "@/features/users/components/collaboratorsSelect/Inv
 import WorkloadTable from "@/features/users/components/workload/WorkloadTable";
 import { getProjectUserWorkload } from "@/features/users/utils/workload/getProjectUserWorkload";
 import CommentsView from "@/features/comments/components/CommentsView";
-import { Spinner } from "@/shared/components/ui/spinner";
+import DetailsOverviewSkeleton from "@/features/projects/components/projectDetailsPage/skeleton/DetailsOverviewSkeleton";
 
 export type ActiveTab =
   | "overview"
@@ -40,8 +40,8 @@ const ProjectDetailsPage = () => {
   const { project, isLoading, error } = useProjectDetailsVM(projectId);
   const teamUsers = useUsersByIds(project?.teamUserIds ?? []);
 
-  if (isLoading) return <Spinner />;
-  if (error) return <div>Something went wrong</div>;
+  if (isLoading) return <DetailsOverviewSkeleton />;
+  if (error) return <div>Etwas ist schief gelaufen</div>;
   if (!project) return <div>Project not found</div>;
 
   const workloadStats = getProjectUserWorkload(project.tasks);
