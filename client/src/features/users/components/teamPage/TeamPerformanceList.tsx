@@ -4,13 +4,13 @@ import type { SelectedUser } from "@/pages/TeamPage";
 
 type TeamPerformanceListProps = {
   teamPerformance: UserPerformance[];
-  onShowDetails: (user: SelectedUser) => void;
+  onSelectUser: (user: SelectedUser) => void;
   isDetailsOpen: boolean;
 };
 
 const TeamPerformanceList = ({
   teamPerformance,
-  onShowDetails,
+  onSelectUser,
   isDetailsOpen,
 }: TeamPerformanceListProps) => {
   // grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6
@@ -22,7 +22,7 @@ const TeamPerformanceList = ({
         <UserPerformanceItem
           key={u.id}
           item={u}
-          onShowDetails={onShowDetails}
+          onSelectUser={onSelectUser}
         />
       ))}
     </div>

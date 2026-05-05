@@ -1,23 +1,23 @@
 import { Button } from "@/shared/components/ui/button";
 import SelectedUserRole from "@/shared/components/ui/select/SelectedUserRole";
-import { X } from "lucide-react";
+import { UserPen } from "lucide-react";
 import { useState } from "react";
-import { USER_ROLE_OPTIONS } from "@/features/users/constants/user-role-options";
 import { useChangeUserRole } from "@/features/users/hooks/useChangeUserRole";
 import { Spinner } from "@/shared/components/ui/spinner";
+import type { SelectedUser } from "@/pages/TeamPage";
+import { useScrollLock } from "@/shared/hooks/useScrollLock";
+import { USER_ROLE_OPTIONS } from "@/features/users/constants/user-role-options";
 import type { UserRole } from "@shared/types/user";
 
 type ChangeUserRoleDialogProps = {
   onClose: () => void;
-  userName: string;
+  selectedUser: SelectedUser;
   currentRole: UserRole;
-  userId: string;
 };
 const ChangeUserRoleDialog = ({
   onClose,
-  userName,
+  selectedUser,
   currentRole,
-  userId,
 }: ChangeUserRoleDialogProps) => {
   const [selectedRole, setSelectedRole] = useState("");
 
@@ -29,7 +29,7 @@ const ChangeUserRoleDialog = ({
     if (!selectedRole) return;
 
     const input = {
-      id: userId,
+      id: selectedUser.id,
       role: selectedRole,
     };
 
@@ -40,69 +40,86 @@ const ChangeUserRoleDialog = ({
     });
   };
 
-  const RoleIcon = USER_ROLE_OPTIONS[currentRole].icon;
+  const userRoleLabel = USER_ROLE_OPTIONS[currentRole].label;
 
   return (
     <div className="overlay flex items-center justify-center px-8">
-      <form
-        onSubmit={handleSubmit}
-        className="w-[350px] bg-white p-4 rounded-md"
-      >
-        <div className="flex items-center justify-between pb-2 border-b">
-          <h3 className="font-medium text-xl">Rolle ändern</h3>
-          <button
-            onClick={onClose}
-            className="text-surface/80 hover:text-surface"
-            type="button"
-          >
-            <X />
-          </button>
-        </div>
-
-        <div className="pt-4">
-          <div>
-            <p className="text-muted-foreground">Name:</p>
-            <p>{userName}</p>
+      <div className="w-[380px] bg-white rounded-md">
+        {/**header */}
+        <div className="flex items-center gap-4 border-b p-4">
+          <div className="bg-surface/5 p-3 rounded-md">
+            <UserPen className="size-6" />
           </div>
 
-          <div className="mt-4">
-            <p className="text-muted-foreground">Aktuelle Rolle:</p>
-            <p className="flex items-center gap-1">
-              <RoleIcon className="size-4 text-surface/80" />{" "}
-              {USER_ROLE_OPTIONS[currentRole].label}
+          <div className="min-w-0">
+            <h3 className="text-lg font-medium leading-tight">Rolle ändern</h3>
+
+            <p className="mt-1 truncate text-sm text-muted-foreground">
+              für <span className="font-medium">{selectedUser.name}</span>
             </p>
           </div>
+        </div>
 
-          <div className="mt-4">
-            <p className="mb-1 text-muted-foreground">Neue Rolle:</p>
-            <SelectedUserRole value={selectedRole} onChange={setSelectedRole} />
+        <form onSubmit={handleSubmit}>
+          <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-3 p-4">
+            <div className="rounded-lg border p-3">
+              <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                Aktuell
+              </p>
+              <p className="mt-2 flex items-center gap-2 text-sm">
+                {userRoleLabel}
+              </p>
+            </div>
+
+            <div className="rounded-full bg-muted px-2 py-1 text-muted-foreground">
+              →
+            </div>
+
+            <div className="rounded-lg border border-accent/30 bg-accent/5 p-3">
+              <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                Neu
+              </p>
+              <div className="mt-2">
+                <SelectedUserRole
+                  value={selectedRole}
+                  onChange={setSelectedRole}
+                />
+              </div>
+            </div>
           </div>
-        </div>
 
-        {error && (
-          <p className="error-text">Es konnte keine Rolle geändert werden</p>
-        )}
+          {error && (
+            <p className="error-text">Es konnte keine Rolle geändert werden</p>
+          )}
 
-        <div className="mt-8 flex items-center justify-between gap-6">
-          <Button
-            size="sm"
-            variant="outline"
-            type="button"
-            className="hover:bg-surface/5"
-            onClick={onClose}
-          >
-            Schließen
-          </Button>
-          <Button
-            size="sm"
-            className="bg-accent hover:bg-accent/95 w-30"
-            type="submit"
-            disabled={currentRole === selectedRole}
-          >
-            Speichern {isPending && <Spinner />}
-          </Button>
-        </div>
-      </form>
+          <div className="mt-6 flex items-center justify-end gap-3 border-t p-4">
+            <Button
+              size="sm"
+              variant="outline"
+              type="button"
+              className="px-4"
+              onClick={onClose}
+            >
+              Schließen
+            </Button>
+
+            <Button
+              size="sm"
+              className="bg-accent hover:bg-accent/95 px-6"
+              type="submit"
+              disabled={currentRole === selectedRole || isPending}
+            >
+              {isPending ? (
+                <span className="flex items-center gap-2">
+                  Speichern <Spinner />
+                </span>
+              ) : (
+                "Speichern"
+              )}
+            </Button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 };

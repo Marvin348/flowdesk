@@ -8,12 +8,12 @@ import { Button } from "@/shared/components/ui/button";
 
 type TeamPerformanceItemProps = {
   item: UserPerformance;
-  onShowDetails: (user: SelectedUser) => void;
+  onSelectUser: (user: SelectedUser) => void;
 };
 
 const TeamPerformanceItem = ({
   item,
-  onShowDetails,
+  onSelectUser,
 }: TeamPerformanceItemProps) => {
   const { id, name, jobTitle, avatarKey, role, stats } = item;
 
@@ -98,7 +98,7 @@ const TeamPerformanceItem = ({
             variant="link"
             size="sm"
             className="px-0 font-normal"
-            onClick={() => onShowDetails({ id, name })}
+            onClick={() => onSelectUser({ id, name})}
           >
             Mehr Infos
           </Button>

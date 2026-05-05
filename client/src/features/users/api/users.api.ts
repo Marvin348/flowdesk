@@ -40,7 +40,6 @@ export const fetchUserDetails = async (id: string): Promise<UserDetailsDto> => {
   return res.data.data;
 };
 
-// old
 export const changeUserRole = async (
   input: ChangeUserRoleInput,
 ): Promise<User> => {

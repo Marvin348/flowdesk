@@ -248,39 +248,6 @@ router.get("/:id/details", (req: Request<{ id: string }>, res) => {
   });
 });
 
-// PATCH /users/:id/role //chage user globally
-// chage user-role
-router.patch(
-  "/:id/members/:userId",
-  (req: Request<{ id: string; userId: string }>, res) => {
-    const projectId = req.params.id;
-    const userId = req.params.userId;
-
-    if (!projectId || !userId) {
-      return res.status(400).json({ error: "Invalid input" });
-    }
-
-    const db = readDb();
-    const project = db.projects.find((p) => p.id === projectId);
-
-    if (!project) {
-      return res.status(404).json({ error: "Project not found" });
-    }
-
-    const user = db.users.find((u) => u.id === userId);
-
-    if (!user) {
-      return res.status(404).json({ error: "User not found" });
-    }
-
-    if (!project.invitedUserIds.includes(userId)) {
-      return res.status(400).json({ error: "User not in project" });
-    }
-
-    // not ready
-  },
-);
-
 // update invitedUserIds
 router.patch(
   "/:id/members",

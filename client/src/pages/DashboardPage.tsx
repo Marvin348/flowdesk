@@ -13,6 +13,7 @@ import { getUpcomingTasks } from "@/features/dashboard/utils/getUpcomingTasks";
 import { getUserPerformance } from "@/features/users/utils/getUserPerformance";
 import PerformanceHighlights from "@/features/dashboard/components/performanceHighlights/PerformanceHighlights";
 import { getPerformanceHighlights } from "@/features/dashboard/utils/getPerformanceHighlights";
+import DashboardSkeleton from "@/features/dashboard/components/skeleton/DashboardSkeleton";
 
 const DashboardPage = () => {
   // refactor later
@@ -29,6 +30,8 @@ const DashboardPage = () => {
   const taskStatusItems = mapTaskStatusDistributionToItems(
     taskStatusDistribution,
   );
+
+  if (isLoading) return <DashboardSkeleton />;
 
   const taskPriorityItems = getTaskPriorityItems(tasks);
 

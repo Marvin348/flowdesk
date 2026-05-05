@@ -63,14 +63,14 @@ const CollaboratorsView = ({
     setOpenActionId(null);
   };
 
-  const handleOnClose = () => setActiveAction(null);
+  const handleOnClose = () => {
+    setActiveAction(null);
+    setSelectedCollaboratorId(null);
+  };
 
-  const currentName =
-    collaborator.find((coll) => coll.id === selectedCollaboratorId)?.name ??
-    "UNKNOWN";
-  const currentRole =
-    collaborator.find((coll) => coll.id === selectedCollaboratorId)?.role ??
-    "member";
+  const selectedUser = collaborator.find(
+    (coll) => coll.id === selectedCollaboratorId,
+  );
 
   return (
     <section>
@@ -175,20 +175,21 @@ const CollaboratorsView = ({
         </div>
       </div>
 
-      {activeAction === "delete" && selectedCollaboratorId && (
+      {activeAction === "delete" && selectedUser && (
         <DeleteCollaboratorDialog
           onClose={handleOnClose}
-          collaboratorName={currentName}
-          collaboratorId={selectedCollaboratorId}
+          selectedUser={{ id: selectedUser.id, name: selectedUser.name }}
         />
       )}
 
-      {activeAction === "change_role" && selectedCollaboratorId && (
+      {activeAction === "change_role" && selectedUser && (
         <ChangeUserRoleDialog
           onClose={handleOnClose}
-          userName={currentName}
-          currentRole={currentRole}
-          userId={selectedCollaboratorId}
+          selectedUser={{
+            id: selectedUser.id,
+            name: selectedUser.name,
+          }}
+          currentRole={selectedUser.role}
         />
       )}
     </section>

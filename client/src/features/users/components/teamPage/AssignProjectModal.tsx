@@ -150,7 +150,7 @@ const AssignProjectModal = ({ onClose, selectedUser }: AssignProjectModal) => {
             </Button>
             <Button
               variant="outline"
-              className="bg-accent border-none hover:bg-accent/95"
+              className="bg-accent border-none hover:bg-accent/95 text-white hover:text-none"
               onClick={handleSubmit}
             >
               {selectedProjectIds.length > 0 && (
