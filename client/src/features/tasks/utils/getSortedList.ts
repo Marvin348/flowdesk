@@ -1,4 +1,4 @@
-import type { SortedByList } from "@/features/tasks/components/taskListView/TaskListView";
+import type { SortedByList } from "@/features/projects/components/projectDetailsPage/tabs/list/TaskListView";
 import type { TaskWithMeta } from "@/features/tasks/types/taskWithMeta";
 
 export const getSortedList = (

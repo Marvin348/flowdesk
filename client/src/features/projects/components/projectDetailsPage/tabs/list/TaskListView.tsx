@@ -2,7 +2,7 @@ import { ChevronDown, ChevronsUpDown } from "lucide-react";
 import { STATUS_OPTIONS } from "@/shared/constants/status-options";
 import { useState } from "react";
 import type { StatusBase } from "@shared/types/StatusBase";
-import TaskRow from "@/features/tasks/components/taskListView/TaskRow";
+import TaskRow from "@/features/tasks/components/TaskRow";
 import type { TaskWithMeta } from "@/features/tasks/types/taskWithMeta";
 import { getSortedList } from "@/features/tasks/utils/getSortedList";
 import { LIST_TABLE_OPTIONS } from "@/shared/constants/table-header";

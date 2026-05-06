@@ -9,6 +9,7 @@ import type { UpdateProjectMembersInput } from "@shared/types/inputs/updateProje
 import type { AssignUserToProjectsInput } from "@shared/types/inputs/assignUserToProjectsInput";
 import type { ProjectSummariesInput } from "@shared/types/inputs/projectSummariesInput";
 import type { ProjectSummariesResponseDto } from "@shared/types/dto/project";
+import type { DeleteProjectMemberInput } from "@shared/types/inputs/deleteProjectMemberInput";
 
 export const fetchProjects = async (): Promise<Project[]> => {
   const res = await apiClient.get("/projects");
@@ -81,6 +82,13 @@ export const updateProjectMembers = async (
   const res = await apiClient.patch(
     `/projects/${input.projectId}/members`,
     input,
+  );
+  return res.data.data;
+};
+
+export const deleteProjectMember = async (input: DeleteProjectMemberInput) => {
+  const res = await apiClient.delete(
+    `/projects/${input.projectId}/members/${input.userId}`,
   );
   return res.data.data;
 };

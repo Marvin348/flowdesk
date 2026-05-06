@@ -5,15 +5,15 @@ import { getProgressResult } from "@/shared/utils/getProgressResult";
 import { useUsersByIds } from "@/features/users/hooks/useUsersByIds";
 import ProjectTabs from "@/features/projects/components/projectDetailsPage/ProjectTabs";
 import { useState } from "react";
-import AttachmentsView from "@/features/attachments/components/AttachmentsView";
-import ListView from "@/features/tasks/components/taskListView/TaskListView";
-import Overview from "@/features/projects/components/projectDetailsPage/views/Overview";
-import CollaboratorsView from "@/features/users/components/collaboratorsView/CollaboratorsView";
+import AttachmentsView from "@/features/projects/components/projectDetailsPage/tabs/files/AttachmentsView";
+import ListView from "@/features/projects/components/projectDetailsPage/tabs/list/TaskListView";
+import Overview from "@/features/projects/components/projectDetailsPage/tabs/overview/Overview";
+import CollaboratorsView from "@/features/projects/components/projectDetailsPage/tabs/collaborators/CollaboratorsView";
 import AddTaskPanel from "@/features/tasks/components/create/AddTaskPanel";
 import InviteUserModal from "@/features/users/components/collaboratorsSelect/InviteUserModal";
-import WorkloadTable from "@/features/users/components/workload/WorkloadTable";
+import WorkloadTable from "@/features/projects/components/projectDetailsPage/tabs/workload/WorkloadTable";
 import { getProjectUserWorkload } from "@/features/users/utils/workload/getProjectUserWorkload";
-import CommentsView from "@/features/comments/components/CommentsView";
+import CommentsView from "@/features/projects/components/projectDetailsPage/tabs/comments/CommentsView";
 import DetailsOverviewSkeleton from "@/features/projects/components/projectDetailsPage/skeleton/DetailsOverviewSkeleton";
 
 export type ActiveTab =
@@ -82,6 +82,7 @@ const ProjectDetailsPage = () => {
       case "collaborators":
         return (
           <CollaboratorsView
+            projectId={project.id}
             collaborator={teamUsers}
             onCreateTask={handleCreateTask}
             toggleBulk={toggleCollaboratorSelection}
@@ -97,7 +98,6 @@ const ProjectDetailsPage = () => {
         return <CommentsView tasks={project.tasks} />;
     }
   };
-
   return (
     <>
       <div className="mb-6">

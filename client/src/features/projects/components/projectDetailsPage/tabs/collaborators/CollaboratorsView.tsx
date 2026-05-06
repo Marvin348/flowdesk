@@ -4,16 +4,17 @@ import type { User } from "@shared/types/user";
 import { Copy, EllipsisVertical } from "lucide-react";
 import { useRef, useState } from "react";
 import { getSortedCollaborators } from "@/features/users/utils/getSortedCollaborators";
-import CollaboratorActions from "./CollaboratorActions";
-import DeleteCollaboratorDialog from "./DeleteCollaboratorDialog";
+import CollaboratorActions from "../../../../../users/components/collaboratorsView/CollaboratorActions";
+import DeleteCollaboratorDialog from "../../../../../users/components/collaboratorsView/DeleteCollaboratorDialog";
 import ChangeUserRoleDialog from "@/features/users/components/ChangeUserRoleDialog";
 import { USER_ROLE_OPTIONS } from "@/features/users/constants/user-role-options";
 import { useOnClickOutside } from "@/shared/hooks/useOnClickOutside";
-import BulkCollaboratorActions from "./BulkCollaboratorActions";
+import BulkCollaboratorActions from "../../../../../users/components/collaboratorsView/BulkCollaboratorActions";
 import { COLLABORATOR_TABLE_OPTIONS } from "@/shared/constants/table-header";
 import { updateSort } from "@/shared/utils/updateSort";
 
 type CollaboratorsViewProps = {
+  projectId: string;
   collaborator: User[];
   onCreateTask: () => void;
   selectedCollaboratorIds: string[];
@@ -31,6 +32,7 @@ export type SortedByCollaborators = {
 export type Actions = "change_role" | "reassign_tasks" | "delete";
 
 const CollaboratorsView = ({
+  projectId,
   collaborator,
   onCreateTask,
   selectedCollaboratorIds,
@@ -179,6 +181,7 @@ const CollaboratorsView = ({
         <DeleteCollaboratorDialog
           onClose={handleOnClose}
           selectedUser={{ id: selectedUser.id, name: selectedUser.name }}
+          projectId={projectId}
         />
       )}
 
