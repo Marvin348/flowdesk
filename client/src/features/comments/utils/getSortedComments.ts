@@ -1,4 +1,4 @@
-import type { SortOrder } from "@/features/comments/components/CommentsView";
+import type { SortOrder } from "@/features/projects/components/projectDetailsPage/tabs/comments/CommentsView";
 import type { Comment } from "@shared/types/comment";
 
 // LATER IN BACKEND

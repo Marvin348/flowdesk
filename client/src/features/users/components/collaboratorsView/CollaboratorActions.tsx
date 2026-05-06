@@ -1,4 +1,4 @@
-import type { Actions } from "./CollaboratorsView";
+import type { Actions } from "@/features/projects/components/projectDetailsPage/tabs/collaborators/CollaboratorsView";
 import { COLLABORATOR_ACTIONS } from "@/features/users/constants/user-actions";
 
 type CollaboratorActions = {

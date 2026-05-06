@@ -23,43 +23,45 @@ router.get("/", (req, res) => {
   res.json({ data: db.projects });
 });
 
+router.get(
+  "/summaries",
+  (req: Request<{}, {}, {}, ProjectSummaryQuery>, res) => {
+    const db = readDb();
 
-router.get("/summaries", (req: Request<{}, {}, {}, ProjectSummaryQuery>, res) => {
-  const db = readDb();
+    const projects = db.projects;
+    const comments = db.comments;
+    const tasks = db.tasks;
+    const attachments = db.attachments;
 
-  const projects = db.projects;
-  const comments = db.comments;
-  const tasks = db.tasks;
-  const attachments = db.attachments;
+    const projectListItems = getProjectsSummary(
+      projects,
+      tasks,
+      comments,
+      attachments,
+    );
 
-  const projectListItems = getProjectsSummary(
-    projects,
-    tasks,
-    comments,
-    attachments,
-  );
+    const search =
+      typeof req.query.search === "string" ? req.query.search.trim() : "";
 
-  const search =
-    typeof req.query.search === "string" ? req.query.search.trim() : "";
+    const parsedFilter = parseProjectQueryFilter(req.query);
 
-  const parsedFilter = parseProjectQueryFilter(req.query);
+    const filteredProjects = getFilteredProjectsList(
+      projectListItems,
+      search,
+      parsedFilter,
+    );
 
-  const filteredProjects = getFilteredProjectsList(
-    projectListItems,
-    search,
-    parsedFilter,
-  );
+    let page = Number(req.query.page);
+    let limit = Number(req.query.limit);
 
-  let page = Number(req.query.page);
-  let limit = Number(req.query.limit);
+    if (isNaN(page)) page = 1;
+    if (isNaN(limit)) limit = 9;
 
-  if (isNaN(page)) page = 1;
-  if (isNaN(limit)) limit = 9;
- 
-  const paginationItems = pagination(filteredProjects, page, limit);
+    const paginationItems = pagination(filteredProjects, page, limit);
 
-  return res.status(200).json({ data: paginationItems });
-});
+    return res.status(200).json({ data: paginationItems });
+  },
+);
 
 // create new project
 router.post("/", (req: Request<{}, {}, CreateProjectInput>, res) => {
@@ -211,6 +213,58 @@ router.patch("/assign-user", (req: Request<{}, {}, AssignUserInput>, res) => {
   writeDb(db);
 
   return res.json({ data: matchesProjects });
+});
+
+// delete user from project
+router.delete("/:id/members/:userId", (req, res) => {
+  const projectId = req.params.id;
+
+  if (!projectId) {
+    return res.status(400).json({ error: "Invalid projectId" });
+  }
+
+  const userId = req.params.userId;
+
+  if (!userId) {
+    return res.status(400).json({ error: "Invalid userId" });
+  }
+
+  const db = readDb();
+
+  const project = db.projects.find((p) => p.id === projectId);
+
+  if (!project) {
+    return res.status(404).json({ error: "Project not found" });
+  }
+
+  if (!project.invitedUserIds.includes(userId)) {
+    return res.status(400).json({ error: "User is not a project member" });
+  }
+
+  project.invitedUserIds = project.invitedUserIds.filter((id) => id !== userId);
+
+  const deleteSet = new Set<string>();
+
+  for (const task of db.tasks) {
+    if (task.projectId !== projectId) continue;
+    if (!task.collaboratorIds.includes(userId)) continue;
+
+    task.collaboratorIds = task.collaboratorIds.filter((id) => id !== userId);
+
+    if (!task.collaboratorIds.length) {
+      deleteSet.add(task.id);
+    }
+  }
+
+  db.tasks = db.tasks.filter((t) => !deleteSet.has(t.id));
+  db.attachments = db.attachments.filter((a) => !deleteSet.has(a.taskId));
+  db.comments = db.comments.filter((c) => !deleteSet.has(c.taskId));
+
+  project.updatedAt = new Date().toISOString();
+
+  writeDb(db);
+
+  return res.status(200).json({ data: project });
 });
 
 // details vm

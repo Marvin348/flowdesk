@@ -4,7 +4,7 @@ import { type UserWorkload } from "@/features/users/utils/workload/getProjectUse
 import OverviewCardBody from "@/shared/components/ui/overview-card/OverviewCardBody";
 import OverviewCardFooter from "@/shared/components/ui/overview-card/OverviewCardFooter";
 import OverviewCardHeader from "@/shared/components/ui/overview-card/OverviewCardHeader";
-import WorkloadTable from "./WorkloadTable";
+import WorkloadTable from "../../../projects/components/projectDetailsPage/tabs/workload/WorkloadTable";
 import OverviewCard from "@/shared/components/ui/overview-card/OverviewCard";
 
 type WorkloadProps = {
