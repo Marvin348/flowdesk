@@ -1,6 +1,6 @@
 import { fetchTeamMembers } from "@/features/users/api/users.api.ts";
 import type { TeamMembersInput } from "@shared/types/inputs/teamMemberInput";
-import type { TeamMembersResponseDto } from "@shared/types/dto/user";
+import type { TeamMembersResponseDto } from "@shared/types/dto/users/user"
 import { useQuery } from "@tanstack/react-query";
 
 export const useTeamMembers = (input: TeamMembersInput) => {

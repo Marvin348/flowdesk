@@ -3,7 +3,7 @@ import { getArrayLookup } from "@/shared/utils/getArrayLookup";
 import { isDefined } from "@/shared/utils/isDefined";
 import { useMemo } from "react";
 import { groupBy } from "@/shared/utils/groupBy";
-import { useProjectDetails } from "@/features/projects/hooks/useProjectDetails";
+import { useProjectDetails } from "@/features/projects/hooks/details/useProjectDetails";
 import type { ProjectDetailsVM } from "@/features/projects/types/projectsWithMeta";
 
 // refactor later

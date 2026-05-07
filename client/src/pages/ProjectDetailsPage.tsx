@@ -15,6 +15,8 @@ import WorkloadTable from "@/features/projects/components/projectDetailsPage/tab
 import { getProjectUserWorkload } from "@/features/users/utils/workload/getProjectUserWorkload";
 import CommentsView from "@/features/projects/components/projectDetailsPage/tabs/comments/CommentsView";
 import DetailsOverviewSkeleton from "@/features/projects/components/projectDetailsPage/skeleton/DetailsOverviewSkeleton";
+import { useProjectDetails } from "@/features/projects/hooks/details/useProjectDetails";
+import { useProjectDetailsShell } from "@/features/projects/hooks/details/useProjectDetailsShell";
 
 export type ActiveTab =
   | "overview"
@@ -23,6 +25,8 @@ export type ActiveTab =
   | "collaborators"
   | "workload"
   | "comments";
+
+// Nicht vergessen in ProjectsPage Progress zu fetchen, weil anderer key name im backend
 
 const ProjectDetailsPage = () => {
   const [searchParams, setSeatchParams] = useSearchParams();
@@ -37,16 +41,26 @@ const ProjectDetailsPage = () => {
   const projectId = id ?? "";
   const activeTab = (searchParams.get("tab") as ActiveTab) ?? "overview";
 
-  const { project, isLoading, error } = useProjectDetailsVM(projectId);
-  const teamUsers = useUsersByIds(project?.teamUserIds ?? []);
+  // const { project, isLoading, error } = useProjectDetailsVM(projectId);
+  // const teamUsers = useUsersByIds(project?.teamUserIds ?? []);
+
+  // console.log("projectVM", project);
+
+  //
+  const { data: project, isLoading, error } = useProjectDetailsShell(projectId);
+
+  // const realProject = data?.project;
+  console.log("REAL_DATA", project);
+
+  //
 
   if (isLoading) return <DetailsOverviewSkeleton />;
   if (error) return <div>Etwas ist schief gelaufen</div>;
   if (!project) return <div>Project not found</div>;
 
-  const workloadStats = getProjectUserWorkload(project.tasks);
-  const progress = getProgressResult(project.tasks);
-  const attachments = project.tasks.flatMap((t) => t.attachments);
+  // const workloadStats = getProjectUserWorkload(project.tasks);
+  // const progress = getProgressResult(project.tasks);
+  // const attachments = project.tasks.flatMap((t) => t.attachments);
 
   const toggleCollaboratorSelection = (id: string) =>
     setSelectedCollaboratorIds((prev) =>
@@ -64,38 +78,36 @@ const ProjectDetailsPage = () => {
       case "overview":
         return (
           <Overview
-            project={project}
-            progress={progress}
-            collaborator={teamUsers}
             onCreateTask={handleCreateTask}
             inviteOpen={() => setIsInviteOpen(true)}
             onNavigate={navigateTab}
-          />
-        );
-
-      case "files":
-        return <AttachmentsView attachments={attachments} />;
-
-      case "list":
-        return <ListView tasks={project.tasks} />;
-
-      case "collaborators":
-        return (
-          <CollaboratorsView
             projectId={project.id}
-            collaborator={teamUsers}
-            onCreateTask={handleCreateTask}
-            toggleBulk={toggleCollaboratorSelection}
-            selectedCollaboratorIds={selectedCollaboratorIds}
-            onClearSelection={handleClearSelection}
           />
         );
 
-      case "workload":
-        return <WorkloadTable stats={workloadStats} variant="full" />;
+      // case "files":
+      //   return <AttachmentsView attachments={attachments} />;
 
-      case "comments":
-        return <CommentsView tasks={project.tasks} />;
+      // case "list":
+      //   return <ListView tasks={project.tasks} />;
+
+      // case "collaborators":
+      //   return (
+      //     <CollaboratorsView
+      //       projectId={project.id}
+      //       collaborator={teamUsers}
+      //       onCreateTask={handleCreateTask}
+      //       toggleBulk={toggleCollaboratorSelection}
+      //       selectedCollaboratorIds={selectedCollaboratorIds}
+      //       onClearSelection={handleClearSelection}
+      //     />
+      //   );
+
+      // case "workload":
+      //   return <WorkloadTable stats={workloadStats} variant="full" />;
+
+      // case "comments":
+      //   return <CommentsView tasks={project.tasks} />;
     }
   };
   return (
@@ -103,7 +115,6 @@ const ProjectDetailsPage = () => {
       <div className="mb-6">
         <ProjectDetailsHeader
           project={project}
-          progress={progress}
           onOpen={() => setIsInviteOpen(true)}
         />
       </div>
@@ -120,7 +131,7 @@ const ProjectDetailsPage = () => {
         isOpen={isAddTaskOpen}
         onClose={() => setIsAddTaskOpen(false)}
         projectId={projectId}
-        teamUserIds={project.teamUserIds ?? []}
+        teamUserIds={project.invitedUserIds ?? []}
         initialCollaboratorIds={selectedCollaboratorIds}
       />
 
@@ -128,7 +139,7 @@ const ProjectDetailsPage = () => {
         <InviteUserModal
           onClose={() => setIsInviteOpen(false)}
           onInviteOpen={isInviteOpen}
-          teamUserIds={project?.teamUserIds ?? []}
+          teamUserIds={project?.invitedUserIds ?? []}
           invitedUserIds={project.invitedUserIds ?? []}
           projectId={projectId}
         />

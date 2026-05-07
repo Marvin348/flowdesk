@@ -3,12 +3,12 @@ import OverviewCardBody from "@/shared/components/ui/overview-card/OverviewCardB
 import OverviewCardFooter from "@/shared/components/ui/overview-card/OverviewCardFooter";
 import OverviewCardHeader from "@/shared/components/ui/overview-card/OverviewCardHeader";
 import Collaborator from "@/features/users/components/card/Collaborator";
-import type { User } from "@shared/types/user";
+import type {UserPreviewDto} from "@shared/types/dto/common/userPreview.dto"
 import { UserRoundPlus } from "lucide-react";
 import { Button } from "@/shared/components/ui/button";
 
 type CollaboratorsCardProps = {
-  collaborators: User[];
+  collaborators: UserPreviewDto[];
   inviteOpen: () => void;
   onMore: () => void;
 };
@@ -30,7 +30,7 @@ const CollaboratorsCard = ({
         }
       />
       <OverviewCardBody>
-        <div className="grid grid-cols-1 max-h-60 p-4 overflow-y-auto custom-scrollbar">
+        <div className="grid grid-cols-1 p-4">
           {collaborators.map((user) => (
             <div
               key={user.id}

@@ -1,11 +1,11 @@
 import { Button } from "@/shared/components/ui/button";
 import { Plus } from "lucide-react";
-import { type UserWorkload } from "@/features/users/utils/workload/getProjectUserWorkload";
 import OverviewCardBody from "@/shared/components/ui/overview-card/OverviewCardBody";
 import OverviewCardFooter from "@/shared/components/ui/overview-card/OverviewCardFooter";
 import OverviewCardHeader from "@/shared/components/ui/overview-card/OverviewCardHeader";
-import WorkloadTable from "../../../projects/components/projectDetailsPage/tabs/workload/WorkloadTable";
+import WorkloadTable from "@/features/projects/components/projectDetailsPage/tabs/workload/WorkloadTable";
 import OverviewCard from "@/shared/components/ui/overview-card/OverviewCard";
+import type { UserWorkload } from "@shared/types/dto/workload/projectUserWorkload";
 
 type WorkloadProps = {
   stats: UserWorkload[];

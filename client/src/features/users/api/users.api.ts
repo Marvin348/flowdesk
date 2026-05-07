@@ -4,7 +4,7 @@ import type { ChangeUserRoleInput } from "@shared/types/inputs/changeUserRoleInp
 import type {
   TeamMembersResponseDto,
   UserDetailsDto,
-} from "@shared/types/dto/user";
+} from "@shared/types/dto/users/user";
 import type { TeamMembersInput } from "@shared/types/inputs/teamMemberInput";
 
 export const fetchUsers = async (): Promise<User[]> => {

@@ -4,17 +4,15 @@ import OverviewCardBody from "@/shared/components/ui/overview-card/OverviewCardB
 import OverviewCardFooter from "@/shared/components/ui/overview-card/OverviewCardFooter";
 import OverviewCardHeader from "@/shared/components/ui/overview-card/OverviewCardHeader";
 import { Plus } from "lucide-react";
-import type { Comment } from "@shared/types/comment";
 import OverviewCommentsList from "@/features/comments/components/card/OverviewCommentsList";
+import type { OverviewCommentDto } from "@shared/types/dto/projects/projectOverview.dto";
 
 type CommentsCardProps = {
-  comments: Comment[];
+  comments: OverviewCommentDto[];
   onMore: () => void;
 };
 
 const CommentsCard = ({ comments, onMore }: CommentsCardProps) => {
-  const maxComments = comments.slice(0, 5);
-
   return (
     <OverviewCard>
       <OverviewCardHeader
@@ -26,7 +24,7 @@ const CommentsCard = ({ comments, onMore }: CommentsCardProps) => {
         }
       />
       <OverviewCardBody>
-        <OverviewCommentsList comments={maxComments} />
+        <OverviewCommentsList comments={comments} />
       </OverviewCardBody>
       <OverviewCardFooter onClick={onMore} />
     </OverviewCard>

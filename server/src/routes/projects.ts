@@ -1,12 +1,7 @@
 import express from "express";
 import { readDb } from "@/utils/readDb.js";
 import { writeDb } from "@/utils/writeDb.js";
-import type {
-  ProjectDetailsDto,
-  ProjectSummariesDto,
-  ProjectOptionDto,
-  ProjectOptionsDto,
-} from "@shared/types/dto/project.js";
+import type { ProjectOptionDto } from "@shared/types/dto/projects/projectOptions.dto.js";
 import type { CreateProjectInput } from "@shared/types/inputs/createProjectInput.js";
 import { Project } from "@shared/types/project.js";
 import type { Request, Response } from "express";
@@ -15,6 +10,8 @@ import { getFilteredProjectsList } from "@/utils/projects/getFilteredProjectsLis
 import { pagination } from "@/utils/pagination.js";
 import { parseProjectQueryFilter } from "@/parsers/project-query.parsers.js";
 import type { ProjectSummaryQuery } from "@/types/querys/projectSummaryQuery.js";
+import { getProjectProgress } from "@/utils/projects/getProjectProgress.js";
+import { getProjectOverview } from "@/utils/projects/getProjectOverview.js";
 
 const router = express.Router();
 
@@ -284,21 +281,43 @@ router.get("/:id/details", (req: Request<{ id: string }>, res) => {
   }
 
   const tasks = db.tasks.filter((t) => t.projectId === projectId);
-  const tasksByIds = new Set(tasks.map((t) => t.id));
-
-  const comments = db.comments.filter((c) => tasksByIds.has(c.taskId));
-  const attachments = db.attachments.filter((a) => tasksByIds.has(a.taskId));
-
-  const users = db.users;
+  const { progressPercent } = getProjectProgress(tasks);
 
   return res.status(200).json({
     data: {
-      project,
-      tasks,
-      comments,
-      attachments,
-      users,
+      ...project,
+      progressPercent,
     },
+  });
+});
+
+// overview
+router.get("/:id/overview", (req, res) => {
+  const projectId = req.params.id;
+
+  if (!projectId) {
+    return res.status(400).json({ error: "Invalid projectId" });
+  }
+
+  const db = readDb();
+
+  const project = db.projects.find((p) => p.id === projectId);
+
+  if (!project) {
+    return res.status(404).json({ error: "project not found" });
+  }
+  const tasks = db.tasks.filter((t) => t.projectId === projectId);
+  const usersById = new Map(db.users.map((u) => [u.id, u]));
+
+  const overview = getProjectOverview({
+    project,
+    comments: db.comments,
+    tasks,
+    usersById,
+  });
+
+  return res.status(200).json({
+    data: overview,
   });
 });
 

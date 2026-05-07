@@ -1,4 +1,3 @@
-import type { UserWorkload } from "@/features/users/utils/workload/getProjectUserWorkload";
 import { getStatusFromProgress } from "@shared/utils/getStatusFromProgress";
 import { PROGRESS_STATUS } from "@/shared/constants/progress-status";
 import Avatar from "@/shared/components/ui/avatar/Avatar";
@@ -7,6 +6,8 @@ import { useState } from "react";
 import { getSortedWorkloadStats } from "@/features/users/utils/workload/getSortedWorkloadStats";
 import { WORKLOAD_TABLE_OPTIONS } from "@/shared/constants/table-header";
 import { updateSort } from "@/shared/utils/updateSort";
+import type { UserWorkload } from "@shared/types/dto/workload/projectUserWorkload";
+
 
 type WorkloadTableProps = {
   stats: UserWorkload[];

@@ -1,7 +1,6 @@
-import ProgressBar, {
-  type Progress,
-} from "@/features/projects/components/card/ProgressBar";
-import OverviewCardHeader from "../../../../shared/components/ui/overview-card/OverviewCardHeader";
+import ProgressBar from "@/features/projects/components/card/ProgressBar";
+import OverviewCardHeader from "@/shared/components/ui/overview-card/OverviewCardHeader";
+import type { Progress } from "@shared/types/dto/common/progress.dto";
 
 type ProgressBarCardProps = {
   progress: Progress;
@@ -14,7 +13,7 @@ const ProgressBarCard = ({ progress }: ProgressBarCardProps) => {
       <div className="p-4">
         <ProgressBar progress={progress} />
         <p className="mt-3 text-foreground/90">
-          {progress.percent}% Abgeschlossen
+          {progress.progressPercent}% Abgeschlossen
         </p>
       </div>
     </>

@@ -1,14 +1,14 @@
-import OverviewCard from "../../../../shared/components/ui/overview-card/OverviewCard";
-import OverviewCardHeader from "../../../../shared/components/ui/overview-card/OverviewCardHeader";
-import OverviewCardBody from "../../../../shared/components/ui/overview-card/OverviewCardBody";
-import OverviewCardFooter from "../../../../shared/components/ui/overview-card/OverviewCardFooter";
+import OverviewCard from "@/shared/components/ui/overview-card/OverviewCard";
+import OverviewCardHeader from "@/shared/components/ui/overview-card/OverviewCardHeader";
+import OverviewCardBody from "@/shared/components/ui/overview-card/OverviewCardBody";
+import OverviewCardFooter from "@/shared/components/ui/overview-card/OverviewCardFooter";
 import { useState } from "react";
 import OpenTask from "./OpenTask";
 import CarouselControls from "@/shared/components/ui/CarouselControls";
-import type { TaskWithMeta } from "@/features/tasks/types/taskWithMeta";
+import type { OverviewTaskDto } from "@shared/types/dto/projects/projectOverview.dto";
 
 type OpenTasksCardProps = {
-  tasks: TaskWithMeta[];
+  tasks: OverviewTaskDto[];
   onMore: () => void;
 };
 

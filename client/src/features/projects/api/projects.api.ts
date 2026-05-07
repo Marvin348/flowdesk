@@ -1,15 +1,15 @@
 import { apiClient } from "@/shared/api/client";
 import type { Project } from "@shared/types/project";
 import type { CreateProjectInput } from "@shared/types/inputs/createProjectInput";
-import type {
-  ProjectDetailsDto,
-  ProjectOptionsDto,
-} from "@shared/types/dto/project";
+import type { ProjectDetailsShellDto } from "@shared/types/dto/projects/projectDetailsShell.dto";
+import type { ProjectOptionsDto } from "@shared/types/dto/projects/projectOptions.dto";
 import type { UpdateProjectMembersInput } from "@shared/types/inputs/updateProjectMembersInput";
 import type { AssignUserToProjectsInput } from "@shared/types/inputs/assignUserToProjectsInput";
 import type { ProjectSummariesInput } from "@shared/types/inputs/projectSummariesInput";
-import type { ProjectSummariesResponseDto } from "@shared/types/dto/project";
+import type { ProjectSummariesResponseDto } from "@shared/types/dto/projects/projectSummary.dto";
 import type { DeleteProjectMemberInput } from "@shared/types/inputs/deleteProjectMemberInput";
+import type { ProjectOverviewDto } from "@shared/types/dto/projects/projectOverview.dto";
+
 
 export const fetchProjects = async (): Promise<Project[]> => {
   const res = await apiClient.get("/projects");
@@ -21,10 +21,17 @@ export const fetchProject = async (id: string): Promise<Project> => {
   return res.data;
 };
 
-export const fetchProjectDetails = async (
+export const fetchProjectDetailsShell = async (
   id: string,
-): Promise<ProjectDetailsDto> => {
+): Promise<ProjectDetailsShellDto> => {
   const res = await apiClient.get(`/projects/${id}/details`);
+  return res.data.data;
+};
+
+export const fetchProjectOverview = async (
+  id: string,
+): Promise<ProjectOverviewDto> => {
+  const res = await apiClient.get(`/projects/${id}/overview`);
   return res.data.data;
 };
 
