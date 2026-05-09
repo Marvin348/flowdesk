@@ -58,9 +58,9 @@ const DeleteProjectDialog = ({
         )}
 
         <div className="flex items-center justify-between">
-          <Button onClick={onClose}>Abbrechen</Button>
+          <Button onClick={onClose} variant="outline">Abbrechen</Button>
           <Button
-            className="bg-error text-white hover:bg-error/90"
+            className="bg-error text-white hover:opacity-90"
             onClick={onConfirm}
           >
             Ja, Löschen! {isPending && <Spinner />}

@@ -10,13 +10,15 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default:
-          "bg-surface text-primary-foreground hover:bg-surface/95 font-normal",
+          "bg-accent text-primary-foreground hover:opacity-90 font-normal",
         destructive:
           "bg-destructive text-white hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60",
         outline:
           "border bg-background text-foreground/90 shadow-xs font-normal hover:bg-surface/5 hover:text-black dark:bg-input/30 dark:border-input dark:hover:bg-input/50 data-[state=active]:bg-surface data-[state=active]:text-white data-[state=active]:border-transparent",
+        accentOutline:
+          "border border-accent/50 bg-card text-accent hover:bg-accent/5 font-normal shadow-xs",
         secondary:
-          "bg-secondary text-secondary-foreground hover:bg-secondary/80",
+          "bg-muted text-foreground hover:bg-muted/80 border border-border font-normal",
         ghost:
           "hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50",
         link: "text-primary underline-offset-4 hover:underline",
@@ -27,7 +29,7 @@ const buttonVariants = cva(
           "data-[state=active]:after:bg-accent data-[state=active]:text-black",
 
         filter_drawer:
-          "h-8 w-fit border font-normal duration-200 hover:bg-surface/5 data-[state=active]:bg-surface/10 data-[state=active]:text-black data-[state=active]:border-transparent",
+          "h-8 w-fit border font-normal duration-200 hover:bg-surface/5 data-[state=active]:bg-muted data-[state=active]:text-foreground data-[state=active]:border-transparent",
       },
       size: {
         default: "h-9 px-4 py-2 has-[>svg]:px-3",

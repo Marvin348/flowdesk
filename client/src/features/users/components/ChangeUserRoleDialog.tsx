@@ -47,7 +47,7 @@ const ChangeUserRoleDialog = ({
       <div className="w-[380px] bg-white rounded-md">
         {/**header */}
         <div className="flex items-center gap-4 border-b p-4">
-          <div className="bg-surface/5 p-3 rounded-md">
+          <div className="bg-muted p-3 rounded-md">
             <UserPen className="size-6" />
           </div>
 

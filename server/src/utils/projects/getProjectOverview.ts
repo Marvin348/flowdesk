@@ -4,14 +4,8 @@ import type { Task } from "@shared/types/task.js";
 import type { User } from "@shared/types/user.js";
 import { getProjectProgress } from "@/utils/projects/getProjectProgress.js";
 import { getProjectUserWorkload } from "@/utils/projects/getProjectUserWorkload.js";
-import type { ProjectOverviewDto } from "@shared/types/dto/projectOverview/projectOverview.js";
-
-const toUserPreview = (user: User) => ({
-  id: user.id,
-  name: user.name,
-  avatarKey: user.avatarKey,
-  jobTitle: user.jobTitle,
-});
+import type { ProjectOverviewDto } from "@shared/types/dto/projects/projectOverview.dto.js";
+import { toUserPreview } from "@/utils/user/toUserPreview.js";
 
 export const getProjectOverview = ({
   project,

@@ -4,18 +4,18 @@ import type { User } from "@shared/types/user";
 import { Copy, EllipsisVertical } from "lucide-react";
 import { useRef, useState } from "react";
 import { getSortedCollaborators } from "@/features/users/utils/getSortedCollaborators";
-import CollaboratorActions from "../../../../../users/components/collaboratorsView/CollaboratorActions";
-import DeleteCollaboratorDialog from "../../../../../users/components/collaboratorsView/DeleteCollaboratorDialog";
+import CollaboratorActions from "@/features/users/components/collaboratorsView/CollaboratorActions";
+import DeleteCollaboratorDialog from "@/features/users/components/collaboratorsView/DeleteCollaboratorDialog";
 import ChangeUserRoleDialog from "@/features/users/components/ChangeUserRoleDialog";
 import { USER_ROLE_OPTIONS } from "@/features/users/constants/user-role-options";
 import { useOnClickOutside } from "@/shared/hooks/useOnClickOutside";
-import BulkCollaboratorActions from "../../../../../users/components/collaboratorsView/BulkCollaboratorActions";
+import BulkCollaboratorActions from "@/features/users/components/collaboratorsView/BulkCollaboratorActions";
 import { COLLABORATOR_TABLE_OPTIONS } from "@/shared/constants/table-header";
 import { updateSort } from "@/shared/utils/updateSort";
+import { useProjectCollaborators } from "@/features/projects/hooks/details/useProjectCollaborators";
 
 type CollaboratorsViewProps = {
   projectId: string;
-  collaborator: User[];
   onCreateTask: () => void;
   selectedCollaboratorIds: string[];
   toggleBulk: (value: string) => void;
@@ -33,7 +33,6 @@ export type Actions = "change_role" | "reassign_tasks" | "delete";
 
 const CollaboratorsView = ({
   projectId,
-  collaborator,
   onCreateTask,
   selectedCollaboratorIds,
   toggleBulk,
@@ -49,8 +48,20 @@ const CollaboratorsView = ({
   const actionRef = useRef<HTMLDivElement>(null);
   useOnClickOutside(actionRef, () => setOpenActionId(null));
 
+  const {
+    data: collaborators,
+    isLoading,
+    error,
+  } = useProjectCollaborators(projectId);
+
+  if (isLoading) return <div>loading</div>;
+  if (error) return <div>Etwas ist schief gelaufen</div>;
+  if (!collaborators) return <div>Project not found</div>;
+
+  console.log("COLLABORATORS", collaborators);
+
   const toggleSortedBy = (value: SortKey) => updateSort(value, setSortedBy);
-  const sortedCollaborators = getSortedCollaborators(collaborator, sortedBy);
+  const sortedCollaborators = getSortedCollaborators(collaborators, sortedBy);
 
   const toggleOpenActionId = (id: string) =>
     setOpenActionId((prev) => (prev === id ? null : id));
@@ -70,7 +81,7 @@ const CollaboratorsView = ({
     setSelectedCollaboratorId(null);
   };
 
-  const selectedUser = collaborator.find(
+  const selectedUser = collaborators.find(
     (coll) => coll.id === selectedCollaboratorId,
   );
 
@@ -85,14 +96,14 @@ const CollaboratorsView = ({
       )}
 
       <div className="border rounded-md mt-2">
-        <div className="grid grid-cols-[2fr_2fr_1fr_1fr]  gap-4 p-2 bg-muted-foreground/10 rounded-t-md">
+        <div className="grid grid-cols-[2fr_2fr_1fr_1fr]  gap-4 p-2 bg-muted rounded-t-md">
           {COLLABORATOR_TABLE_OPTIONS.map((opt) => (
             <button
               key={opt.value}
               className="w-fit flex items-center gap-1"
               onClick={() => toggleSortedBy(opt.value)}
             >
-              {opt.label} <ChevronsUpDown className="size-4 text-surface/80" />
+              {opt.label} <ChevronsUpDown className="size-4 text-muted-foreground" />
             </button>
           ))}
         </div>
@@ -126,7 +137,7 @@ const CollaboratorsView = ({
                     <Avatar avatarKey={coll.avatarKey} size="sm" />
                     <div>
                       <p className="truncate">{coll.name}</p>
-                      <p className="text-surface/80 text-sm ">
+                      <p className="text-muted-foreground text-sm ">
                         {coll.jobTitle}
                       </p>
                     </div>
@@ -160,11 +171,7 @@ const CollaboratorsView = ({
                     className="min-w-0 justify-self-end"
                     onClick={() => handleOpenActions(coll.id)}
                   >
-                    <EllipsisVertical
-                      className="text-surface/80"
-                      strokeWidth={1}
-                      fill="black"
-                    />
+                    <EllipsisVertical strokeWidth={1} fill="black" />
                   </button>
 
                   {openActionId === coll.id && (

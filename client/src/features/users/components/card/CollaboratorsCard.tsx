@@ -23,8 +23,8 @@ const CollaboratorsCard = ({
       <OverviewCardHeader
         title="Mitarbeiter"
         action={
-          <Button onClick={inviteOpen}>
-            <UserRoundPlus className="text-accent" />
+          <Button onClick={inviteOpen} variant="accentOutline">
+            <UserRoundPlus/>
             <span>Einladen</span>
           </Button>
         }

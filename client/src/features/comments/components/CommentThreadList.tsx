@@ -1,37 +1,16 @@
-import { useCommentsWithUsers } from "@/features/comments/hooks/useCommentsWithUsers";
 import CommentThreadItem from "@/features/comments/components/CommentThreadItem";
-import type { Comment } from "@shared/types/comment";
-import { getArrayLookup } from "@/shared/utils/getArrayLookup";
 import type { CommentThreadNode } from "@/features/comments/types/commentThreadNode";
-import type { TaskWithMeta } from "@/features/tasks/types/taskWithMeta";
+import type { ProjectCommentDto } from "@shared/types/dto/projects/projectComments.dto";
 
 type CommentThreadListProps = {
-  comments: Comment[];
-  tasks: TaskWithMeta[];
+  comments: ProjectCommentDto[];
 };
 
-const CommentThreadList = ({ comments, tasks }: CommentThreadListProps) => {
-  const commentsWithUser = useCommentsWithUsers(comments);
-  const tasksById = getArrayLookup(tasks);
+const CommentThreadList = ({ comments }: CommentThreadListProps) => {
+  const rootComments = comments.filter((com) => !com.parentCommentId);
+  const replyComments = comments.filter((com) => com.parentCommentId);
 
-  // later refactor
-  const commentThreadNode: CommentThreadNode[] = commentsWithUser
-    .map((com) => {
-      const matchesTask = tasksById.get(com.taskId);
-
-      if (!matchesTask) return null;
-
-      return {
-        ...com,
-        taskTitle: matchesTask?.title,
-      };
-    })
-    .filter((com) => com !== null);
-
-  const replyComments = commentThreadNode.filter((com) => com.parentCommentId);
-  const rootComments = commentThreadNode.filter((com) => !com.parentCommentId);
-
-  const buildReplies = (comment: CommentThreadNode): CommentThreadNode => {
+  const buildReplies = (comment: ProjectCommentDto): CommentThreadNode => {
     const replies = replyComments.filter(
       (re) => re.parentCommentId === comment.id,
     );

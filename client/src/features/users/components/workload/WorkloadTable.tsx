@@ -2,12 +2,9 @@ import { getStatusFromProgress } from "@shared/utils/getStatusFromProgress";
 import { PROGRESS_STATUS } from "@/shared/constants/progress-status";
 import Avatar from "@/shared/components/ui/avatar/Avatar";
 import { ChevronsUpDown } from "lucide-react";
-import { useState } from "react";
-import { getSortedWorkloadStats } from "@/features/users/utils/workload/getSortedWorkloadStats";
 import { WORKLOAD_TABLE_OPTIONS } from "@/shared/constants/table-header";
 import { updateSort } from "@/shared/utils/updateSort";
 import type { UserWorkload } from "@shared/types/dto/workload/projectUserWorkload";
-
 
 type WorkloadTableProps = {
   stats: UserWorkload[];
@@ -22,19 +19,19 @@ export type SortedBy = {
 };
 
 const WorkloadTable = ({ stats, variant }: WorkloadTableProps) => {
-  const [sortedBy, setSortedBy] = useState<SortedBy | null>(null);
-
-  const toggleSortedBy = (value: SortKey) => updateSort(value, setSortedBy);
-  const sortedWorkloadStats = getSortedWorkloadStats(stats, sortedBy);
 
   if (!stats.length)
-    return <div className="flex items-center justify-center h-full text-muted-foreground text-sm">Keine Daten vorhanden</div>;
+    return (
+      <div className="flex items-center justify-center h-full text-muted-foreground text-sm">
+        Keine Daten vorhanden
+      </div>
+    );
 
   const isFull = variant === "full";
 
   const wrapperClass = isFull ? "border rounded-md overflow-hidden" : "";
   const headerClass = isFull
-    ? "hidden sm:grid grid-cols-[2fr_1fr_1fr_1fr] bg-muted-foreground/10 p-2 text-surface/90"
+    ? "hidden sm:grid grid-cols-[2fr_1fr_1fr_1fr] bg-muted p-2 text-muted-foreground"
     : "hidden sm:grid grid-cols-[2fr_1fr_1fr_1fr] border-b pb-1 text-sm text-muted-foreground";
 
   const desktopRowClass = isFull
@@ -49,18 +46,14 @@ const WorkloadTable = ({ stats, variant }: WorkloadTableProps) => {
     <section className={wrapperClass}>
       <div className={headerClass}>
         {WORKLOAD_TABLE_OPTIONS.map((opt) => (
-          <button
-            key={opt.value}
-            className="w-fit flex items-center gap-1"
-            onClick={() => toggleSortedBy(opt.value)}
-          >
-            {opt.label} <ChevronsUpDown className="size-4 text-surface/80" />
+          <button key={opt.value} className="w-fit flex items-center gap-1">
+            {opt.label} <ChevronsUpDown className="size-4 text-muted-foreground" />
           </button>
         ))}
       </div>
 
       <div>
-        {sortedWorkloadStats.map((sta) => {
+        {stats.map((sta) => {
           const status = getStatusFromProgress(sta.progressPercent);
 
           return (
@@ -70,11 +63,6 @@ const WorkloadTable = ({ stats, variant }: WorkloadTableProps) => {
                   <Avatar avatarKey={sta.user.avatarKey} size="sm" />
                   <div className="min-w-0">
                     <p className="truncate">{sta.user.name}</p>
-                    {isFull && sta.user.jobTitle && (
-                      <p className="text-sm text-muted-foreground truncate">
-                        {sta.user.jobTitle}
-                      </p>
-                    )}
                   </div>
                 </div>
 
@@ -108,11 +96,6 @@ const WorkloadTable = ({ stats, variant }: WorkloadTableProps) => {
                   <Avatar avatarKey={sta.user.avatarKey} size="sm" />
                   <div className="min-w-0">
                     <p className="truncate">{sta.user.name}</p>
-                    {isFull && sta.user.jobTitle && (
-                      <p className="text-sm text-muted-foreground truncate">
-                        {sta.user.jobTitle}
-                      </p>
-                    )}
                   </div>
                 </div>
 

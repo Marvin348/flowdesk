@@ -3,7 +3,7 @@ import { Plus } from "lucide-react";
 import OverviewCardBody from "@/shared/components/ui/overview-card/OverviewCardBody";
 import OverviewCardFooter from "@/shared/components/ui/overview-card/OverviewCardFooter";
 import OverviewCardHeader from "@/shared/components/ui/overview-card/OverviewCardHeader";
-import WorkloadTable from "@/features/projects/components/projectDetailsPage/tabs/workload/WorkloadTable";
+import WorkloadTable from "@/features/users/components/workload/WorkloadTable";
 import OverviewCard from "@/shared/components/ui/overview-card/OverviewCard";
 import type { UserWorkload } from "@shared/types/dto/workload/projectUserWorkload";
 
@@ -25,8 +25,8 @@ const WorkloadCard = ({
       <OverviewCardHeader
         title="Auslastung"
         action={
-          <Button onClick={onCreateTask}>
-            <Plus className="text-accent" /> <span>Aufgabe</span>
+          <Button onClick={onCreateTask} variant="accentOutline">
+            <Plus /> <span>Aufgabe</span>
           </Button>
         }
       />

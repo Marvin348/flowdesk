@@ -31,7 +31,7 @@ const SelectedPriority = ({ value, onChange }: SelectedPriorityProps) => {
             <SelectItem
               value={prio.value}
               key={prio.value}
-              className="focus:bg-surface/5"
+              className="focus:bg-muted"
             >
               {prio.label}
             </SelectItem>

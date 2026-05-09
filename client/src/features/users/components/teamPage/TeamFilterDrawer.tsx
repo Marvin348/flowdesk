@@ -37,7 +37,7 @@ const TeamFilterDrawer = ({ onClose }: TeamFilterDrawerProps) => {
     >
       <div className="flex items-center justify-between p-4 border-b">
         <h3 className="text-xl font-bold">Filter</h3>
-        <button className="text-surface/80 hover:text-black" onClick={onClose}>
+        <button className="text-muted-foreground hover:text-foreground" onClick={onClose}>
           <X className="size-5" />
         </button>
       </div>
@@ -105,7 +105,7 @@ const TeamFilterDrawer = ({ onClose }: TeamFilterDrawerProps) => {
       </div>
 
       <div className="mt-4 p-4 border-t">
-        <button className="underline text-sm text-surface/90" onClick={onReset}>
+        <button className="underline text-sm" onClick={onReset}>
           Zurücksetzten
         </button>
       </div>

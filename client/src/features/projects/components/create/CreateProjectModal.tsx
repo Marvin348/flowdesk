@@ -17,7 +17,7 @@ const CreateProjectModal = ({ onClose, isOpen }: CreateProjectModalProps) => {
         {/**Header */}
         <div className="flex items-center justify-between gap-4 border-b pb-4">
           <div className="flex items-center gap-2">
-            <div className="bg-surface/5 p-2 rounded-md">
+            <div className="bg-muted p-2 rounded-md">
               <FolderOpen />
             </div>
             <h3 className="font-medium text-xl">Neues Projekt erstellen</h3>

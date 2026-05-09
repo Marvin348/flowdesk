@@ -25,7 +25,7 @@ const CollaboratorMultiSelectField = ({
 
   return (
     <div className="p-2 border rounded-md">
-      <label className="text-surface/90 text-sm">Mitarbeiter hinzufügen</label>
+      <label className="text-foreground text-sm">Mitarbeiter hinzufügen</label>
       <div className="mt-1">
         <div>
           <CollaboratorMultiSelect

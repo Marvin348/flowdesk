@@ -21,7 +21,7 @@ const DashboardStatCard = ({ stat }: { stat: StatCardItem }) => {
     <div className="flex items-center justify-center gap-3 border-r last:border-none">
       <div className="flex flex-col gap-2 truncate">
         <div className="flex items-center gap-4">
-          <Icon className="shrink-0 text-surface/90" />
+          <Icon className="shrink-0 text-muted-foreground" />
           <p className="font-medium text-2xl">
             {stat.id === "rate" ? `${stat.value}%` : stat.value}
           </p>

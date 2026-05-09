@@ -33,7 +33,7 @@ const ReplyForm = ({
   };
 
   return (
-    <form onSubmit={handleSubmit} className="bg-surface/5 rounded-md p-4">
+    <form onSubmit={handleSubmit} className="bg-muted rounded-md p-4">
       <textarea
         className="w-full p-2 resize-none rounded-md border-none focus:outline-none"
         value={message}
@@ -42,7 +42,7 @@ const ReplyForm = ({
       <div className="text-right">
         <Button
           size="xs"
-          className="bg-accent hover:bg-accent/95 w-20 rounded-full"
+          className="rounded-full w-20"
           type="submit"
           disabled={isPending}
         >

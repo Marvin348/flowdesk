@@ -31,7 +31,7 @@ const TeamPerformanceItem = ({
           <Avatar avatarKey={avatarKey} size="lg" />
           <div>
             <div className="flex items-center gap-2">
-              <UserRoleIcon className="size-4 text-surface/80" />
+              <UserRoleIcon className="size-4 text-muted-foreground" />
               <p className="text-lg">{name}</p>
             </div>
             <p className="text-muted-foreground text-sm">{jobTitle}</p>

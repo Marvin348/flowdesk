@@ -26,10 +26,6 @@ FlowDesk is an admin dashboard for managing projects, tasks, and team collaborat
 
 - No authentication system yet → user-specific data (e.g. favorites, pinned items) is handled on the frontend only
 - These values are not available on the backend and therefore cannot be used for server-side filtering
-- ProjectDetailsPage currently loads and distributes data for **all tabs**. This creates prop-heavy tab components and keeps tab-specific sort/filter state local.
-- Planned improvement:
-
-  Move each tab to its **own data query and URL-based query state**, so tabs fetch only what they need and keep sort/filter/page state shareable.
 
 ## ⏳ Planned Improvements
 

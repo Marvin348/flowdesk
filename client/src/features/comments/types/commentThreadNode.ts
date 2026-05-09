@@ -1,6 +1,5 @@
-import type { CommentWithUser } from "@/features/comments/types/commentWithUser";
+import type { ProjectCommentDto } from "@shared/types/dto/projects/projectComments.dto";
 
-export type CommentThreadNode = CommentWithUser & {
-  taskTitle: string;
+export type CommentThreadNode = ProjectCommentDto & {
   replies?: CommentThreadNode[];
 };

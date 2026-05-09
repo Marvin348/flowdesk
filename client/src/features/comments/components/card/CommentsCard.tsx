@@ -18,8 +18,8 @@ const CommentsCard = ({ comments, onMore }: CommentsCardProps) => {
       <OverviewCardHeader
         title="Kommentare"
         action={
-          <Button onClick={onMore}>
-            <Plus className="text-accent" /> <span>Kommentare</span>
+          <Button onClick={onMore} variant="accentOutline">
+            <Plus /> <span>Kommentare</span>
           </Button>
         }
       />

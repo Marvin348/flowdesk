@@ -34,7 +34,7 @@ const FilterDrawer = ({ onClose, isOpen }: FilterDrawerProps) => {
     >
       <div className="flex items-center justify-between p-4 border-b">
         <h3 className="text-xl font-bold">Filter</h3>
-        <button className="text-surface/80 hover:text-black" onClick={onClose}>
+        <button className="text-muted-foreground hover:text-foreground" onClick={onClose}>
           <X className="size-5" />
         </button>
       </div>
@@ -106,7 +106,7 @@ const FilterDrawer = ({ onClose, isOpen }: FilterDrawerProps) => {
       </div>
 
       <div className="mt-4 p-4 border-t">
-        <button onClick={onReset} className="underline text-sm text-surface/90">
+        <button onClick={onReset} className="underline text-sm">
           Zurücksetzten
         </button>
       </div>

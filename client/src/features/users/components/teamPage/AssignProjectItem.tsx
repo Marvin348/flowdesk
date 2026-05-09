@@ -32,9 +32,9 @@ const AssignProjectItem = ({
     >
       <p className="flex items-center gap-2">
         {isInvited ? (
-          <FolderX className="size-4 text-surface/80" />
+          <FolderX className="size-4 text-muted-foreground" />
         ) : (
-          <Folder className="size-4 text-surface/80" />
+          <Folder className="size-4 text-muted-foreground" />
         )}{" "}
         {title}
       </p>

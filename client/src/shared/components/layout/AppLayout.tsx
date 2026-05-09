@@ -13,7 +13,7 @@ const AppLayout = () => {
 
       <div className="flex min-h-screen">
         <aside className="shrink-0">
-          <div className="sticky top-0 h-screen overflow-y-auto z-100">
+          <div className="sticky top-0 h-screen overflow-y-auto z-30">
             <Sidebar
               onOpen={sidebarOpen}
               onClose={() => setSidebarOpen(false)}

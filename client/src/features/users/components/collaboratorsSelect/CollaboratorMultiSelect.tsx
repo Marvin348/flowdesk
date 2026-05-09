@@ -70,7 +70,7 @@ const CollaboratorMultiSelect = ({
         />
 
         {isDropdownOpen && (
-          <div className="absolute top-12 border bg-white p-1 w-full rounded-md shadow-2xl text-sm text-surface/90 z-30">
+          <div className="absolute top-12 border bg-white p-1 w-full rounded-md shadow-2xl text-sm text-foreground z-30">
             <>
               {maxFilteredUsers.map((user) => {
                 const isDisabled = disabledUserIds?.includes(user.id);
@@ -81,7 +81,7 @@ const CollaboratorMultiSelect = ({
                     className={`flex items-center gap-2 p-2 rounded-md ${
                       isDisabled
                         ? "cursor-not-allowed opacity-60"
-                        : "cursor-pointer hover:bg-surface/5"
+                        : "cursor-pointer hover:bg-muted"
                     }`}
                     onClick={() => getSelectUserById(user.id)}
                   >

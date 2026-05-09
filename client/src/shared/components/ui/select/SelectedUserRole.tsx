@@ -27,7 +27,7 @@ const SelectedUserRole = ({ value, onChange }: SelectedUserRoleProps) => {
             <SelectItem
               key={opt.value}
               value={opt.value}
-              className="focus:bg-surface/5"
+              className="focus:bg-muted"
             >
               {opt.label}
             </SelectItem>

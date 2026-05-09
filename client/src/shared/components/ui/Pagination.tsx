@@ -28,7 +28,7 @@ const Pagination = ({ currentPage, totalPages, setPage }: PaginationProps) => {
       {pages.map((pageNumber) => (
         <button
           key={pageNumber}
-          className={`size-8 rounded-md text-muted-foreground transition duration-200 hover:bg-surface/5 ${currentPage === pageNumber && "font-medium text-surface"}`}
+          className={`size-8 rounded-md text-muted-foreground transition duration-200 hover:bg-surface/5 ${currentPage === pageNumber && "font-medium text-foreground"}`}
           onClick={() => selectedPage(pageNumber)}
         >
           {pageNumber}

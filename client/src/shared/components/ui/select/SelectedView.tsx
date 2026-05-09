@@ -35,7 +35,7 @@ const SelectedView = ({ value, setFilter }: SelectedViewProps) => {
             <SelectItem
               key={opt.value}
               value={opt.value}
-              className="focus:bg-surface/5"
+              className="focus:bg-muted"
             >
               {opt.label}
             </SelectItem>

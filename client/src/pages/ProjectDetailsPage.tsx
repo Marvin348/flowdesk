@@ -11,12 +11,13 @@ import Overview from "@/features/projects/components/projectDetailsPage/tabs/ove
 import CollaboratorsView from "@/features/projects/components/projectDetailsPage/tabs/collaborators/CollaboratorsView";
 import AddTaskPanel from "@/features/tasks/components/create/AddTaskPanel";
 import InviteUserModal from "@/features/users/components/collaboratorsSelect/InviteUserModal";
-import WorkloadTable from "@/features/projects/components/projectDetailsPage/tabs/workload/WorkloadTable";
+import WorkloadTable from "@/features/users/components/workload/WorkloadTable";
 import { getProjectUserWorkload } from "@/features/users/utils/workload/getProjectUserWorkload";
 import CommentsView from "@/features/projects/components/projectDetailsPage/tabs/comments/CommentsView";
 import DetailsOverviewSkeleton from "@/features/projects/components/projectDetailsPage/skeleton/DetailsOverviewSkeleton";
 import { useProjectDetails } from "@/features/projects/hooks/details/useProjectDetails";
 import { useProjectDetailsShell } from "@/features/projects/hooks/details/useProjectDetailsShell";
+import WorkloadView from "@/features/projects/components/projectDetailsPage/tabs/workload/WorkloadView";
 
 export type ActiveTab =
   | "overview"
@@ -50,7 +51,7 @@ const ProjectDetailsPage = () => {
   const { data: project, isLoading, error } = useProjectDetailsShell(projectId);
 
   // const realProject = data?.project;
-  console.log("REAL_DATA", project);
+  console.log("projectSHELL", project);
 
   //
 
@@ -88,26 +89,25 @@ const ProjectDetailsPage = () => {
       // case "files":
       //   return <AttachmentsView attachments={attachments} />;
 
-      // case "list":
-      //   return <ListView tasks={project.tasks} />;
+      case "list":
+        return <ListView projectId={project.id} />;
 
-      // case "collaborators":
-      //   return (
-      //     <CollaboratorsView
-      //       projectId={project.id}
-      //       collaborator={teamUsers}
-      //       onCreateTask={handleCreateTask}
-      //       toggleBulk={toggleCollaboratorSelection}
-      //       selectedCollaboratorIds={selectedCollaboratorIds}
-      //       onClearSelection={handleClearSelection}
-      //     />
-      //   );
+      case "collaborators":
+        return (
+          <CollaboratorsView
+            projectId={project.id}
+            onCreateTask={handleCreateTask}
+            toggleBulk={toggleCollaboratorSelection}
+            selectedCollaboratorIds={selectedCollaboratorIds}
+            onClearSelection={handleClearSelection}
+          />
+        );
 
-      // case "workload":
-      //   return <WorkloadTable stats={workloadStats} variant="full" />;
+      case "workload":
+        return <WorkloadView projectId={project.id} />;
 
-      // case "comments":
-      //   return <CommentsView tasks={project.tasks} />;
+      case "comments":
+        return <CommentsView projectId={project.id} />;
     }
   };
   return (
@@ -131,7 +131,7 @@ const ProjectDetailsPage = () => {
         isOpen={isAddTaskOpen}
         onClose={() => setIsAddTaskOpen(false)}
         projectId={projectId}
-        teamUserIds={project.invitedUserIds ?? []}
+        teamUserIds={project.invitedUserIds}
         initialCollaboratorIds={selectedCollaboratorIds}
       />
 
@@ -139,8 +139,8 @@ const ProjectDetailsPage = () => {
         <InviteUserModal
           onClose={() => setIsInviteOpen(false)}
           onInviteOpen={isInviteOpen}
-          teamUserIds={project?.invitedUserIds ?? []}
-          invitedUserIds={project.invitedUserIds ?? []}
+          teamUserIds={project.invitedUserIds}
+          invitedUserIds={project.invitedUserIds}
           projectId={projectId}
         />
       )}
