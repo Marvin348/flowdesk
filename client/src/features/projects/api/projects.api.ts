@@ -1,18 +1,9 @@
 import { apiClient } from "@/shared/api/client";
 import type { Project } from "@shared/types/project";
 import type { CreateProjectInput } from "@shared/types/inputs/createProjectInput";
-import type { ProjectDetailsShellDto } from "@shared/types/dto/projects/projectDetailsShell.dto";
 import type { ProjectOptionsDto } from "@shared/types/dto/projects/projectOptions.dto";
-import type { UpdateProjectMembersInput } from "@shared/types/inputs/updateProjectMembersInput";
-import type { AssignUserToProjectsInput } from "@shared/types/inputs/assignUserToProjectsInput";
 import type { ProjectSummariesInput } from "@shared/types/inputs/projectSummariesInput";
 import type { ProjectSummariesResponseDto } from "@shared/types/dto/projects/projectSummary.dto";
-import type { DeleteProjectMemberInput } from "@shared/types/inputs/deleteProjectMemberInput";
-import type { ProjectOverviewDto } from "@shared/types/dto/projects/projectOverview.dto";
-import type { ProjectTaskDto } from "@shared/types/dto/projects/projectTasks.dto";
-import type { ProjectCollaboratorDto } from "@shared/types/dto/projects/projectCollaborators.dto";
-import type { ProjectCommentsResponseDto } from "@shared/types/dto/projects/projectComments.dto";
-import type { UserWorkload } from "@shared/types/dto/workload/projectUserWorkload";
 
 export const fetchProjects = async (): Promise<Project[]> => {
   const res = await apiClient.get("/projects");
@@ -23,49 +14,6 @@ export const fetchProject = async (id: string): Promise<Project> => {
   const res = await apiClient.get(`/projects/${id}`);
   return res.data;
 };
-// details
-export const fetchProjectDetailsShell = async (
-  id: string,
-): Promise<ProjectDetailsShellDto> => {
-  const res = await apiClient.get(`/projects/${id}/details`);
-  return res.data.data;
-};
-
-export const fetchProjectOverview = async (
-  id: string,
-): Promise<ProjectOverviewDto> => {
-  const res = await apiClient.get(`/projects/${id}/overview`);
-  return res.data.data;
-};
-
-export const fetchProjectTasks = async (
-  id: string,
-): Promise<ProjectTaskDto[]> => {
-  const res = await apiClient.get(`/projects/${id}/tasks`);
-  return res.data.data;
-};
-
-export const fetchProjectCollaborators = async (
-  id: string,
-): Promise<ProjectCollaboratorDto[]> => {
-  const res = await apiClient.get(`/projects/${id}/collaborators`);
-  return res.data.data;
-};
-
-export const fetchProjectComments = async (
-  id: string,
-): Promise<ProjectCommentsResponseDto> => {
-  const res = await apiClient.get(`/projects/${id}/comments`);
-  return res.data.data;
-};
-
-export const fetchProjectWorkload = async (
-  id: string,
-): Promise<UserWorkload[]> => {
-  const res = await apiClient.get(`/projects/${id}/workload`);
-  return res.data.data;
-};
-// end
 
 export const fetchProjectSummaries = async (
   input: ProjectSummariesInput,
@@ -96,13 +44,6 @@ export const fetchProjectsOptions = async (
   return res.data.data;
 };
 
-export const assignUserToProjects = async (
-  input: AssignUserToProjectsInput,
-): Promise<Project[]> => {
-  const res = await apiClient.patch("/projects/assign-user", input);
-  return res.data.data;
-};
-
 export const createProject = async (
   input: CreateProjectInput,
 ): Promise<Project> => {
@@ -113,21 +54,4 @@ export const createProject = async (
 export const deleteProject = async (id: string): Promise<Project> => {
   const res = await apiClient.delete(`/projects/${id}`);
   return res.data;
-};
-
-export const updateProjectMembers = async (
-  input: UpdateProjectMembersInput,
-): Promise<Project> => {
-  const res = await apiClient.patch(
-    `/projects/${input.projectId}/members`,
-    input,
-  );
-  return res.data.data;
-};
-
-export const deleteProjectMember = async (input: DeleteProjectMemberInput) => {
-  const res = await apiClient.delete(
-    `/projects/${input.projectId}/members/${input.userId}`,
-  );
-  return res.data.data;
 };

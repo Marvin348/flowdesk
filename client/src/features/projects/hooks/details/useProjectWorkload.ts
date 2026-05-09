@@ -1,4 +1,4 @@
-import { fetchProjectWorkload } from "@/features/projects/api/projects.api";
+import { fetchProjectWorkload } from "@/features/projects/api/projectDetails.api";
 import type { UserWorkload } from "@shared/types/dto/workload/projectUserWorkload";
 import { useQuery } from "@tanstack/react-query";
 

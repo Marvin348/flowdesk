@@ -1,6 +1,6 @@
 import { fetchProjectsOptions } from "@/features/projects/api/projects.api.ts";
 import { useQuery } from "@tanstack/react-query";
-import type { ProjectOptionsDto } from "@shared/types/dto/project";
+import type { ProjectOptionsDto } from "@shared/types/dto/projects/projectOptions.dto";
 
 export const useProjectOptions = (userId: string, input: string) => {
   const trimmedInput = input.trim();

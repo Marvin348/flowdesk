@@ -1,4 +1,4 @@
-import { fetchProjectDetailsShell } from "@/features/projects/api/projects.api.ts";
+import { fetchProjectDetailsShell } from "@/features/projects/api/projectDetails.api.ts";
 import { useQuery } from "@tanstack/react-query";
 import type { ProjectDetailsShellDto } from "@shared/types/dto/projects/projectDetailsShell.dto";
 

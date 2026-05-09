@@ -1,4 +1,4 @@
-import { fetchProjectTasks } from "@/features/projects/api/projects.api";
+import { fetchProjectTasks } from "@/features/projects/api/projectDetails.api";
 import type { ProjectTaskDto } from "@shared/types/dto/projects/projectTasks.dto";
 import { useQuery } from "@tanstack/react-query";
 

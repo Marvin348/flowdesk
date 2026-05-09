@@ -1,7 +1,7 @@
 import { useAppStore } from "@/store";
 import { calcPercent } from "@/shared/utils/calcPercent";
 import type { ProjectListVM } from "@/features/projects/types/projectsList";
-import type { ProjectSummariesDto } from "@shared/types/dto/project";
+import type { ProjectSummariesDto } from "@shared/types/dto/projects/projectSummary.dto";
 
 export const useProjectsListVM = (
   projects: ProjectSummariesDto[],

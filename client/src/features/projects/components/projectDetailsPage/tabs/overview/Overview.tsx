@@ -3,7 +3,7 @@ import CollaboratorsCard from "@/features/users/components/card/CollaboratorsCar
 import OpenTasksCard from "@/features/tasks/components/card/OpenTasksCard";
 import CommentsCard from "@/features/comments/components/card/CommentsCard";
 import WorkloadCard from "@/features/users/components/workload/WorkloadCard";
-import type { ActiveTab } from "@/pages/ProjectDetailsPage";
+import type { ActiveTab } from "@/features/projects/types/activeTab";
 import { useProjectOverview } from "@/features/projects/hooks/details/useProjectOverview";
 
 type OverviewProps = {

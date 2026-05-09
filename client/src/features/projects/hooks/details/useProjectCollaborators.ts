@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { fetchProjectCollaborators } from "@/features/projects/api/projects.api";
+import { fetchProjectCollaborators } from "@/features/projects/api/projectDetails.api";
 import type { ProjectCollaboratorDto } from "@shared/types/dto/projects/projectCollaborators.dto";
 
 export const useProjectCollaborators = (id: string) => {

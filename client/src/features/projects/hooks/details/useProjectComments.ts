@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import type { ProjectCommentsResponseDto } from "@shared/types/dto/projects/projectComments.dto";
-import { fetchProjectComments } from "@/features/projects/api/projects.api";
+import { fetchProjectComments } from "@/features/projects/api/projectDetails.api";
 
 export const useProjectComments = (id: string) => {
   const { data, isLoading, error } = useQuery<ProjectCommentsResponseDto, Error>({
