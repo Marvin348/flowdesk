@@ -1,7 +1,7 @@
 export const COLLABORATOR_TABLE_OPTIONS = [
   { label: "Name", value: "name" },
   { label: "Email", value: "email" },
-  { label: "Type", value: "type" },
+  { label: "Rolle", value: "role" },
 ] as const;
 
 export const LIST_TABLE_OPTIONS = [

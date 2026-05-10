@@ -33,7 +33,7 @@ const Overview = ({
     <div
       className={`grid gap-6 grid-cols-1 md:grid-cols-2 xl:grid-cols-3 auto-rows-auto md:auto-rows-[170px]`}
     >
-      <div className="h-full  md:row-span-2">
+      <div className="h-full md:row-span-2">
         <CollaboratorsCard
           collaborators={collaborators}
           inviteOpen={inviteOpen}

@@ -1,11 +1,23 @@
 import { useQuery } from "@tanstack/react-query";
 import { fetchProjectCollaborators } from "@/features/projects/api/projectDetails.api";
-import type { ProjectCollaboratorDto } from "@shared/types/dto/projects/projectCollaborators.dto";
+import type { ProjectCollaboratorResponseDto } from "@shared/types/dto/projects/projectCollaborators.dto";
+import type { ProjectCollaboratorsInput } from "@shared/types/inputs/projectCollaboratorsInput";
 
-export const useProjectCollaborators = (id: string) => {
-  const { data, isLoading, error } = useQuery<ProjectCollaboratorDto[], Error>({
-    queryKey: ["projects", id, "collaborators"],
-    queryFn: () => fetchProjectCollaborators(id),
+export const useProjectCollaborators = (input: ProjectCollaboratorsInput) => {
+  const { data, isLoading, error } = useQuery<
+    ProjectCollaboratorResponseDto,
+    Error
+  >({
+    queryKey: [
+      "projects",
+      input.projectId,
+      input?.sort,
+      input.page,
+      input.limit,
+      "collaborators",
+    ],
+    queryFn: () => fetchProjectCollaborators(input),
+    placeholderData: (previousData) => previousData,
   });
 
   return { data, isLoading, error };

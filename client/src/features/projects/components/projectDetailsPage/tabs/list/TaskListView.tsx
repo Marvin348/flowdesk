@@ -5,7 +5,7 @@ import type { StatusBase } from "@shared/types/StatusBase";
 import TaskRow from "@/features/tasks/components/TaskRow";
 import { getSortedList } from "@/features/tasks/utils/getSortedList";
 import { LIST_TABLE_OPTIONS } from "@/shared/constants/table-header";
-import { updateSort } from "@/shared/utils/updateSort";
+// import { updateSort } from "@/shared/utils/updateSort";
 import { useProjectTasks } from "@/features/projects/hooks/details/useProjectTasks";
 
 type SortKey = "task" | "assignee" | "dueDate" | "priority";
@@ -23,7 +23,7 @@ const TaskListView = ({ projectId }: TaskListViewProps) => {
   const [sortedBy, setSortedBy] = useState<SortedByList | null>(null);
   const [openStatus, setOpenStatus] = useState<StatusBase | null>(null);
 
-  const toggleSortedBy = (value: SortKey) => updateSort(value, setSortedBy);
+  // const toggleSortedBy = (value: SortKey) => updateSort(value, setSortedBy);
 
   const toggleOpenStatus = (value: StatusBase) =>
     setOpenStatus((prev) => (prev === value ? null : value));
@@ -43,7 +43,7 @@ const TaskListView = ({ projectId }: TaskListViewProps) => {
           <button
             key={opt.value}
             className="w-fit flex items-center gap-1"
-            onClick={() => toggleSortedBy(opt.value)}
+            // onClick={() => toggleSortedBy(opt.value)}
           >
             {opt.label} <ChevronsUpDown className="size-4 text-muted-foreground" />
           </button>
@@ -55,7 +55,7 @@ const TaskListView = ({ projectId }: TaskListViewProps) => {
           const filteredByStatus = tasks.filter(
             (task) => task.taskStatus === opt.value,
           );
-          const sortedList = getSortedList(filteredByStatus, sortedBy);
+          // const sortedList = getSortedList(filteredByStatus, sortedBy);
 
           return (
             <div key={opt.value} className=" border-b py-4">
@@ -71,16 +71,16 @@ const TaskListView = ({ projectId }: TaskListViewProps) => {
                 {opt.label}
 
                 <span className="text-muted-foreground font-medium">
-                  {sortedList.length}
+                  {filteredByStatus.length}
                 </span>
               </button>
 
               {openStatus === opt.value && (
                 <div className="mt-2 p-4 rounded-md bg-muted-foreground/10">
-                  {sortedList.map((task) => (
+                  {filteredByStatus.map((task) => (
                     <TaskRow key={task.id} task={task} />
                   ))}
-                  {sortedList.length === 0 && (
+                  {filteredByStatus.length === 0 && (
                     <div className="text-sm text-muted-foreground">
                       Keine Daten vorhanden
                     </div>

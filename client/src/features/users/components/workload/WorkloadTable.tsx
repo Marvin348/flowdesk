@@ -3,7 +3,7 @@ import { PROGRESS_STATUS } from "@/shared/constants/progress-status";
 import Avatar from "@/shared/components/ui/avatar/Avatar";
 import { ChevronsUpDown } from "lucide-react";
 import { WORKLOAD_TABLE_OPTIONS } from "@/shared/constants/table-header";
-import { updateSort } from "@/shared/utils/updateSort";
+// import { updateSort } from "@/shared/utils/updateSort";
 import type { UserWorkload } from "@shared/types/dto/workload/projectUserWorkload";
 
 type WorkloadTableProps = {

@@ -1,9 +1,12 @@
 import Avatar from "@/shared/components/ui/avatar/Avatar";
-import { ChevronsUpDown } from "lucide-react";
-import type { User } from "@shared/types/user";
-import { Copy, EllipsisVertical } from "lucide-react";
+import {
+  Copy,
+  EllipsisVertical,
+  ArrowDownAZ,
+  ArrowUpAZ,
+  ChevronsUpDown,
+} from "lucide-react";
 import { useRef, useState } from "react";
-import { getSortedCollaborators } from "@/features/users/utils/getSortedCollaborators";
 import CollaboratorActions from "@/features/users/components/collaboratorsView/CollaboratorActions";
 import DeleteCollaboratorDialog from "@/features/users/components/collaboratorsView/DeleteCollaboratorDialog";
 import ChangeUserRoleDialog from "@/features/users/components/ChangeUserRoleDialog";
@@ -11,8 +14,9 @@ import { USER_ROLE_OPTIONS } from "@/features/users/constants/user-role-options"
 import { useOnClickOutside } from "@/shared/hooks/useOnClickOutside";
 import BulkCollaboratorActions from "@/features/users/components/collaboratorsView/BulkCollaboratorActions";
 import { COLLABORATOR_TABLE_OPTIONS } from "@/shared/constants/table-header";
-import { updateSort } from "@/shared/utils/updateSort";
 import { useProjectCollaborators } from "@/features/projects/hooks/details/useProjectCollaborators";
+import { useProjectCollaboratorQueryState } from "@/features/projects/hooks/sortedBy/useProjectCollaboratorQueryState";
+import Pagination from "@/shared/components/ui/Pagination";
 
 type CollaboratorsViewProps = {
   projectId: string;
@@ -22,13 +26,7 @@ type CollaboratorsViewProps = {
   onClearSelection: () => void;
 };
 
-type SortKey = "name" | "email" | "type";
-
-export type SortedByCollaborators = {
-  sortKey: SortKey;
-  sortDirection: "asc" | "desc";
-};
-
+export type CollaboratorSortKey = "name" | "email" | "role";
 export type Actions = "change_role" | "reassign_tasks" | "delete";
 
 const CollaboratorsView = ({
@@ -38,30 +36,35 @@ const CollaboratorsView = ({
   toggleBulk,
   onClearSelection,
 }: CollaboratorsViewProps) => {
-  const [sortedBy, setSortedBy] = useState<SortedByCollaborators | null>(null);
   const [openActionId, setOpenActionId] = useState<string | null>(null);
   const [selectedCollaboratorId, setSelectedCollaboratorId] = useState<
     string | null
   >(null);
   const [activeAction, setActiveAction] = useState<Actions | null>(null);
 
+  const { page, collaboratorsSort, actions } =
+    useProjectCollaboratorQueryState();
+
   const actionRef = useRef<HTMLDivElement>(null);
   useOnClickOutside(actionRef, () => setOpenActionId(null));
 
-  const {
-    data: collaborators,
-    isLoading,
-    error,
-  } = useProjectCollaborators(projectId);
+  const input = {
+    projectId,
+    sort: collaboratorsSort,
+    page,
+    limit: 9,
+  };
+
+  const { data, isLoading, error } = useProjectCollaborators(input);
+
+  const collaborators = data?.items ?? [];
+  const totalPages = data?.totalPages ?? 1;
 
   if (isLoading) return <div>loading</div>;
   if (error) return <div>Etwas ist schief gelaufen</div>;
   if (!collaborators) return <div>Project not found</div>;
 
-  console.log("COLLABORATORS", collaborators);
-
-  const toggleSortedBy = (value: SortKey) => updateSort(value, setSortedBy);
-  const sortedCollaborators = getSortedCollaborators(collaborators, sortedBy);
+  console.log("COLLABORATORS", data);
 
   const toggleOpenActionId = (id: string) =>
     setOpenActionId((prev) => (prev === id ? null : id));
@@ -86,7 +89,7 @@ const CollaboratorsView = ({
   );
 
   return (
-    <section>
+    <section className="flex flex-1 flex-col">
       {selectedCollaboratorIds.length > 0 && (
         <BulkCollaboratorActions
           collaboratorCount={selectedCollaboratorIds.length}
@@ -101,15 +104,18 @@ const CollaboratorsView = ({
             <button
               key={opt.value}
               className="w-fit flex items-center gap-1"
-              onClick={() => toggleSortedBy(opt.value)}
+              onClick={() => actions.toggleCollaboratorSort(opt.value)}
             >
-              {opt.label} <ChevronsUpDown className="size-4 text-muted-foreground" />
+              {opt.label}
+              <span>
+                <ArrowUpAZ className="size-4 text-muted-foreground" />
+              </span>
             </button>
           ))}
         </div>
 
         <div>
-          {sortedCollaborators.map((coll) => {
+          {collaborators.map((coll) => {
             const option = USER_ROLE_OPTIONS[coll.role];
 
             const CollaboratorIcon = option.icon;
@@ -158,7 +164,7 @@ const CollaboratorsView = ({
 
                 <div className="min-w-0 hidden md:flex items-center">
                   <div className="flex items-center gap-2 ">
-                    <CollaboratorIcon className="text-surface/80 size-4" />
+                    <CollaboratorIcon className="text-foreground size-4" />
                     <p className="truncate ">{collaboratorLabel}</p>
                   </div>
                 </div>
@@ -182,6 +188,14 @@ const CollaboratorsView = ({
             );
           })}
         </div>
+      </div>
+
+      <div className="mt-auto pt-4 flex justify-end">
+        <Pagination
+          setPage={actions.setPage}
+          currentPage={page}
+          totalPages={totalPages}
+        />
       </div>
 
       {activeAction === "delete" && selectedUser && (

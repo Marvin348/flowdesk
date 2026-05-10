@@ -21,10 +21,8 @@ const AppLayout = () => {
           </div>
         </aside>
 
-        <main className="min-w-0 flex-1 p-6">
-          <div className="h-full">
+        <main className="min-w-0 flex-1 p-6 flex flex-col">
             <Outlet />
-          </div>
         </main>
       </div>
     </div>

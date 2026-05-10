@@ -87,7 +87,7 @@ const ProjectDetailsPage = () => {
     }
   };
   return (
-    <>
+    <div className="flex min-h-0 flex-1 flex-col">
       <div className="mb-6">
         <ProjectDetailsHeader
           project={project}
@@ -99,7 +99,7 @@ const ProjectDetailsPage = () => {
         <ProjectTabs activeTab={activeTab} onChange={navigateTab} />
       </div>
 
-      <div className="mt-6">
+      <div className="mt-6 flex flex-1 flex-col">
         <TabViewResult />
       </div>
 
@@ -120,7 +120,7 @@ const ProjectDetailsPage = () => {
           projectId={projectId}
         />
       )}
-    </>
+    </div>
   );
 };
 export default ProjectDetailsPage;

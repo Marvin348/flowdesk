@@ -5,7 +5,12 @@ import { getProjectComments } from "@/utils/projects/getProjectComments.js";
 import { getProjectUserWorkload } from "@/utils/projects/getProjectUserWorkload.js";
 import { getProjectTasks } from "@/utils/projects/getProjectTasks.js";
 import { getProjectProgress } from "@/utils/projects/getProjectProgress.js";
+import { parseCollaboratorSort } from "@shared/parsers/parseCollaboratorSort.js";
+import type { ProjectCollaboratorsQuery } from "@/types/querys/projectCollaboratorsQuery.js";
 import { Request } from "express";
+import { ProjectCollaboratorSort } from "@shared/types/sort/projectCollaboratorSort.js";
+import { sortedCollaborators } from "@/utils/projects/sortedCollaborators.js";
+import { pagination } from "@/utils/pagination.js";
 
 const router = express.Router();
 
@@ -87,28 +92,45 @@ router.get("/:id/tasks", (req, res) => {
   return res.status(200).json({ data: projectTasks });
 });
 
-router.get("/:id/collaborators", (req, res) => {
-  const projectId = req.params.id;
+router.get(
+  "/:id/collaborators",
+  (req: Request<{ id: string }, {}, {}, ProjectCollaboratorsQuery>, res) => {
+    const projectId = req.params.id;
+    const { collaboratorsSort, page, limit } = req.query;
 
-  if (!projectId) {
-    return res.status(400).json({ error: "Invalid projectId" });
-  }
+    if (!projectId) {
+      return res.status(400).json({ error: "Invalid projectId" });
+    }
 
-  const db = readDb();
+    const parsedCollaboratorSort =
+      parseCollaboratorSort(collaboratorsSort);
 
-  const project = db.projects.find((p) => p.id === projectId);
+    const db = readDb();
 
-  if (!project) {
-    return res.status(404).json({ error: "project not found" });
-  }
+    const project = db.projects.find((p) => p.id === projectId);
 
-  const invitedUserIdsSet = new Set(project.invitedUserIds);
-  const collaborators = db.users.filter((user) =>
-    invitedUserIdsSet.has(user.id),
-  );
+    if (!project) {
+      return res.status(404).json({ error: "project not found" });
+    }
 
-  return res.status(200).json({ data: collaborators });
-});
+    const invitedUserIdsSet = new Set(project.invitedUserIds);
+    const collaborators = db.users.filter((user) =>
+      invitedUserIdsSet.has(user.id),
+    );
+
+    const sorted = sortedCollaborators(collaborators, parsedCollaboratorSort);
+
+    let currentPage = Number(page);
+    let currentLimit = Number(limit);
+
+    if (isNaN(currentPage)) currentPage = 1;
+    if (isNaN(currentLimit)) currentLimit = 9;
+
+    const paginationItems = pagination(sorted, currentPage, currentLimit);
+
+    return res.status(200).json({ data: paginationItems });
+  },
+);
 
 router.get("/:id/comments", (req, res) => {
   const projectId = req.params.id;
