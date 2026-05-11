@@ -3,14 +3,14 @@ import { Task } from "@shared/types/task.js";
 import { User } from "@shared/types/user.js";
 import type {
   ProjectCommentDto,
-  ProjectCommentsResponseDto,
+  ProjectCommentsDto,
 } from "@shared/types/dto/projects/projectComments.dto.js";
 
 export const getProjectComments = (
   comments: Comment[],
   tasksById: Map<string, Task>,
   usersById: Map<string, User>,
-): ProjectCommentsResponseDto => {
+): ProjectCommentsDto => {
   const matchesComments: ProjectCommentDto[] = comments.map((c) => {
     const user = usersById.get(c.userId);
     const task = tasksById.get(c.taskId)!;

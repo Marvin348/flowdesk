@@ -15,7 +15,7 @@ import { useOnClickOutside } from "@/shared/hooks/useOnClickOutside";
 import BulkCollaboratorActions from "@/features/users/components/collaboratorsView/BulkCollaboratorActions";
 import { COLLABORATOR_TABLE_OPTIONS } from "@/shared/constants/table-header";
 import { useProjectCollaborators } from "@/features/projects/hooks/details/useProjectCollaborators";
-import { useProjectCollaboratorQueryState } from "@/features/projects/hooks/sortedBy/useProjectCollaboratorQueryState";
+import { useProjectCollaboratorSearchParams } from "@/features/projects/hooks/searchParams/useProjectCollaboratorSearchParams";
 import Pagination from "@/shared/components/ui/Pagination";
 
 type CollaboratorsViewProps = {
@@ -43,7 +43,7 @@ const CollaboratorsView = ({
   const [activeAction, setActiveAction] = useState<Actions | null>(null);
 
   const { page, collaboratorsSort, actions } =
-    useProjectCollaboratorQueryState();
+    useProjectCollaboratorSearchParams();
 
   const actionRef = useRef<HTMLDivElement>(null);
   useOnClickOutside(actionRef, () => setOpenActionId(null));

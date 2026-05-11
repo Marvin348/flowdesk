@@ -1,5 +1,3 @@
-import { emitKeypressEvents } from "node:readline";
-
 export type ProjectCommentDto = {
   id: string;
   message: string;
@@ -23,7 +21,15 @@ export type TaskOptionDto = {
   taskTitle: string;
 };
 
+export type ProjectCommentsDto = {
+  comments: ProjectCommentDto[];
+  taskOptions: TaskOptionDto[];
+};
+
 export type ProjectCommentsResponseDto = {
   comments: ProjectCommentDto[];
   taskOptions: TaskOptionDto[];
+
+  totalItems: number;
+  hasMore: boolean;
 };

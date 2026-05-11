@@ -1,29 +1,27 @@
-import type { Comment } from "@shared/types/comment";
 import { ArrowDownUp, ChevronDown } from "lucide-react";
-import type { SortOrder } from "@/features/projects/components/projectDetailsPage/tabs/comments/CommentsView";
+import type { ProjectCommentsSort } from "@shared/types/sort/projectCommentsSort";
 
 type CommentsHeaderProps = {
-  comments: Comment[];
+  commentsSort: ProjectCommentsSort;
+  commentsCount: number;
   toggleOrder: () => void;
-  sortOrder: SortOrder;
 };
 
 const CommentsHeader = ({
-  comments,
+  commentsSort,
+  commentsCount,
   toggleOrder,
-  sortOrder,
 }: CommentsHeaderProps) => {
   return (
     <div className="flex items-center justify-between">
       <div className="flex items-end gap-2">
         <h4 className="text-xl font-medium">Kommentare</h4>
-        <span className="text-accent font-semibold">{comments.length}</span>
+        <span className="text-accent font-semibold">{commentsCount}</span>
       </div>
 
       <button className="text-sm flex items-center gap-1" onClick={toggleOrder}>
-        <ArrowDownUp className="size-4 text-surface/90" />
-        {sortOrder === "newest" ? "Älteste zuerst" : "Neuste zuerst"}
-        <ChevronDown className="size-4 text-surface/90" />
+        <ArrowDownUp className="size-4 text-muted-foreground" />
+        {commentsSort === "newest" ? "Älteste zuerst" : "Neueste zuerst"}
       </button>
     </div>
   );

@@ -1,28 +1,15 @@
 import { useSearchParams } from "react-router";
 import type { CollaboratorSortKey } from "@/features/projects/components/projectDetailsPage/tabs/collaborators/CollaboratorsView";
 import { parseCollaboratorSort } from "@shared/parsers/parseCollaboratorSort";
+import { updateQueryParam } from "@/shared/utils/updateQueryParam";
 
-export const useProjectCollaboratorQueryState = () => {
+export const useProjectCollaboratorSearchParams = () => {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const collaboratorsSortParam = searchParams.get("collaboratorsSort");
   const collaboratorsSort = parseCollaboratorSort(collaboratorsSortParam);
 
   const page = Number(searchParams.get("page")) || 1;
-
-  const setQueryParam = (key: string, value?: string) => {
-    setSearchParams((prev) => {
-      const params = new URLSearchParams(prev);
-
-      if (!value) {
-        params.delete(key);
-      } else {
-        params.set(key, value);
-      }
-
-      return params;
-    });
-  };
 
   const toggleCollaboratorSort = (sortKey: CollaboratorSortKey) => {
     setSearchParams((prev) => {
@@ -39,7 +26,8 @@ export const useProjectCollaboratorQueryState = () => {
     });
   };
 
-  const setPage = (newPage: number) => setQueryParam("page", String(newPage));
+  const setPage = (newPage: number) =>
+    setSearchParams((prev) => updateQueryParam(prev, "page", String(newPage)));
 
   return {
     page,

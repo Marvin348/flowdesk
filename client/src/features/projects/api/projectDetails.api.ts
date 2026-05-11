@@ -6,6 +6,7 @@ import type { ProjectOverviewDto } from "@shared/types/dto/projects/projectOverv
 import type { ProjectCommentsResponseDto } from "@shared/types/dto/projects/projectComments.dto";
 import type { ProjectCollaboratorResponseDto } from "@shared/types/dto/projects/projectCollaborators.dto";
 import type { ProjectCollaboratorsInput } from "@shared/types/inputs/projectCollaboratorsInput";
+import type { ProjectCommentsInput } from "@shared/types/inputs/projectCommentsInput";
 
 export const fetchProjectDetailsShell = async (
   id: string,
@@ -47,9 +48,19 @@ export const fetchProjectCollaborators = async (
 };
 
 export const fetchProjectComments = async (
-  id: string,
+  input: ProjectCommentsInput,
 ): Promise<ProjectCommentsResponseDto> => {
-  const res = await apiClient.get(`/projects/${id}/comments`);
+  const params = new URLSearchParams({
+    limit: String(input.limit),
+  });
+
+  if (input.sort) {
+    params.set("commentsSort", input.sort);
+  }
+
+  const res = await apiClient.get(
+    `/projects/${input.projectId}/comments?${params.toString()}`,
+  );
   return res.data.data;
 };
 

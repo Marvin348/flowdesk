@@ -96,7 +96,7 @@ npm run dev
 </p>
 
 <p align="center">
-  <img src="./screenshots/flowdesk-projects.png" width="50%">
+  <!-- <img src="./screenshots/flowdesk-projects.png" width="50%"> -->
   <img src="./screenshots/flowdesk-collaborator.png" width="50%">
 </p>
 
@@ -104,3 +104,5 @@ npm run dev
   <img src="./screenshots/flowdesk-add-task.png" width="50%">
   <img src="./screenshots/flowdesk-team.png" width="50%">
 </p>
+
+![add Project](./screenshots/flowdesk-newProject.png)

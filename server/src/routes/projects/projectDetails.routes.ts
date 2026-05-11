@@ -8,9 +8,11 @@ import { getProjectProgress } from "@/utils/projects/getProjectProgress.js";
 import { parseCollaboratorSort } from "@shared/parsers/parseCollaboratorSort.js";
 import type { ProjectCollaboratorsQuery } from "@/types/querys/projectCollaboratorsQuery.js";
 import { Request } from "express";
-import { ProjectCollaboratorSort } from "@shared/types/sort/projectCollaboratorSort.js";
 import { sortedCollaborators } from "@/utils/projects/sortedCollaborators.js";
 import { pagination } from "@/utils/pagination.js";
+import type { ProjectCommentsQuery } from "@/types/querys/projectCommentsQuery.js";
+import { sortedComments } from "@/utils/projects/sortedComments.js";
+import { parseProjectCommentsSort } from "@shared/parsers/parseProjectCommentsSort.js";
 
 const router = express.Router();
 
@@ -102,8 +104,7 @@ router.get(
       return res.status(400).json({ error: "Invalid projectId" });
     }
 
-    const parsedCollaboratorSort =
-      parseCollaboratorSort(collaboratorsSort);
+    const parsedCollaboratorSort = parseCollaboratorSort(collaboratorsSort);
 
     const db = readDb();
 
@@ -132,31 +133,50 @@ router.get(
   },
 );
 
-router.get("/:id/comments", (req, res) => {
-  const projectId = req.params.id;
+router.get(
+  "/:id/comments",
+  (req: Request<{ id: string }, {}, {}, ProjectCommentsQuery>, res) => {
+    const projectId = req.params.id;
 
-  if (!projectId) {
-    return res.status(400).json({ error: "Invalid projectId" });
-  }
+    const { commentsSort } = req.query;
 
-  const db = readDb();
+    const parseCommentsSort = parseProjectCommentsSort(commentsSort);
 
-  const project = db.projects.find((p) => p.id === projectId);
+    if (!projectId) {
+      return res.status(400).json({ error: "Invalid projectId" });
+    }
 
-  if (!project) {
-    return res.status(404).json({ error: "project not found" });
-  }
+    const db = readDb();
 
-  const tasks = db.tasks.filter((t) => t.projectId === projectId);
+    const project = db.projects.find((p) => p.id === projectId);
 
-  const usersById = new Map(db.users.map((u) => [u.id, u]));
-  const tasksById = new Map(tasks.map((t) => [t.id, t]));
+    if (!project) {
+      return res.status(404).json({ error: "project not found" });
+    }
 
-  const comments = db.comments.filter((c) => tasksById.has(c.taskId));
-  const projectComments = getProjectComments(comments, tasksById, usersById);
+    const tasks = db.tasks.filter((t) => t.projectId === projectId);
 
-  return res.status(200).json({ data: projectComments });
-});
+    const usersById = new Map(db.users.map((u) => [u.id, u]));
+    const tasksById = new Map(tasks.map((t) => [t.id, t]));
+
+    const comments = db.comments.filter((c) => tasksById.has(c.taskId));
+    const projectComments = getProjectComments(comments, tasksById, usersById);
+
+    const limit = Number(req.query.limit) || 8;
+
+    const sorted = sortedComments(projectComments.comments, parseCommentsSort);
+    const limited = sorted.slice(0, limit);
+
+    return res.status(200).json({
+      data: {
+        comments: limited,
+        taskOptions: projectComments.taskOptions,
+        totalItems: sorted.length,
+        hasMore: limited.length < sorted.length,
+      },
+    });
+  },
+);
 
 router.get("/:id/workload", (req, res) => {
   const projectId = req.params.id;

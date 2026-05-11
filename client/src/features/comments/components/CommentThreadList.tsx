@@ -4,9 +4,10 @@ import type { ProjectCommentDto } from "@shared/types/dto/projects/projectCommen
 
 type CommentThreadListProps = {
   comments: ProjectCommentDto[];
+  projectId: string;
 };
 
-const CommentThreadList = ({ comments }: CommentThreadListProps) => {
+const CommentThreadList = ({ comments, projectId }: CommentThreadListProps) => {
   const rootComments = comments.filter((com) => !com.parentCommentId);
   const replyComments = comments.filter((com) => com.parentCommentId);
 
@@ -26,7 +27,7 @@ const CommentThreadList = ({ comments }: CommentThreadListProps) => {
   return (
     <div>
       {threadComment.map((com) => (
-        <CommentThreadItem key={com.id} comment={com} />
+        <CommentThreadItem key={com.id} comment={com} projectId={projectId}/>
       ))}
       {comments.length === 0 && (
         <div className="h-full flex items-center justify-center text-muted-foreground">

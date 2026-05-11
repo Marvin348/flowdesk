@@ -1,10 +1,10 @@
 import { List, Grid3x3 } from "lucide-react";
-import { useProjectQueryState } from "@/features/projects/hooks/useProjectQueryState";
+import { useProjectSearchParams } from "@/features/projects/hooks/searchParams/useProjectSearchParams";
 
 export type CardView = "card" | "list";
 
 const ViewToggle = () => {
-  const { cardView, actions } = useProjectQueryState();
+  const { cardView, actions } = useProjectSearchParams();
 
   return (
     <div className="flex border h-8 rounded-md">

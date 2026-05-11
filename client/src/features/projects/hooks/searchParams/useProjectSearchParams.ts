@@ -10,7 +10,7 @@ import {
   parseHasAttachmentsParam,
 } from "@/features/projects/utils/projectQueryParsers";
 
-export const useProjectQueryState = () => {
+export const useProjectSearchParams = () => {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const page = Number(searchParams.get("page")) || 1;

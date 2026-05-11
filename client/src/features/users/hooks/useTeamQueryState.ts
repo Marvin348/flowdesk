@@ -12,6 +12,7 @@ import {
   parseUserRoleParam,
 } from "@/features/users/utils/teamQueryParsers";
 import { useSearchParams } from "react-router";
+import { updateQueryParam } from "@/shared/utils/updateQueryParam";
 
 export const useTeamQueryState = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -29,24 +30,6 @@ export const useTeamQueryState = () => {
   const progress: TeamProgress | undefined = parseProgressParam(progressParam);
   const activity: TeamActivity | "all" = parseActivityParams(activityParam);
 
-  const setQueryParam = (key: string, value?: string) => {
-    setSearchParams((prev) => {
-      const params = new URLSearchParams(prev);
-
-      if (!value) {
-        params.delete(key);
-      } else {
-        params.set(key, value);
-      }
-
-      if (key !== "page") {
-        params.set("page", "1");
-      }
-
-      return params;
-    });
-  };
-
   const teamFilter: TeamUiFilter = {
     role,
     sort,
@@ -60,9 +43,12 @@ export const useTeamQueryState = () => {
   ) => {
     const nextValue = teamFilter[key] === value ? undefined : value;
 
-    return setQueryParam(
-      key,
-      nextValue === undefined ? undefined : String(nextValue),
+    return setSearchParams((prev) =>
+      updateQueryParam(
+        prev,
+        key,
+        nextValue === undefined ? undefined : String(nextValue),
+      ),
     );
   };
 
@@ -80,8 +66,11 @@ export const useTeamQueryState = () => {
       return params;
     });
 
-  const setPage = (value: number) => setQueryParam("page", String(value));
-  const setSearch = (value: string) => setQueryParam("search", value);
+  const setPage = (value: number) =>
+    setSearchParams((prev) => updateQueryParam(prev, "page", String(value)));
+
+  const setSearch = (value: string) =>
+    setSearchParams((prev) => updateQueryParam(prev, "search", value));
 
   return {
     page,

@@ -5,7 +5,7 @@ import { STATUS_OPTIONS } from "@/shared/constants/status-options";
 import { useRef } from "react";
 import { useScrollLock } from "@/shared/hooks/useScrollLock";
 import { useOnClickOutside } from "@/shared/hooks/useOnClickOutside";
-import { useProjectQueryState } from "@/features/projects/hooks/useProjectQueryState";
+import { useProjectSearchParams } from "@/features/projects/hooks/searchParams/useProjectSearchParams";
 
 type FilterDrawerProps = {
   onClose: () => void;
@@ -14,7 +14,7 @@ type FilterDrawerProps = {
 const FilterDrawer = ({ onClose, isOpen }: FilterDrawerProps) => {
   useScrollLock(isOpen);
 
-  const { filter, actions } = useProjectQueryState();
+  const { filter, actions } = useProjectSearchParams();
 
   const filterRef = useRef<HTMLDivElement>(null);
   useOnClickOutside(filterRef, () => onClose());
@@ -34,7 +34,10 @@ const FilterDrawer = ({ onClose, isOpen }: FilterDrawerProps) => {
     >
       <div className="flex items-center justify-between p-4 border-b">
         <h3 className="text-xl font-bold">Filter</h3>
-        <button className="text-muted-foreground hover:text-foreground" onClick={onClose}>
+        <button
+          className="text-muted-foreground hover:text-foreground"
+          onClick={onClose}
+        >
           <X className="size-5" />
         </button>
       </div>

@@ -3,10 +3,14 @@ import { useState } from "react";
 import { useCreateComment } from "@/features/comments/hooks/useCreateComment";
 import SelectedTask from "@/shared/components/ui/select/SelectedTask";
 import { Spinner } from "@/shared/components/ui/spinner";
-import type { TaskWithMeta } from "@/features/tasks/types/taskWithMeta";
-import type {TaskOptionDto} from "@shared/types/dto/projects/projectComments.dto"
+import type { TaskOptionDto } from "@shared/types/dto/projects/projectComments.dto";
 
-const CommentForm = ({ taskOptions }: { taskOptions: TaskOptionDto[] }) => {
+type CommentFormProps = {
+  taskOptions: TaskOptionDto[];
+  projectId: string;
+};
+
+const CommentForm = ({ taskOptions, projectId }: CommentFormProps) => {
   const [message, setMessage] = useState("");
   const [selectedTaskId, setSelectedTaskId] = useState("");
   const [taskErrorMessage, setTaskErrorMessage] = useState<string | null>(null);
@@ -33,6 +37,7 @@ const CommentForm = ({ taskOptions }: { taskOptions: TaskOptionDto[] }) => {
     const input = {
       message: message,
       taskId: selectedTaskId,
+      projectId,
     };
 
     mutate(input, {
@@ -46,7 +51,10 @@ const CommentForm = ({ taskOptions }: { taskOptions: TaskOptionDto[] }) => {
 
   return (
     <>
-      <form onSubmit={handleSubmit} className="bg-muted text-foreground placeholder:text-muted-foreground rounded-md p-4">
+      <form
+        onSubmit={handleSubmit}
+        className="bg-muted text-foreground placeholder:text-muted-foreground rounded-md p-4"
+      >
         <textarea
           className="w-full  p-2 resize-none rounded-md border-none focus:outline-none"
           placeholder="Kommentar schreiben..."
