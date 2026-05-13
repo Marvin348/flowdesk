@@ -1,8 +1,8 @@
 import Avatar from "@/shared/components/ui/avatar/Avatar";
-import type { CommentWithUser } from "@/features/comments/types/commentWithUser";
 import { formatDate } from "@/shared/utils/formatDate";
+import type { OverviewCommentDto } from "@shared/types/dto/projects/projectOverview.dto";
 
-const OverviewCommentItem = ({ comment }: { comment: CommentWithUser }) => {
+const OverviewCommentItem = ({ comment }: { comment: OverviewCommentDto }) => {
   const { user, message, createdAt } = comment;
 
   return (

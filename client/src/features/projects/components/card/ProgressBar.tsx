@@ -1,10 +1,5 @@
 import { ListChecks } from "lucide-react";
-
-export type Progress = {
-  total: number;
-  completed: number;
-  percent: number;
-};
+import type { Progress } from "@shared/types/dto/common/progress.dto";
 
 type ProgressBarProps = {
   progress: Progress;
@@ -20,12 +15,12 @@ const ProgressBar = ({ progress }: ProgressBarProps) => {
         </span>
 
         <span className="flex items-center gap-0.5 text-muted-foreground">
-          {progress.percent}%
+          {progress.progressPercent}%
         </span>
       </div>
       <div className="bg-gray-200 h-2 rounded-full">
         <div
-          style={{ width: `${progress.percent}%` }}
+          style={{ width: `${progress.progressPercent}%` }}
           className="bg-accent h-2 rounded-full"
         ></div>
       </div>

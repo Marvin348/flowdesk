@@ -54,7 +54,7 @@ const UserDetails = ({ selectedUser, onClose }: UserDetailsProps) => {
         )}
 
         <div className="p-4">
-          <button onClick={onClose} className="text-surface/80">
+          <button onClick={onClose} className="text-muted-foreground">
             <X />
           </button>
           <div className="flex flex-col items-center gap-2">

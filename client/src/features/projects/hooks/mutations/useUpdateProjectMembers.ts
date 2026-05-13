@@ -1,4 +1,4 @@
-import { updateProjectMembers } from "@/features/projects/api/projects.api";
+import { updateProjectMembers } from "@/features/projects/api/projectMembers.api";
 import type { Project } from "@shared/types/project";
 import { useQueryClient, useMutation } from "@tanstack/react-query";
 import type { UpdateProjectMembersInput } from "@shared/types/inputs/updateProjectMembersInput";

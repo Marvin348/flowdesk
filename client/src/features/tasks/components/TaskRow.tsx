@@ -1,10 +1,10 @@
-import type { TaskWithMeta } from "@/features/tasks/types/taskWithMeta";
 import { STATUS_OPTIONS } from "@/shared/constants/status-options";
 import AssigneeAvatars from "@/shared/components/ui/avatar/AvatarGroup";
 import { formatDate } from "@/shared/utils/formatDate";
 import { PRIORITY_OPTIONS } from "@/shared/constants/priority-options";
+import type { ProjectTaskDto } from "@shared/types/dto/projects/projectTasks.dto";
 
-const TaskRow = ({ task }: { task: TaskWithMeta }) => {
+const TaskRow = ({ task }: { task: ProjectTaskDto }) => {
   const { title, dueDate, taskStatus, collaborators, taskPriority } = task;
 
   return (

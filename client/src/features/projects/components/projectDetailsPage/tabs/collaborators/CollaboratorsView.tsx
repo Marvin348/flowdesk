@@ -1,56 +1,62 @@
 import Avatar from "@/shared/components/ui/avatar/Avatar";
-import { ChevronsUpDown } from "lucide-react";
-import type { User } from "@shared/types/user";
-import { Copy, EllipsisVertical } from "lucide-react";
+import { Copy, EllipsisVertical, ChevronsUpDown } from "lucide-react";
 import { useRef, useState } from "react";
-import { getSortedCollaborators } from "@/features/users/utils/getSortedCollaborators";
-import CollaboratorActions from "../../../../../users/components/collaboratorsView/CollaboratorActions";
-import DeleteCollaboratorDialog from "../../../../../users/components/collaboratorsView/DeleteCollaboratorDialog";
+import CollaboratorActions from "@/features/users/components/collaboratorsView/CollaboratorActions";
+import DeleteCollaboratorDialog from "@/features/users/components/collaboratorsView/DeleteCollaboratorDialog";
 import ChangeUserRoleDialog from "@/features/users/components/ChangeUserRoleDialog";
 import { USER_ROLE_OPTIONS } from "@/features/users/constants/user-role-options";
 import { useOnClickOutside } from "@/shared/hooks/useOnClickOutside";
-import BulkCollaboratorActions from "../../../../../users/components/collaboratorsView/BulkCollaboratorActions";
+import BulkCollaboratorActions from "@/features/users/components/collaboratorsView/BulkCollaboratorActions";
 import { COLLABORATOR_TABLE_OPTIONS } from "@/shared/constants/table-header";
-import { updateSort } from "@/shared/utils/updateSort";
+import { useProjectCollaborators } from "@/features/projects/hooks/details/useProjectCollaborators";
+import { useProjectCollaboratorSearchParams } from "@/features/projects/hooks/searchParams/useProjectCollaboratorSearchParams";
+import Pagination from "@/shared/components/ui/Pagination";
+import ProjectCollaboratorSkeleton from "@/features/projects/components/projectDetailsPage/skeleton/ProjectCollaboratorSkeleton";
 
 type CollaboratorsViewProps = {
   projectId: string;
-  collaborator: User[];
   onCreateTask: () => void;
   selectedCollaboratorIds: string[];
   toggleBulk: (value: string) => void;
   onClearSelection: () => void;
 };
 
-type SortKey = "name" | "email" | "type";
-
-export type SortedByCollaborators = {
-  sortKey: SortKey;
-  sortDirection: "asc" | "desc";
-};
-
+export type CollaboratorSortKey = "name" | "email" | "role";
 export type Actions = "change_role" | "reassign_tasks" | "delete";
 
 const CollaboratorsView = ({
   projectId,
-  collaborator,
   onCreateTask,
   selectedCollaboratorIds,
   toggleBulk,
   onClearSelection,
 }: CollaboratorsViewProps) => {
-  const [sortedBy, setSortedBy] = useState<SortedByCollaborators | null>(null);
   const [openActionId, setOpenActionId] = useState<string | null>(null);
   const [selectedCollaboratorId, setSelectedCollaboratorId] = useState<
     string | null
   >(null);
   const [activeAction, setActiveAction] = useState<Actions | null>(null);
 
+  const { page, collaboratorsSort, actions } =
+    useProjectCollaboratorSearchParams();
+
   const actionRef = useRef<HTMLDivElement>(null);
   useOnClickOutside(actionRef, () => setOpenActionId(null));
 
-  const toggleSortedBy = (value: SortKey) => updateSort(value, setSortedBy);
-  const sortedCollaborators = getSortedCollaborators(collaborator, sortedBy);
+  const input = {
+    projectId,
+    sort: collaboratorsSort,
+    page,
+    limit: 9,
+  };
+
+  const { data, isLoading, error } = useProjectCollaborators(input);
+
+  const collaborators = data?.items ?? [];
+  const totalPages = data?.totalPages ?? 1;
+
+  if (isLoading && !data) return <ProjectCollaboratorSkeleton />;
+  if (error) return <div>Etwas ist schief gelaufen</div>;
 
   const toggleOpenActionId = (id: string) =>
     setOpenActionId((prev) => (prev === id ? null : id));
@@ -70,12 +76,12 @@ const CollaboratorsView = ({
     setSelectedCollaboratorId(null);
   };
 
-  const selectedUser = collaborator.find(
+  const selectedUser = collaborators.find(
     (coll) => coll.id === selectedCollaboratorId,
   );
 
   return (
-    <section>
+    <section className="flex flex-1 flex-col">
       {selectedCollaboratorIds.length > 0 && (
         <BulkCollaboratorActions
           collaboratorCount={selectedCollaboratorIds.length}
@@ -84,21 +90,30 @@ const CollaboratorsView = ({
         />
       )}
 
+      {!collaborators.length && !!data && (
+        <div className="text-muted-foreground text-sm">
+          Keine Daten vorhanden
+        </div>
+      )}
+
       <div className="border rounded-md mt-2">
-        <div className="grid grid-cols-[2fr_2fr_1fr_1fr]  gap-4 p-2 bg-muted-foreground/10 rounded-t-md">
+        <div className="grid grid-cols-[2fr_2fr_1fr_1fr]  gap-4 p-2 bg-muted rounded-t-md">
           {COLLABORATOR_TABLE_OPTIONS.map((opt) => (
             <button
               key={opt.value}
               className="w-fit flex items-center gap-1"
-              onClick={() => toggleSortedBy(opt.value)}
+              onClick={() => actions.toggleCollaboratorSort(opt.value)}
             >
-              {opt.label} <ChevronsUpDown className="size-4 text-surface/80" />
+              {opt.label}
+              <span>
+                <ChevronsUpDown className="size-4 text-muted-foreground" />
+              </span>
             </button>
           ))}
         </div>
 
         <div>
-          {sortedCollaborators.map((coll) => {
+          {collaborators.map((coll) => {
             const option = USER_ROLE_OPTIONS[coll.role];
 
             const CollaboratorIcon = option.icon;
@@ -126,7 +141,7 @@ const CollaboratorsView = ({
                     <Avatar avatarKey={coll.avatarKey} size="sm" />
                     <div>
                       <p className="truncate">{coll.name}</p>
-                      <p className="text-surface/80 text-sm ">
+                      <p className="text-muted-foreground text-sm ">
                         {coll.jobTitle}
                       </p>
                     </div>
@@ -147,7 +162,7 @@ const CollaboratorsView = ({
 
                 <div className="min-w-0 hidden md:flex items-center">
                   <div className="flex items-center gap-2 ">
-                    <CollaboratorIcon className="text-surface/80 size-4" />
+                    <CollaboratorIcon className="text-foreground size-4" />
                     <p className="truncate ">{collaboratorLabel}</p>
                   </div>
                 </div>
@@ -160,11 +175,7 @@ const CollaboratorsView = ({
                     className="min-w-0 justify-self-end"
                     onClick={() => handleOpenActions(coll.id)}
                   >
-                    <EllipsisVertical
-                      className="text-surface/80"
-                      strokeWidth={1}
-                      fill="black"
-                    />
+                    <EllipsisVertical strokeWidth={1} fill="black" />
                   </button>
 
                   {openActionId === coll.id && (
@@ -175,6 +186,14 @@ const CollaboratorsView = ({
             );
           })}
         </div>
+      </div>
+
+      <div className="mt-auto pt-4 flex justify-end">
+        <Pagination
+          setPage={actions.setPage}
+          currentPage={page}
+          totalPages={totalPages}
+        />
       </div>
 
       {activeAction === "delete" && selectedUser && (

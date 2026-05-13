@@ -1,10 +1,10 @@
 import { Search } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useDebounce } from "@/shared/hooks/useDebounce";
-import { useProjectQueryState } from "@/features/projects/hooks/useProjectQueryState";
+import { useProjectSearchParams } from "@/features/projects/hooks/searchParams/useProjectSearchParams";
 
 const SearchInput = () => {
-  const { search, actions } = useProjectQueryState();
+  const { search, actions } = useProjectSearchParams();
 
   const [searchInput, setSearchInput] = useState(search);
   const debounceInput = useDebounce(searchInput, 300);

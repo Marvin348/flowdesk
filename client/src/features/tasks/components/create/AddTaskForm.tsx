@@ -136,7 +136,7 @@ const AddTaskForm = ({
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="text-surface/90">
+    <form onSubmit={handleSubmit(onSubmit)} className="text-foreground">
       <div className="pb-4 border-b">
         <input
           {...register("title")}
@@ -263,7 +263,7 @@ const AddTaskForm = ({
         <textarea
           {...register("description")}
           id="description"
-          className="w-full h-20 p-2 resize-none rounded-md bg-surface/5"
+          className="w-full h-20 p-2 resize-none rounded-md bg-muted"
         />
       </div>
 

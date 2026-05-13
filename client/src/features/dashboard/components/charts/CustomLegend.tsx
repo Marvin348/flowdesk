@@ -11,7 +11,7 @@ const CustomLegend = ({ data }: { data: TaskPriorityItem[] }) => {
           ></span>
           <p className=" text-muted-foreground">
             {entry.label}:
-            <span className="ml-1 font-semibold text-surface/90">
+            <span className="ml-1 font-semibold text-muted-foreground">
               {entry.count}
             </span>
           </p>

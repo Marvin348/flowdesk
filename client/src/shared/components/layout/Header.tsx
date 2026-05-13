@@ -1,5 +1,5 @@
 import { Menu } from "lucide-react";
-import logoBlack from "@/assets/logo-black.svg";
+import logo from "@/assets/logo.svg";
 
 type HeaderProps = {
   onOpen: () => void;
@@ -11,7 +11,7 @@ const Header = ({ onOpen }: HeaderProps) => {
         <Menu />
       </button>
       <div className="">
-        <img src={logoBlack} alt="FlowDesk" className="w-44" />
+        <img src={logo} alt="FlowDesk" className="w-44" />
       </div>
     </div>
   );

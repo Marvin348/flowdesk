@@ -1,5 +1,5 @@
 import { fetchUserDetails } from "@/features/users/api/users.api.ts";
-import type { UserDetailsDto } from "@shared/types/dto/user";
+import type { UserDetailsDto } from "@shared/types/dto/users/user";
 import { useQuery } from "@tanstack/react-query";
 
 export const useUserDetails = (id: string) => {

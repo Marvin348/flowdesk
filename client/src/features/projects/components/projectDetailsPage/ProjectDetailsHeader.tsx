@@ -1,28 +1,30 @@
-import type { ProjectsWithMeta } from "@/features/projects/types/projectsWithMeta";
-import { type Progress } from "@/shared/utils/getProgressResult";
 import { STATUS_OPTIONS } from "@/shared/constants/status-options";
 import { Link } from "react-router";
 import { ArrowLeft, UserRoundPlus, History } from "lucide-react";
-import ActiveMenuBadge from "@/features/projects/components/card/ActiveMenuBadge";
 import AssigneeAvatars from "@/shared/components/ui/avatar/AvatarGroup";
 import { Button } from "@/shared/components/ui/button";
 import { formatDate } from "@/shared/utils/formatDate";
 import { useUsersByIds } from "@/features/users/hooks/useUsersByIds";
+import type { ProjectDetailsShellDto } from "@shared/types/dto/project";
 
 type ProjectDetailsHeaderProps = {
-  project: ProjectsWithMeta;
-  progress: Progress;
+  project: ProjectDetailsShellDto;
   onOpen: () => void;
 };
 const ProjectDetailsHeader = ({
   project,
-  progress,
   onOpen,
 }: ProjectDetailsHeaderProps) => {
-  const { title, projectStatus, teamUserIds, tasks, updatedAt, badge } =
-    project;
+  const {
+    title,
+    projectStatus,
+    invitedUserIds,
+    updatedAt,
+    progressPercent,
+  } = project;
 
-  const teamUsers = useUsersByIds(teamUserIds);
+  // invitedUserIds is not teamUsers (all users can be invited)
+  const teamUsers = useUsersByIds(invitedUserIds);
 
   const statusOption = STATUS_OPTIONS[project.projectStatus];
 
@@ -38,7 +40,6 @@ const ProjectDetailsHeader = ({
 
         <h3 className="min-w-0 text-lg font-medium truncate">{title}</h3>
 
-        {badge && <ActiveMenuBadge badge={badge} />}
 
         {statusOption ? (
           <span
@@ -54,12 +55,12 @@ const ProjectDetailsHeader = ({
         <div className="hidden xl:flex items-center gap-2 ml-4">
           <div className="bg-gray-200 h-2 rounded-md w-40">
             <div
-              style={{ width: `${progress.percent}%` }}
+              style={{ width: `${progressPercent}%` }}
               className="bg-accent h-2 rounded-md"
             />
           </div>
           <span className="text-muted-foreground text-sm">
-            {progress.percent}%
+            {progressPercent}%
           </span>
         </div>
 

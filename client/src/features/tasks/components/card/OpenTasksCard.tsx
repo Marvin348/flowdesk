@@ -1,14 +1,14 @@
-import OverviewCard from "../../../../shared/components/ui/overview-card/OverviewCard";
-import OverviewCardHeader from "../../../../shared/components/ui/overview-card/OverviewCardHeader";
-import OverviewCardBody from "../../../../shared/components/ui/overview-card/OverviewCardBody";
-import OverviewCardFooter from "../../../../shared/components/ui/overview-card/OverviewCardFooter";
+import OverviewCard from "@/shared/components/ui/overview-card/OverviewCard";
+import OverviewCardHeader from "@/shared/components/ui/overview-card/OverviewCardHeader";
+import OverviewCardBody from "@/shared/components/ui/overview-card/OverviewCardBody";
+import OverviewCardFooter from "@/shared/components/ui/overview-card/OverviewCardFooter";
 import { useState } from "react";
 import OpenTask from "./OpenTask";
 import CarouselControls from "@/shared/components/ui/CarouselControls";
-import type { TaskWithMeta } from "@/features/tasks/types/taskWithMeta";
+import type { OverviewTaskDto } from "@shared/types/dto/projects/projectOverview.dto";
 
 type OpenTasksCardProps = {
-  tasks: TaskWithMeta[];
+  tasks: OverviewTaskDto[];
   onMore: () => void;
 };
 
@@ -16,7 +16,7 @@ const OpenTasksCard = ({ tasks, onMore }: OpenTasksCardProps) => {
   const [index, setIndex] = useState(0);
   const taskItem = tasks[index];
 
-  if (!taskItem) return null;
+  const hasTasks = tasks.length > 0;
 
   const prev = () => setIndex((i) => Math.max(i - 1, 0));
   const next = () => setIndex((i) => Math.min(i + 1, tasks.length - 1));
@@ -29,7 +29,13 @@ const OpenTasksCard = ({ tasks, onMore }: OpenTasksCardProps) => {
       />
       <OverviewCardBody>
         <div className="p-4">
-          <OpenTask task={taskItem} />
+          {!hasTasks ? (
+            <div className="flex items-center justify-center text-muted-foreground text-sm">
+              Keine offenen Aufgaben
+            </div>
+          ) : (
+            <OpenTask task={taskItem} />
+          )}
         </div>
       </OverviewCardBody>
       <OverviewCardFooter onClick={onMore} />

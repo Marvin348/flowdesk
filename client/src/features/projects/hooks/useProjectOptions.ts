@@ -1,13 +1,12 @@
 import { fetchProjectsOptions } from "@/features/projects/api/projects.api.ts";
 import { useQuery } from "@tanstack/react-query";
-import type { ProjectOptionsDto } from "@shared/types/dto/project";
+import type { ProjectOptionsDto } from "@shared/types/dto/projects/projectOptions.dto";
+import type { ProjectOptionsInput } from "@shared/types/inputs/projectOptionsInput";
 
-export const useProjectOptions = (userId: string, input: string) => {
-  const trimmedInput = input.trim();
-
+export const useProjectOptions = (input: ProjectOptionsInput) => {
   const { data, isLoading, error } = useQuery<ProjectOptionsDto, Error>({
-    queryKey: ["projects", "options", userId, trimmedInput],
-    queryFn: () => fetchProjectsOptions(userId, trimmedInput),
+    queryKey: ["projects", "options", input.userId, input.search],
+    queryFn: () => fetchProjectsOptions(input),
     placeholderData: (previousData) => previousData,
   });
 

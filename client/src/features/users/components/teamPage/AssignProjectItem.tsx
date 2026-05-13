@@ -1,6 +1,6 @@
 import AssigneeAvatars from "@/shared/components/ui/avatar/AvatarGroup";
 import { Folder, FolderX } from "lucide-react";
-import type { ProjectOptionDto } from "@shared/types/dto/project";
+import type { ProjectOptionDto } from "@shared/types/dto/projects/projectOptions.dto";
 
 type AssignProjectItemProps = {
   item: ProjectOptionDto;
@@ -25,16 +25,16 @@ const AssignProjectItem = ({
     <button
       className={`w-full px-4 py-2 flex items-center justify-between gap-4 
       ${isInvited ? "cursor-not-allowed" : "cursor-pointer"} 
-      ${selected && "bg-surface/7"} 
-      ${!isInvited && !selected && "hover:bg-surface/4"}`}
+      ${selected && "bg-muted"} 
+      ${!isInvited && !selected && "hover:bg-muted/50"}`}
       disabled={isInvited}
       onClick={handleClick}
     >
       <p className="flex items-center gap-2">
         {isInvited ? (
-          <FolderX className="size-4 text-surface/80" />
+          <FolderX className="size-4 text-muted-foreground" />
         ) : (
-          <Folder className="size-4 text-surface/80" />
+          <Folder className="size-4 text-muted-foreground" />
         )}{" "}
         {title}
       </p>

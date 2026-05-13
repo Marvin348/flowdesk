@@ -1,14 +1,10 @@
-import { useCommentsWithUsers } from "@/features/comments/hooks/useCommentsWithUsers";
-import type { Comment } from "@shared/types/comment";
 import OverviewCommentItem from "@/features/comments/components/card/OverviewCommentItem";
+import type { OverviewCommentDto } from "@shared/types/dto/projects/projectOverview.dto";
 
-const OverviewCommentsList = ({ comments }: { comments: Comment[] }) => {
-  const commentsWithUser = useCommentsWithUsers(comments);
-  // useCommentsWithUsers hook called twice (here, CommentThreadList)
-
+const OverviewCommentsList = ({ comments }: { comments: OverviewCommentDto[] }) => {
   return (
     <div className="p-4 h-full">
-      {commentsWithUser.map((com) => (
+      {comments.map((com) => (
         <OverviewCommentItem key={com.id} comment={com} />
       ))}
       {comments.length === 0 && (

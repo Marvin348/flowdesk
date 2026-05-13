@@ -1,52 +1,51 @@
 import ProgressBarCard from "@/features/projects/components/card/ProgressBarCard";
-import type { ProjectsWithMeta } from "@/features/projects/types/projectsWithMeta";
-import type { Progress } from "@/shared/utils/getProgressResult";
-import type { User } from "@shared/types/user";
-import { getProjectUserWorkload } from "@/features/users/utils/workload/getProjectUserWorkload";
 import CollaboratorsCard from "@/features/users/components/card/CollaboratorsCard";
 import OpenTasksCard from "@/features/tasks/components/card/OpenTasksCard";
 import CommentsCard from "@/features/comments/components/card/CommentsCard";
 import WorkloadCard from "@/features/users/components/workload/WorkloadCard";
-import type { ActiveTab } from "@/pages/ProjectDetailsPage";
+import type { ActiveTab } from "@/features/projects/types/activeTab";
+import { useProjectOverview } from "@/features/projects/hooks/details/useProjectOverview";
 
 type OverviewProps = {
-  project: ProjectsWithMeta;
-  progress: Progress;
-  collaborator: User[];
   onCreateTask: () => void;
   inviteOpen: () => void;
   onNavigate: (tab: ActiveTab) => void;
+  projectId: string;
 };
 
 const Overview = ({
-  project,
-  progress,
-  collaborator,
   onCreateTask,
   inviteOpen,
   onNavigate,
+  projectId,
 }: OverviewProps) => {
-  const allCommentsPerProject = project.tasks.flatMap((t) => t.comments);
+  const { data, error } = useProjectOverview(projectId);
 
-  const workloadStats = getProjectUserWorkload(project.tasks);
+  if (error) return <div>Etwas ist schief gelaufen</div>;
+  if (!data) return <div>Project not found</div>;
+
+  const {
+    progress,
+    collaborators,
+    openTasks,
+    recentComments,
+    workload,
+  } = data;
 
   return (
     <div
       className={`grid gap-6 grid-cols-1 md:grid-cols-2 xl:grid-cols-3 auto-rows-auto md:auto-rows-[170px]`}
     >
-      <div className="h-full  md:row-span-2">
+      <div className="h-full md:row-span-2">
         <CollaboratorsCard
-          collaborators={collaborator}
+          collaborators={collaborators}
           inviteOpen={inviteOpen}
           onMore={() => onNavigate("collaborators")}
         />
       </div>
 
       <div className="h-full md:row-span-2">
-        <OpenTasksCard
-          tasks={project.tasks}
-          onMore={() => onNavigate("list")}
-        />
+        <OpenTasksCard tasks={openTasks} onMore={() => onNavigate("list")} />
       </div>
 
       <div className="border rounded-md h-full xl:col-start-3 xl:row-span-1">
@@ -55,16 +54,15 @@ const Overview = ({
 
       <div className="h-full xl:col-start-3 xl:row-start-2  xl:row-span-3">
         <CommentsCard
-          comments={allCommentsPerProject}
+          comments={recentComments}
           onMore={() => onNavigate("comments")}
         />
       </div>
 
       <div className="h-full md:col-span-2 xl:row-span-2">
         <WorkloadCard
-          stats={workloadStats.slice(0, 4)}
+          workload={workload}
           onCreateTask={onCreateTask}
-          variant="compact"
           onMore={() => onNavigate("workload")}
         />
       </div>

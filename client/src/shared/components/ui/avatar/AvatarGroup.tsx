@@ -1,9 +1,11 @@
 import Avatar from "@/shared/components/ui/avatar/Avatar";
 import type { User } from "@shared/types/user";
-import type { ProjectOptionUserDto } from "@shared/types/dto/project";
+import type { ProjectOptionUserDto } from "@shared/types/dto/projects/projectOptions.dto";
+import type { UserPreviewDto } from "@shared/types/dto/common/userPreview.dto";
 
+// refactor
 type AvatarGroupProps = {
-  users?: User[] | ProjectOptionUserDto[];
+  users?: User[] | ProjectOptionUserDto[] | UserPreviewDto[];
 };
 
 const AvatarGroup = ({ users }: AvatarGroupProps) => {

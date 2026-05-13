@@ -22,7 +22,7 @@ type SelectedTaskProps = {
 const SelectedTask = ({ options, value, onChange }: SelectedTaskProps) => {
   return (
     <Select value={value} onValueChange={onChange}>
-      <SelectTrigger className="w-full text-surface/80 bg-white">
+      <SelectTrigger className="w-full text-foreground bg-white">
         <SelectValue placeholder="Aufgabe wählen" />
       </SelectTrigger>
       <SelectContent position="popper" className="z-100">
@@ -33,7 +33,7 @@ const SelectedTask = ({ options, value, onChange }: SelectedTaskProps) => {
             <SelectItem
               key={opt.taskId}
               value={opt.taskId}
-              className="focus:bg-surface/5"
+              className="focus:bg-muted"
             >
               {opt.taskTitle}
             </SelectItem>

@@ -4,10 +4,9 @@ import CreateProjectModal from "@/features/projects/components/create/CreateProj
 import { useState } from "react";
 import { useProjectsSummary } from "@/features/projects/utils/useProjectsSummary";
 import { useProjectsListVM } from "@/features/projects/hooks/vm/useProjectsList";
-import { Spinner } from "@/shared/components/ui/spinner";
 import { useProjectSummaries } from "@/features/projects/hooks/useProjectSummaries";
 import Pagination from "@/shared/components/ui/Pagination";
-import { useProjectQueryState } from "@/features/projects/hooks/useProjectQueryState";
+import { useProjectSearchParams } from "@/features/projects/hooks/searchParams/useProjectSearchParams";
 import ProjectPageHeader from "@/features/projects/components/projectPage/header/ProjectPageHeader";
 import ProjectListSkeleton from "@/features/projects/components/projectPage/skeleton/ProjectListSkeleton";
 
@@ -15,7 +14,7 @@ const ProjectsPage = () => {
   const [filterDrawerOpen, setFilterDrawerOpen] = useState(false);
   const [isCreateProjectOpen, setIsCreateProjectOpen] = useState(false);
 
-  const { page, search, cardView, filter, actions } = useProjectQueryState();
+  const { page, search, cardView, filter, actions } = useProjectSearchParams();
 
   const summariesInput = {
     search,

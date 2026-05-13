@@ -32,7 +32,7 @@ const SelectedStatus = ({ onChange, value }: SelectedStatusProps) => {
               key={opt.value}
               value={opt.value}
               onClick={() => onChange(opt.value)}
-              className="focus:bg-surface/5"
+              className="focus:bg-muted"
             >
               {opt.label}
             </SelectItem>

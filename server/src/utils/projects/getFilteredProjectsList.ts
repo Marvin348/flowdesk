@@ -1,4 +1,4 @@
-import { ProjectSummariesDto } from "@shared/types/dto/project.js";
+import { ProjectSummariesDto } from "@shared/types/dto/projects/projectSummary.dto.js";
 import { ContentFilter } from "@shared/types/filter/contentFilter.js";
 
 export const getFilteredProjectsList = (
@@ -21,7 +21,6 @@ export const getFilteredProjectsList = (
       matchesAttachment = p.stats.attachmentCount === 0;
 
     // refactor view laster (user-specific)
-    
 
     return (
       matchesSearch && matchesPriority && matchesStatus && matchesAttachment

@@ -1,23 +1,21 @@
 import { Button } from "@/shared/components/ui/button";
 import { Plus } from "lucide-react";
-import { type UserWorkload } from "@/features/users/utils/workload/getProjectUserWorkload";
 import OverviewCardBody from "@/shared/components/ui/overview-card/OverviewCardBody";
 import OverviewCardFooter from "@/shared/components/ui/overview-card/OverviewCardFooter";
 import OverviewCardHeader from "@/shared/components/ui/overview-card/OverviewCardHeader";
-import WorkloadTable from "../../../projects/components/projectDetailsPage/tabs/workload/WorkloadTable";
 import OverviewCard from "@/shared/components/ui/overview-card/OverviewCard";
+import type { UserWorkload } from "@shared/types/dto/workload/projectUserWorkload";
+import WorkloadCompactTable from "./WorkloadCompactTable";
 
 type WorkloadProps = {
-  stats: UserWorkload[];
+  workload: UserWorkload[];
   onCreateTask: () => void;
-  variant?: "compact" | "full";
   onMore: () => void;
 };
 
 const WorkloadCard = ({
-  stats,
+  workload,
   onCreateTask,
-  variant,
   onMore,
 }: WorkloadProps) => {
   return (
@@ -25,15 +23,15 @@ const WorkloadCard = ({
       <OverviewCardHeader
         title="Auslastung"
         action={
-          <Button onClick={onCreateTask}>
-            <Plus className="text-accent" /> <span>Aufgabe</span>
+          <Button onClick={onCreateTask} variant="accentOutline">
+            <Plus /> <span>Aufgabe</span>
           </Button>
         }
       />
 
       <OverviewCardBody>
         <div className="p-4 h-full">
-          <WorkloadTable stats={stats} variant={variant} />
+          <WorkloadCompactTable workload={workload} />
         </div>
       </OverviewCardBody>
 

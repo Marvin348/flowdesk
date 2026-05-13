@@ -4,7 +4,7 @@ import {
 } from "@/shared/constants/sidebar-links";
 import { NavLink } from "react-router";
 import { Button } from "@/shared/components/ui/button";
-import logoWhite from "@/assets/logo-white.svg";
+import logo from "@/assets/logo.svg"
 import { useScrollLock } from "@/shared/hooks/useScrollLock";
 import { Star, LogOut } from "lucide-react";
 import { useAppStore } from "@/store";
@@ -32,16 +32,25 @@ const Sidebar = ({ onOpen, onClose }: SidebarProps) => {
     (project) => project.badge === "favorite",
   );
 
+  const sidebarLinkClass = (isActive: boolean) =>
+    `flex items-center gap-2 rounded-md p-2 transition-colors ${
+      isActive
+        ? "bg-muted-foreground/10 text-foreground"
+        : "text-muted-foreground hover:bg-muted/60 hover:text-foreground"
+    }`;
+  const sidebarIconClass = (isActive: boolean) =>
+    `size-5 ${isActive ? "text-accent" : "text-muted-foreground"}`;
+
   return (
     <>
       <div
-        className={`overlay transform duration-300 ease-in-out ${onOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}`}
+        className={`sidebar-overlay transform duration-300 ease-in-out ${onOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}`}
         onClick={onClose}
       ></div>
 
       <nav
-        className={`fixed top-0 left-0 bottom-0 bg-surface p-4 transform duration-300 ease-in-out z-100 h-full w-65 ${onOpen ? "translate-x-0" : "-translate-x-full"} 
-        lg:static 
+        className={`fixed top-0 left-0 bottom-0 bg-surface border-r border-border p-4 transform duration-300 ease-in-out z-30 h-full w-65 ${onOpen ? "translate-x-0" : "-translate-x-full"} 
+        lg:static
         lg:min-h-screen
         lg:translate-x-0`}
       >
@@ -51,13 +60,14 @@ const Sidebar = ({ onOpen, onClose }: SidebarProps) => {
               className="border-2 border-muted-foreground/20 rounded-full"
               size="icon-lg"
               onClick={onClose}
+              variant="secondary"
             >
               X
             </Button>
           </div>
 
           <div className="hidden lg:inline-block mb-12">
-            <img src={logoWhite} alt="FlowDesk" className="w-44" />
+            <img src={logo} alt="FlowDesk" />
           </div>
 
           <div className="mt-6 lg:mt-0">
@@ -66,12 +76,14 @@ const Sidebar = ({ onOpen, onClose }: SidebarProps) => {
                 key={to}
                 to={to}
                 onClick={onClose}
-                className={({ isActive }) =>
-                  `flex items-center gap-2 my-4 p-2 rounded-md ${isActive ? "bg-muted-foreground/10 text-accent" : "text-white"}`
-                }
+                className={({ isActive }) => sidebarLinkClass(isActive)}
               >
-                <Icon className="size-5" />
-                <p>{label}</p>
+                {({ isActive }) => (
+                  <>
+                    <Icon className={sidebarIconClass(isActive)} />
+                    <p>{label}</p>
+                  </>
+                )}
               </NavLink>
             ))}
           </div>
@@ -82,21 +94,26 @@ const Sidebar = ({ onOpen, onClose }: SidebarProps) => {
                 <h4 className="mb-3 text-muted-foreground uppercase">
                   Favoriten
                 </h4>
-                <div className="grid grid-cols-1 gap-4">
+                <div className="grid grid-cols-1">
                   {favorites.map((project) => (
                     <NavLink
                       key={project.id}
                       to={`/project/${project.id}`}
                       className={({ isActive }) =>
-                        `flex items-center gap-2 p-2 rounded-md text-white ${isActive ? "bg-muted-foreground/10" : ""}`
+                        `flex items-center gap-2 p-2 rounded-md ${
+                          isActive
+                            ? "bg-muted-foreground/10 text-foreground"
+                            : "text-muted-foreground hover:bg-muted/60 hover:text-foreground"
+                        }`
                       }
                       onClick={onClose}
                     >
-                      <span className="shrink-0 flex items-center justify-center size-8 rounded-full bg-muted-foreground/20">
-                        <Star className="size-5 text-accent" />
-                      </span>
-
-                      <span className="truncate">{project.title}</span>
+                      {({ isActive }) => (
+                        <>
+                          <Star className={sidebarIconClass(isActive)} />
+                          <p className="truncate">{project.title}</p>
+                        </>
+                      )}
                     </NavLink>
                   ))}
                 </div>
@@ -111,15 +128,15 @@ const Sidebar = ({ onOpen, onClose }: SidebarProps) => {
                 to={to}
                 onClick={onClose}
                 className={({ isActive }) => `
-              flex items-center gap-2 my-4 p-2 rounded-md ${isActive ? "bg-muted-foreground/10 text-accent" : "text-white"}`}
+              flex items-center gap-2 p-2 rounded-md text-muted-foreground ${isActive ? "bg-muted-foreground/10 text-foreground" : "text-muted-foreground hover:bg-muted/60 hover:text-foreground"}`}
               >
                 <Icon className="size-5" />
                 <p>{label}</p>
               </NavLink>
             ))}
-            <Button className="flex items-center gap-2 p-2 text-base">
+            <button className="flex items-center gap-2 p-2 text-base text-muted-foreground">
               <LogOut className="size-5 rotate-180" /> Logout
-            </Button>
+            </button>
           </div>
         </div>
       </nav>

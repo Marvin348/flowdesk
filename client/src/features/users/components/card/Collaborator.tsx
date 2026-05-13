@@ -1,9 +1,9 @@
-import type { User } from "@shared/types/user";
 import Avatar from "@/shared/components/ui/avatar/Avatar";
 import { EllipsisVertical } from "lucide-react";
+import type {UserPreviewDto} from "@shared/types/dto/common/userPreview.dto"
 
 type CollaboratorProps = {
-  user: User;
+  user: UserPreviewDto;
 };
 
 const Collaborator = ({ user }: CollaboratorProps) => {

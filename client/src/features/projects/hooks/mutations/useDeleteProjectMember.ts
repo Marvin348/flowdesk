@@ -1,7 +1,7 @@
 import type { DeleteProjectMemberInput } from "@shared/types/inputs/deleteProjectMemberInput";
 import type { Project } from "@shared/types/project";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { deleteProjectMember } from "@/features/projects/api/projects.api";
+import { deleteProjectMember } from "@/features/projects/api/projectMembers.api";
 
 export const useDeleteProjectMember = () => {
   const queryClient = useQueryClient();

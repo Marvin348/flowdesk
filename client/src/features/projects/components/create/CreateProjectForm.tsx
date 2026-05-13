@@ -65,7 +65,7 @@ const CreateProjectForm = ({ onClose }: CreateProjectFormProps) => {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="text-surface/90">
+    <form onSubmit={handleSubmit(onSubmit)} className="text-foreground">
       <div>
         <div className="mt-6 grid grid-cols-2 items-center gap-6">
           <div>
@@ -149,7 +149,7 @@ const CreateProjectForm = ({ onClose }: CreateProjectFormProps) => {
         <textarea
           {...register("description")}
           id="description"
-          className="w-full h-20 p-2 resize-none rounded-md bg-surface/5"
+          className="w-full h-20 p-2 resize-none rounded-md bg-muted"
         ></textarea>
       </div>
 
@@ -165,7 +165,7 @@ const CreateProjectForm = ({ onClose }: CreateProjectFormProps) => {
         </Button>
         <Button
           size="sm"
-          className="bg-accent hover:bg-accent/95 w-30"
+          className="w-30"
           type="submit"
         >
           Sichern {isPending && <Spinner />}

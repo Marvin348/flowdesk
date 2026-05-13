@@ -1,48 +1,63 @@
 import CommentForm from "@/features/comments/components/CommentForm";
 import { ArrowDown } from "lucide-react";
-import { useState } from "react";
 import CommentsHeader from "@/features/comments/components/card/CommentsHeader";
 import CommentThreadList from "@/features/comments/components/CommentThreadList";
-import type { TaskWithMeta } from "@/features/tasks/types/taskWithMeta";
-import { getSortedComments } from "@/features/comments/utils/getSortedComments";
+import { useProjectComments } from "@/features/projects/hooks/details/useProjectComments";
+import { useProjectCommentsSearchParams } from "@/features/projects/hooks/searchParams/useProjectCommentsSearchParams";
+import { useState } from "react";
+import ProjectCommentsSkeleton from "@/features/projects/components/projectDetailsPage/skeleton/ProjectCommentsSkeleton";
 
-export type SortOrder = "newest" | "oldest";
+type CommentsViewProps = {
+  projectId: string;
+};
 
-const CommentsView = ({ tasks }: { tasks: TaskWithMeta[] }) => {
-  const COMMENTS_PER_PAGE = 8;
-  const [visibleCount, setVisibleCount] = useState(COMMENTS_PER_PAGE);
-  const [sortOrder, setSortOrder] = useState<SortOrder>("newest");
+const CommentsView = ({ projectId }: CommentsViewProps) => {
+  const [limit, setLimit] = useState(8);
 
-  const allComments = tasks.flatMap((task) => task.comments);
+  const { commentsSort, toggleCommentsSort } = useProjectCommentsSearchParams();
 
-  const toggleSortOrder = () =>
-    setSortOrder((prev) => (prev === "newest" ? "oldest" : "newest"));
+  const input = {
+    projectId,
+    limit,
+    sort: commentsSort,
+  };
 
-  const sortedComments = getSortedComments(allComments, sortOrder);
-  const maxComments = sortedComments.slice(0, visibleCount);
+  const { data, isLoading, error } = useProjectComments(input);
+
+  const comments = data?.comments ?? [];
+  const taskOptions = data?.taskOptions ?? [];
+  const hasMore = data?.hasMore;
+  const totalItems = data?.totalItems ?? 0;
+
+  if (isLoading && !data) return <ProjectCommentsSkeleton />;
+  if (error) return <div>Etwas ist schief gelaufen</div>;
+
+  const onLoadMore = () => {
+    setLimit((prev) => prev + 8);
+  };
 
   return (
     <section>
       <div className="border-b pb-8">
-        <CommentForm tasks={tasks} />
+        <CommentForm taskOptions={taskOptions} projectId={projectId} />
       </div>
 
       <div className="my-8">
         <CommentsHeader
-          comments={allComments}
-          toggleOrder={toggleSortOrder}
-          sortOrder={sortOrder}
+          commentsSort={commentsSort}
+          commentsCount={totalItems}
+          toggleOrder={() => toggleCommentsSort()}
         />
       </div>
 
       <div>
-        <CommentThreadList comments={maxComments} tasks={tasks} />
+        <CommentThreadList comments={comments} projectId={projectId} />
       </div>
 
-      {visibleCount < allComments.length && (
+      {hasMore && (
         <button
-          className="flex items-center m-auto gap-1 text-accent text-sm hover:text-accent/90"
-          onClick={() => setVisibleCount((prev) => prev + COMMENTS_PER_PAGE)}
+          className="flex items-center m-auto gap-1 text-muted-foreground text-sm hover:text-foreground"
+          onClick={onLoadMore}
         >
           Mehr Anzeigen <ArrowDown className="size-4" />
         </button>

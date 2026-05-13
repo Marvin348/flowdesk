@@ -31,7 +31,6 @@ const ProjectCard = ({ project }: ProjectCardType) => {
     projectStatus,
     dueDate,
     stats,
-    createdAt,
     teamUserIds,
     progress,
     badge,

@@ -3,21 +3,19 @@ import { useState } from "react";
 import { useCreateComment } from "@/features/comments/hooks/useCreateComment";
 import SelectedTask from "@/shared/components/ui/select/SelectedTask";
 import { Spinner } from "@/shared/components/ui/spinner";
-import type { TaskWithMeta } from "@/features/tasks/types/taskWithMeta";
+import type { TaskOptionDto } from "@shared/types/dto/projects/projectComments.dto";
 
-const CommentForm = ({ tasks }: { tasks: TaskWithMeta[] }) => {
+type CommentFormProps = {
+  taskOptions: TaskOptionDto[];
+  projectId: string;
+};
+
+const CommentForm = ({ taskOptions, projectId }: CommentFormProps) => {
   const [message, setMessage] = useState("");
   const [selectedTaskId, setSelectedTaskId] = useState("");
   const [taskErrorMessage, setTaskErrorMessage] = useState<string | null>(null);
 
   const { mutate, isPending, error } = useCreateComment();
-
-  const taskOption = tasks.map((task) => {
-    return {
-      taskTitle: task.title,
-      taskId: task.id,
-    };
-  });
 
   const handleOnChange = (value: string) => {
     setSelectedTaskId(value);
@@ -39,6 +37,7 @@ const CommentForm = ({ tasks }: { tasks: TaskWithMeta[] }) => {
     const input = {
       message: message,
       taskId: selectedTaskId,
+      projectId,
     };
 
     mutate(input, {
@@ -52,7 +51,10 @@ const CommentForm = ({ tasks }: { tasks: TaskWithMeta[] }) => {
 
   return (
     <>
-      <form onSubmit={handleSubmit} className="bg-surface/5 rounded-md p-4">
+      <form
+        onSubmit={handleSubmit}
+        className="bg-muted text-foreground placeholder:text-muted-foreground rounded-md p-4"
+      >
         <textarea
           className="w-full  p-2 resize-none rounded-md border-none focus:outline-none"
           placeholder="Kommentar schreiben..."
@@ -65,7 +67,7 @@ const CommentForm = ({ tasks }: { tasks: TaskWithMeta[] }) => {
           <div className="flex items-center text-surface/60">
             <div className="w-50">
               <SelectedTask
-                options={taskOption}
+                options={taskOptions}
                 value={selectedTaskId}
                 onChange={handleOnChange}
               />
@@ -74,7 +76,7 @@ const CommentForm = ({ tasks }: { tasks: TaskWithMeta[] }) => {
 
           <Button
             size="sm"
-            className="bg-accent hover:bg-accent/95 w-20 rounded-full"
+            className="w-20 rounded-full"
             type="submit"
             disabled={isPending}
           >

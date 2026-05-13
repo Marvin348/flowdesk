@@ -10,7 +10,7 @@ type SelectedUserChipProps = {
 const SelectedUserChip = ({ user, onRemove }: SelectedUserChipProps) => {
   return (
     <div
-      className="flex items-center gap-1 text-xs text-surface/90 bg-surface/5 rounded-full cursor-pointer"
+      className="flex items-center gap-1 text-xs text-foreground bg-muted rounded-full cursor-pointer"
       onClick={onRemove}
     >
       <Avatar avatarKey={user.avatarKey} size="sm" />

@@ -1,9 +1,9 @@
 import AssigneeAvatars from "@/shared/components/ui/avatar/AvatarGroup";
 import { formatDate } from "@/shared/utils/formatDate";
-import type { TaskWithMeta } from "@/features/tasks/types/taskWithMeta";
+import type { OverviewTaskDto } from "@shared/types/dto/projects/projectOverview.dto";
 
 type OpenTaskProps = {
-  task: TaskWithMeta;
+  task: OverviewTaskDto;
 };
 const OpenTask = ({ task }: OpenTaskProps) => {
   return (
