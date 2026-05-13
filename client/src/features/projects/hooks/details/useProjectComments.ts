@@ -18,6 +18,7 @@ export const useProjectComments = (input: ProjectCommentsInput) => {
       },
     ],
     queryFn: () => fetchProjectComments(input),
+    placeholderData: (previousData) => previousData,
   });
 
   return { data, isLoading, error };

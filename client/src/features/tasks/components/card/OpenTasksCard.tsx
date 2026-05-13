@@ -16,7 +16,7 @@ const OpenTasksCard = ({ tasks, onMore }: OpenTasksCardProps) => {
   const [index, setIndex] = useState(0);
   const taskItem = tasks[index];
 
-  if (!taskItem) return null;
+  const hasTasks = tasks.length > 0;
 
   const prev = () => setIndex((i) => Math.max(i - 1, 0));
   const next = () => setIndex((i) => Math.min(i + 1, tasks.length - 1));
@@ -29,7 +29,13 @@ const OpenTasksCard = ({ tasks, onMore }: OpenTasksCardProps) => {
       />
       <OverviewCardBody>
         <div className="p-4">
-          <OpenTask task={taskItem} />
+          {!hasTasks ? (
+            <div className="flex items-center justify-center text-muted-foreground text-sm">
+              Keine offenen Aufgaben
+            </div>
+          ) : (
+            <OpenTask task={taskItem} />
+          )}
         </div>
       </OverviewCardBody>
       <OverviewCardFooter onClick={onMore} />

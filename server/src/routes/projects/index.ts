@@ -6,9 +6,9 @@ import projectOptions from "@/routes/projects/projectOptions.routes.js";
 
 const router = Router();
 
+router.use(projectOptions);
+router.use(projectMembers);
 router.use(projectDetailsRoutes);
 router.use(projectBaseRoutes);
-router.use(projectMembers);
-router.use(projectOptions);
 
 export default router;

@@ -13,6 +13,9 @@ import { pagination } from "@/utils/pagination.js";
 import type { ProjectCommentsQuery } from "@/types/querys/projectCommentsQuery.js";
 import { sortedComments } from "@/utils/projects/sortedComments.js";
 import { parseProjectCommentsSort } from "@shared/parsers/parseProjectCommentsSort.js";
+import { ProjectWorkloadQuery } from "@/types/querys/projectWorkloadQuery.js";
+import { parseProjectWorkloadSort } from "@shared/parsers/parseProjectWorkloadSort.js";
+import { sortedWorkload } from "@/utils/projects/sortedWorkload.js";
 
 const router = express.Router();
 
@@ -178,28 +181,42 @@ router.get(
   },
 );
 
-router.get("/:id/workload", (req, res) => {
-  const projectId = req.params.id;
+router.get(
+  "/:id/workload",
+  (req: Request<{ id: string }, {}, {}, ProjectWorkloadQuery>, res) => {
+    const projectId = req.params.id;
 
-  if (!projectId) {
-    return res.status(400).json({ error: "Invalid projectId" });
-  }
+    if (!projectId) {
+      return res.status(400).json({ error: "Invalid projectId" });
+    }
 
-  const db = readDb();
+    const parseWorkloadSort = parseProjectWorkloadSort(req.query.workloadSort);
 
-  const project = db.projects.find((p) => p.id === projectId);
+    const db = readDb();
 
-  if (!project) {
-    return res.status(404).json({ error: "project not found" });
-  }
+    const project = db.projects.find((p) => p.id === projectId);
 
-  const tasks = db.tasks.filter((t) => t.projectId === projectId);
-  const usersById = new Map(db.users.map((u) => [u.id, u]));
+    if (!project) {
+      return res.status(404).json({ error: "project not found" });
+    }
 
-  const workload = getProjectUserWorkload(tasks, usersById);
+    const tasks = db.tasks.filter((t) => t.projectId === projectId);
+    const usersById = new Map(db.users.map((u) => [u.id, u]));
 
-  return res.status(200).json({ data: workload });
-});
+    const workload = getProjectUserWorkload(tasks, usersById);
+    const sorted = sortedWorkload(workload, parseWorkloadSort);
+
+    let page = Number(req.query.page);
+    let limit = Number(req.query.limit);
+
+    if (isNaN(page)) page = 1;
+    if (isNaN(limit)) limit = 9;
+
+    const paginationItems = pagination(sorted, page, limit);
+
+    return res.status(200).json({ data: paginationItems });
+  },
+);
 
 // files
 

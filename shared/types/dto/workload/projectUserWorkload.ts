@@ -12,3 +12,9 @@ export type UserWorkload = UserWorkloadStats & {
   openCount: number;
   progressPercent: number;
 };
+
+export type ProjectWorkloadDto = {
+  items: UserWorkload[];
+  totalPages: number;
+  currentPage: number;
+};

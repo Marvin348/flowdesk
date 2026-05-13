@@ -11,10 +11,12 @@ export const useProjectCollaborators = (input: ProjectCollaboratorsInput) => {
     queryKey: [
       "projects",
       input.projectId,
-      input?.sort,
-      input.page,
-      input.limit,
       "collaborators",
+      {
+        sort: input?.sort,
+        page: input.page,
+        limit: input.limit,
+      },
     ],
     queryFn: () => fetchProjectCollaborators(input),
     placeholderData: (previousData) => previousData,

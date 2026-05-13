@@ -21,17 +21,18 @@ const AssignProjectModal = ({ onClose, selectedUser }: AssignProjectModal) => {
 
   const debounceInput = useDebounce(input, 300);
 
-  const { data, isLoading, error } = useProjectOptions(
-    selectedUser.id,
-    debounceInput,
-  );
+  const { data, isLoading, error } = useProjectOptions({
+    userId: selectedUser.id,
+    search: debounceInput,
+  });
+
+  const results = data?.results ?? [];
+  const recent = data?.recent ?? [];
 
   const { mutate, isPending, error: mutateError } = useAssignUserToProjects();
 
   const inputRef = useRef<HTMLInputElement | null>(null);
 
-  const results = data?.results ?? [];
-  const recent = data?.recent ?? [];
   const hasSearched = input.trim().length >= 2;
 
   useEffect(() => {
@@ -76,90 +77,105 @@ const AssignProjectModal = ({ onClose, selectedUser }: AssignProjectModal) => {
           </div>
         </div>
 
-        <div className="px-4 mt-4">
-          <div className="relative">
-            <input
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              type="text"
-              ref={inputRef}
-              className="w-full h-9 pl-8 border rounded-md"
-              placeholder="Suche..."
-            />
-            <Search className="absolute left-2 top-1/2 transform  -translate-y-1/2 size-4 text-muted-foreground" />
-          </div>
-        </div>
-
-        {/**result */}
-        <div className="mt-6">
-          <div className="px-4">
-            {error && <p className="error-text">Fehler beim Laden</p>}
-            {hasSearched && !results.length && (
-              <p className="text-muted-foreground text-sm">
-                Keine Treffer gefunden
-              </p>
-            )}
-          </div>
-
-          {results.length > 0 && (
-            <div className="">
-              <p className="pl-4 text-sm text-muted-foreground">Suche</p>
-              {results.map((p) => (
-                <AssignProjectItem
-                  key={p.id}
-                  item={p}
-                  toggleSelectedProjectIds={toggleSelectedProjectIds}
-                  isSelected={isSelected}
-                />
-              ))}
+        <div className="min-h-[360px] flex flex-col">
+          {isLoading ? (
+            <div className="flex flex-1 items-center justify-center">
+              <Spinner className="size-6 text-accent" />
             </div>
+          ) : error ? (
+            <div className="flex flex-1 items-center justify-center error-text">
+              Fehler beim Laden der Projekte
+            </div>
+          ) : (
+            <>
+              <div className="px-4 mt-4">
+                <div className="relative">
+                  <input
+                    value={input}
+                    onChange={(e) => setInput(e.target.value)}
+                    type="text"
+                    ref={inputRef}
+                    className="w-full h-9 pl-8 border rounded-md"
+                    placeholder="Suche..."
+                  />
+                  <Search className="absolute left-2 top-1/2 transform  -translate-y-1/2 size-4 text-muted-foreground" />
+                </div>
+              </div>
+
+              {/**result */}
+              <div className="mt-6">
+                <div className="px-4">
+                  {error && <p className="error-text">Fehler beim Laden</p>}
+                  {hasSearched && !results.length && (
+                    <p className="text-muted-foreground text-sm">
+                      Keine Treffer gefunden
+                    </p>
+                  )}
+                </div>
+
+                {results.length > 0 && (
+                  <div className="">
+                    <p className="pl-4 text-sm text-muted-foreground">Suche</p>
+                    {results.map((p) => (
+                      <AssignProjectItem
+                        key={p.id}
+                        item={p}
+                        toggleSelectedProjectIds={toggleSelectedProjectIds}
+                        isSelected={isSelected}
+                      />
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/**recent */}
+              <div
+                className={`mt-4 ${results.length > 0 || hasSearched ? "border-t pt-4" : ""}`}
+              >
+                <p className="pl-4 text-sm text-muted-foreground">
+                  letzte Projekte
+                </p>
+                <div className="">
+                  {recent.map((p) => (
+                    <AssignProjectItem
+                      key={p.id}
+                      item={p}
+                      toggleSelectedProjectIds={toggleSelectedProjectIds}
+                      isSelected={isSelected}
+                    />
+                  ))}
+                </div>
+              </div>
+
+              {mutateError && (
+                <p className="mt-4 pl-4 error-text">
+                  Es konnte kein Projekt hinzugefügt werden
+                </p>
+              )}
+
+              {recent.length > 0 && (
+                <div className="mt-6 pt-4 p-4 border-t grid grid-cols-2 justify-between gap-6">
+                  <Button
+                    variant="outline"
+                    className="hover:bg-surface/5"
+                    onClick={onClose}
+                  >
+                    Schließen
+                  </Button>
+                  <Button
+                    disabled={selectedProjectIds.length === 0 || isPending}
+                    onClick={handleSubmit}
+                  >
+                    {selectedProjectIds.length > 0 && (
+                      <span>{selectedProjectIds.length}</span>
+                    )}
+                    Hinzufügen {isPending && <Spinner />}
+                  </Button>
+                </div>
+              )}
+            </>
           )}
         </div>
-
-        {/**recent */}
-        <div
-          className={`mt-4 ${results.length > 0 || hasSearched ? "border-t pt-4" : ""}`}
-        >
-          <p className="pl-4 text-sm text-muted-foreground">letzte Projekte</p>
-          <div className="">
-            {recent.map((p) => (
-              <AssignProjectItem
-                key={p.id}
-                item={p}
-                toggleSelectedProjectIds={toggleSelectedProjectIds}
-                isSelected={isSelected}
-              />
-            ))}
-          </div>
-        </div>
-
-        {mutateError && (
-          <p className="mt-4 pl-4 error-text">
-            Es konnte kein Projekt hinzugefügt werden
-          </p>
-        )}
-
-        {recent.length > 0 && (
-          <div className="mt-6 pt-4 p-4 border-t grid grid-cols-2 justify-between gap-6">
-            <Button
-              variant="outline"
-              className="hover:bg-surface/5"
-              onClick={onClose}
-            >
-              Schließen
-            </Button>
-            <Button
-              variant="outline"
-              className="bg-accent border-none hover:bg-accent/95 text-white hover:text-none"
-              onClick={handleSubmit}
-            >
-              {selectedProjectIds.length > 0 && (
-                <span>{selectedProjectIds.length}</span>
-              )}
-              Hinzufügen {isPending && <Spinner />}
-            </Button>
-          </div>
-        )}
       </div>
     </div>
   );

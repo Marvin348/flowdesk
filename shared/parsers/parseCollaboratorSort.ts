@@ -1,4 +1,4 @@
-import type { ProjectCollaboratorSort } from "../types/sort/projectCollaboratorSort";
+import type { ProjectCollaboratorSort } from "../types/sort/projectCollaboratorSort.js";
 
 export const parseCollaboratorSort = (
   value?: string | null,

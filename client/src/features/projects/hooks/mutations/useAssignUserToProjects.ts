@@ -9,8 +9,16 @@ export const useAssignUserToProjects = () => {
   return useMutation<Project[], Error, AssignUserToProjectsInput>({
     mutationFn: assignUserToProjects,
 
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["projects"] });
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: ["projects", "options"],
+      });
+
+      for (const projectId of variables.projectIdsToAdd) {
+        queryClient.invalidateQueries({
+          queryKey: ["projects", projectId, "collaborators"],
+        });
+      }
     },
   });
 };

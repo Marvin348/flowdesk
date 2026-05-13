@@ -19,15 +19,18 @@ const Overview = ({
   onNavigate,
   projectId,
 }: OverviewProps) => {
-  const { data, isLoading, error } = useProjectOverview(projectId);
+  const { data, error } = useProjectOverview(projectId);
 
-  if (isLoading) return <div>loading</div>;
   if (error) return <div>Etwas ist schief gelaufen</div>;
   if (!data) return <div>Project not found</div>;
 
-  const { progress, collaborators, openTasks, recentComments, workload } = data;
-
-  console.log("OVERVIEW", data);
+  const {
+    progress,
+    collaborators,
+    openTasks,
+    recentComments,
+    workload,
+  } = data;
 
   return (
     <div
@@ -58,9 +61,8 @@ const Overview = ({
 
       <div className="h-full md:col-span-2 xl:row-span-2">
         <WorkloadCard
-          stats={workload}
+          workload={workload}
           onCreateTask={onCreateTask}
-          variant="compact"
           onMore={() => onNavigate("workload")}
         />
       </div>

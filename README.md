@@ -26,6 +26,7 @@ FlowDesk is an admin dashboard for managing projects, tasks, and team collaborat
 
 - No authentication system yet → user-specific data (e.g. favorites, pinned items) is handled on the frontend only
 - These values are not available on the backend and therefore cannot be used for server-side filtering
+- FileView is intentionally commented out for now (More functionality will be added here later)
 
 ## ⏳ Planned Improvements
 
@@ -96,7 +97,7 @@ npm run dev
 </p>
 
 <p align="center">
-  <!-- <img src="./screenshots/flowdesk-projects.png" width="50%"> -->
+  <img src="./screenshots/flowdesk-projects.png" width="50%">
   <img src="./screenshots/flowdesk-collaborator.png" width="50%">
 </p>
 
@@ -105,4 +106,5 @@ npm run dev
   <img src="./screenshots/flowdesk-team.png" width="50%">
 </p>
 
-![add Project](./screenshots/flowdesk-newProject.png)
+![add Project](./screenshots/flowdesk-addProject.png)
+![team filter](./screenshots/flowdesk-team-filter.png)

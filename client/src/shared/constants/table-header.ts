@@ -13,7 +13,7 @@ export const LIST_TABLE_OPTIONS = [
 
 export const WORKLOAD_TABLE_OPTIONS = [
   { label: "Name", value: "name" },
-  { label: "Total", value: "total" },
-  { label: "Offene", value: "open" },
-  { label: "Status", value: "status" },
+  { label: "Total", value: "totalTasks" },
+  { label: "Offene", value: "openTasks" },
+  { label: "Status", value: "progressStatus" },
 ] as const;

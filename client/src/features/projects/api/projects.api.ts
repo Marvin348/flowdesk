@@ -4,6 +4,7 @@ import type { CreateProjectInput } from "@shared/types/inputs/createProjectInput
 import type { ProjectOptionsDto } from "@shared/types/dto/projects/projectOptions.dto";
 import type { ProjectSummariesInput } from "@shared/types/inputs/projectSummariesInput";
 import type { ProjectSummariesResponseDto } from "@shared/types/dto/projects/projectSummary.dto";
+import type { ProjectOptionsInput } from "@shared/types/inputs/projectOptionsInput";
 
 export const fetchProjects = async (): Promise<Project[]> => {
   const res = await apiClient.get("/projects");
@@ -35,12 +36,15 @@ export const fetchProjectSummaries = async (
 };
 
 export const fetchProjectsOptions = async (
-  userId: string,
-  input: string,
+  input: ProjectOptionsInput,
 ): Promise<ProjectOptionsDto> => {
-  const res = await apiClient.get(
-    `/projects/options?userId=${userId}&search=${input}`,
-  );
+  const res = await apiClient.get(`/projects/options`, {
+    params: {
+      userId: input.userId,
+      search: input.search,
+    },
+  });
+
   return res.data.data;
 };
 

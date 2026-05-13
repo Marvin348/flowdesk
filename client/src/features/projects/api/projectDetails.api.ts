@@ -1,5 +1,5 @@
 import { apiClient } from "@/shared/api/client";
-import type { UserWorkload } from "@shared/types/dto/workload/projectUserWorkload";
+import type { ProjectWorkloadDto } from "@shared/types/dto/workload/projectUserWorkload";
 import type { ProjectTaskDto } from "@shared/types/dto/projects/projectTasks.dto";
 import type { ProjectDetailsShellDto } from "@shared/types/dto/projects/projectDetailsShell.dto";
 import type { ProjectOverviewDto } from "@shared/types/dto/projects/projectOverview.dto";
@@ -7,6 +7,7 @@ import type { ProjectCommentsResponseDto } from "@shared/types/dto/projects/proj
 import type { ProjectCollaboratorResponseDto } from "@shared/types/dto/projects/projectCollaborators.dto";
 import type { ProjectCollaboratorsInput } from "@shared/types/inputs/projectCollaboratorsInput";
 import type { ProjectCommentsInput } from "@shared/types/inputs/projectCommentsInput";
+import type { ProjectWorkloadInput } from "@shared/types/inputs/projectWorkloadInput";
 
 export const fetchProjectDetailsShell = async (
   id: string,
@@ -65,8 +66,19 @@ export const fetchProjectComments = async (
 };
 
 export const fetchProjectWorkload = async (
-  id: string,
-): Promise<UserWorkload[]> => {
-  const res = await apiClient.get(`/projects/${id}/workload`);
+  input: ProjectWorkloadInput,
+): Promise<ProjectWorkloadDto> => {
+  const params = new URLSearchParams({
+    page: String(input.page),
+    limit: String(input.limit),
+  });
+
+  if (input.sort) {
+    params.set("workloadSort", input.sort);
+  }
+
+  const res = await apiClient.get(
+    `/projects/${input.projectId}/workload?${params.toString()}`,
+  );
   return res.data.data;
 };

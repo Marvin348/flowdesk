@@ -3,21 +3,19 @@ import { Plus } from "lucide-react";
 import OverviewCardBody from "@/shared/components/ui/overview-card/OverviewCardBody";
 import OverviewCardFooter from "@/shared/components/ui/overview-card/OverviewCardFooter";
 import OverviewCardHeader from "@/shared/components/ui/overview-card/OverviewCardHeader";
-import WorkloadTable from "@/features/users/components/workload/WorkloadTable";
 import OverviewCard from "@/shared/components/ui/overview-card/OverviewCard";
 import type { UserWorkload } from "@shared/types/dto/workload/projectUserWorkload";
+import WorkloadCompactTable from "./WorkloadCompactTable";
 
 type WorkloadProps = {
-  stats: UserWorkload[];
+  workload: UserWorkload[];
   onCreateTask: () => void;
-  variant?: "compact" | "full";
   onMore: () => void;
 };
 
 const WorkloadCard = ({
-  stats,
+  workload,
   onCreateTask,
-  variant,
   onMore,
 }: WorkloadProps) => {
   return (
@@ -33,7 +31,7 @@ const WorkloadCard = ({
 
       <OverviewCardBody>
         <div className="p-4 h-full">
-          <WorkloadTable stats={stats} variant={variant} />
+          <WorkloadCompactTable workload={workload} />
         </div>
       </OverviewCardBody>
 

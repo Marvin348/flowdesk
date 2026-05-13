@@ -1,21 +1,18 @@
 import { useParams, useSearchParams } from "react-router";
 import ProjectDetailsHeader from "@/features/projects/components/projectDetailsPage/ProjectDetailsHeader";
-import { getProgressResult } from "@/shared/utils/getProgressResult";
 import ProjectTabs from "@/features/projects/components/projectDetailsPage/ProjectTabs";
 import { useState } from "react";
-import AttachmentsView from "@/features/projects/components/projectDetailsPage/tabs/files/AttachmentsView";
+// import AttachmentsView from "@/features/projects/components/projectDetailsPage/tabs/files/AttachmentsView";
 import ListView from "@/features/projects/components/projectDetailsPage/tabs/list/TaskListView";
 import Overview from "@/features/projects/components/projectDetailsPage/tabs/overview/Overview";
 import CollaboratorsView from "@/features/projects/components/projectDetailsPage/tabs/collaborators/CollaboratorsView";
 import AddTaskPanel from "@/features/tasks/components/create/AddTaskPanel";
 import InviteUserModal from "@/features/users/components/collaboratorsSelect/InviteUserModal";
 import CommentsView from "@/features/projects/components/projectDetailsPage/tabs/comments/CommentsView";
-import DetailsOverviewSkeleton from "@/features/projects/components/projectDetailsPage/skeleton/DetailsOverviewSkeleton";
+import ProjectDetailsSkeleton from "@/features/projects/components/projectDetailsPage/skeleton/ProjectDetailsSkeleton";
 import { useProjectDetailsShell } from "@/features/projects/hooks/details/useProjectDetailsShell";
 import WorkloadView from "@/features/projects/components/projectDetailsPage/tabs/workload/WorkloadView";
 import type { ActiveTab } from "@/features/projects/types/activeTab";
-
-// Nicht vergessen in ProjectsPage Progress zu fetchen, weil anderer key name im backend
 
 const ProjectDetailsPage = () => {
   const [searchParams, setSeatchParams] = useSearchParams();
@@ -32,10 +29,7 @@ const ProjectDetailsPage = () => {
 
   const { data: project, isLoading, error } = useProjectDetailsShell(projectId);
 
-  // const realProject = data?.project;
-  console.log("projectSHELL", project);
-
-  if (isLoading) return <DetailsOverviewSkeleton />;
+  if (isLoading) return <ProjectDetailsSkeleton />;
   if (error) return <div>Etwas ist schief gelaufen</div>;
   if (!project) return <div>Project not found</div>;
 

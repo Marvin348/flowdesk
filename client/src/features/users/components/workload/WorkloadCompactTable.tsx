@@ -1,51 +1,38 @@
+import Avatar from "@/shared/components/ui/avatar/Avatar";
+import type { UserWorkload } from "@shared/types/dto/workload/projectUserWorkload";
 import { getStatusFromProgress } from "@shared/utils/getStatusFromProgress";
 import { PROGRESS_STATUS } from "@/shared/constants/progress-status";
-import Avatar from "@/shared/components/ui/avatar/Avatar";
-import { ChevronsUpDown } from "lucide-react";
-import { WORKLOAD_TABLE_OPTIONS } from "@/shared/constants/table-header";
-import type { UserWorkload } from "@shared/types/dto/workload/projectUserWorkload";
 
-type WorkloadTableProps = {
+type WorkloadCompactTableProps = {
   workload: UserWorkload[];
-  onSort: (sortKey: WorkloadSortKey) => void;
-  hasLoaded: boolean;
 };
 
-export type WorkloadSortKey =
-  | "name"
-  | "totalTasks"
-  | "openTasks"
-  | "progressStatus";
+const WorkloadCompactTable = ({ workload }: WorkloadCompactTableProps) => {
+  if (!workload.length) {
+    return (
+      <div className="flex h-full items-center justify-center text-sm text-muted-foreground">
+        Keine Daten vorhanden
+      </div>
+    );
+  }
 
-const WorkloadTable = ({ workload, hasLoaded, onSort }: WorkloadTableProps) => {
+  const tableHeaders = ["Name", "Total", "Offene", "Status"];
+
   return (
-    <section className="border rounded-md overflow-hidden">
-      <div className="hidden sm:grid grid-cols-[2fr_1fr_1fr_1fr] bg-muted p-2 text-muted-foreground">
-        {WORKLOAD_TABLE_OPTIONS.map((opt) => (
-          <button
-            key={opt.value}
-            className="w-fit flex items-center gap-1 text-foreground"
-            onClick={() => onSort(opt.value)}
-          >
-            {opt.label}{" "}
-            <ChevronsUpDown className="size-4 text-muted-foreground" />
-          </button>
+    <section>
+      <div className="hidden sm:grid grid-cols-[2fr_1fr_1fr_1fr] border-b pb-1 text-sm text-muted-foreground">
+        {tableHeaders.map((t) => (
+          <div key={t}>{t}</div>
         ))}
       </div>
-
-      {!workload.length && hasLoaded && (
-        <div className="p-4 text-center text-muted-foreground text-sm">
-          Keine Daten vorhanden
-        </div>
-      )}
 
       <div>
         {workload.map((sta) => {
           const status = getStatusFromProgress(sta.progressPercent);
 
           return (
-            <div key={sta.user.id} className="border-b last:border-none">
-              <div className="sm:hidden border-b last:border-none p-3">
+            <div key={sta.user.id}>
+              <div className="sm:hidden border-b last:border-none py-3">
                 <div className="flex items-center gap-3">
                   <Avatar avatarKey={sta.user.avatarKey} size="sm" />
                   <div className="min-w-0">
@@ -57,9 +44,11 @@ const WorkloadTable = ({ workload, hasLoaded, onSort }: WorkloadTableProps) => {
                   <span className="rounded-md bg-muted px-2 py-1">
                     Total: {sta.totalTasks}
                   </span>
+
                   <span className="rounded-md bg-muted px-2 py-1">
                     Offene: {sta.openCount}
                   </span>
+
                   <span
                     className="flex items-center gap-2 rounded-full px-2 py-1"
                     style={{
@@ -78,8 +67,8 @@ const WorkloadTable = ({ workload, hasLoaded, onSort }: WorkloadTableProps) => {
                 </div>
               </div>
 
-              <div className="hidden sm:grid grid-cols-[2fr_1fr_1fr_1fr] items-center p-2">
-                <div className="flex items-center gap-3 min-w-0">
+              <div className="hidden sm:grid grid-cols-[2fr_1fr_1fr_1fr] items-center py-2 border-b last:border-none">
+                <div className="flex items-center gap-2 min-w-0">
                   <Avatar avatarKey={sta.user.avatarKey} size="sm" />
                   <div className="min-w-0">
                     <p className="truncate">{sta.user.name}</p>
@@ -112,4 +101,4 @@ const WorkloadTable = ({ workload, hasLoaded, onSort }: WorkloadTableProps) => {
     </section>
   );
 };
-export default WorkloadTable;
+export default WorkloadCompactTable;

@@ -1,5 +1,4 @@
 import { useAppStore } from "@/store";
-import { calcPercent } from "@/shared/utils/calcPercent";
 import type { ProjectListVM } from "@/features/projects/types/projectsList";
 import type { ProjectSummariesDto } from "@shared/types/dto/projects/projectSummary.dto";
 
@@ -11,16 +10,9 @@ export const useProjectsListVM = (
   const projectsList: ProjectListVM[] = projects.map((pro) => {
     const badge = badgeByProjectId[pro.id];
 
-    const progress = {
-      total: pro.stats.taskCount,
-      completed: pro.stats.completedTaskCount,
-      percent: calcPercent(pro.stats.completedTaskCount, pro.stats.taskCount),
-    };
-
     return {
       ...pro,
       badge,
-      progress,
     };
   });
 

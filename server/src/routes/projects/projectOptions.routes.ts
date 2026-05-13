@@ -5,6 +5,7 @@ import { ProjectOptionDto } from "@shared/types/dto/projects/projectOptions.dto.
 
 const router = express.Router();
 
+// refactor later
 router.get(
   "/options",
   (req: Request<{}, {}, {}, { search?: string; userId?: string }>, res) => {

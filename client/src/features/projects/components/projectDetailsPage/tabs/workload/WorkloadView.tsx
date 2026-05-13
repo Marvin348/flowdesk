@@ -1,19 +1,49 @@
 import { useProjectWorkload } from "@/features/projects/hooks/details/useProjectWorkload";
 import WorkloadTable from "@/features/users/components/workload/WorkloadTable";
+import { useProjectWorkloadSearchParams } from "@/features/projects/hooks/searchParams/useProjectWorkloadSearchParams";
+import Pagination from "@/shared/components/ui/Pagination";
+import ProjectWorkloadSkeleton from "@/features/projects/components/projectDetailsPage/skeleton/ProjectWorkloadSkeleton";
 
 type WorkloadViewProps = {
   projectId: string;
 };
 
 const WorkloadView = ({ projectId }: WorkloadViewProps) => {
-  const { data: workload, isLoading, error } = useProjectWorkload(projectId);
+  const { page, workloadSort, actions } = useProjectWorkloadSearchParams();
 
-  if (isLoading) return <div>loading</div>;
+  const input = {
+    projectId,
+    page,
+    limit: 12,
+    sort: workloadSort,
+  };
+
+  const { data, isLoading, error } = useProjectWorkload(input);
+
+  const workload = data?.items ?? [];
+  const totalPages = data?.totalPages ?? 1;
+
+  if (isLoading && !data) return <ProjectWorkloadSkeleton />;
   if (error) return <div>Etwas ist schief gelaufen</div>;
-  if (!workload) return <div>Project not found</div>;
 
-  console.log("workload", workload);
+  return (
+    <section className="flex flex-1 flex-col">
+      <WorkloadTable
+        workload={workload}
+        hasLoaded={!!data}
+        onSort={actions.toggleWorkloadSort}
+      />
 
-  return <WorkloadTable variant="full" stats={workload} />;
+      {totalPages > 1 && (
+        <div className="mt-auto pt-4 flex justify-end">
+          <Pagination
+            currentPage={page}
+            setPage={actions.setPage}
+            totalPages={totalPages}
+          />
+        </div>
+      )}
+    </section>
+  );
 };
 export default WorkloadView;

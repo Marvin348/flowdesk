@@ -1,8 +1,9 @@
 import { Attachment } from "@shared/types/attachment.js";
 import { Comment } from "@shared/types/comment.js";
-import type { ProjectSummariesDto } from "@shared/types/dto/project.js";
+import type { ProjectSummariesDto } from "@shared/types/dto/projects/projectSummary.dto.js";
 import { Project } from "@shared/types/project.js";
 import { Task } from "@shared/types/task.js";
+import { calcPercent } from "../calcPercent.js";
 
 export const getProjectsSummary = (
   projects: Project[],
@@ -59,6 +60,15 @@ export const getProjectsSummary = (
       },
     );
 
+    const total = projectTasks.length;
+    const completed = counts.completedTaskCount;
+
+    const progress = {
+      total,
+      completed,
+      progressPercent: calcPercent(completed, total),
+    };
+
     const teamUserIds = Array.from(teamUserIdSet);
 
     return {
@@ -70,11 +80,11 @@ export const getProjectsSummary = (
       teamUserIds,
       createdAt: p.createdAt,
 
+      progress,
+
       stats: {
-        taskCount: projectTasks.length,
         commentCount: counts.commentCount,
         attachmentCount: counts.attachmentCount,
-        completedTaskCount: counts.completedTaskCount,
         userCount: teamUserIds.length,
       },
     };

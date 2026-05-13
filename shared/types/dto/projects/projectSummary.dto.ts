@@ -1,5 +1,6 @@
 import type { Priority } from "../../priority";
 import type { StatusBase } from "../../StatusBase";
+import type { Progress } from "../common/progress.dto";
 
 export type ProjectSummariesDto = {
   id: string;
@@ -10,11 +11,11 @@ export type ProjectSummariesDto = {
   teamUserIds: string[];
   createdAt: string;
 
+  progress: Progress
+
   stats: {
-    taskCount: number;
     commentCount: number;
     attachmentCount: number;
-    completedTaskCount: number;
     userCount: number;
   };
 };

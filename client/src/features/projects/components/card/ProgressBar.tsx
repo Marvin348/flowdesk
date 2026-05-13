@@ -1,7 +1,6 @@
 import { ListChecks } from "lucide-react";
 import type { Progress } from "@shared/types/dto/common/progress.dto";
 
-
 type ProgressBarProps = {
   progress: Progress;
 };

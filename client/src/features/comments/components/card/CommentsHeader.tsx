@@ -1,4 +1,4 @@
-import { ArrowDownUp, ChevronDown } from "lucide-react";
+import { ArrowDownUp} from "lucide-react";
 import type { ProjectCommentsSort } from "@shared/types/sort/projectCommentsSort";
 
 type CommentsHeaderProps = {

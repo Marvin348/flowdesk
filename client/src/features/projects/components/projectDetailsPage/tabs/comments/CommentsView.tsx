@@ -5,6 +5,7 @@ import CommentThreadList from "@/features/comments/components/CommentThreadList"
 import { useProjectComments } from "@/features/projects/hooks/details/useProjectComments";
 import { useProjectCommentsSearchParams } from "@/features/projects/hooks/searchParams/useProjectCommentsSearchParams";
 import { useState } from "react";
+import ProjectCommentsSkeleton from "@/features/projects/components/projectDetailsPage/skeleton/ProjectCommentsSkeleton";
 
 type CommentsViewProps = {
   projectId: string;
@@ -26,33 +27,31 @@ const CommentsView = ({ projectId }: CommentsViewProps) => {
   const comments = data?.comments ?? [];
   const taskOptions = data?.taskOptions ?? [];
   const hasMore = data?.hasMore;
+  const totalItems = data?.totalItems ?? 0;
 
-  if (isLoading) return <div>loading</div>;
+  if (isLoading && !data) return <ProjectCommentsSkeleton />;
   if (error) return <div>Etwas ist schief gelaufen</div>;
-  if (!data) return <div>Project not found</div>;
 
   const onLoadMore = () => {
     setLimit((prev) => prev + 8);
   };
 
-  console.log("COMMENTS", data);
-
   return (
     <section>
       <div className="border-b pb-8">
-        <CommentForm taskOptions={taskOptions} projectId={projectId}/>
+        <CommentForm taskOptions={taskOptions} projectId={projectId} />
       </div>
 
       <div className="my-8">
         <CommentsHeader
           commentsSort={commentsSort}
-          commentsCount={data.totalItems}
+          commentsCount={totalItems}
           toggleOrder={() => toggleCommentsSort()}
         />
       </div>
 
       <div>
-        <CommentThreadList comments={comments} projectId={projectId}/>
+        <CommentThreadList comments={comments} projectId={projectId} />
       </div>
 
       {hasMore && (

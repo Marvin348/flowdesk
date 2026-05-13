@@ -5,7 +5,6 @@ import tasksRouter from "@/routes/tasks.js";
 import usersRouter from "@/routes/users.js";
 import attachmentsRouter from "@/routes/attachments.js";
 import commentsRouter from "@/routes/comments.js";
-import { readDb } from "@/utils/readDb.js";
 
 const app = express();
 
@@ -17,11 +16,5 @@ app.use("/tasks", tasksRouter);
 app.use("/users", usersRouter);
 app.use("/attachments", attachmentsRouter);
 app.use("/comments", commentsRouter);
-
-const db = readDb();
-
-app.get("/api/health", (req, res) => {
-  res.json({ message: "server is running" });
-});
 
 export default app;

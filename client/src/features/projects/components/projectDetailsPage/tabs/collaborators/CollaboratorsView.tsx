@@ -1,11 +1,5 @@
 import Avatar from "@/shared/components/ui/avatar/Avatar";
-import {
-  Copy,
-  EllipsisVertical,
-  ArrowDownAZ,
-  ArrowUpAZ,
-  ChevronsUpDown,
-} from "lucide-react";
+import { Copy, EllipsisVertical, ChevronsUpDown } from "lucide-react";
 import { useRef, useState } from "react";
 import CollaboratorActions from "@/features/users/components/collaboratorsView/CollaboratorActions";
 import DeleteCollaboratorDialog from "@/features/users/components/collaboratorsView/DeleteCollaboratorDialog";
@@ -17,6 +11,7 @@ import { COLLABORATOR_TABLE_OPTIONS } from "@/shared/constants/table-header";
 import { useProjectCollaborators } from "@/features/projects/hooks/details/useProjectCollaborators";
 import { useProjectCollaboratorSearchParams } from "@/features/projects/hooks/searchParams/useProjectCollaboratorSearchParams";
 import Pagination from "@/shared/components/ui/Pagination";
+import ProjectCollaboratorSkeleton from "@/features/projects/components/projectDetailsPage/skeleton/ProjectCollaboratorSkeleton";
 
 type CollaboratorsViewProps = {
   projectId: string;
@@ -60,11 +55,8 @@ const CollaboratorsView = ({
   const collaborators = data?.items ?? [];
   const totalPages = data?.totalPages ?? 1;
 
-  if (isLoading) return <div>loading</div>;
+  if (isLoading && !data) return <ProjectCollaboratorSkeleton />;
   if (error) return <div>Etwas ist schief gelaufen</div>;
-  if (!collaborators) return <div>Project not found</div>;
-
-  console.log("COLLABORATORS", data);
 
   const toggleOpenActionId = (id: string) =>
     setOpenActionId((prev) => (prev === id ? null : id));
@@ -98,6 +90,12 @@ const CollaboratorsView = ({
         />
       )}
 
+      {!collaborators.length && !!data && (
+        <div className="text-muted-foreground text-sm">
+          Keine Daten vorhanden
+        </div>
+      )}
+
       <div className="border rounded-md mt-2">
         <div className="grid grid-cols-[2fr_2fr_1fr_1fr]  gap-4 p-2 bg-muted rounded-t-md">
           {COLLABORATOR_TABLE_OPTIONS.map((opt) => (
@@ -108,7 +106,7 @@ const CollaboratorsView = ({
             >
               {opt.label}
               <span>
-                <ArrowUpAZ className="size-4 text-muted-foreground" />
+                <ChevronsUpDown className="size-4 text-muted-foreground" />
               </span>
             </button>
           ))}
