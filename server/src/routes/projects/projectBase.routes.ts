@@ -9,12 +9,15 @@ import { getFilteredProjectsList } from "@/utils/projects/getFilteredProjectsLis
 import { pagination } from "@/utils/pagination.js";
 import type { CreateProjectInput } from "@shared/types/inputs/createProjectInput.js";
 import type { Project } from "@shared/types/project.js";
+import { ProjectModel } from "@/routes/projects/project.model.js";
 
 const router = express.Router();
 
-router.get("/", (req, res) => {
-  const db = readDb();
-  res.json({ data: db.projects });
+router.get("/", async (req, res) => {
+  // const db = readDb();
+  const projects = await ProjectModel.find();
+
+  return res.status(200).json({ data: projects });
 });
 
 router.get(
