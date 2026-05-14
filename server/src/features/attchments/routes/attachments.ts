@@ -1,0 +1,11 @@
+import express from "express";
+import { readDb } from "@/shared/utils/readDb.js";
+
+const router = express.Router();
+
+router.get("/", (req, res) => {
+  const db = readDb();
+  res.json({ data: db.attachments });
+});
+
+export default router;

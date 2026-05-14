@@ -3,7 +3,7 @@ import fs from "fs";
 import path from "path";
 import mongoose from "mongoose";
 import { fileURLToPath } from "url";
-import { ProjectModel } from "@/routes/projects/project.model.js";
+import { ProjectModel } from "@/features/projects/models/project.model.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
