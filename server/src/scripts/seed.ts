@@ -4,6 +4,10 @@ import path from "path";
 import mongoose from "mongoose";
 import { fileURLToPath } from "url";
 import { ProjectModel } from "@/features/projects/models/project.model.js";
+import { TaskModel } from "@/features/tasks/models/task.model.js";
+import { CommentModel } from "@/features/comments/models/comment.model.js";
+import { AttachmentModel } from "@/features/attchments/models/attachment.model.js";
+import { UserModel } from "@/features/users/models/user.modal.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -22,10 +26,19 @@ const seed = async () => {
     const file = fs.readFileSync(filePath, "utf-8");
     const db = JSON.parse(file);
 
+    await CommentModel.deleteMany();
+    await AttachmentModel.deleteMany();
+    await TaskModel.deleteMany();
     await ProjectModel.deleteMany();
-    await ProjectModel.insertMany(db.projects);
+    await UserModel.deleteMany();
 
-    console.log("Projects were seeded successfully");
+    await UserModel.insertMany(db.users);
+    await ProjectModel.insertMany(db.projects);
+    await TaskModel.insertMany(db.tasks);
+    await CommentModel.insertMany(db.comments);
+    await AttachmentModel.insertMany(db.attachments);
+
+    console.log("Database were seeded successfully");
 
     await mongoose.disconnect();
     process.exit(0);

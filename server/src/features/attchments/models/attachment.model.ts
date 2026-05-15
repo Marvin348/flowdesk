@@ -1,3 +1,4 @@
+import { Attachment } from "@shared/types/attachment.js";
 import mongoose from "mongoose";
 
 const attachmentSchema = new mongoose.Schema({
@@ -10,14 +11,12 @@ const attachmentSchema = new mongoose.Schema({
 
   taskId: {
     type: String,
-    require: true,
-    unique: true,
+    required: true,
   },
 
   userId: {
     type: String,
-    require: true,
-    unique: true,
+    required: true,
   },
 
   fileName: {
@@ -29,4 +28,7 @@ const attachmentSchema = new mongoose.Schema({
   },
 });
 
-export const AttachmentModal = mongoose.model("Attachment", attachmentSchema);
+export const AttachmentModel = mongoose.model<Attachment>(
+  "Attachment",
+  attachmentSchema,
+);

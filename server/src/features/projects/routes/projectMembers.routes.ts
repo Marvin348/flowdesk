@@ -1,7 +1,11 @@
 import express from "express";
-import { writeDb } from "@/shared/utils/writeDb.js";
-import { readDb } from "@/shared/utils/readDb.js";
 import { Request } from "express";
+import { UserModel } from "@/features/users/models/user.modal.js";
+import { ProjectModel } from "../models/project.model.js";
+import { toProjectDto } from "@/features/projects/mappers/project.mapper.js";
+import { TaskModel } from "@/features/tasks/models/task.model.js";
+import { AttachmentModel } from "@/features/attchments/models/attachment.model.js";
+import { CommentModel } from "@/features/comments/models/comment.model.js";
 
 const router = express.Router();
 
@@ -11,127 +15,188 @@ type AssignUserInput = {
 };
 
 // add new userId to projects
-router.patch("/assign-user", (req: Request<{}, {}, AssignUserInput>, res) => {
-  const { projectIdsToAdd, userId } = req.body;
+router.patch(
+  "/assign-user",
+  async (req: Request<{}, {}, AssignUserInput>, res) => {
+    try {
+      const { projectIdsToAdd, userId } = req.body;
 
-  if (!Array.isArray(projectIdsToAdd) || typeof userId !== "string") {
-    return res.status(400).json({ error: "Invalid input" });
-  }
+      if (!Array.isArray(projectIdsToAdd) || typeof userId !== "string") {
+        return res.status(400).json({ error: "Invalid input" });
+      }
 
-  const db = readDb();
+      const user = await UserModel.findOne({ id: userId });
 
-  const user = db.users.find((u) => u.id === userId);
+      if (!user) {
+        return res.status(404).json({ error: "User not found" });
+      }
 
-  if (!user) {
-    return res.status(404).json({ error: "User not found" });
-  }
+      const matchingProjects = await ProjectModel.find({
+        id: { $in: projectIdsToAdd },
+      });
 
-  const projectIdsToAddSet = new Set(projectIdsToAdd);
-  const matchesProjects = db.projects.filter((p) =>
-    projectIdsToAddSet.has(p.id),
-  );
+      const projectIdsToAddSet = new Set(projectIdsToAdd);
 
-  if (projectIdsToAddSet.size !== matchesProjects.length) {
-    return res.status(400).json({ error: "one or more projects are missing" });
-  }
+      if (projectIdsToAddSet.size !== matchingProjects.length) {
+        return res
+          .status(400)
+          .json({ error: "one or more projects are missing" });
+      }
 
-  for (const p of matchesProjects) {
-    const invitedUserIdsSet = new Set(p.invitedUserIds);
+      const alreadyAssignedProject = matchingProjects.find((p) =>
+        p.invitedUserIds.includes(userId),
+      );
 
-    if (invitedUserIdsSet.has(userId)) {
-      return res.status(409).json({ error: "User already in project" });
+      if (alreadyAssignedProject) {
+        return res.status(409).json({ error: "User already in project" });
+      }
+
+      await ProjectModel.updateMany(
+        {
+          id: { $in: projectIdsToAdd },
+        },
+        {
+          $addToSet: {
+            invitedUserIds: userId,
+          },
+        },
+      );
+
+      const updatedProjectDocs = await ProjectModel.find({
+        id: { $in: projectIdsToAdd },
+      });
+
+      const updatedProjects = updatedProjectDocs.map(toProjectDto);
+
+      return res.status(200).json({
+        data: updatedProjects,
+      });
+    } catch (error) {
+      return res.status(500).json({
+        error: "Failed to assign user to projects",
+      });
     }
-
-    const updatedUserIds = Array.from(new Set([...p.invitedUserIds, userId]));
-
-    p.invitedUserIds = updatedUserIds;
-    p.updatedAt = new Date().toISOString();
-  }
-
-  writeDb(db);
-
-  return res.json({ data: matchesProjects });
-});
+  },
+);
 
 // delete user from project
-router.delete("/:id/members/:userId", (req, res) => {
-  const projectId = req.params.id;
+router.delete(
+  "/:id/members/:userId",
+  async (req: Request<{ id: string; userId: string }>, res) => {
+    try {
+      const projectId = req.params.id;
+      const userId = req.params.userId;
 
-  if (!projectId) {
-    return res.status(400).json({ error: "Invalid projectId" });
-  }
+      if (!projectId) {
+        return res.status(400).json({ error: "Invalid projectId" });
+      }
 
-  const userId = req.params.userId;
+      if (!userId) {
+        return res.status(400).json({ error: "Invalid userId" });
+      }
 
-  if (!userId) {
-    return res.status(400).json({ error: "Invalid userId" });
-  }
+      const project = await ProjectModel.findOne({ id: projectId });
 
-  const db = readDb();
+      if (!project) {
+        return res.status(404).json({ error: "Project not found" });
+      }
 
-  const project = db.projects.find((p) => p.id === projectId);
+      if (!project.invitedUserIds.includes(userId)) {
+        return res.status(400).json({ error: "User is not a project member" });
+      }
 
-  if (!project) {
-    return res.status(404).json({ error: "Project not found" });
-  }
+      const updatedProject = await ProjectModel.findOneAndUpdate(
+        { id: projectId },
+        {
+          $pull: {
+            invitedUserIds: userId,
+          },
+        },
+        { new: true },
+      ).lean();
 
-  if (!project.invitedUserIds.includes(userId)) {
-    return res.status(400).json({ error: "User is not a project member" });
-  }
+      await TaskModel.updateMany(
+        {
+          projectId,
+          collaboratorIds: userId,
+        },
+        {
+          $pull: {
+            collaboratorIds: userId,
+          },
+        },
+      );
 
-  project.invitedUserIds = project.invitedUserIds.filter((id) => id !== userId);
+      const tasksWithoutCollaborators = await TaskModel.find({
+        projectId,
+        collaboratorIds: { $size: 0 },
+      }).lean();
 
-  const deleteSet = new Set<string>();
+      const taskIdsToDelete = tasksWithoutCollaborators.map((task) => task.id);
 
-  for (const task of db.tasks) {
-    if (task.projectId !== projectId) continue;
-    if (!task.collaboratorIds.includes(userId)) continue;
+      if (taskIdsToDelete.length > 0) {
+        await AttachmentModel.deleteMany({
+          taskId: { $in: taskIdsToDelete },
+        });
 
-    task.collaboratorIds = task.collaboratorIds.filter((id) => id !== userId);
+        await CommentModel.deleteMany({
+          taskId: { $in: taskIdsToDelete },
+        });
 
-    if (!task.collaboratorIds.length) {
-      deleteSet.add(task.id);
+        await TaskModel.deleteMany({
+          id: { $in: taskIdsToDelete },
+        });
+
+        if (!updatedProject) {
+          return res.status(404).json({ error: "Project not found" });
+        }
+
+        return res.status(200).json({ data: toProjectDto(updatedProject) });
+      }
+    } catch (error) {
+      return res.status(500).json({
+        error: "Failed to remove user from project",
+      });
     }
-  }
-
-  db.tasks = db.tasks.filter((t) => !deleteSet.has(t.id));
-  db.attachments = db.attachments.filter((a) => !deleteSet.has(a.taskId));
-  db.comments = db.comments.filter((c) => !deleteSet.has(c.taskId));
-
-  project.updatedAt = new Date().toISOString();
-
-  writeDb(db);
-
-  return res.status(200).json({ data: project });
-});
+  },
+);
 
 // update invitedUserIds
 router.patch(
   "/:id/members",
-  (req: Request<{ id: string }, {}, { userIdsToAdd: string[] }>, res) => {
-    const projectId = req.params.id;
-    const { userIdsToAdd } = req.body;
+  async (req: Request<{ id: string }, {}, { userIdsToAdd: string[] }>, res) => {
+    try {
+      const projectId = req.params.id;
+      const { userIdsToAdd } = req.body;
 
-    if (!projectId || !Array.isArray(userIdsToAdd)) {
-      return res.status(400).json({ error: "Invalid input" });
+      if (!projectId || !Array.isArray(userIdsToAdd)) {
+        return res.status(400).json({ error: "Invalid input" });
+      }
+
+      const updatedProject = await ProjectModel.findOneAndUpdate(
+        { id: projectId },
+        {
+          $addToSet: {
+            invitedUserIds: {
+              $each: userIdsToAdd,
+            },
+          },
+        },
+        { new: true },
+      ).lean();
+
+      if (!updatedProject) {
+        return res.status(404).json({ error: "project not found" });
+      }
+
+      return res.status(200).json({
+        data: toProjectDto(updatedProject),
+      });
+    } catch (error) {
+      return res.status(500).json({
+        error: "Failed to update project members",
+      });
     }
-
-    const db = readDb();
-    const project = db.projects.find((p) => p.id === projectId);
-
-    if (!project) {
-      return res.status(404).json({ error: "project not found" });
-    }
-
-    project.invitedUserIds = Array.from(
-      new Set([...project.invitedUserIds, ...userIdsToAdd]),
-    );
-
-    project.updatedAt = new Date().toISOString();
-
-    writeDb(db);
-
-    return res.status(200).json({ data: project });
   },
 );
 

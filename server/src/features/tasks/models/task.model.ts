@@ -1,3 +1,4 @@
+import { Task } from "@shared/types/task.js";
 import mongoose from "mongoose";
 
 const taskSchema = new mongoose.Schema(
@@ -63,4 +64,4 @@ const taskSchema = new mongoose.Schema(
   },
 );
 
-export const TaskModel = mongoose.model("Task", taskSchema);
+export const TaskModel = mongoose.model<Task>("Task", taskSchema);

@@ -1,3 +1,4 @@
+import { Comment } from "@shared/types/comment.js";
 import mongoose from "mongoose";
 
 const commentSchema = new mongoose.Schema(
@@ -10,13 +11,11 @@ const commentSchema = new mongoose.Schema(
     },
     taskId: {
       type: String,
-      require: true,
-      unique: true,
+      required: true,
     },
     userId: {
       type: String,
-      require: true,
-      unique: true,
+      required: true,
     },
     message: {
       type: String,
@@ -33,4 +32,4 @@ const commentSchema = new mongoose.Schema(
   },
 );
 
-export const CommentModal = mongoose.model("Comment", commentSchema);
+export const CommentModel = mongoose.model<Comment>("Comment", commentSchema);

@@ -1,70 +1,84 @@
 import express from "express";
-import { readDb } from "@/shared/utils/readDb.js";
 import { Request } from "express";
 import { ProjectOptionDto } from "@shared/types/dto/projects/projectOptions.dto.js";
+import { ProjectModel } from "@/features/projects/models/project.model.js";
+import { toProjectDto } from "@/features/projects/mappers/project.mapper.js";
+import { UserModel } from "@/features/users/models/user.modal.js";
+import { toUserDto } from "@/features/users/mappers/user.mapper.js";
 
 const router = express.Router();
 
 // refactor later
 router.get(
   "/options",
-  (req: Request<{}, {}, {}, { search?: string; userId?: string }>, res) => {
-    const search =
-      typeof req.query.search === "string" ? req.query.search.trim() : "";
-    const userId = req.query.userId;
+  async (
+    req: Request<{}, {}, {}, { search?: string; userId?: string }>,
+    res,
+  ) => {
+    try {
+      const search =
+        typeof req.query.search === "string" ? req.query.search.trim() : "";
+      const userId = req.query.userId;
 
-    const db = readDb();
+      const projectDocs = await ProjectModel.find().lean();
+      const userDocs = await UserModel.find().lean();
 
-    const projectOption: ProjectOptionDto[] = db.projects.map((p) => {
-      const invitedUserIdsSet = new Set<string>(p.invitedUserIds);
+      const projects = projectDocs.map(toProjectDto);
+      const usersList = userDocs.map(toUserDto);
 
-      const isInvited = p.invitedUserIds.some((ids) => ids === userId);
+      const projectOption: ProjectOptionDto[] = projects.map((p) => {
+        const invitedUserIdsSet = new Set<string>(p.invitedUserIds);
 
-      const users = db.users
-        .filter((u) => invitedUserIdsSet.has(u.id))
-        .map((u) => {
-          return {
-            id: u.id,
-            name: u.name,
-            avatarKey: u.avatarKey,
-          };
-        });
+        const isInvited = p.invitedUserIds.some((ids) => ids === userId);
 
-      return {
-        id: p.id,
-        title: p.title,
-        createdAt: p.createdAt,
-        isInvited,
-        users,
-      };
-    });
+        const users = usersList
+          .filter((u) => invitedUserIdsSet.has(u.id))
+          .map((u) => {
+            return {
+              id: u.id,
+              name: u.name,
+              avatarKey: u.avatarKey,
+            };
+          });
 
-    const recent = projectOption
-      .sort(
-        (a, b) =>
-          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
-      )
-      .slice(0, 3);
+        return {
+          id: p.id,
+          title: p.title,
+          createdAt: p.createdAt,
+          isInvited,
+          users,
+        };
+      });
 
-    const recentIdSet = new Set(recent.map((p) => p.id));
+      const recent = projectOption
+        .sort(
+          (a, b) =>
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+        )
+        .slice(0, 3);
 
-    const filteredProjectOptions = projectOption
-      .filter((p) => {
-        if (recentIdSet.has(p.id)) return false;
+      const recentIdSet = new Set(recent.map((p) => p.id));
 
-        const matchesSearch =
-          !search || p.title.toLowerCase().includes(search.toLowerCase());
+      const filteredProjectOptions = projectOption
+        .filter((p) => {
+          if (recentIdSet.has(p.id)) return false;
 
-        return matchesSearch;
-      })
-      .slice(0, 5);
+          const matchesSearch =
+            !search || p.title.toLowerCase().includes(search.toLowerCase());
 
-    return res.status(200).json({
-      data: {
-        recent: recent,
-        results: search === "" ? [] : filteredProjectOptions,
-      },
-    });
+          return matchesSearch;
+        })
+        .slice(0, 5);
+
+      return res.status(200).json({
+        data: {
+          recent: recent,
+          results: search === "" ? [] : filteredProjectOptions,
+        },
+      });
+    } catch (error) {
+      return res.status(500).json({ error: "Failed to fetch project options" });
+    }
   },
 );
 
