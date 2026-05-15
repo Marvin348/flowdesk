@@ -1,5 +1,4 @@
 import express from "express";
-import { readDb } from "@/shared/utils/readDb.js";
 import { getProjectsSummary } from "@/features/projects/utils/getProjectsSummary.js";
 import { Request } from "express";
 import type { ProjectSummaryQuery } from "@/features/projects/types/querys/projectSummaryQuery.js";

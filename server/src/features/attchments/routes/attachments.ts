@@ -1,11 +1,11 @@
 import express from "express";
-import { readDb } from "@/shared/utils/readDb.js";
+import { AttachmentModel } from "../models/attachment.model.js";
 
 const router = express.Router();
 
-router.get("/", (req, res) => {
-  const db = readDb();
-  res.json({ data: db.attachments });
+router.get("/", async (req, res) => {
+  const attachments = await AttachmentModel.find().lean();
+  res.json({ data: attachments });
 });
 
 export default router;

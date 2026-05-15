@@ -1,62 +1,67 @@
 import express from "express";
-import { readDb } from "@/shared/utils/readDb.js";
-import { writeDb } from "@/shared/utils/writeDb.js";
-import { Task } from "@shared/types/task.js";
 import type { Request, Response } from "express";
 import type { CreateTaskInput } from "@shared/types/inputs/createTaskInput.js";
+import { TaskModel } from "@/features/tasks/models/task.model.js";
+import { ProjectModel } from "@/features/projects/models/project.model.js";
+import { toTaskDto } from "@/features/tasks/mappers/task.mapper.js";
 
 const router = express.Router();
 
-router.get("/", (req, res) => {
-  const db = readDb();
-  res.json({ data: db.tasks });
+router.get("/", async (req, res) => {
+  const tasks = await TaskModel.find().lean();
+  res.json({ data: tasks });
 });
 
 // post in details
-router.post("/", (req: Request<{}, {}, CreateTaskInput>, res) => {
-  const {
-    projectId,
-    title,
-    collaboratorIds,
-    dueDate,
-    tags,
-    taskPriority,
-    reminderAt,
-    description,
-  } = req.body;
+router.post("/", async (req: Request<{}, {}, CreateTaskInput>, res) => {
+  try {
+    const {
+      projectId,
+      title,
+      collaboratorIds,
+      dueDate,
+      tags,
+      taskPriority,
+      reminderAt,
+      description,
+    } = req.body;
 
-  if (!projectId || !title || !collaboratorIds || !dueDate || !taskPriority) {
-    return res.status(400).json({ error: "Missing required fields" });
+    if (!projectId || !title || !collaboratorIds || !dueDate || !taskPriority) {
+      return res.status(400).json({ error: "Missing required fields" });
+    }
+
+    const project = await ProjectModel.findOne({ id: projectId }).lean();
+
+    if (!project) {
+      return res.status(404).json({ error: "project not found" });
+    }
+
+    const newTaskRecord = await TaskModel.create({
+      id: crypto.randomUUID(),
+      projectId,
+      title,
+      collaboratorIds,
+      dueDate,
+      taskStatus: "pending",
+      tags,
+      taskPriority,
+      reminderAt: reminderAt ?? "none",
+      description,
+    });
+
+    await ProjectModel.findOneAndUpdate(
+      { id: projectId },
+      { updatedAt: new Date() },
+    );
+
+    return res.status(201).json({
+      data: toTaskDto(newTaskRecord),
+    });
+  } catch (error) {
+    return res.status(500).json({
+      error: "Failed to create task",
+    });
   }
-
-  const db = readDb();
-
-  const project = db.projects.find((p) => p.id === projectId);
-
-  if (!project) {
-    return res.status(404).json({ error: "project not found" });
-  }
-
-  const newTask: Task = {
-    id: crypto.randomUUID(),
-    projectId,
-    title,
-    dueDate,
-    taskStatus: "pending",
-    collaboratorIds,
-    taskPriority,
-    description: description,
-    tags,
-    reminderAt: reminderAt ?? "none",
-  };
-
-  db.tasks.push(newTask);
-
-  project.updatedAt = new Date().toISOString();
-
-  writeDb(db);
-
-  return res.status(201).json({ data: newTask });
 });
 
 export default router;

@@ -5,7 +5,7 @@ import type { User } from "@shared/types/user.js";
 import { getProjectProgress } from "@/features/projects/utils/getProjectProgress.js";
 import { getProjectUserWorkload } from "@/features/projects/utils/getProjectUserWorkload.js";
 import type { ProjectOverviewDto } from "@shared/types/dto/projects/projectOverview.dto.js";
-import { toUserPreview } from "@/features/users/utils/toUserPreview.js";
+import { toUserPreviewDto } from "@/features/users/mappers/user.mapper.js";
 
 export const getProjectOverview = ({
   project,
@@ -23,7 +23,7 @@ export const getProjectOverview = ({
   const collaborators = project.invitedUserIds
     .map((userId) => usersById.get(userId))
     .filter((user): user is User => Boolean(user))
-    .map(toUserPreview)
+    .map(toUserPreviewDto)
     .slice(0, 4);
 
   const openTasks = tasks
@@ -38,7 +38,7 @@ export const getProjectOverview = ({
       collaborators: task.collaboratorIds
         .map((userId) => usersById.get(userId))
         .filter((user): user is User => Boolean(user))
-        .map(toUserPreview),
+        .map(toUserPreviewDto),
     }));
 
   const recentComments = comments
@@ -54,7 +54,7 @@ export const getProjectOverview = ({
       createdAt: comment.createdAt,
       user: comment.userId
         ? usersById.get(comment.userId)
-          ? toUserPreview(usersById.get(comment.userId)!)
+          ? toUserPreviewDto(usersById.get(comment.userId)!)
           : null
         : null,
     }));

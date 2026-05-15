@@ -1,63 +1,70 @@
 import express from "express";
-import { readDb } from "@/shared/utils/readDb.js";
-import { writeDb } from "@/shared/utils/writeDb.js";
-import { Comment } from "@shared/types/comment.js";
 import type { Request, Response } from "express";
 import type { CreateCommentInput } from "@shared/types/inputs/createCommentInput.js";
+import { CommentModel } from "@/features/comments/models/comment.model.js";
+import { TaskModel } from "@/features/tasks/models/task.model.js";
+import { toCommentDto } from "@/features/comments/mappers/comment.mapper.js";
+import { ProjectModel } from "@/features/projects/models/project.model.js";
 
 const router = express.Router();
 
-router.get("/", (req, res) => {
-  const db = readDb();
-  res.json({ data: db.comments });
+router.get("/", async (req, res) => {
+  const comments = await CommentModel.find().lean();
+  res.json({ data: comments });
 });
 
 // new comment
-router.post("/", (req: Request<{}, {}, CreateCommentInput>, res) => {
-  const { taskId, message, parentCommentId } = req.body;
+router.post("/", async (req: Request<{}, {}, CreateCommentInput>, res) => {
+  try {
+    const { taskId, message, parentCommentId } = req.body;
 
-  if (!taskId || !message) {
-    return res.status(400).json({ error: "Missing required fields" });
-  }
+    if (!taskId || !message) {
+      return res.status(400).json({ error: "Missing required fields" });
+    }
 
-  const db = readDb();
+    const task = await TaskModel.findOne({ id: taskId }).lean();
 
-  const task = db.tasks.find((t) => t.id === taskId);
+    if (!task) {
+      return res.status(404).json({ error: "Task not found" });
+    }
 
-  if (!task) {
-    return res.status(404).json({ error: "Task not found" });
-  }
+    if (parentCommentId) {
+      const parentComment = await CommentModel.findOne({
+        id: parentCommentId,
+      }).lean();
 
-  if (parentCommentId) {
-    const parentComment = db.comments.find(
-      (comment) => comment.id === parentCommentId,
+      if (!parentComment) {
+        return res.status(404).json({ error: "Parent comment not found" });
+      }
+
+      if (parentComment.taskId !== taskId) {
+        return res.status(400).json({
+          error: "Parent comment does not belong to this task",
+        });
+      }
+    }
+
+    const newCommentRecord = await CommentModel.create({
+      id: crypto.randomUUID(),
+      taskId,
+      userId: "u3", // test, remove later
+      message,
+      parentCommentId,
+    });
+
+    await ProjectModel.findOneAndUpdate(
+      { id: task.projectId },
+      { updatedAt: new Date() },
     );
 
-    if (!parentComment) {
-      return res.status(404).json({ error: "Parent comment not found" });
-    }
-
-    if (parentComment.taskId !== taskId) {
-      return res.status(400).json({
-        error: "Parent comment does not belong to this task",
-      });
-    }
+    return res.status(201).json({
+      data: toCommentDto(newCommentRecord.toObject()),
+    });
+  } catch (error) {
+    return res.status(500).json({
+      error: "Failed to create comment",
+    });
   }
-
-  const newComment: Comment = {
-    id: crypto.randomUUID(),
-    taskId,
-    userId: "u3", // test, remove later
-    message,
-    createdAt: new Date().toISOString(),
-    parentCommentId,
-  };
-
-  db.comments.push(newComment);
-
-  writeDb(db);
-
-  return res.status(201).json({ data: newComment });
 });
 
 export default router;

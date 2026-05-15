@@ -54,7 +54,7 @@ const CollaboratorsView = ({
 
   const collaborators = data?.items ?? [];
   const totalPages = data?.totalPages ?? 1;
-
+  
   if (isLoading && !data) return <ProjectCollaboratorSkeleton />;
   if (error) return <div>Etwas ist schief gelaufen</div>;
 

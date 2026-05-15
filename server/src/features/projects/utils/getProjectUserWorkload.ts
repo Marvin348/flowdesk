@@ -25,6 +25,7 @@ export const getProjectUserWorkload = (
               id: user.id,
               name: user.name,
               avatarKey: user.avatarKey,
+              jobTitle: user.jobTitle,
             },
             byStatusCounts: {
               pending: 0,

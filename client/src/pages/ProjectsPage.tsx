@@ -31,7 +31,7 @@ const ProjectsPage = () => {
 
   const projectsListVM = useProjectsListVM(projects);
   const projectSummary = useProjectsSummary(projectsListVM);
-
+  
   if (isLoading && !projects.length) return <ProjectListSkeleton />;
 
   if (error)

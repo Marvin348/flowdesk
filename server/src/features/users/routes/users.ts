@@ -1,6 +1,4 @@
 import express from "express";
-import { readDb } from "@/shared/utils/readDb.js";
-import { writeDb } from "@/shared/utils/writeDb.js";
 import { getUsersPerformance } from "@/features/users/utils/getUsersPerformance.js";
 import { pagination } from "@/shared/utils/pagination.js";
 import type { Request, Response } from "express";
@@ -15,12 +13,18 @@ import type {
 import { parseTeamFilter } from "@/shared/parsers/user-query-parsers.js";
 import { getFilteredTeamMembers } from "@/features/users/utils/getFilteredTeamMembers.js";
 import { sortTeamMembers } from "@/features/users/utils/sortTeamMembers.js";
+import { UserModel } from "@/features/users/models/user.modal.js";
+import { toUserDto } from "@/features/users/mappers/user.mapper.js";
+import { TaskModel } from "@/features/tasks/models/task.model.js";
+import { toTaskDto } from "@/features/tasks/mappers/task.mapper.js";
+import { ProjectModel } from "@/features/projects/models/project.model.js";
+import { toProjectDto } from "@/features/projects/mappers/project.mapper.js";
 
 const router = express.Router();
 
-router.get("/", (req, res) => {
-  const db = readDb();
-  res.json({ data: db.users });
+router.get("/", async (req, res) => {
+  const users = await UserModel.find().lean();
+  res.json({ data: users });
 });
 
 export type TeamMembersQuery = {
@@ -33,99 +37,132 @@ export type TeamMembersQuery = {
   activity?: TeamActivity;
 };
 
-router.get("/team", (req: Request<{}, {}, {}, TeamMembersQuery>, res) => {
-  const search =
-    typeof req.query.search === "string" ? req.query.search.trim() : "";
+router.get("/team", async (req: Request<{}, {}, {}, TeamMembersQuery>, res) => {
+  try {
+    const search =
+      typeof req.query.search === "string" ? req.query.search.trim() : "";
 
-  const db = readDb();
+    const parsedTeamFilter = parseTeamFilter(req.query);
 
-  const parsedTeamFilter = parseTeamFilter(req.query);
+    const userRecords = await UserModel.find().lean();
+    const taskRecords = await TaskModel.find().lean();
 
-  const filteredUsers = getFilteredUsers(
-    db.users,
-    search,
-    parsedTeamFilter.role,
-  );
+    const users = userRecords.map(toUserDto);
+    const tasks = taskRecords.map(toTaskDto);
 
-  const teamMembers = getUsersPerformance(filteredUsers, db.tasks);
+    const filteredUsers = getFilteredUsers(
+      users,
+      search,
+      parsedTeamFilter.role,
+    );
 
-  const filteredTeamMembers = getFilteredTeamMembers(
-    teamMembers,
-    parsedTeamFilter,
-  );
+    const teamMembers = getUsersPerformance(filteredUsers, tasks);
 
-  const sortedTeamMembers = sortTeamMembers(
-    filteredTeamMembers,
-    parsedTeamFilter.sort,
-  );
+    const filteredTeamMembers = getFilteredTeamMembers(
+      teamMembers,
+      parsedTeamFilter,
+    );
 
-  let page = Number(req.query.page);
-  let limit = Number(req.query.limit);
+    const sortedTeamMembers = sortTeamMembers(
+      filteredTeamMembers,
+      parsedTeamFilter.sort,
+    );
 
-  if (isNaN(page)) page = 1;
-  if (isNaN(limit)) limit = 6;
+    let page = Number(req.query.page);
+    let limit = Number(req.query.limit);
 
-  const paginationItems = pagination(sortedTeamMembers, page, limit);
+    if (isNaN(page)) page = 1;
+    if (isNaN(limit)) limit = 6;
 
-  return res.status(200).json({
-    data: paginationItems,
-  });
+    const paginationItems = pagination(sortedTeamMembers, page, limit);
+
+    return res.status(200).json({
+      data: paginationItems,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      error: "Failed to fetch team",
+    });
+  }
 });
 
-router.get("/:id/details", (req, res) => {
-  const userId = req.params.id;
+router.get("/:id/details", async (req, res) => {
+  try {
+    const userId = req.params.id;
 
-  if (!userId) {
-    return res.status(400).json({ error: "userId invalid input" });
+    if (!userId) {
+      return res.status(400).json({ error: "userId invalid input" });
+    }
+
+    const userRecord = await UserModel.findOne({ id: userId }).lean();
+
+    if (!userRecord) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    const projectRecords = await ProjectModel.find().lean();
+    const taskRecords = await TaskModel.find().lean();
+
+    const user = toUserDto(userRecord);
+    const projects = projectRecords.map(toProjectDto);
+    const tasks = taskRecords.map(toTaskDto);
+
+    const userDetails = getUserDetails(user, projects, tasks);
+
+    return res.status(200).json({ data: userDetails });
+  } catch (error) {
+    return res.status(500).json({
+      error: "Failed to fetch user details",
+    });
   }
-
-  const db = readDb();
-
-  const user = db.users.find((u) => u.id === userId);
-
-  if (!user) {
-    return res.status(404).json({ error: "User not found" });
-  }
-
-  const userDetails = getUserDetails(user, db.projects, db.tasks);
-
-  return res.status(200).json({ data: userDetails });
 });
 
 router.patch(
   "/:id",
-  (req: Request<{ id: string }, {}, { role: UserRole }>, res) => {
-    const userId = req.params.id;
-    const { role } = req.body;
+  async (req: Request<{ id: string }, {}, { role: UserRole }>, res) => {
+    try {
+      const userId = req.params.id;
+      const { role } = req.body;
 
-    if (!userId) {
-      return res.status(400).json({ error: "Invalid input" });
+      if (!userId) {
+        return res.status(400).json({ error: "Invalid input" });
+      }
+
+      const isValidRole =
+        role === "admin" || role === "member" || role === "manager";
+
+      if (!isValidRole) {
+        return res.status(400).json({ error: "Invalid role" });
+      }
+
+      const user = await UserModel.findOne({ id: userId }).lean();
+
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      if (user.role === role) {
+        return res.status(400).json({ error: "User already has this role" });
+      }
+
+      const updatedUser = await UserModel.findOneAndUpdate(
+        { id: userId },
+        { role },
+        { new: true },
+      ).lean();
+
+      if (!updatedUser) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      return res.status(200).json({
+        data: toUserDto(updatedUser),
+      });
+    } catch (error) {
+      return res.status(500).json({
+        error: "Failed to update user role",
+      });
     }
-
-    const isValidRole =
-      role === "admin" || role === "member" || role === "manager";
-
-    if (!isValidRole) {
-      return res.status(400).json({ error: "Invalid role" });
-    }
-
-    const db = readDb();
-
-    const user = db.users.find((u) => u.id === userId);
-
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
-
-    if (user.role === role) {
-      return res.status(400).json({ error: "User already has this role" });
-    }
-
-    user.role = role;
-
-    writeDb(db);
-
-    return res.status(200).json({ data: user });
   },
 );
 

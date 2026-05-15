@@ -1,5 +1,5 @@
 import type { User } from "@shared/types/user.js";
-import { toUserPreview } from "@/features/users/utils/toUserPreview.js";
+import { toUserPreviewDto } from "@/features/users/mappers/user.mapper.js";
 import type { ProjectTaskDto } from "@shared/types/dto/projects/projectTasks.dto.js";
 import { Task } from "@shared/types/task.js";
 
@@ -11,7 +11,7 @@ export const getProjectTasks = (
     const collaborators = t.collaboratorIds
       .map((ids) => usersById.get(ids))
       .filter((user): user is User => Boolean(user))
-      .map(toUserPreview);
+      .map(toUserPreviewDto);
 
     return {
       ...t,
