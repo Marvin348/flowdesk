@@ -5,7 +5,6 @@ import { useState } from "react";
 import { useChangeUserRole } from "@/features/users/hooks/useChangeUserRole";
 import { Spinner } from "@/shared/components/ui/spinner";
 import type { SelectedUser } from "@/pages/TeamPage";
-import { useScrollLock } from "@/shared/hooks/useScrollLock";
 import { USER_ROLE_OPTIONS } from "@/features/users/constants/user-role-options";
 import type { UserRole } from "@shared/types/user";
 

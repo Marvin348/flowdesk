@@ -14,7 +14,7 @@ const WorkloadView = ({ projectId }: WorkloadViewProps) => {
   const input = {
     projectId,
     page,
-    limit: 12,
+    limit: 9,
     sort: workloadSort,
   };
 
@@ -25,7 +25,7 @@ const WorkloadView = ({ projectId }: WorkloadViewProps) => {
 
   if (isLoading && !data) return <ProjectWorkloadSkeleton />;
   if (error) return <div>Etwas ist schief gelaufen</div>;
-
+  
   return (
     <section className="flex flex-1 flex-col">
       <WorkloadTable

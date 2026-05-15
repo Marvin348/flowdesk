@@ -11,6 +11,7 @@ export const useChangeUserRole = () => {
 
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["users"] });
+      queryClient.invalidateQueries({ queryKey: ["projects"] });
     },
   });
 };

@@ -7,6 +7,8 @@ FlowDesk is an admin dashboard for managing projects, tasks, and team collaborat
 ## 🚀 Current Setup
 
 - Fullstack setup with **React (Vite)** frontend and a **custom Node.js / Express** backend
+- Backend uses **MongoDB with Mongoose** as persistent database
+- Demo data can be seeded from the previous mock data file
 - Backend handles **search, filtering, pagination, and data shaping**
 - Data is fetched via structured endpoints and optimized with React Query
 - Features are being developed iteratively, with ongoing refinements
@@ -14,7 +16,8 @@ FlowDesk is an admin dashboard for managing projects, tasks, and team collaborat
 ## 🧠 Architecture Notes
 
 - Filtering, search, and pagination are handled **server-side via query parameters**
-- Backend currently uses a **file-based mock database** to simulate real API behavior and data transformations
+- A seed script is used to load demo/development data into MongoDB
+- API responses are shaped with DTO/mapper functions to avoid exposing database internals like `_id` and `__v`
 
 ##### Frontend state is **synchronized with the URL**, enabling:
 
@@ -25,13 +28,13 @@ FlowDesk is an admin dashboard for managing projects, tasks, and team collaborat
 ## ⚠️ Current Limitations
 
 - No authentication system yet → user-specific data (e.g. favorites, pinned items) is handled on the frontend only
-- These values are not available on the backend and therefore cannot be used for server-side filtering
+- The backend currently still uses legacy string IDs (`id`, `projectId`, `taskId`) from the original mock data structure
+- MongoDB `_id` values are not exposed to the frontend yet
 - FileView is intentionally commented out for now (More functionality will be added here later)
 
 ## ⏳ Planned Improvements
 
 - Expand REST API with dedicated endpoints (dashboard, team details, etc.)
-- Replace mock DB with a persistent database (MongoDB)
 - Add authentication & user-based data handling (JWT)
 - Improve caching strategy with React Query
 - Refactor shared types and API contracts
@@ -51,22 +54,46 @@ git clone https://github.com/Marvin348/flowdesk.git
 cd flowdesk
 ```
 
-2. Install dependencies
+2. Install frontend dependencies
 
 ```bash
 npm install
 ```
 
-3. Start the frontend
+3. Install backend dependencies
+
+```bash
+cd server
+npm install
+```
+
+4. Create backend environment file
+
+The backend requires a `.env` file inside the `server` directory.
+
+Create `server/.env`:
+
+```env
+PORT=3001
+MONGODB_URL=your_mongodb_connection_string
+```
+
+5. Seed demo data
+
+```bash
+npm run seed
+```
+
+6. Start backend
 
 ```bash
 npm run dev
 ```
 
-4. Start backend
+7. Start frontend in a second terminal
 
 ```bash
-cd server
+cd client
 npm run dev
 ```
 

@@ -83,6 +83,9 @@ const WorkloadTable = ({ workload, hasLoaded, onSort }: WorkloadTableProps) => {
                   <Avatar avatarKey={sta.user.avatarKey} size="sm" />
                   <div className="min-w-0">
                     <p className="truncate">{sta.user.name}</p>
+                    <p className="text-muted-foreground text-sm ">
+                      {sta.user.jobTitle}
+                    </p>
                   </div>
                 </div>
 
