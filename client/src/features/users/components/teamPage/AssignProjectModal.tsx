@@ -59,6 +59,8 @@ const AssignProjectModal = ({ onClose, selectedUser }: AssignProjectModal) => {
     });
   };
 
+  console.log("useProjectOptions", data)
+
   const isSelected = (id: string) => selectedProjectIds.includes(id);
 
   return (

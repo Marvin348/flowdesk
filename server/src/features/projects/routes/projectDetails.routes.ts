@@ -1,8 +1,8 @@
 import express from "express";
-import { getProjectOverview } from "@/features/projects/utils/getProjectOverview.js";
-import { getProjectComments } from "@/features/projects/utils/getProjectComments.js";
-import { getProjectUserWorkload } from "@/features/projects/utils/getProjectUserWorkload.js";
-import { getProjectTasks } from "@/features/projects/utils/getProjectTasks.js";
+import { toProjectOverviewDto } from "@/features/projects/mappers/project-overview.mapper.js";
+import { toProjectCommentsDto } from "@/features/projects/mappers/project-comments.mapper.js";
+import { toProjectUserWorkloadDto } from "@/features/projects/mappers/project-user-workload.mapper.js";
+import { toProjectTasksDto } from "@/features/projects/mappers/project-tasks.mapper.js";
 import { getProjectProgress } from "@/features/projects/utils/getProjectProgress.js";
 import { parseCollaboratorSort } from "@shared/parsers/parseCollaboratorSort.js";
 import type { ProjectCollaboratorsQuery } from "@/features/projects/types/querys/projectCollaboratorsQuery.js";
@@ -74,19 +74,28 @@ router.get("/:id/overview", async (req, res) => {
       return res.status(404).json({ error: "project not found" });
     }
 
-    // filter taskIds to get project comments (refactor later)
     const taskRecords = await TaskModel.find({ projectId }).lean();
-    const userRecords = await UserModel.find().lean();
-    const commentsRecords = await CommentModel.find().lean();
 
     const project = toProjectDto(projectRecord);
     const tasks = taskRecords.map(toTaskDto);
+
+    const taskIds = tasks.map((task) => task.id);
+
+    const commentsRecords =
+      taskIds.length > 0
+        ? await CommentModel.find({
+            taskId: { $in: taskIds },
+          }).lean()
+        : [];
+
+    const userRecords = await UserModel.find().lean();
+
     const users = userRecords.map(toUserDto);
     const comments = commentsRecords.map(toCommentDto);
 
     const usersById = new Map(users.map((u) => [u.id, u]));
 
-    const overview = getProjectOverview({
+    const overview = toProjectOverviewDto({
       project,
       comments,
       tasks,
@@ -125,7 +134,7 @@ router.get("/:id/tasks", async (req, res) => {
 
     const usersById = new Map(users.map((u) => [u.id, u]));
 
-    const projectTasks = getProjectTasks(tasks, usersById);
+    const projectTasks = toProjectTasksDto(tasks, usersById);
 
     return res.status(200).json({ data: projectTasks });
   } catch (error) {
@@ -223,7 +232,7 @@ router.get(
       const usersById = new Map(users.map((u) => [u.id, u]));
       const tasksById = new Map(tasks.map((task) => [task.id, task]));
 
-      const projectComments = getProjectComments(
+      const projectComments = toProjectCommentsDto(
         comments,
         tasksById,
         usersById,
@@ -291,7 +300,7 @@ router.get(
       const users = userRecords.map(toUserDto);
       const usersById = new Map(users.map((user) => [user.id, user]));
 
-      const workload = getProjectUserWorkload(tasks, usersById);
+      const workload = toProjectUserWorkloadDto(tasks, usersById);
       const sorted = sortedWorkload(workload, parsedWorkloadSort);
 
       let page = Number(req.query.page);

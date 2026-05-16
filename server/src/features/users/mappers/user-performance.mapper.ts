@@ -4,7 +4,7 @@ import { calcPercent } from "@/shared/utils/calcPercent.js";
 import { TeamMemberDto } from "@shared/types/dto/users/user.js";
 import { byStatusCounts } from "@/features/users/utils/byStatusCounts.js";
 
-export const getUserPerformance = (
+export const toUserPerformanceDto = (
   user: User,
   tasks: Task[],
 ): TeamMemberDto => {

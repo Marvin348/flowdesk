@@ -6,7 +6,7 @@ import type {
   ProjectCommentsDto,
 } from "@shared/types/dto/projects/projectComments.dto.js";
 
-export const getProjectComments = (
+export const toProjectCommentsDto = (
   comments: Comment[],
   tasksById: Map<string, Task>,
   usersById: Map<string, User>,

@@ -1,9 +1,8 @@
 import express from "express";
-import { getUsersPerformance } from "@/features/users/utils/getUsersPerformance.js";
+import { toUsersPerformanceDto } from "@/features/users/mappers/users-performance.js";
 import { pagination } from "@/shared/utils/pagination.js";
 import type { Request, Response } from "express";
-import { getFilteredUsers } from "@/features/users/utils/getFilteredUsers.js";
-import { getUserDetails } from "@/features/users/utils/getUserDetails.js";
+import { toUserDetailsDto } from "@/features/users/mappers/user-details.mapper.js";
 import { UserRole } from "@shared/types/user.js";
 import type {
   TeamActivity,
@@ -19,6 +18,7 @@ import { TaskModel } from "@/features/tasks/models/task.model.js";
 import { toTaskDto } from "@/features/tasks/mappers/task.mapper.js";
 import { ProjectModel } from "@/features/projects/models/project.model.js";
 import { toProjectDto } from "@/features/projects/mappers/project.mapper.js";
+import { buildUserQuery } from "@/features/users/queries/buildUserQuery.js";
 
 const router = express.Router();
 
@@ -44,19 +44,15 @@ router.get("/team", async (req: Request<{}, {}, {}, TeamMembersQuery>, res) => {
 
     const parsedTeamFilter = parseTeamFilter(req.query);
 
-    const userRecords = await UserModel.find().lean();
+    const userQuery = buildUserQuery({ search, role: parsedTeamFilter.role });
+
+    const userRecords = await UserModel.find(userQuery).lean();
     const taskRecords = await TaskModel.find().lean();
 
-    const users = userRecords.map(toUserDto);
     const tasks = taskRecords.map(toTaskDto);
+    const users = userRecords.map(toUserDto);
 
-    const filteredUsers = getFilteredUsers(
-      users,
-      search,
-      parsedTeamFilter.role,
-    );
-
-    const teamMembers = getUsersPerformance(filteredUsers, tasks);
+    const teamMembers = toUsersPerformanceDto(users, tasks);
 
     const filteredTeamMembers = getFilteredTeamMembers(
       teamMembers,
@@ -107,7 +103,7 @@ router.get("/:id/details", async (req, res) => {
     const projects = projectRecords.map(toProjectDto);
     const tasks = taskRecords.map(toTaskDto);
 
-    const userDetails = getUserDetails(user, projects, tasks);
+    const userDetails = toUserDetailsDto(user, projects, tasks);
 
     return res.status(200).json({ data: userDetails });
   } catch (error) {

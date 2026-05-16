@@ -3,11 +3,11 @@ import type { Project } from "@shared/types/project.js";
 import type { Task } from "@shared/types/task.js";
 import type { User } from "@shared/types/user.js";
 import { getProjectProgress } from "@/features/projects/utils/getProjectProgress.js";
-import { getProjectUserWorkload } from "@/features/projects/utils/getProjectUserWorkload.js";
+import { toProjectUserWorkloadDto } from "@/features/projects/mappers/project-user-workload.mapper.js";
 import type { ProjectOverviewDto } from "@shared/types/dto/projects/projectOverview.dto.js";
 import { toUserPreviewDto } from "@/features/users/mappers/user.mapper.js";
 
-export const getProjectOverview = ({
+export const toProjectOverviewDto = ({
   project,
   comments,
   tasks,
@@ -60,7 +60,7 @@ export const getProjectOverview = ({
     }));
 
   const progress = getProjectProgress(tasks);
-  const workload = getProjectUserWorkload(tasks, usersById).slice(0, 4);
+  const workload = toProjectUserWorkloadDto(tasks, usersById).slice(0, 4);
 
   return {
     collaborators,

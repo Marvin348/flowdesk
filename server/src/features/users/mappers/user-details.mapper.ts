@@ -2,10 +2,13 @@ import { Project } from "@shared/types/project.js";
 import { Task } from "@shared/types/task.js";
 import { User } from "@shared/types/user.js";
 import { byStatusCounts } from "@/features/users/utils/byStatusCounts.js";
-import type { NextDueTaskDto, UserDetailsDto } from "@shared/types/dto/users/user.js";
+import type {
+  NextDueTaskDto,
+  UserDetailsDto,
+} from "@shared/types/dto/users/user.js";
 import type { RecentCompletedTaskDto } from "@shared/types/dto/users/user.js";
 
-export const getUserDetails = (
+export const toUserDetailsDto = (
   user: User,
   projects: Project[],
   tasks: Task[],

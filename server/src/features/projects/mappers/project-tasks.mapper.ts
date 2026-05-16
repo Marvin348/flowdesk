@@ -3,7 +3,7 @@ import { toUserAvatarDto } from "@/features/users/mappers/user.mapper.js";
 import type { ProjectTaskDto } from "@shared/types/dto/projects/projectTasks.dto.js";
 import { Task } from "@shared/types/task.js";
 
-export const getProjectTasks = (
+export const toProjectTasksDto = (
   tasks: Task[],
   usersById: Map<string, User>,
 ): ProjectTaskDto[] => {
