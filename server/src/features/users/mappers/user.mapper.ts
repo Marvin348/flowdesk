@@ -1,5 +1,8 @@
 import { User } from "@shared/types/user.js";
-import { UserPreviewDto } from "@shared/types/dto/common/userPreview.dto.js";
+import {
+  UserAvatarDto,
+  UserPreviewDto,
+} from "@shared/types/dto/common/userPreview.dto.js";
 
 type UserDbRecord = User & {
   _id?: unknown;
@@ -20,4 +23,9 @@ export const toUserPreviewDto = (user: User): UserPreviewDto => ({
   name: user.name,
   avatarKey: user.avatarKey,
   jobTitle: user.jobTitle,
+});
+
+export const toUserAvatarDto = (user: User): UserAvatarDto => ({
+  id: user.id,
+  avatarKey: user.avatarKey,
 });

@@ -6,3 +6,8 @@ export type UserPreviewDto = {
   avatarKey?: string;
   jobTitle?: User["jobTitle"];
 };
+
+export type UserAvatarDto = {
+  id: string;
+  avatarKey?: string;
+};

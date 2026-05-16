@@ -1,6 +1,6 @@
 import type { Priority } from "../../priority.js";
 import type { StatusBase } from "../../StatusBase.js";
-import type { UserPreviewDto } from "../../dto/common/userPreview.dto.js";
+import type { UserAvatarDto } from "../../dto/common/userPreview.dto.js";
 
 export type ProjectTaskDto = {
   id: string;
@@ -9,7 +9,7 @@ export type ProjectTaskDto = {
   dueDate: string;
   taskStatus: StatusBase;
   taskPriority: Priority;
-  collaborators: UserPreviewDto[];
+  collaborators: UserAvatarDto[];
   description?: string;
   tags?: string[];
   reminderAt?: string;

@@ -14,6 +14,10 @@ export const useAssignUserToProjects = () => {
         queryKey: ["projects", "options"],
       });
 
+      queryClient.invalidateQueries({
+        queryKey: ["users", variables.userId, "details"],
+      });
+
       for (const projectId of variables.projectIdsToAdd) {
         queryClient.invalidateQueries({
           queryKey: ["projects", projectId, "collaborators"],
