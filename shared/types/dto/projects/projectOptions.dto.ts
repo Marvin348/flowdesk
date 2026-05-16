@@ -1,15 +1,11 @@
+import { UserAvatarDto } from "@shared/types/dto/common/userPreview.dto.js";
+
 export type ProjectOptionDto = {
   id: string;
   title: string;
   isInvited: boolean;
   createdAt: string;
-  users: ProjectOptionUserDto[];
-};
-
-export type ProjectOptionUserDto = {
-  id: string;
-  name: string;
-  avatarKey: string;
+  users: UserAvatarDto[];
 };
 
 export type ProjectOptionsDto = {

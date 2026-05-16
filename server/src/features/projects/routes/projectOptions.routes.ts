@@ -1,14 +1,13 @@
 import express from "express";
 import { Request } from "express";
-import { ProjectOptionDto } from "@shared/types/dto/projects/projectOptions.dto.js";
 import { ProjectModel } from "@/features/projects/models/project.model.js";
 import { toProjectDto } from "@/features/projects/mappers/project.mapper.js";
 import { UserModel } from "@/features/users/models/user.modal.js";
 import { toUserDto } from "@/features/users/mappers/user.mapper.js";
+import { toProjectOptionDto } from "@/features/projects/mappers/project-option.mapper.js";
 
 const router = express.Router();
 
-// refactor later
 router.get(
   "/options",
   async (
@@ -20,60 +19,60 @@ router.get(
         typeof req.query.search === "string" ? req.query.search.trim() : "";
       const userId = req.query.userId;
 
-      const projectDocs = await ProjectModel.find().lean();
-      const userDocs = await UserModel.find().lean();
+      if (!userId) {
+        return res.status(400).json({ error: "Invalid userId" });
+      }
 
-      const projects = projectDocs.map(toProjectDto);
-      const usersList = userDocs.map(toUserDto);
+      const recentProjectRecords = await ProjectModel.find()
+        .sort({ createdAt: -1 })
+        .limit(3)
+        .lean();
 
-      const projectOption: ProjectOptionDto[] = projects.map((p) => {
-        const invitedUserIdsSet = new Set<string>(p.invitedUserIds);
+      const recentProjects = recentProjectRecords.map(toProjectDto);
 
-        const isInvited = p.invitedUserIds.some((ids) => ids === userId);
+      const recentIdSet = new Set(recentProjects.map((project) => project.id));
 
-        const users = usersList
-          .filter((u) => invitedUserIdsSet.has(u.id))
-          .map((u) => {
-            return {
-              id: u.id,
-              name: u.name,
-              avatarKey: u.avatarKey,
-            };
-          });
+      const searchQuery: Record<string, unknown> = {};
 
-        return {
-          id: p.id,
-          title: p.title,
-          createdAt: p.createdAt,
-          isInvited,
-          users,
-        };
-      });
+      if (search) {
+        searchQuery.title = { $regex: search, $options: "i" };
+        searchQuery.id = { $nin: [...recentIdSet] };
+      }
 
-      const recent = projectOption
-        .sort(
-          (a, b) =>
-            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
-        )
-        .slice(0, 3);
+      const searchProjectRecords =
+        search === ""
+          ? []
+          : await ProjectModel.find(searchQuery).limit(5).lean();
 
-      const recentIdSet = new Set(recent.map((p) => p.id));
+      const searchProjects = searchProjectRecords.map(toProjectDto);
 
-      const filteredProjectOptions = projectOption
-        .filter((p) => {
-          if (recentIdSet.has(p.id)) return false;
+      const allUserIds = new Set<string>();
 
-          const matchesSearch =
-            !search || p.title.toLowerCase().includes(search.toLowerCase());
+      for (const project of [...recentProjects, ...searchProjects]) {
+        for (const invitedUserId of project.invitedUserIds) {
+          allUserIds.add(invitedUserId);
+        }
+      }
 
-          return matchesSearch;
-        })
-        .slice(0, 5);
+      const userRecords = await UserModel.find({
+        id: { $in: [...allUserIds] },
+      }).lean();
+
+      const usersList = userRecords.map(toUserDto);
+      const usersById = new Map(usersList.map((user) => [user.id, user]));
+
+      const recent = recentProjects.map((p) =>
+        toProjectOptionDto(p, usersById, userId),
+      );
+
+      const results = searchProjects.map((p) =>
+        toProjectOptionDto(p, usersById, userId),
+      );
 
       return res.status(200).json({
         data: {
-          recent: recent,
-          results: search === "" ? [] : filteredProjectOptions,
+          recent,
+          results: search === "" ? [] : results,
         },
       });
     } catch (error) {

@@ -1,5 +1,5 @@
 import express from "express";
-import { getProjectsSummary } from "@/features/projects/utils/getProjectsSummary.js";
+import { toProjectsSummaryDto } from "@/features/projects/mappers/project-summary.mapper.js";
 import { Request } from "express";
 import type { ProjectSummaryQuery } from "@/features/projects/types/querys/projectSummaryQuery.js";
 import { parseProjectQueryFilter } from "@/shared/parsers/project-query.parsers.js";
@@ -37,7 +37,7 @@ router.get(
       const comments = commentDocs.map(toCommentDto);
       const attachments = attachmentDocs.map(toAttachmentDto);
 
-      const projectListItems = getProjectsSummary(
+      const projectListItems = toProjectsSummaryDto(
         projects,
         tasks,
         comments,
@@ -74,36 +74,42 @@ router.get(
 
 // create new project
 router.post("/", async (req: Request<{}, {}, CreateProjectInput>, res) => {
-  const {
-    title,
-    priority,
-    projectStatus,
-    dueDate,
-    invitedUserIds,
-    description,
-  } = req.body;
+  try {
+    const {
+      title,
+      priority,
+      projectStatus,
+      dueDate,
+      invitedUserIds,
+      description,
+    } = req.body;
 
-  if (
-    !title ||
-    !priority ||
-    !projectStatus ||
-    !dueDate ||
-    !Array.isArray(invitedUserIds)
-  ) {
-    return res.status(400).json({ error: "Invalid input" });
+    if (
+      !title ||
+      !priority ||
+      !projectStatus ||
+      !dueDate ||
+      !Array.isArray(invitedUserIds)
+    ) {
+      return res.status(400).json({ error: "Invalid input" });
+    }
+
+    const newProject = await ProjectModel.create({
+      id: crypto.randomUUID(),
+      title,
+      priority,
+      projectStatus,
+      dueDate,
+      invitedUserIds,
+      description,
+    });
+
+    return res.status(201).json({ data: toProjectDto(newProject.toObject()) });
+  } catch (error) {
+    return res.status(500).json({
+      error: "Failed to add new project",
+    });
   }
-
-  const newProject = await ProjectModel.create({
-    id: crypto.randomUUID(),
-    title,
-    priority,
-    projectStatus,
-    dueDate,
-    invitedUserIds,
-    description,
-  });
-
-  return res.status(201).json({ data: newProject });
 });
 
 router.get("/:id", async (req: Request<{ id: string }>, res) => {

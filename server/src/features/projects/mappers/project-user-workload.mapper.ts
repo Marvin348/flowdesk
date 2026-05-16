@@ -6,7 +6,7 @@ import type {
   UserWorkloadStats,
 } from "@shared/types/dto/workload/projectUserWorkload.js";
 
-export const getProjectUserWorkload = (
+export const toProjectUserWorkloadDto = (
   tasks: Task[],
   usersById: Map<string, User>,
 ): UserWorkload[] => {

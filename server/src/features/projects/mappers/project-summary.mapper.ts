@@ -5,7 +5,7 @@ import { Project } from "@shared/types/project.js";
 import { Task } from "@shared/types/task.js";
 import { calcPercent } from "@/shared/utils/calcPercent.js";
 
-export const getProjectsSummary = (
+export const toProjectsSummaryDto = (
   projects: Project[],
   tasks: Task[],
   comments: Comment[],
