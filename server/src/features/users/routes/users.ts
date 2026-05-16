@@ -148,7 +148,7 @@ router.patch(
       const updatedUser = await UserModel.findOneAndUpdate(
         { id: userId },
         { role },
-        { new: true },
+        { returnDocument: "after" },
       ).lean();
 
       if (!updatedUser) {

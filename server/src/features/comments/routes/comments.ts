@@ -4,7 +4,7 @@ import type { CreateCommentInput } from "@shared/types/inputs/createCommentInput
 import { CommentModel } from "@/features/comments/models/comment.model.js";
 import { TaskModel } from "@/features/tasks/models/task.model.js";
 import { toCommentDto } from "@/features/comments/mappers/comment.mapper.js";
-import { ProjectModel } from "@/features/projects/models/project.model.js";
+import { touchProject } from "@/features/projects/services/project.service.js";
 
 const router = express.Router();
 
@@ -52,10 +52,7 @@ router.post("/", async (req: Request<{}, {}, CreateCommentInput>, res) => {
       parentCommentId,
     });
 
-    await ProjectModel.findOneAndUpdate(
-      { id: task.projectId },
-      { updatedAt: new Date() },
-    );
+    await touchProject(task.projectId);
 
     return res.status(201).json({
       data: toCommentDto(newCommentRecord.toObject()),
