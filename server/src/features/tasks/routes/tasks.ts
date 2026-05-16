@@ -4,6 +4,7 @@ import type { CreateTaskInput } from "@shared/types/inputs/createTaskInput.js";
 import { TaskModel } from "@/features/tasks/models/task.model.js";
 import { ProjectModel } from "@/features/projects/models/project.model.js";
 import { toTaskDto } from "@/features/tasks/mappers/task.mapper.js";
+import { touchProject } from "@/features/projects/services/project.service.js";
 
 const router = express.Router();
 
@@ -12,7 +13,6 @@ router.get("/", async (req, res) => {
   res.json({ data: tasks });
 });
 
-// post in details
 router.post("/", async (req: Request<{}, {}, CreateTaskInput>, res) => {
   try {
     const {
@@ -49,13 +49,10 @@ router.post("/", async (req: Request<{}, {}, CreateTaskInput>, res) => {
       description,
     });
 
-    await ProjectModel.findOneAndUpdate(
-      { id: projectId },
-      { updatedAt: new Date() },
-    );
+    await touchProject(projectId);
 
     return res.status(201).json({
-      data: toTaskDto(newTaskRecord),
+      data: toTaskDto(newTaskRecord.toObject()),
     });
   } catch (error) {
     return res.status(500).json({
