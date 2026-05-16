@@ -25,7 +25,7 @@ const WorkloadView = ({ projectId }: WorkloadViewProps) => {
 
   if (isLoading && !data) return <ProjectWorkloadSkeleton />;
   if (error) return <div>Etwas ist schief gelaufen</div>;
-  
+
   return (
     <section className="flex flex-1 flex-col">
       <WorkloadTable
@@ -34,15 +34,13 @@ const WorkloadView = ({ projectId }: WorkloadViewProps) => {
         onSort={actions.toggleWorkloadSort}
       />
 
-      {totalPages > 1 && (
-        <div className="mt-auto pt-4 flex justify-end">
-          <Pagination
-            currentPage={page}
-            setPage={actions.setPage}
-            totalPages={totalPages}
-          />
-        </div>
-      )}
+      <div className="mt-auto pt-4 flex justify-end">
+        <Pagination
+          currentPage={page}
+          setPage={actions.setPage}
+          totalPages={totalPages}
+        />
+      </div>
     </section>
   );
 };

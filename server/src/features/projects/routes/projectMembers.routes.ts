@@ -1,7 +1,7 @@
 import express from "express";
 import { Request } from "express";
 import { UserModel } from "@/features/users/models/user.modal.js";
-import { ProjectModel } from "../models/project.model.js";
+import { ProjectModel } from "@/features/projects/models/project.model.js";
 import { toProjectDto } from "@/features/projects/mappers/project.mapper.js";
 import { TaskModel } from "@/features/tasks/models/task.model.js";
 import { AttachmentModel } from "@/features/attchments/models/attachment.model.js";
@@ -112,8 +112,12 @@ router.delete(
             invitedUserIds: userId,
           },
         },
-        { new: true },
+        { returnDocument: "after" },
       ).lean();
+
+      if (!updatedProject) {
+        return res.status(404).json({ error: "Project not found" });
+      }
 
       await TaskModel.updateMany(
         {
@@ -146,13 +150,9 @@ router.delete(
         await TaskModel.deleteMany({
           id: { $in: taskIdsToDelete },
         });
-
-        if (!updatedProject) {
-          return res.status(404).json({ error: "Project not found" });
-        }
-
-        return res.status(200).json({ data: toProjectDto(updatedProject) });
       }
+
+      return res.status(200).json({ data: toProjectDto(updatedProject) });
     } catch (error) {
       return res.status(500).json({
         error: "Failed to remove user from project",
