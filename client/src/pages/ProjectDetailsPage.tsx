@@ -2,7 +2,7 @@ import { useParams, useSearchParams } from "react-router";
 import ProjectDetailsHeader from "@/features/projects/components/projectDetailsPage/ProjectDetailsHeader";
 import ProjectTabs from "@/features/projects/components/projectDetailsPage/ProjectTabs";
 import { useState } from "react";
-// import AttachmentsView from "@/features/projects/components/projectDetailsPage/tabs/files/AttachmentsView";
+import AttachmentsView from "@/features/projects/components/projectDetailsPage/tabs/files/AttachmentsView";
 import ListView from "@/features/projects/components/projectDetailsPage/tabs/list/TaskListView";
 import Overview from "@/features/projects/components/projectDetailsPage/tabs/overview/Overview";
 import CollaboratorsView from "@/features/projects/components/projectDetailsPage/tabs/collaborators/CollaboratorsView";
@@ -56,8 +56,8 @@ const ProjectDetailsPage = () => {
           />
         );
 
-      // case "files":
-      //   return <AttachmentsView attachments={attachments} />;
+      case "files":
+        return <AttachmentsView/>;
 
       case "list":
         return <ListView projectId={project.id} />;
