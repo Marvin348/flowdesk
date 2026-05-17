@@ -1,7 +1,13 @@
 export type Attachment = {
   id: string;
-  taskId: string;
+  projectId: string;
+  taskId?: string | null;
   userId: string;
+
   fileName: string;
-  url: string;
+  fileUrl: string;
+  mimeType: string;
+  fileSize: number;
+
+  createdAt: string;
 };
