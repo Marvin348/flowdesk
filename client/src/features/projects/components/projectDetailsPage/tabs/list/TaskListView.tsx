@@ -12,18 +12,18 @@ type TaskListViewProps = {
 };
 
 const TaskListView = ({ projectId }: TaskListViewProps) => {
-  const [openStatus, setOpenStatus] = useState<StatusBase | null>(null);
+  const [openStatus, setOpenStatus] = useState<StatusBase | null>("pending");
 
   const toggleOpenStatus = (value: StatusBase) =>
     setOpenStatus((prev) => (prev === value ? null : value));
 
   const { data, isLoading, error } = useProjectTasks(projectId);
 
-  const tasks = data ?? [];
+  const tasks = data?.tasks ?? [];
+  const taskStats = data?.taskStats;
 
   if (isLoading && !data) return <TaskListSkeleton />;
   if (error) return <div>Etwas ist schief gelaufen</div>;
-  if (!tasks) return <div>Keine Aufgaben gefunden</div>;
 
   return (
     <section>
@@ -40,6 +40,7 @@ const TaskListView = ({ projectId }: TaskListViewProps) => {
           const filteredByStatus = tasks.filter(
             (task) => task.taskStatus === opt.value,
           );
+          const statusStats = taskStats?.[opt.value];
 
           return (
             <div key={opt.value} className=" border-b py-4">
@@ -57,6 +58,21 @@ const TaskListView = ({ projectId }: TaskListViewProps) => {
                 <span className="text-muted-foreground font-medium">
                   {filteredByStatus.length}
                 </span>
+
+                {openStatus === opt.value && (
+                  <div className="flex items-center gap-3">
+                    <div className="h-2 w-30 overflow-hidden rounded-full bg-muted">
+                      <div
+                        className="h-full rounded-full bg-accent"
+                        style={{ width: `${statusStats?.percent ?? 0}%` }}
+                      />
+                    </div>
+
+                    <p className="text-sm text-muted-foreground whitespace-nowrap">
+                      {statusStats?.percent ?? 0}% aller Aufgaben
+                    </p>
+                  </div>
+                )}
               </button>
 
               {openStatus === opt.value && (
