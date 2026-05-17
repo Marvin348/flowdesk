@@ -1,9 +1,9 @@
 import { fetchProjectTasks } from "@/features/projects/api/projectDetails.api";
-import type { ProjectTaskDto } from "@shared/types/dto/projects/projectTasks.dto";
+import type { ProjectTasksResponseDto } from "@shared/types/dto/projects/projectTasks.dto.js";
 import { useQuery } from "@tanstack/react-query";
 
 export const useProjectTasks = (id: string) => {
-  const { data, isLoading, error } = useQuery<ProjectTaskDto[], Error>({
+  const { data, isLoading, error } = useQuery<ProjectTasksResponseDto, Error>({
     queryKey: ["projects", id, "tasks"],
     queryFn: () => fetchProjectTasks(id),
   });
