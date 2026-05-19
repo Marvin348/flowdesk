@@ -19,6 +19,8 @@ import { toTaskDto } from "@/features/tasks/mappers/task.mapper.js";
 import { ProjectModel } from "@/features/projects/models/project.model.js";
 import { toProjectDto } from "@/features/projects/mappers/project.mapper.js";
 import { buildUserQuery } from "@/features/users/queries/buildUserQuery.js";
+import { PAGE_LIMITS, DEFAULT_PAGE } from "@shared/constants/pagination.js";
+import { parsePagination } from "@/shared/parsers/parsePagination.js";
 
 const router = express.Router();
 
@@ -64,11 +66,11 @@ router.get("/team", async (req: Request<{}, {}, {}, TeamMembersQuery>, res) => {
       parsedTeamFilter.sort,
     );
 
-    let page = Number(req.query.page);
-    let limit = Number(req.query.limit);
-
-    if (isNaN(page)) page = 1;
-    if (isNaN(limit)) limit = 6;
+    const { page, limit } = parsePagination({
+      page: req.query.page,
+      limit: req.query.limit,
+      defaultLimit: PAGE_LIMITS.attachments,
+    });
 
     const paginationItems = pagination(sortedTeamMembers, page, limit);
 

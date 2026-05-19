@@ -11,7 +11,8 @@ import { COLLABORATOR_TABLE_OPTIONS } from "@/shared/constants/table-header";
 import { useProjectCollaborators } from "@/features/projects/hooks/details/useProjectCollaborators";
 import { useProjectCollaboratorSearchParams } from "@/features/projects/hooks/searchParams/useProjectCollaboratorSearchParams";
 import Pagination from "@/shared/components/ui/Pagination";
-import ProjectCollaboratorSkeleton from "@/features/projects/components/projectDetailsPage/skeleton/ProjectCollaboratorSkeleton";
+import ProjectCollaboratorSkeleton from "@/features/projects/components/projectDetailsPage/tabs/collaborators/ProjectCollaboratorSkeleton";
+import { DEFAULT_PAGE, PAGE_LIMITS } from "@shared/constants/pagination";
 
 type CollaboratorsViewProps = {
   projectId: string;
@@ -47,14 +48,15 @@ const CollaboratorsView = ({
     projectId,
     sort: collaboratorsSort,
     page,
-    limit: 9,
+    limit: PAGE_LIMITS.collaborators,
   };
 
   const { data, isLoading, error } = useProjectCollaborators(input);
 
   const collaborators = data?.items ?? [];
+  const currentPage = data?.currentPage ?? DEFAULT_PAGE;
   const totalPages = data?.totalPages ?? 1;
-  
+
   if (isLoading && !data) return <ProjectCollaboratorSkeleton />;
   if (error) return <div>Etwas ist schief gelaufen</div>;
 
@@ -191,7 +193,7 @@ const CollaboratorsView = ({
       <div className="mt-auto pt-4 flex justify-end">
         <Pagination
           setPage={actions.setPage}
-          currentPage={page}
+          currentPage={currentPage}
           totalPages={totalPages}
         />
       </div>

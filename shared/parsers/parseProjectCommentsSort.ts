@@ -1,4 +1,4 @@
-import type { ProjectCommentsSort } from "../types/sort/projectCommentsSort";
+import type { ProjectCommentsSort } from "../types/sort/projectCommentsSort.js";
 
 export const parseProjectCommentsSort = (
   value?: string | null,

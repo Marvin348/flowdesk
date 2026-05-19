@@ -1,6 +1,6 @@
 import { Button } from "@/shared/components/ui/button";
 import { TAB_VIEW_OPTIONS } from "@/features/projects/constants/tab-view.options";
-import type { ActiveTab } from "@/pages/ProjectDetailsPage";
+import type { ActiveTab } from "../../types/activeTab";
 
 type ProjectTabsProps = {
   activeTab: ActiveTab;

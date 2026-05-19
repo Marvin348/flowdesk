@@ -57,7 +57,7 @@ const ProjectDetailsPage = () => {
         );
 
       case "files":
-        return <AttachmentsView/>;
+        return <AttachmentsView projectId={project.id} />;
 
       case "list":
         return <ListView projectId={project.id} />;
@@ -80,6 +80,7 @@ const ProjectDetailsPage = () => {
         return <CommentsView projectId={project.id} />;
     }
   };
+
   return (
     <div className="flex min-h-0 flex-1 flex-col">
       <div className="mb-6">

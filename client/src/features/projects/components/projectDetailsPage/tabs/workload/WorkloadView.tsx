@@ -2,7 +2,8 @@ import { useProjectWorkload } from "@/features/projects/hooks/details/useProject
 import WorkloadTable from "@/features/users/components/workload/WorkloadTable";
 import { useProjectWorkloadSearchParams } from "@/features/projects/hooks/searchParams/useProjectWorkloadSearchParams";
 import Pagination from "@/shared/components/ui/Pagination";
-import ProjectWorkloadSkeleton from "@/features/projects/components/projectDetailsPage/skeleton/ProjectWorkloadSkeleton";
+import ProjectWorkloadSkeleton from "@/features/projects/components/projectDetailsPage/tabs/workload/ProjectWorkloadSkeleton";
+import { PAGE_LIMITS, DEFAULT_PAGE } from "@shared/constants/pagination";
 
 type WorkloadViewProps = {
   projectId: string;
@@ -14,13 +15,14 @@ const WorkloadView = ({ projectId }: WorkloadViewProps) => {
   const input = {
     projectId,
     page,
-    limit: 9,
+    limit: PAGE_LIMITS.workload,
     sort: workloadSort,
   };
 
   const { data, isLoading, error } = useProjectWorkload(input);
 
   const workload = data?.items ?? [];
+  const currentPage = data?.currentPage ?? DEFAULT_PAGE;
   const totalPages = data?.totalPages ?? 1;
 
   if (isLoading && !data) return <ProjectWorkloadSkeleton />;
@@ -36,7 +38,7 @@ const WorkloadView = ({ projectId }: WorkloadViewProps) => {
 
       <div className="mt-auto pt-4 flex justify-end">
         <Pagination
-          currentPage={page}
+          currentPage={currentPage}
           setPage={actions.setPage}
           totalPages={totalPages}
         />

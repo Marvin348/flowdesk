@@ -5,7 +5,7 @@ import AssigneeAvatars from "@/shared/components/ui/avatar/AvatarGroup";
 import { Button } from "@/shared/components/ui/button";
 import { formatDate } from "@/shared/utils/formatDate";
 import { useUsersByIds } from "@/features/users/hooks/useUsersByIds";
-import type { ProjectDetailsShellDto } from "@shared/types/dto/project";
+import type { ProjectDetailsShellDto } from "@shared/types/dto/projects/projectDetailsShell.dto";
 
 type ProjectDetailsHeaderProps = {
   project: ProjectDetailsShellDto;
@@ -15,13 +15,8 @@ const ProjectDetailsHeader = ({
   project,
   onOpen,
 }: ProjectDetailsHeaderProps) => {
-  const {
-    title,
-    projectStatus,
-    invitedUserIds,
-    updatedAt,
-    progressPercent,
-  } = project;
+  const { title, projectStatus, invitedUserIds, updatedAt, progressPercent } =
+    project;
 
   // invitedUserIds is not teamUsers (all users can be invited)
   const teamUsers = useUsersByIds(invitedUserIds);
@@ -39,7 +34,6 @@ const ProjectDetailsHeader = ({
         </Link>
 
         <h3 className="min-w-0 text-lg font-medium truncate">{title}</h3>
-
 
         {statusOption ? (
           <span

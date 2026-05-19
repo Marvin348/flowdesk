@@ -1,25 +1,27 @@
 import AttachmentTableRow from "@/features/attachments/components/AttachmentTableRow";
-const AttachmentsTable = () => {
-//   if (attachments.length === 0) {
-//     return <AttachmentsEmptyState />;
-//   }
+import type { ProjectAttachmentDto } from "@shared/types/dto/projects/projectAttachments.dto";
+import { ATTACHMENT_TABLE_HEADER } from "@/features/attachments/constants/attachmentTableHeader";
 
+type AttachmentsTableProps = {
+  attachments: ProjectAttachmentDto[];
+};
+
+const AttachmentsTable = ({ attachments }: AttachmentsTableProps) => {
   return (
-    <div className="overflow-x-auto">
+    <div className="border rounded-md">
       <table className="w-full text-sm">
-        <thead className="bg-muted text-xs text-muted-foreground">
+        <thead className="bg-muted text-sm text-left [&_th]:font-normal">
           <tr>
-            <th className="px-4 py-3">Datei</th>
-            <th className="px-4 py-3">Zugeordnet zu</th>
-            <th className="px-4 py-3">Größe</th>
-            <th className="px-4 py-3">Hochgeladen von</th>
-            <th className="px-4 py-3">Datum</th>
-            <th className="px-4 py-3">Aktionen</th>
+            {ATTACHMENT_TABLE_HEADER.map((a) => (
+              <th className="py-3 px-4 text-left" key={a.value}>{a.label}</th>
+            ))}
           </tr>
         </thead>
 
         <tbody>
-            <AttachmentTableRow/>
+          {attachments.map((a) => (
+            <AttachmentTableRow key={a.id} attachment={a} />
+          ))}
         </tbody>
       </table>
     </div>

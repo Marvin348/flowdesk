@@ -8,10 +8,14 @@ type AttachmentDbRecord = Attachment & {
 export const toAttachmentDto = (attachment: AttachmentDbRecord): Attachment => {
   return {
     id: attachment.id,
+    projectId: attachment.projectId,
     taskId: attachment.taskId,
     userId: attachment.userId,
     fileName: attachment.fileName,
-    url: attachment.url,
+    fileUrl: attachment.fileUrl,
+    mimeType: attachment.mimeType,
+    fileSize: attachment.fileSize,
+    createdAt: attachment.createdAt,
   };
 };
 

@@ -1,87 +1,77 @@
-import { Button } from "@/shared/components/ui/button";
-import type { Attachment } from "@shared/types/attachment";
 import AttachmentUploadDropzone from "@/features/attachments/components/AttachmentUploadDropzone";
 import AttachmentUploadQueue from "@/features/attachments/components/AttachmentUploadQueue";
 import AttachmentsToolbar from "@/features/attachments/components/AttachmentsToolbar";
 import AttachmentsTable from "@/features/attachments/components/AttachmentsTable";
+import { useProjectAttachments } from "@/features/projects/hooks/details/useProjectAttachments";
+import { useProjectAttachmentSearchParams } from "@/features/projects/hooks/searchParams/useProjectAttachmentSearchParams";
+import { useEffect, useState } from "react";
+import { useDebounce } from "@/shared/hooks/useDebounce";
+import Pagination from "@/shared/components/ui/Pagination";
+import { PAGE_LIMITS, DEFAULT_PAGE } from "@shared/constants/pagination";
+import ProjectAttachmentSkeleton from "@/features/projects/components/projectDetailsPage/tabs/files/ProjectAttachmentSkeleton";
 
 type AttachmentsViewProps = {
-  attachments: Attachment[];
+  projectId: string;
 };
 
-const AttachmentsView = () => {
+const AttachmentsView = ({ projectId }: AttachmentsViewProps) => {
+  const { page, search, actions } = useProjectAttachmentSearchParams();
+  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+
+  const [searchInput, setSearchInput] = useState(search);
+  const debounceInput = useDebounce(searchInput, 300);
+
+  useEffect(() => {
+    if (debounceInput !== search) {
+      actions.setSearch(debounceInput);
+    }
+  }, [debounceInput]);
+
+  const payload = {
+    projectId,
+    search,
+    page,
+    limit: PAGE_LIMITS.attachments,
+  };
+
+  const { data, isLoading, error } = useProjectAttachments(payload);
+
+  const attachments = data?.items ?? [];
+  const currentPage = data?.currentPage || DEFAULT_PAGE;
+  const totalPages = data?.totalPages ?? 1;
+
+  if (isLoading && !attachments.length) return <ProjectAttachmentSkeleton />;
+  if (error) return <div>Etwas ist schief gelaufen</div>;
+
+  const onFilesSelected = (files: File[]) =>
+    setSelectedFiles((prev) => [...prev, ...files]);
+
+  console.log("attachmentsDATA", data);
+
   return (
-    <section>
-      <AttachmentUploadDropzone />
+    <div className="flex flex-col flex-1">
+      <AttachmentUploadDropzone onFilesSelected={onFilesSelected} />
 
-      <div>
-        <AttachmentUploadQueue />
+      <div className="mb-6">
+        <AttachmentUploadQueue selectedFiles={selectedFiles} />
       </div>
 
-      <div>
-        <AttachmentsToolbar />
-        <AttachmentsTable />
+      <section>
+        <AttachmentsToolbar
+          searchInput={searchInput}
+          onChange={setSearchInput}
+        />
+        <AttachmentsTable attachments={attachments} />
+      </section>
+
+      <div className="mt-auto pt-4 flex justify-end">
+        <Pagination
+          totalPages={totalPages}
+          currentPage={currentPage}
+          setPage={actions.setPage}
+        />
       </div>
-    </section>
+    </div>
   );
 };
 export default AttachmentsView;
-
-// export type Attachment = {
-//   id: string;
-//   projectId: string;
-//   taskId?: string | null;
-//   userId: string;
-
-//   fileName: string;
-//   fileUrl: string;
-//   mimeType: string;
-//   fileSize: number;
-
-//   createdAt: string;
-// };
-
-// dto
-export type ProjectAttachmentDto = {
-  id: string;
-  fileName: string;
-  fileUrl: string;
-  mimeType: string;
-  sizeLabel: string;
-
-  uploadedAt: string;
-
-  uploadedBy: {
-    id: string;
-    name: string;
-    email?: string;
-    avatarKey?: string;
-  };
-
-  task?: {
-    id: string;
-    title: string;
-  } | null;
-};
-
-{
-  /* <section className="border rounded-md">
-      <div className="flex items-center justify-between p-4 bg-muted-foreground/10">
-        <h4 className="font-medium text-lg">Anhänge</h4>
-        <Button>
-          <Plus className="text-accent" /> <span>Hinzufügen</span>
-        </Button>
-      </div>
-      <div className="p-4">
-        <p className="text-muted-foreground text-sm">Dokumente</p>
-
-        <div className="mt-4 grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-6">
-          {/* {attachments.map((att) => (
-            <div key={att.id} className="border rounded-md p-2">
-              <AttachmentsCard attachment={att} />
-            </div>
-          ))} */
-}
-//     </div>
-//   </div>
-// </section> */}
