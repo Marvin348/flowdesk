@@ -5,7 +5,7 @@ import CommentThreadList from "@/features/comments/components/CommentThreadList"
 import { useProjectComments } from "@/features/projects/hooks/details/useProjectComments";
 import { useProjectCommentsSearchParams } from "@/features/projects/hooks/searchParams/useProjectCommentsSearchParams";
 import { useState } from "react";
-import ProjectCommentsSkeleton from "@/features/projects/components/projectDetailsPage/skeleton/ProjectCommentsSkeleton";
+import ProjectCommentsSkeleton from "@/features/projects/components/projectDetailsPage/tabs/comments/ProjectCommentsSkeleton";
 
 type CommentsViewProps = {
   projectId: string;

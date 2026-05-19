@@ -18,8 +18,8 @@ import { DEFAULT_PAGE } from "@shared/constants/pagination";
 export const useTeamQueryState = () => {
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const page = Number(searchParams.get("page")) || DEFAULT_PAGE;
-  const search = searchParams.get("search") || "";
+  const page = Number(searchParams.get("teamPage")) || DEFAULT_PAGE;
+  const search = searchParams.get("teamSearch") || "";
 
   const userRoleParam = searchParams.get("role");
   const sortParam = searchParams.get("sort");
@@ -49,6 +49,7 @@ export const useTeamQueryState = () => {
         prev,
         key,
         nextValue === undefined ? undefined : String(nextValue),
+        "teamPage",
       ),
     );
   };
@@ -62,16 +63,20 @@ export const useTeamQueryState = () => {
       params.delete("progress");
       params.delete("activity");
 
-      params.set("page", "1");
+      params.set("teamPage", "1");
 
       return params;
     });
 
   const setPage = (value: number) =>
-    setSearchParams((prev) => updateQueryParam(prev, "page", String(value)));
+    setSearchParams((prev) =>
+      updateQueryParam(prev, "teamPage", String(value)),
+    );
 
   const setSearch = (value: string) =>
-    setSearchParams((prev) => updateQueryParam(prev, "search", value));
+    setSearchParams((prev) =>
+      updateQueryParam(prev, "teamSearch", value, "teamPage"),
+    );
 
   return {
     page,

@@ -2,6 +2,7 @@ export const updateQueryParam = (
   prev: URLSearchParams,
   key: string,
   value?: string,
+  resetPageKey?: string,
 ) => {
   const params = new URLSearchParams(prev);
 
@@ -9,11 +10,10 @@ export const updateQueryParam = (
     params.delete(key);
   } else {
     params.set(key, value);
-  }
 
-  if (key !== "page") {
-    params.set("page", "1");
+    if (resetPageKey && key !== resetPageKey) {
+      params.set(resetPageKey, "1");
+    }
   }
-
   return params;
 };

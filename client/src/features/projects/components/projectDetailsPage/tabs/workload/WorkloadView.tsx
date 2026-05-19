@@ -2,7 +2,7 @@ import { useProjectWorkload } from "@/features/projects/hooks/details/useProject
 import WorkloadTable from "@/features/users/components/workload/WorkloadTable";
 import { useProjectWorkloadSearchParams } from "@/features/projects/hooks/searchParams/useProjectWorkloadSearchParams";
 import Pagination from "@/shared/components/ui/Pagination";
-import ProjectWorkloadSkeleton from "@/features/projects/components/projectDetailsPage/skeleton/ProjectWorkloadSkeleton";
+import ProjectWorkloadSkeleton from "@/features/projects/components/projectDetailsPage/tabs/workload/ProjectWorkloadSkeleton";
 import { PAGE_LIMITS, DEFAULT_PAGE } from "@shared/constants/pagination";
 
 type WorkloadViewProps = {

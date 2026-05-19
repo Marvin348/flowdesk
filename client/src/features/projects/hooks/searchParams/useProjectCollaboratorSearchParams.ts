@@ -4,14 +4,13 @@ import { parseCollaboratorSort } from "@shared/parsers/parseCollaboratorSort";
 import { updateQueryParam } from "@/shared/utils/updateQueryParam";
 import { DEFAULT_PAGE } from "@shared/constants/pagination";
 
-
 export const useProjectCollaboratorSearchParams = () => {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const collaboratorsSortParam = searchParams.get("collaboratorsSort");
   const collaboratorsSort = parseCollaboratorSort(collaboratorsSortParam);
 
-  const page = Number(searchParams.get("page")) || DEFAULT_PAGE;
+  const page = Number(searchParams.get("collaboratorPage")) || DEFAULT_PAGE;
 
   const toggleCollaboratorSort = (sortKey: CollaboratorSortKey) => {
     setSearchParams((prev) => {
@@ -29,7 +28,9 @@ export const useProjectCollaboratorSearchParams = () => {
   };
 
   const setPage = (newPage: number) =>
-    setSearchParams((prev) => updateQueryParam(prev, "page", String(newPage)));
+    setSearchParams((prev) =>
+      updateQueryParam(prev, "collaboratorPage", String(newPage)),
+    );
 
   return {
     page,

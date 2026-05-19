@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import { useDebounce } from "@/shared/hooks/useDebounce";
 import Pagination from "@/shared/components/ui/Pagination";
 import { PAGE_LIMITS, DEFAULT_PAGE } from "@shared/constants/pagination";
+import ProjectAttachmentSkeleton from "@/features/projects/components/projectDetailsPage/tabs/files/ProjectAttachmentSkeleton";
 
 type AttachmentsViewProps = {
   projectId: string;
@@ -15,6 +16,7 @@ type AttachmentsViewProps = {
 
 const AttachmentsView = ({ projectId }: AttachmentsViewProps) => {
   const { page, search, actions } = useProjectAttachmentSearchParams();
+  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
 
   const [searchInput, setSearchInput] = useState(search);
   const debounceInput = useDebounce(searchInput, 300);
@@ -34,30 +36,33 @@ const AttachmentsView = ({ projectId }: AttachmentsViewProps) => {
 
   const { data, isLoading, error } = useProjectAttachments(payload);
 
-  if (isLoading) return <div>loading....</div>;
-  if (error) return <div>Etwas ist schief gelaufen</div>;
-
   const attachments = data?.items ?? [];
   const currentPage = data?.currentPage || DEFAULT_PAGE;
   const totalPages = data?.totalPages ?? 1;
 
+  if (isLoading && !attachments.length) return <ProjectAttachmentSkeleton />;
+  if (error) return <div>Etwas ist schief gelaufen</div>;
+
+  const onFilesSelected = (files: File[]) =>
+    setSelectedFiles((prev) => [...prev, ...files]);
+
   console.log("attachmentsDATA", data);
 
   return (
-    <section className="flex flex-col flex-1">
-      <AttachmentUploadDropzone />
+    <div className="flex flex-col flex-1">
+      <AttachmentUploadDropzone onFilesSelected={onFilesSelected} />
 
-      <div>
-        <AttachmentUploadQueue />
+      <div className="mb-6">
+        <AttachmentUploadQueue selectedFiles={selectedFiles} />
       </div>
 
-      <div>
+      <section>
         <AttachmentsToolbar
           searchInput={searchInput}
           onChange={setSearchInput}
         />
         <AttachmentsTable attachments={attachments} />
-      </div>
+      </section>
 
       <div className="mt-auto pt-4 flex justify-end">
         <Pagination
@@ -66,7 +71,7 @@ const AttachmentsView = ({ projectId }: AttachmentsViewProps) => {
           setPage={actions.setPage}
         />
       </div>
-    </section>
+    </div>
   );
 };
 export default AttachmentsView;

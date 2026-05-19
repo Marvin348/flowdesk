@@ -5,7 +5,7 @@ import type { StatusBase } from "@shared/types/StatusBase";
 import TaskRow from "@/features/tasks/components/TaskRow";
 import { LIST_TABLE_OPTIONS } from "@/shared/constants/table-header";
 import { useProjectTasks } from "@/features/projects/hooks/details/useProjectTasks";
-import TaskListSkeleton from "@/features/projects/components/projectDetailsPage/skeleton/TaskListSkeleton";
+import TaskListSkeleton from "@/features/projects/components/projectDetailsPage/tabs/list/TaskListSkeleton";
 
 type TaskListViewProps = {
   projectId: string;

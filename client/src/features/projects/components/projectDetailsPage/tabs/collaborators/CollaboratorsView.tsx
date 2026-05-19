@@ -11,7 +11,7 @@ import { COLLABORATOR_TABLE_OPTIONS } from "@/shared/constants/table-header";
 import { useProjectCollaborators } from "@/features/projects/hooks/details/useProjectCollaborators";
 import { useProjectCollaboratorSearchParams } from "@/features/projects/hooks/searchParams/useProjectCollaboratorSearchParams";
 import Pagination from "@/shared/components/ui/Pagination";
-import ProjectCollaboratorSkeleton from "@/features/projects/components/projectDetailsPage/skeleton/ProjectCollaboratorSkeleton";
+import ProjectCollaboratorSkeleton from "@/features/projects/components/projectDetailsPage/tabs/collaborators/ProjectCollaboratorSkeleton";
 import { DEFAULT_PAGE, PAGE_LIMITS } from "@shared/constants/pagination";
 
 type CollaboratorsViewProps = {

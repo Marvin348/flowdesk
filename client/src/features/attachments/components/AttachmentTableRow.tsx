@@ -1,13 +1,16 @@
-import { Trash2, FileIcon, ExternalLink } from "lucide-react";
+import { Trash2, ExternalLink } from "lucide-react";
 import type { ProjectAttachmentDto } from "@shared/types/dto/projects/projectAttachments.dto";
 import Avatar from "@/shared/components/ui/avatar/Avatar";
 import { formatDate } from "@/shared/utils/formatDate";
 import { formatFileSize } from "@/shared/utils/formatFileSize";
+import { getFileIcon } from "@/shared/utils/getFileIcon";
 
 type AttachmentTableRowProps = {
   attachment: ProjectAttachmentDto;
 };
 const AttachmentTableRow = ({ attachment }: AttachmentTableRowProps) => {
+  const FileIcon = getFileIcon(attachment.mimeType);
+
   return (
     <tr className="border-b last:border-b-0">
       <td className="px-4 py-3">

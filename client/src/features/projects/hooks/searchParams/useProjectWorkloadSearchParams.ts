@@ -7,13 +7,15 @@ import { DEFAULT_PAGE } from "@shared/constants/pagination";
 export const useProjectWorkloadSearchParams = () => {
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const page = Number(searchParams.get("page") || DEFAULT_PAGE);
+  const page = Number(searchParams.get("workloadPage") || DEFAULT_PAGE);
   const workloadSort = parseProjectWorkloadSort(
     searchParams.get("workloadSort"),
   );
 
   const setPage = (newPage: number) =>
-    setSearchParams((prev) => updateQueryParam(prev, "page", String(newPage)));
+    setSearchParams((prev) =>
+      updateQueryParam(prev, "workloadPage", String(newPage)),
+    );
 
   const toggleWorkloadSort = (sortKey: WorkloadSortKey) => {
     setSearchParams((prev) => {
