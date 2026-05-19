@@ -8,6 +8,7 @@ import UserDetails from "@/features/users/components/teamPage/UserDetails";
 import TeamPageHeader from "@/features/users/components/teamPage/header/TeamPageHeader";
 import TeamFilterDrawer from "@/features/users/components/teamPage/TeamFilterDrawer";
 import TeamPerformanceListSkeleton from "@/features/users/components/teamPage/skeleton/TeamPerformanceListSkeleton";
+import {PAGE_LIMITS, DEFAULT_PAGE} from "@shared/constants/pagination";
 
 export type SelectedUser = { id: string; name: string };
 
@@ -33,14 +34,14 @@ const TeamPage = () => {
   const teamMembersInput = {
     search,
     page,
-    limit: 6,
+    limit: PAGE_LIMITS.team,
     filter: teamFilter,
   };
 
   const { data, isLoading, error } = useTeamMembers(teamMembersInput);
 
   const teamMembers = data?.items ?? [];
-  const currentPage = page;
+  const currentPage = data?.currentPage ?? DEFAULT_PAGE;
   const totalPages = data?.totalPages ?? 1;
 
   if (isLoading && !teamMembers.length) return <TeamPerformanceListSkeleton />;

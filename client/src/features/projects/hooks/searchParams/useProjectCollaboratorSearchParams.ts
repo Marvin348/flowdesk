@@ -2,6 +2,8 @@ import { useSearchParams } from "react-router";
 import type { CollaboratorSortKey } from "@/features/projects/components/projectDetailsPage/tabs/collaborators/CollaboratorsView";
 import { parseCollaboratorSort } from "@shared/parsers/parseCollaboratorSort";
 import { updateQueryParam } from "@/shared/utils/updateQueryParam";
+import { DEFAULT_PAGE } from "@shared/constants/pagination";
+
 
 export const useProjectCollaboratorSearchParams = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -9,7 +11,7 @@ export const useProjectCollaboratorSearchParams = () => {
   const collaboratorsSortParam = searchParams.get("collaboratorsSort");
   const collaboratorsSort = parseCollaboratorSort(collaboratorsSortParam);
 
-  const page = Number(searchParams.get("page")) || 1;
+  const page = Number(searchParams.get("page")) || DEFAULT_PAGE;
 
   const toggleCollaboratorSort = (sortKey: CollaboratorSortKey) => {
     setSearchParams((prev) => {

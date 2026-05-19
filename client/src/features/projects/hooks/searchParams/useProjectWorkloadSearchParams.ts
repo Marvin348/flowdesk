@@ -2,11 +2,12 @@ import { useSearchParams } from "react-router";
 import { parseProjectWorkloadSort } from "@shared/parsers/parseProjectWorkloadSort";
 import { updateQueryParam } from "@/shared/utils/updateQueryParam";
 import type { WorkloadSortKey } from "@/features/users/components/workload/WorkloadTable";
+import { DEFAULT_PAGE } from "@shared/constants/pagination";
 
 export const useProjectWorkloadSearchParams = () => {
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const page = Number(searchParams.get("page") || 1);
+  const page = Number(searchParams.get("page") || DEFAULT_PAGE);
   const workloadSort = parseProjectWorkloadSort(
     searchParams.get("workloadSort"),
   );

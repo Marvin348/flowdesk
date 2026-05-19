@@ -57,7 +57,7 @@ const ProjectDetailsPage = () => {
         );
 
       case "files":
-        return <AttachmentsView/>;
+        return <AttachmentsView projectId={project.id}/>;
 
       case "list":
         return <ListView projectId={project.id} />;

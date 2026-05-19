@@ -9,6 +9,7 @@ import Pagination from "@/shared/components/ui/Pagination";
 import { useProjectSearchParams } from "@/features/projects/hooks/searchParams/useProjectSearchParams";
 import ProjectPageHeader from "@/features/projects/components/projectPage/header/ProjectPageHeader";
 import ProjectListSkeleton from "@/features/projects/components/projectPage/skeleton/ProjectListSkeleton";
+import { PAGE_LIMITS, DEFAULT_PAGE } from "@shared/constants/pagination";
 
 const ProjectsPage = () => {
   const [filterDrawerOpen, setFilterDrawerOpen] = useState(false);
@@ -19,19 +20,19 @@ const ProjectsPage = () => {
   const summariesInput = {
     search,
     page,
-    limit: 9,
+    limit: PAGE_LIMITS.summary,
     filter,
   };
 
   const { data, isLoading, error } = useProjectSummaries(summariesInput);
 
   const projects = data?.items ?? [];
-  const currentPage = page;
+  const currentPage = data?.currentPage ?? DEFAULT_PAGE;
   const totalPages = data?.totalPages ?? 1;
 
   const projectsListVM = useProjectsListVM(projects);
   const projectSummary = useProjectsSummary(projectsListVM);
-  
+
   if (isLoading && !projects.length) return <ProjectListSkeleton />;
 
   if (error)

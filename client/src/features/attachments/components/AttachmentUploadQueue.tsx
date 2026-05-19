@@ -9,13 +9,6 @@ const AttachmentUploadQueue = () => {
         progress={100}
         status="done"
       />
-
-      <UploadQueueItem
-        fileName="Dashboard prototype.mp4"
-        fileSize="16 MB"
-        progress={40}
-        status="uploading"
-      />
     </div>
   );
 };

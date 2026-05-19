@@ -13,11 +13,12 @@ import {
 } from "@/features/users/utils/teamQueryParsers";
 import { useSearchParams } from "react-router";
 import { updateQueryParam } from "@/shared/utils/updateQueryParam";
+import { DEFAULT_PAGE } from "@shared/constants/pagination";
 
 export const useTeamQueryState = () => {
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const page = Number(searchParams.get("page")) || 1;
+  const page = Number(searchParams.get("page")) || DEFAULT_PAGE;
   const search = searchParams.get("search") || "";
 
   const userRoleParam = searchParams.get("role");

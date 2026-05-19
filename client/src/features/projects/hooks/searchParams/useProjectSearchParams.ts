@@ -9,11 +9,12 @@ import {
   parseStatusParam,
   parseHasAttachmentsParam,
 } from "@/features/projects/utils/projectQueryParsers";
+import { DEFAULT_PAGE } from "@shared/constants/pagination";
 
 export const useProjectSearchParams = () => {
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const page = Number(searchParams.get("page")) || 1;
+  const page = Number(searchParams.get("page")) || DEFAULT_PAGE;
   const search = searchParams.get("search") || "";
 
   const cardViewParams = searchParams.get("cardView");

@@ -14,6 +14,8 @@ import { toProjectDto } from "@/features/projects/mappers/project.mapper.js";
 import { toTaskDto } from "@/features/tasks/mappers/task.mapper.js";
 import { toCommentDto } from "@/features/comments/mappers/comment.mapper.js";
 import { toAttachmentDto } from "@/features/attchments/mappers/attachment.mapper.js";
+import { DEFAULT_PAGE, PAGE_LIMITS } from "@shared/constants/pagination.js";
+import { parsePagination } from "@/shared/parsers/parsePagination.js";
 
 const router = express.Router();
 
@@ -55,11 +57,11 @@ router.get(
         parsedFilter,
       );
 
-      let page = Number(req.query.page);
-      let limit = Number(req.query.limit);
-
-      if (isNaN(page)) page = 1;
-      if (isNaN(limit)) limit = 9;
+      const { page, limit } = parsePagination({
+        page: req.query.page,
+        limit: req.query.limit,
+        defaultLimit: PAGE_LIMITS.attachments,
+      });
 
       const paginationItems = pagination(filteredProjects, page, limit);
 
