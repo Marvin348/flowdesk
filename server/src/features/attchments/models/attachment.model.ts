@@ -43,12 +43,7 @@ const attachmentSchema = new mongoose.Schema(
     fileSize: {
       type: Number,
       required: true,
-    },
-
-    createdAt: {
-      type: String,
-      required: true,
-    },
+    }
   },
   {
     timestamps: true,

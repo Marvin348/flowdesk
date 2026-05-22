@@ -10,10 +10,12 @@ const AttachmentsTable = ({ attachments }: AttachmentsTableProps) => {
   return (
     <div className="border rounded-md">
       <table className="w-full text-sm">
-        <thead className="bg-muted text-sm text-left [&_th]:font-normal">
-          <tr>
+        <thead className="bg-muted text-sm text-left [&_th]:font-normal [&_th:last-child]:text-right">
+          <tr className="[&_td:last-child]:text-right">
             {ATTACHMENT_TABLE_HEADER.map((a) => (
-              <th className="py-3 px-4 text-left" key={a.value}>{a.label}</th>
+              <th className="py-3 px-4 text-left" key={a.value}>
+                {a.label}
+              </th>
             ))}
           </tr>
         </thead>

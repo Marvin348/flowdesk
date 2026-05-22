@@ -1,19 +1,22 @@
 import { formatFileSize } from "@/shared/utils/formatFileSize";
 import { X } from "lucide-react";
 import { getFileIcon } from "@/shared/utils/getFileIcon";
+import type { SelectedUploadFile } from "@/features/projects/components/projectDetailsPage/tabs/files/AttachmentsView";
 
 type UploadQueueItemProps = {
-  fileName: string;
-  fileSize: number;
-  mimeType: string;
+  item: SelectedUploadFile;
+  removeSelectedFile: () => void;
 };
 
 const UploadQueueItem = ({
-  fileName,
-  fileSize,
-  mimeType,
+  item,
+  removeSelectedFile,
 }: UploadQueueItemProps) => {
-  const FileIcon = getFileIcon(mimeType);
+  const {
+    file: { name, size, type },
+  } = item;
+
+  const FileIcon = getFileIcon(type);
   return (
     <div className="rounded-md border p-3">
       <div className="flex items-center justify-between gap-4">
@@ -23,9 +26,9 @@ const UploadQueueItem = ({
           </div>
 
           <div className="min-w-0">
-            <p className="truncate text-sm font-medium">{fileName}</p>
+            <p className="truncate text-sm font-medium">{name}</p>
             <p className="text-xs text-muted-foreground">
-              {formatFileSize(fileSize)} · Bereit zum Hochladen
+              {formatFileSize(size)} · Bereit zum Hochladen
             </p>
           </div>
         </div>
@@ -34,6 +37,7 @@ const UploadQueueItem = ({
           type="button"
           className="shrink-0 rounded-md p-1 text-muted-foreground hover:bg-muted hover:text-foreground"
           aria-label="Datei entfernen"
+          onClick={removeSelectedFile}
         >
           <X className="size-4" />
         </button>

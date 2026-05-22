@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import type { ProjectAttachmentResponseDto } from "@shared/types/dto/projects/projectAttachments.dto";
 import type { ProjectAttachmentInput } from "@shared/types/inputs/projectAttachmentInput";
-import { fetchProjectAttachments } from "@/features/projects/api/projectDetails.api";
+import { fetchProjectAttachments } from "@/features/projects/api/projectAttachments.api";
 
 export const useProjectAttachments = (input: ProjectAttachmentInput) => {
   const {

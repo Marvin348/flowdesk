@@ -23,12 +23,7 @@ import { UserModel } from "@/features/users/models/user.modal.js";
 import { CommentModel } from "@/features/comments/models/comment.model.js";
 import { toUserDto } from "@/features/users/mappers/user.mapper.js";
 import { toCommentDto } from "@/features/comments/mappers/comment.mapper.js";
-import { toProjectAttachmentsDto } from "@/features/projects/mappers/project-attachments.mapper.js";
-import { ProjectAttachmentQuery } from "@/features/projects/types/querys/projectAttachmentsQuery.js";
 import { PAGE_LIMITS } from "@shared/constants/pagination.js";
-import { AttachmentModel } from "@/features/attchments/models/attachment.model.js";
-import { toAttachmentDto } from "@/features/attchments/mappers/attachment.mapper.js";
-import { buildAttachmentQuery } from "@/features/attchments/queries/buildAttachmentQuery.js";
 import { parsePagination } from "@/shared/parsers/parsePagination.js";
 
 const router = express.Router();
@@ -326,89 +321,4 @@ router.get(
     }
   },
 );
-
-router.get(
-  "/:id/files",
-  async (req: Request<{ id: string }, {}, {}, ProjectAttachmentQuery>, res) => {
-    try {
-      const projectId = req.params.id;
-
-      if (!projectId) {
-        return res.status(400).json({ error: "Invalid projectId" });
-      }
-
-      const search =
-        typeof req.query.search === "string" ? req.query.search.trim() : "";
-
-      const { page, limit, skip } = parsePagination({
-        page: req.query.page,
-        limit: req.query.limit,
-        defaultLimit: PAGE_LIMITS.attachments,
-      });
-
-      const attachmentQuery = buildAttachmentQuery({
-        projectId,
-        search,
-      });
-
-      const totalItems = await AttachmentModel.countDocuments(attachmentQuery);
-
-      const attachmentRecords = await AttachmentModel.find(attachmentQuery)
-        .sort({ createdAt: -1 })
-        .skip(skip)
-        .limit(limit)
-        .lean();
-
-      const attachments = attachmentRecords.map(toAttachmentDto);
-
-      const userIds = [...new Set(attachments.map((a) => a.userId))];
-
-      const taskIds = [
-        ...new Set(
-          attachments
-            .map((a) => a.taskId)
-            .filter((t): t is string => Boolean(t)),
-        ),
-      ];
-
-      const userRecords = await UserModel.find({ id: { $in: userIds } }).lean();
-      const taskRecords = await TaskModel.find({ id: { $in: taskIds } }).lean();
-
-      const users = userRecords.map(toUserDto);
-      const tasks = taskRecords.map(toTaskDto);
-
-      const usersById = new Map(users.map((u) => [u.id, u]));
-      const tasksById = new Map(tasks.map((t) => [t.id, t]));
-
-      const missingUserId = attachments.find(
-        (a) => !usersById.has(a.userId),
-      )?.userId;
-
-      if (missingUserId) {
-        return res.status(500).json({
-          error: `Missing user for attachment: ${missingUserId}`,
-        });
-      }
-
-      const projectAttachments = toProjectAttachmentsDto(
-        attachments,
-        usersById,
-        tasksById,
-      );
-
-      return res.status(200).json({
-        data: {
-          items: projectAttachments,
-          totalPages: Math.ceil(totalItems / limit),
-          currentPage: page,
-        },
-      });
-    } catch (error) {
-      return res.status(500).json({
-        error: "Failed to fetch project files",
-      });
-    }
-  },
-);
-
 export default router;
