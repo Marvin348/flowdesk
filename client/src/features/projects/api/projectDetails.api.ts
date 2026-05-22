@@ -6,11 +6,8 @@ import type { ProjectCommentsResponseDto } from "@shared/types/dto/projects/proj
 import type { ProjectCollaboratorResponseDto } from "@shared/types/dto/projects/projectCollaborators.dto";
 import type { ProjectCollaboratorsInput } from "@shared/types/inputs/projectCollaboratorsInput";
 import type { ProjectTasksResponseDto } from "@shared/types/dto/projects/projectTasks.dto.js";
-
 import type { ProjectCommentsInput } from "@shared/types/inputs/projectCommentsInput";
 import type { ProjectWorkloadInput } from "@shared/types/inputs/projectWorkloadInput";
-import type { ProjectAttachmentInput } from "@shared/types/inputs/projectAttachmentInput";
-import type { ProjectAttachmentResponseDto } from "@shared/types/dto/projects/projectAttachments.dto";
 
 export const fetchProjectDetailsShell = async (
   id: string,
@@ -86,16 +83,3 @@ export const fetchProjectWorkload = async (
   return res.data.data;
 };
 
-export const fetchProjectAttachments = async (
-  input: ProjectAttachmentInput,
-): Promise<ProjectAttachmentResponseDto> => {
-  const res = await apiClient.get(`/projects/${input.projectId}/files`, {
-    params: {
-      search: input.search,
-      page: input.page,
-      limit: input.limit,
-    },
-  });
-
-  return res.data.data;
-};

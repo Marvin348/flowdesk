@@ -4,56 +4,76 @@ import AttachmentsToolbar from "@/features/attachments/components/AttachmentsToo
 import AttachmentsTable from "@/features/attachments/components/AttachmentsTable";
 import { useProjectAttachments } from "@/features/projects/hooks/details/useProjectAttachments";
 import { useProjectAttachmentSearchParams } from "@/features/projects/hooks/searchParams/useProjectAttachmentSearchParams";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useDebounce } from "@/shared/hooks/useDebounce";
 import Pagination from "@/shared/components/ui/Pagination";
 import { PAGE_LIMITS, DEFAULT_PAGE } from "@shared/constants/pagination";
-import ProjectAttachmentSkeleton from "@/features/projects/components/projectDetailsPage/tabs/files/ProjectAttachmentSkeleton";
+import ProjectAttachmentListSkeleton from "@/features/projects/components/projectDetailsPage/tabs/files/ProjectAttachmentListSkeleton";
+import { useCreateAttachment } from "@/features/projects/hooks/mutations/useCreateAttachment";
+import { useAttachmentUploadQueue } from "@/features/attachments/hooks/useAttachmentUploadQueue";
 
 type AttachmentsViewProps = {
   projectId: string;
 };
 
 const AttachmentsView = ({ projectId }: AttachmentsViewProps) => {
-  const { page, search, actions } = useProjectAttachmentSearchParams();
-  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+  const { page, actions } = useProjectAttachmentSearchParams();
 
-  const [searchInput, setSearchInput] = useState(search);
+  const [searchInput, setSearchInput] = useState("");
   const debounceInput = useDebounce(searchInput, 300);
 
-  useEffect(() => {
-    if (debounceInput !== search) {
-      actions.setSearch(debounceInput);
-    }
-  }, [debounceInput]);
-
-  const payload = {
+  const query = {
     projectId,
-    search,
+    search: debounceInput,
     page,
     limit: PAGE_LIMITS.attachments,
   };
 
-  const { data, isLoading, error } = useProjectAttachments(payload);
+  const { data, isLoading, error } = useProjectAttachments(query);
 
   const attachments = data?.items ?? [];
   const currentPage = data?.currentPage || DEFAULT_PAGE;
   const totalPages = data?.totalPages ?? 1;
 
-  if (isLoading && !attachments.length) return <ProjectAttachmentSkeleton />;
-  if (error) return <div>Etwas ist schief gelaufen</div>;
+  const {
+    selectedFiles,
+    onFilesSelected,
+    removeSelectedFile,
+    clearSelectedFiles,
+    getUploadFiles,
+  } = useAttachmentUploadQueue();
 
-  const onFilesSelected = (files: File[]) =>
-    setSelectedFiles((prev) => [...prev, ...files]);
+  const {
+    mutate: uploadAttachments,
+    isPending: isUploading,
+    error: uploadError,
+  } = useCreateAttachment();
 
-  console.log("attachmentsDATA", data);
+  const onUploadFiles = () => {
+    const uploadInput = {
+      projectId,
+      taskId: null, // test
+      files: getUploadFiles(),
+    };
+
+    uploadAttachments(uploadInput, {
+      onSuccess: () => {
+        clearSelectedFiles();
+      },
+    });
+  };
 
   return (
     <div className="flex flex-col flex-1">
       <AttachmentUploadDropzone onFilesSelected={onFilesSelected} />
 
       <div className="mb-6">
-        <AttachmentUploadQueue selectedFiles={selectedFiles} />
+        <AttachmentUploadQueue
+          selectedFiles={selectedFiles}
+          removeSelectedFile={removeSelectedFile}
+          onUploadFiles={onUploadFiles}
+          isUploading={isUploading}
+        />
       </div>
 
       <section>
@@ -61,16 +81,29 @@ const AttachmentsView = ({ projectId }: AttachmentsViewProps) => {
           searchInput={searchInput}
           onChange={setSearchInput}
         />
-        <AttachmentsTable attachments={attachments} />
+
+        {error ? (
+          <div>Etwas ist schief gelaufen</div>
+        ) : isLoading && !attachments.length ? (
+          <ProjectAttachmentListSkeleton />
+        ) : !isLoading && !attachments.length ? (
+          <div className="mt-4 text-muted-foreground text-center">
+            Keine Dateien gefunden
+          </div>
+        ) : (
+          <AttachmentsTable attachments={attachments} />
+        )}
       </section>
 
-      <div className="mt-auto pt-4 flex justify-end">
-        <Pagination
-          totalPages={totalPages}
-          currentPage={currentPage}
-          setPage={actions.setPage}
-        />
-      </div>
+      {totalPages > 0 && (
+        <div className="mt-auto pt-4 flex justify-end">
+          <Pagination
+            totalPages={totalPages}
+            currentPage={currentPage}
+            setPage={actions.setPage}
+          />
+        </div>
+      )}
     </div>
   );
 };

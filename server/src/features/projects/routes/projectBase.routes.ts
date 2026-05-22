@@ -74,7 +74,6 @@ router.get(
   },
 );
 
-// create new project
 router.post("/", async (req: Request<{}, {}, CreateProjectInput>, res) => {
   try {
     const {

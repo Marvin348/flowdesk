@@ -32,6 +32,12 @@ FlowDesk is an admin dashboard for managing projects, tasks, and team collaborat
 - MongoDB `_id` values are not exposed to the frontend yet
 - FileView is intentionally commented out for now (More functionality will be added here later)
 
+### Current upload limitation
+
+- File uploads currently use a hardcoded `userId` (`u3`) because authentication is not implemented yet.
+- In a production version, the uploader would be derived from the authenticated session/JWT instead of being sent manually or hardcoded.
+- User cannot select a task right now. (gets fixed in next branch)
+
 ## ⏳ Planned Improvements
 
 - Expand REST API with dedicated endpoints (dashboard, team details, etc.)
@@ -135,3 +141,4 @@ npm run dev
 
 ![add Project](./screenshots/flowdesk-addProject.png)
 ![team filter](./screenshots/flowdesk-team-filter.png)
+![attachments](./screenshots/flowdesk-attachments.png)
