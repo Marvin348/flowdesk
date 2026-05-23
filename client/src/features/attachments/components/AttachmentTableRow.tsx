@@ -4,11 +4,19 @@ import Avatar from "@/shared/components/ui/avatar/Avatar";
 import { formatDate } from "@/shared/utils/formatDate";
 import { formatFileSize } from "@/shared/utils/formatFileSize";
 import { getFileIcon } from "@/shared/utils/getFileIcon";
+import { Spinner } from "@/shared/components/ui/spinner";
+import { API_BASE_URL } from "@/shared/api/client";
 
 type AttachmentTableRowProps = {
   attachment: ProjectAttachmentDto;
+  onFileDelete: () => void;
+  isDeleting: boolean;
 };
-const AttachmentTableRow = ({ attachment }: AttachmentTableRowProps) => {
+const AttachmentTableRow = ({
+  attachment,
+  onFileDelete,
+  isDeleting,
+}: AttachmentTableRowProps) => {
   const FileIcon = getFileIcon(attachment.mimeType);
 
   return (
@@ -89,7 +97,7 @@ const AttachmentTableRow = ({ attachment }: AttachmentTableRowProps) => {
       <td className="px-4 py-3">
         <div className="flex items-center justify-end gap-1 sm:gap-2">
           <a
-            href={attachment.fileUrl}
+            href={`${API_BASE_URL}${attachment.fileUrl}`}
             target="_blank"
             rel="noreferrer"
             className="rounded-md p-2 text-muted-foreground hover:bg-muted hover:text-foreground"
@@ -100,10 +108,16 @@ const AttachmentTableRow = ({ attachment }: AttachmentTableRowProps) => {
 
           <button
             type="button"
-            className="rounded-md p-2 text-muted-foreground hover:bg-muted hover:text-destructive"
+            className={`rounded-md p-2 text-muted-foreground ${isDeleting ? "hover:bg-none" : "hover:text-destructive hover:bg-muted"}`}
             aria-label="Datei löschen"
+            onClick={onFileDelete}
+            disabled={isDeleting}
           >
-            <Trash2 className="size-4" />
+            {isDeleting ? (
+              <Spinner className="text-accent" />
+            ) : (
+              <Trash2 className="size-4" />
+            )}
           </button>
         </div>
       </td>
