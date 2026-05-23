@@ -1,4 +1,6 @@
 import { parsePagination } from "@/shared/parsers/parsePagination.js";
+import fs from "node:fs/promises";
+import path from "node:path";
 import express from "express";
 import { Request, Response } from "express";
 import type { ProjectAttachmentQuery } from "@/features/projects/types/querys/projectAttachmentsQuery.js";
@@ -16,9 +18,72 @@ import multer from "multer";
 
 const router = express.Router();
 
-const upload = multer({
-  dest: "uploads/",
-});
+const upload = multer({ dest: "uploads/" });
+
+type DeleteAttachmentParams = {
+  id: string;
+  fileId: string;
+};
+
+router.delete(
+  "/:id/files/:fileId",
+  async (req: Request<DeleteAttachmentParams, {}, {}, {}>, res) => {
+    try {
+      const projectId = req.params.id;
+      const attachmentId = req.params.fileId;
+
+      if (!projectId) {
+        return res.status(400).json({ error: "Invalid projectId" });
+      }
+
+      if (!attachmentId) {
+        return res.status(400).json({ error: "Invalid attachmentId" });
+      }
+
+      const projectRecord = await ProjectModel.findOne({
+        id: projectId,
+      }).lean();
+
+      if (!projectRecord) {
+        return res.status(404).json({ error: "project not found" });
+      }
+
+      const attachmentRecord = await AttachmentModel.findOne({
+        id: attachmentId,
+        projectId,
+      }).lean();
+
+      if (!attachmentRecord) {
+        return res.status(404).json({ error: "atachment not found" });
+      }
+
+      const relativeFilePath = attachmentRecord.fileUrl.replace(/^\/+/, "");
+      const filePath = path.join(process.cwd(), relativeFilePath);
+
+      try {
+        await fs.unlink(filePath);
+      } catch (error) {
+        console.error("Failed to delete file from uploads folder", error);
+      }
+
+      const deletedAttachment = await AttachmentModel.deleteOne({
+        id: attachmentId,
+        projectId,
+      });
+
+      await ProjectModel.updateOne(
+        { id: projectId },
+        { $currentDate: { updatedAt: true } },
+      );
+
+      return res.status(200).json({ data: deletedAttachment });
+    } catch (error) {
+      return res.status(500).json({
+        error: "Failed to delete attachments",
+      });
+    }
+  },
+);
 
 router.get(
   "/:id/files",

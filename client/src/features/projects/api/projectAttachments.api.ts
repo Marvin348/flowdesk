@@ -2,6 +2,7 @@ import type { ProjectAttachmentResponseDto } from "@shared/types/dto/projects/pr
 import type { ProjectAttachmentInput } from "@shared/types/inputs/projectAttachmentInput";
 import { apiClient } from "@/shared/api/client";
 import type { UploadProjectAttachmentsInput } from "@shared/types/inputs/createAttachmentInput";
+import type { DeleteAttachmentInput } from "@shared/types/inputs/deleteAttachmentInput";
 
 export const fetchProjectAttachments = async (
   input: ProjectAttachmentInput,
@@ -17,7 +18,7 @@ export const fetchProjectAttachments = async (
   return res.data.data;
 };
 
-export const createAttachment = async ({
+export const createProjectAttachment = async ({
   projectId,
   taskId,
   files,
@@ -33,5 +34,13 @@ export const createAttachment = async ({
   }
 
   const res = await apiClient.post(`/projects/${projectId}/files`, formData);
+  return res.data.data;
+};
+
+export const deleteProjectAttachment = async ({
+  projectId,
+  fileId,
+}: DeleteAttachmentInput) => {
+  const res = await apiClient.delete(`/projects/${projectId}/files/${fileId}`);
   return res.data.data;
 };

@@ -11,6 +11,7 @@ import { PAGE_LIMITS, DEFAULT_PAGE } from "@shared/constants/pagination";
 import ProjectAttachmentListSkeleton from "@/features/projects/components/projectDetailsPage/tabs/files/ProjectAttachmentListSkeleton";
 import { useCreateAttachment } from "@/features/projects/hooks/mutations/useCreateAttachment";
 import { useAttachmentUploadQueue } from "@/features/attachments/hooks/useAttachmentUploadQueue";
+import ErrorMessage from "@/shared/components/ErrorMessage";
 
 type AttachmentsViewProps = {
   projectId: string;
@@ -76,6 +77,12 @@ const AttachmentsView = ({ projectId }: AttachmentsViewProps) => {
         />
       </div>
 
+      {uploadError && (
+        <div className="text-sm text-destructive">
+          Datei konnte nicht hochgeladen werden. Bitte versuche es erneut.
+        </div>
+      )}
+
       <section>
         <AttachmentsToolbar
           searchInput={searchInput}
@@ -83,7 +90,10 @@ const AttachmentsView = ({ projectId }: AttachmentsViewProps) => {
         />
 
         {error ? (
-          <div>Etwas ist schief gelaufen</div>
+          <ErrorMessage
+            message="Etwas ist schief gelaufen"
+            className="mt-12 text-center"
+          />
         ) : isLoading && !attachments.length ? (
           <ProjectAttachmentListSkeleton />
         ) : !isLoading && !attachments.length ? (
@@ -91,7 +101,7 @@ const AttachmentsView = ({ projectId }: AttachmentsViewProps) => {
             Keine Dateien gefunden
           </div>
         ) : (
-          <AttachmentsTable attachments={attachments} />
+          <AttachmentsTable attachments={attachments} projectId={projectId} />
         )}
       </section>
 

@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { createAttachment } from "@/features/projects/api/projectAttachments.api";
+import { createProjectAttachment } from "@/features/projects/api/projectAttachments.api";
 import type { Attachment } from "@shared/types/attachment";
 import type { UploadProjectAttachmentsInput } from "@shared/types/inputs/createAttachmentInput";
 
@@ -7,7 +7,7 @@ export const useCreateAttachment = () => {
   const queryClient = useQueryClient();
 
   return useMutation<Attachment, Error, UploadProjectAttachmentsInput>({
-    mutationFn: createAttachment,
+    mutationFn: createProjectAttachment,
 
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({
