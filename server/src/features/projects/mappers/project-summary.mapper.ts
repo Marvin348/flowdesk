@@ -4,12 +4,16 @@ import type { ProjectSummariesDto } from "@shared/types/dto/projects/projectSumm
 import { Project } from "@shared/types/project.js";
 import { Task } from "@shared/types/task.js";
 import { calcPercent } from "@/shared/utils/calcPercent.js";
+import { toUserAvatarDto } from "@/features/users/mappers/user.mapper.js";
+import { User } from "@shared/types/user.js";
+import { isDefined } from "@/shared/utils/isDefined.js";
 
 export const toProjectsSummaryDto = (
   projects: Project[],
   tasks: Task[],
   comments: Comment[],
   attachments: Attachment[],
+  usersById: Map<string, User>,
 ): ProjectSummariesDto[] => {
   // refactor later
   const tasksByProjectId = new Map<string, typeof tasks>();
@@ -36,8 +40,6 @@ export const toProjectsSummaryDto = (
   const projectListItems = projects.map((p): ProjectSummariesDto => {
     const projectTasks = tasksByProjectId.get(p.id) ?? [];
 
-    const teamUserIdSet = new Set<string>(p.invitedUserIds);
-
     const counts = projectTasks.reduce(
       (acc, task) => {
         acc.commentCount += (commentsByTaskId.get(task.id) ?? []).length;
@@ -45,10 +47,6 @@ export const toProjectsSummaryDto = (
 
         if (task.taskStatus === "done") {
           acc.completedTaskCount += 1;
-        }
-
-        for (const userId of task.collaboratorIds) {
-          teamUserIdSet.add(userId);
         }
 
         return acc;
@@ -69,7 +67,11 @@ export const toProjectsSummaryDto = (
       progressPercent: calcPercent(completed, total),
     };
 
-    const teamUserIds = Array.from(teamUserIdSet);
+    const invitedUserIds = Array.from(new Set(p.invitedUserIds));
+    const invitedUsers = invitedUserIds
+      .map((id) => usersById.get(id))
+      .filter(isDefined)
+      .map(toUserAvatarDto);
 
     return {
       id: p.id,
@@ -77,7 +79,8 @@ export const toProjectsSummaryDto = (
       priority: p.priority,
       projectStatus: p.projectStatus,
       dueDate: p.dueDate,
-      teamUserIds,
+      invitedUserIds,
+      invitedUsers,
       createdAt: p.createdAt,
 
       progress,
@@ -85,7 +88,7 @@ export const toProjectsSummaryDto = (
       stats: {
         commentCount: counts.commentCount,
         attachmentCount: counts.attachmentCount,
-        userCount: teamUserIds.length,
+        userCount: invitedUserIds.length,
       },
     };
   });

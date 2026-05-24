@@ -16,6 +16,8 @@ import { toCommentDto } from "@/features/comments/mappers/comment.mapper.js";
 import { toAttachmentDto } from "@/features/attchments/mappers/attachment.mapper.js";
 import { DEFAULT_PAGE, PAGE_LIMITS } from "@shared/constants/pagination.js";
 import { parsePagination } from "@/shared/parsers/parsePagination.js";
+import { UserModel } from "@/features/users/models/user.modal.js";
+import { toUserDto } from "@/features/users/mappers/user.mapper.js";
 
 const router = express.Router();
 
@@ -33,17 +35,22 @@ router.get(
       const taskDocs = await TaskModel.find().lean();
       const commentDocs = await CommentModel.find().lean();
       const attachmentDocs = await AttachmentModel.find().lean();
+      const userDocs = await UserModel.find().lean();
 
       const projects = projectDocs.map(toProjectDto);
       const tasks = taskDocs.map(toTaskDto);
       const comments = commentDocs.map(toCommentDto);
       const attachments = attachmentDocs.map(toAttachmentDto);
+      const users = userDocs.map(toUserDto);
+
+      const usersById = new Map(users.map((u) => [u.id, u]));
 
       const projectListItems = toProjectsSummaryDto(
         projects,
         tasks,
         comments,
         attachments,
+        usersById,
       );
 
       const search =

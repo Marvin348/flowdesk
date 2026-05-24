@@ -1,5 +1,6 @@
 import type { Priority } from "../../priority";
 import type { StatusBase } from "../../StatusBase";
+import type { UserAvatarDto } from "../common/userPreview.dto";
 
 export type ProjectDetailsShellDto = {
     id: string;
@@ -12,5 +13,6 @@ export type ProjectDetailsShellDto = {
     invitedUserIds: string[];
     updatedAt?: string;
 
+    invitedUsers: UserAvatarDto[]
     progressPercent: number;
 };

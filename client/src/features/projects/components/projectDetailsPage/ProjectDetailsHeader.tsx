@@ -4,7 +4,6 @@ import { ArrowLeft, UserRoundPlus, History } from "lucide-react";
 import AssigneeAvatars from "@/shared/components/ui/avatar/AvatarGroup";
 import { Button } from "@/shared/components/ui/button";
 import { formatDate } from "@/shared/utils/formatDate";
-import { useUsersByIds } from "@/features/users/hooks/useUsersByIds";
 import type { ProjectDetailsShellDto } from "@shared/types/dto/projects/projectDetailsShell.dto";
 
 type ProjectDetailsHeaderProps = {
@@ -15,11 +14,8 @@ const ProjectDetailsHeader = ({
   project,
   onOpen,
 }: ProjectDetailsHeaderProps) => {
-  const { title, projectStatus, invitedUserIds, updatedAt, progressPercent } =
+  const { title, projectStatus, invitedUsers, updatedAt, progressPercent } =
     project;
-
-  // invitedUserIds is not teamUsers (all users can be invited)
-  const teamUsers = useUsersByIds(invitedUserIds);
 
   const statusOption = STATUS_OPTIONS[project.projectStatus];
 
@@ -70,7 +66,7 @@ const ProjectDetailsHeader = ({
       <div className="flex items-center gap-3">
         <div className="hidden md:flex items-center gap-2">
           <p className="text-muted-foreground text-sm">Team</p>
-          <AssigneeAvatars users={teamUsers} />
+          <AssigneeAvatars users={invitedUsers} />
         </div>
 
         <Button
