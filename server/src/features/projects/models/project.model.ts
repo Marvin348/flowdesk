@@ -3,12 +3,6 @@ import mongoose from "mongoose";
 
 const projectSchema = new mongoose.Schema(
   {
-    id: { // id gets removed later
-      type: String,
-      required: true,
-      unique: true,
-    },
-
     title: {
       type: String,
       require: true,

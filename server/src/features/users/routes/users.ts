@@ -1,7 +1,7 @@
 import express from "express";
 import { toUsersPerformanceDto } from "@/features/users/mappers/users-performance.js";
 import { pagination } from "@/shared/utils/pagination.js";
-import type { Request, Response } from "express";
+import type { Request } from "express";
 import { toUserDetailsDto } from "@/features/users/mappers/user-details.mapper.js";
 import { UserRole } from "@shared/types/user.js";
 import type {
@@ -26,7 +26,7 @@ const router = express.Router();
 
 router.get("/", async (req, res) => {
   const users = await UserModel.find().lean();
-  res.json({ data: users });
+  res.json({ data: users.map(toUserDto) });
 });
 
 export type TeamMembersQuery = {
@@ -92,7 +92,7 @@ router.get("/:id/details", async (req, res) => {
       return res.status(400).json({ error: "userId invalid input" });
     }
 
-    const userRecord = await UserModel.findOne({ id: userId }).lean();
+    const userRecord = await UserModel.findById(userId).lean();
 
     if (!userRecord) {
       return res.status(404).json({ error: "User not found" });
@@ -133,7 +133,7 @@ router.patch(
         return res.status(400).json({ error: "Invalid role" });
       }
 
-      const user = await UserModel.findOne({ id: userId }).lean();
+      const user = await UserModel.findById(userId).lean();
 
       if (!user) {
         return res.status(404).json({ message: "User not found" });
@@ -144,7 +144,7 @@ router.patch(
       }
 
       const updatedUser = await UserModel.findOneAndUpdate(
-        { id: userId },
+        { _id: userId },
         { role },
         { returnDocument: "after" },
       ).lean();

@@ -3,7 +3,7 @@ import cors from "cors";
 import projectsRouter from "@/features/projects/routes/index.js";
 import tasksRouter from "@/features/tasks/routes/tasks.js";
 import usersRouter from "@/features/users/routes/users.js";
-import attachmentsRouter from "@/features/attchments/routes/attachments.js";
+import attachmentsRouter from "@/features/attachments/routes/attachments.js";
 import commentsRouter from "@/features/comments/routes/comments.js";
 
 const app = express();

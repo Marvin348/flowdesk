@@ -5,11 +5,11 @@ import express from "express";
 import { Request, Response } from "express";
 import type { ProjectAttachmentQuery } from "@/features/projects/types/querys/projectAttachmentsQuery.js";
 import { PAGE_LIMITS } from "@shared/constants/pagination.js";
-import { buildAttachmentQuery } from "@/features/attchments/queries/buildAttachmentQuery.js";
-import { AttachmentModel } from "@/features/attchments/models/attachment.model.js";
+import { buildAttachmentQuery } from "@/features/attachments/queries/buildAttachmentQuery.js";
+import { AttachmentModel } from "@/features/attachments/models/attachment.model.js";
 import { UserModel } from "@/features/users/models/user.modal.js";
 import { TaskModel } from "@/features/tasks/models/task.model.js";
-import { toAttachmentDto } from "@/features/attchments/mappers/attachment.mapper.js";
+import { toAttachmentDto } from "@/features/attachments/mappers/attachment.mapper.js";
 import { toUserDto } from "@/features/users/mappers/user.mapper.js";
 import { toTaskDto } from "@/features/tasks/mappers/task.mapper.js";
 import { toProjectAttachmentsDto } from "@/features/projects/mappers/project-attachments.mapper.js";
@@ -40,16 +40,14 @@ router.delete(
         return res.status(400).json({ error: "Invalid attachmentId" });
       }
 
-      const projectRecord = await ProjectModel.findOne({
-        id: projectId,
-      }).lean();
+      const projectRecord = await ProjectModel.findById(projectId).lean();
 
       if (!projectRecord) {
         return res.status(404).json({ error: "project not found" });
       }
 
       const attachmentRecord = await AttachmentModel.findOne({
-        id: attachmentId,
+        _id: attachmentId,
         projectId,
       }).lean();
 
@@ -67,14 +65,13 @@ router.delete(
       }
 
       const deletedAttachment = await AttachmentModel.deleteOne({
-        id: attachmentId,
+        _id: attachmentId,
         projectId,
       });
 
-      await ProjectModel.updateOne(
-        { id: projectId },
-        { $currentDate: { updatedAt: true } },
-      );
+      await ProjectModel.findByIdAndUpdate(projectId, {
+        $currentDate: { updatedAt: true },
+      });
 
       return res.status(200).json({ data: deletedAttachment });
     } catch (error) {
@@ -129,8 +126,12 @@ router.get(
         ),
       ];
 
-      const userRecords = await UserModel.find({ id: { $in: userIds } }).lean();
-      const taskRecords = await TaskModel.find({ id: { $in: taskIds } }).lean();
+      const userRecords = await UserModel.find({
+        _id: { $in: userIds },
+      }).lean();
+      const taskRecords = await TaskModel.find({
+        _id: { $in: taskIds },
+      }).lean();
 
       const users = userRecords.map(toUserDto);
       const tasks = taskRecords.map(toTaskDto);
@@ -185,9 +186,7 @@ router.post(
         return res.status(400).json({ error: "Invalid projectId" });
       }
 
-      const projectRecord = await ProjectModel.findOne({
-        id: projectId,
-      }).lean();
+      const projectRecord = await ProjectModel.findById(projectId).lean();
 
       if (!projectRecord) {
         return res.status(404).json({ error: "project not found" });
@@ -197,11 +196,22 @@ router.post(
         return res.status(400).json({ error: "No files uploaded" });
       }
 
+      const devUser = await UserModel.findOne({
+        email: "daniel.weber@example.com",
+      }).lean();
+
+      if (!devUser) {
+        return res.status(500).json({ error: "Dev user not found" });
+      }
+
+      const userId = devUser._id.toString();
+
       const attachmentsToCreate = files.map((f) => ({
-        id: crypto.randomUUID(),
         projectId,
         taskId,
-        userId: "u3", // only test
+
+        // TODO: Replace with authenticated user id once auth is implemented.
+        userId: userId,
 
         fileName: f.originalname,
         fileUrl: `/uploads/${f.filename}`,
@@ -212,10 +222,9 @@ router.post(
       const createdAttachments =
         await AttachmentModel.insertMany(attachmentsToCreate);
 
-      await ProjectModel.updateOne(
-        { id: projectId },
-        { $currentDate: { updatedAt: true } },
-      );
+      await ProjectModel.findByIdAndUpdate(projectId, {
+        $currentDate: { updatedAt: true },
+      });
 
       return res.status(201).json({ data: createdAttachments });
     } catch (error) {

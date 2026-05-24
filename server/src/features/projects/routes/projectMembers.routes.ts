@@ -4,7 +4,7 @@ import { UserModel } from "@/features/users/models/user.modal.js";
 import { ProjectModel } from "@/features/projects/models/project.model.js";
 import { toProjectDto } from "@/features/projects/mappers/project.mapper.js";
 import { TaskModel } from "@/features/tasks/models/task.model.js";
-import { AttachmentModel } from "@/features/attchments/models/attachment.model.js";
+import { AttachmentModel } from "@/features/attachments/models/attachment.model.js";
 import { CommentModel } from "@/features/comments/models/comment.model.js";
 
 const router = express.Router();
@@ -25,14 +25,14 @@ router.patch(
         return res.status(400).json({ error: "Invalid input" });
       }
 
-      const user = await UserModel.findOne({ id: userId });
+      const user = await UserModel.findById(userId);
 
       if (!user) {
         return res.status(404).json({ error: "User not found" });
       }
 
       const matchingProjects = await ProjectModel.find({
-        id: { $in: projectIdsToAdd },
+        _id: { $in: projectIdsToAdd },
       });
 
       const projectIdsToAddSet = new Set(projectIdsToAdd);
@@ -53,7 +53,7 @@ router.patch(
 
       await ProjectModel.updateMany(
         {
-          id: { $in: projectIdsToAdd },
+          _id: { $in: projectIdsToAdd },
         },
         {
           $addToSet: {
@@ -63,7 +63,7 @@ router.patch(
       );
 
       const updatedProjectDocs = await ProjectModel.find({
-        id: { $in: projectIdsToAdd },
+        _id: { $in: projectIdsToAdd },
       });
 
       const updatedProjects = updatedProjectDocs.map(toProjectDto);
@@ -95,7 +95,7 @@ router.delete(
         return res.status(400).json({ error: "Invalid userId" });
       }
 
-      const project = await ProjectModel.findOne({ id: projectId });
+      const project = await ProjectModel.findById(projectId);
 
       if (!project) {
         return res.status(404).json({ error: "Project not found" });
@@ -106,7 +106,7 @@ router.delete(
       }
 
       const updatedProject = await ProjectModel.findOneAndUpdate(
-        { id: projectId },
+        { _id: projectId },
         {
           $pull: {
             invitedUserIds: userId,
@@ -136,7 +136,9 @@ router.delete(
         collaboratorIds: { $size: 0 },
       }).lean();
 
-      const taskIdsToDelete = tasksWithoutCollaborators.map((task) => task.id);
+      const taskIdsToDelete = tasksWithoutCollaborators.map((task) =>
+        task._id.toString(),
+      );
 
       if (taskIdsToDelete.length > 0) {
         await AttachmentModel.deleteMany({
@@ -148,7 +150,7 @@ router.delete(
         });
 
         await TaskModel.deleteMany({
-          id: { $in: taskIdsToDelete },
+          _id: { $in: taskIdsToDelete },
         });
       }
 
@@ -173,8 +175,14 @@ router.patch(
         return res.status(400).json({ error: "Invalid input" });
       }
 
+      const project = await ProjectModel.findById(projectId);
+
+      if (!project) {
+        return res.status(404).json({ error: "Project not found" });
+      }
+
       const updatedProject = await ProjectModel.findOneAndUpdate(
-        { id: projectId },
+        { _id: projectId },
         {
           $addToSet: {
             invitedUserIds: {

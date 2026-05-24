@@ -4,13 +4,13 @@ import {
   UserPreviewDto,
 } from "@shared/types/dto/common/userPreview.dto.js";
 
-type UserDbRecord = User & {
-  _id?: unknown;
+type UserDbRecord = Omit<User, "id"> & {
+  _id: { toString: () => string };
   __v?: number;
 };
 
 export const toUserDto = (user: UserDbRecord): User => ({
-  id: user.id,
+  id: user._id.toString(),
   name: user.name,
   email: user.email,
   jobTitle: user.jobTitle,

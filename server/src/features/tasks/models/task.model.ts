@@ -3,13 +3,6 @@ import mongoose from "mongoose";
 
 const taskSchema = new mongoose.Schema(
   {
-    id: {
-      // id gets removed later
-      type: String,
-      required: true,
-      unique: true,
-    },
-
     projectId: {
       type: String,
       required: true,

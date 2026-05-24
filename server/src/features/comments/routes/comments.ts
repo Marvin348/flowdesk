@@ -22,7 +22,7 @@ router.post("/", async (req: Request<{}, {}, CreateCommentInput>, res) => {
       return res.status(400).json({ error: "Missing required fields" });
     }
 
-    const task = await TaskModel.findOne({ id: taskId }).lean();
+    const task = await TaskModel.findById(taskId).lean();
 
     if (!task) {
       return res.status(404).json({ error: "Task not found" });
@@ -30,7 +30,7 @@ router.post("/", async (req: Request<{}, {}, CreateCommentInput>, res) => {
 
     if (parentCommentId) {
       const parentComment = await CommentModel.findOne({
-        id: parentCommentId,
+        _id: parentCommentId,
       }).lean();
 
       if (!parentComment) {
@@ -45,7 +45,6 @@ router.post("/", async (req: Request<{}, {}, CreateCommentInput>, res) => {
     }
 
     const newCommentRecord = await CommentModel.create({
-      id: crypto.randomUUID(),
       taskId,
       userId: "u3", // test, remove later
       message,

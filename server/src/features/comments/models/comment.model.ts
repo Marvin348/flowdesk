@@ -3,12 +3,6 @@ import mongoose from "mongoose";
 
 const commentSchema = new mongoose.Schema(
   {
-    id: {
-      // id gets removed later
-      type: String,
-      required: true,
-      unique: true,
-    },
     taskId: {
       type: String,
       required: true,

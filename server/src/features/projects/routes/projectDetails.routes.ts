@@ -39,7 +39,7 @@ router.get("/:id/details", async (req: Request<{ id: string }>, res) => {
       return res.status(400).json({ error: "Invalid projectId" });
     }
 
-    const projectRecord = await ProjectModel.findOne({ id: projectId }).lean();
+    const projectRecord = await ProjectModel.findById(projectId).lean();
 
     if (!projectRecord) {
       return res.status(404).json({ error: "project not found" });
@@ -55,10 +55,10 @@ router.get("/:id/details", async (req: Request<{ id: string }>, res) => {
     const invitedUserIdsSet = Array.from(new Set(project.invitedUserIds));
 
     const usersRecord = await UserModel.find({
-      id: { $in: invitedUserIdsSet },
+      _id: { $in: invitedUserIdsSet },
     }).lean();
 
-    const invitedUsers = usersRecord.map((u) => toUserAvatarDto(u));
+    const invitedUsers = usersRecord.map(toUserDto).map(toUserAvatarDto);
 
     return res.status(200).json({
       data: {
@@ -82,7 +82,7 @@ router.get("/:id/overview", async (req, res) => {
       return res.status(400).json({ error: "Invalid projectId" });
     }
 
-    const projectRecord = await ProjectModel.findOne({ id: projectId }).lean();
+    const projectRecord = await ProjectModel.findById(projectId).lean();
 
     if (!projectRecord) {
       return res.status(404).json({ error: "project not found" });
@@ -134,7 +134,7 @@ router.get("/:id/tasks", async (req, res) => {
       return res.status(400).json({ error: "Invalid projectId" });
     }
 
-    const projectRecord = await ProjectModel.findOne({ id: projectId }).lean();
+    const projectRecord = await ProjectModel.findById(projectId).lean();
 
     if (!projectRecord) {
       return res.status(404).json({ error: "project not found" });
@@ -174,9 +174,7 @@ router.get(
 
       const parsedCollaboratorSort = parseCollaboratorSort(collaboratorsSort);
 
-      const projectRecord = await ProjectModel.findOne({
-        id: projectId,
-      }).lean();
+      const projectRecord = await ProjectModel.findById(projectId).lean();
 
       if (!projectRecord) {
         return res.status(404).json({ error: "project not found" });
@@ -185,7 +183,7 @@ router.get(
       const project = toProjectDto(projectRecord);
 
       const userRecords = await UserModel.find({
-        id: { $in: project.invitedUserIds },
+        _id: { $in: project.invitedUserIds },
       }).lean();
 
       const collaborators = userRecords.map(toUserDto);
@@ -221,9 +219,7 @@ router.get(
 
       const parsedCommentsSort = parseProjectCommentsSort(commentsSort);
 
-      const projectRecord = await ProjectModel.findOne({
-        id: projectId,
-      }).lean();
+      const projectRecord = await ProjectModel.findById(projectId).lean();
 
       if (!projectRecord) {
         return res.status(404).json({ error: "project not found" });
@@ -291,9 +287,7 @@ router.get(
         req.query.workloadSort,
       );
 
-      const projectRecord = await ProjectModel.findOne({
-        id: projectId,
-      }).lean();
+      const projectRecord = await ProjectModel.findById(projectId).lean();
 
       if (!projectRecord) {
         return res.status(404).json({ error: "project not found" });
@@ -308,7 +302,7 @@ router.get(
       );
 
       const userRecords = await UserModel.find({
-        id: { $in: [...collaboratorIds] },
+        _id: { $in: [...collaboratorIds] },
       }).lean();
 
       const users = userRecords.map(toUserDto);

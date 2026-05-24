@@ -1,7 +1,10 @@
 import type { Project } from "@shared/types/project.js";
 
-type ProjectDbRecord = Omit<Project, "createdAt" | "updatedAt" | "dueDate"> & {
-  _id?: unknown;
+type ProjectDbRecord = Omit<
+  Project,
+  "id" | "createdAt" | "updatedAt" | "dueDate"
+> & {
+  _id: { toString: () => string };
   __v?: number;
   dueDate: string | Date;
   createdAt: string | Date;
@@ -16,7 +19,7 @@ const toIsoString = (value: string | Date | undefined): string => {
 
 export const toProjectDto = (project: ProjectDbRecord): Project => {
   return {
-    id: project.id,
+    id: project._id.toString(),
     title: project.title,
     description: project.description,
     priority: project.priority,

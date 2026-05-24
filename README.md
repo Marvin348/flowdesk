@@ -1,6 +1,8 @@
 # FlowDesk
 
-FlowDesk is an admin dashboard for managing projects, tasks, and team collaboration, with a focus on structured data handling, sorting, and UI-driven workflows.
+FlowDesk is a fullstack project operations dashboard for managing projects, team workload, tasks, comments, and file attachments in one structured workspace.
+
+The app focuses on real-world admin workflows: project overviews, detailed project pages, team assignment, task status tracking, workload insights, attachment handling, and backend-driven DTOs for clean frontend data consumption.
 
 ⚠️ This project is still a work in progress. Many parts are not fully refactored yet, and the overall direction and features may still evolve.
 
@@ -28,9 +30,6 @@ FlowDesk is an admin dashboard for managing projects, tasks, and team collaborat
 ## ⚠️ Current Limitations
 
 - No authentication system yet → user-specific data (e.g. favorites, pinned items) is handled on the frontend only
-- The backend currently still uses legacy string IDs (`id`, `projectId`, `taskId`) from the original mock data structure
-- MongoDB `_id` values are not exposed to the frontend yet
-- FileView is intentionally commented out for now (More functionality will be added here later)
 
 ### Current upload limitation
 

@@ -1,7 +1,7 @@
 import type { Comment } from "@shared/types/comment.js";
 
-type CommentDbRecord = Omit<Comment, "createdAt"> & {
-  _id?: unknown;
+type CommentDbRecord = Omit<Comment, "id" | "createdAt"> & {
+  _id: { toString: () => string };
   __v?: number;
   createdAt: string | Date;
 };
@@ -14,7 +14,7 @@ const toIsoString = (value: string | Date | undefined): string => {
 
 export const toCommentDto = (comment: CommentDbRecord): Comment => {
   return {
-    id: comment.id,
+    id: comment._id.toString(),
     taskId: comment.taskId,
     userId: comment.userId,
     message: comment.message ?? "",

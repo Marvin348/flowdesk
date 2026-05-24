@@ -1,7 +1,10 @@
 import type { Task } from "@shared/types/task.js";
 
-type TaskDbRecord = Omit<Task, "dueDate" | "reminderAt" | "completedAt"> & {
-  _id?: unknown;
+type TaskDbRecord = Omit<
+  Task,
+  "id" | "dueDate" | "reminderAt" | "completedAt"
+> & {
+  _id: { toString: () => string };
   __v?: number;
   dueDate: string | Date;
   reminderAt?: string;
@@ -16,7 +19,7 @@ const toIsoString = (value: string | Date | undefined | null): string => {
 
 export const toTaskDto = (task: TaskDbRecord): Task => {
   return {
-    id: task.id,
+    id: task._id.toString(),
     projectId: task.projectId,
     title: task.title,
     dueDate: toIsoString(task.dueDate),

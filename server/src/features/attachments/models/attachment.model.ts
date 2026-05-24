@@ -3,13 +3,6 @@ import mongoose from "mongoose";
 
 const attachmentSchema = new mongoose.Schema(
   {
-    id: {
-      // id gets removed later
-      type: String,
-      required: true,
-      unique: true,
-    },
-
     projectId: {
       type: String,
       required: true,

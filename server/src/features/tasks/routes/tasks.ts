@@ -1,5 +1,5 @@
 import express from "express";
-import type { Request, Response } from "express";
+import type { Request } from "express";
 import type { CreateTaskInput } from "@shared/types/inputs/createTaskInput.js";
 import { TaskModel } from "@/features/tasks/models/task.model.js";
 import { ProjectModel } from "@/features/projects/models/project.model.js";
@@ -10,7 +10,7 @@ const router = express.Router();
 
 router.get("/", async (req, res) => {
   const tasks = await TaskModel.find().lean();
-  res.json({ data: tasks });
+  res.json({ data: tasks.map(toTaskDto) });
 });
 
 router.post("/", async (req: Request<{}, {}, CreateTaskInput>, res) => {
@@ -30,14 +30,13 @@ router.post("/", async (req: Request<{}, {}, CreateTaskInput>, res) => {
       return res.status(400).json({ error: "Missing required fields" });
     }
 
-    const project = await ProjectModel.findOne({ id: projectId }).lean();
+    const project = await ProjectModel.findById(projectId).lean();
 
     if (!project) {
       return res.status(404).json({ error: "project not found" });
     }
 
     const newTaskRecord = await TaskModel.create({
-      id: crypto.randomUUID(),
       projectId,
       title,
       collaboratorIds,
