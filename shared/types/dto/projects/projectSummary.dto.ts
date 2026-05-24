@@ -1,6 +1,7 @@
-import type { Priority } from "../../priority";
-import type { StatusBase } from "../../StatusBase";
-import type { Progress } from "../common/progress.dto";
+import type { Priority } from "../../priority.js";
+import type { StatusBase } from "../../StatusBase.js";
+import type { Progress } from "../common/progress.dto.js";
+import { UserAvatarDto } from "../common/userPreview.dto.js";
 
 export type ProjectSummariesDto = {
   id: string;
@@ -8,8 +9,10 @@ export type ProjectSummariesDto = {
   priority: Priority;
   projectStatus: StatusBase;
   dueDate: string;
-  teamUserIds: string[];
   createdAt: string;
+
+  invitedUserIds: string[];
+  invitedUsers: UserAvatarDto[]
 
   progress: Progress
 

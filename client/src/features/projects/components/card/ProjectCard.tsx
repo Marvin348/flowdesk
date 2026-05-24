@@ -4,7 +4,6 @@ import { PRIORITY_OPTIONS } from "@/shared/constants/priority-options";
 import { useRef, useState } from "react";
 import { useOnClickOutside } from "@/shared/hooks/useOnClickOutside";
 import { useAppStore } from "@/store";
-import { useUsersByIds } from "@/features/users/hooks/useUsersByIds";
 import type { Badge } from "@/store/slices/projectBadge";
 import type { ProjectListVM } from "@/features/projects/types/projectsList";
 import ProgressBar from "@/features/projects/components/card/ProgressBar";
@@ -31,7 +30,7 @@ const ProjectCard = ({ project }: ProjectCardType) => {
     projectStatus,
     dueDate,
     stats,
-    teamUserIds,
+    invitedUsers,
     progress,
     badge,
   } = project;
@@ -41,8 +40,6 @@ const ProjectCard = ({ project }: ProjectCardType) => {
   const [isErrorDialogOpen, setIsErrorDialogOpen] = useState(false);
 
   useOnClickOutside(menuRef, () => setMenuOpen(false));
-
-  const teamUsers = useUsersByIds(teamUserIds);
 
   const toggleActiveBadge = useAppStore((state) => state.toggleActiveBadge);
 
@@ -100,7 +97,7 @@ const ProjectCard = ({ project }: ProjectCardType) => {
         <div className="flex items-center justify-between gap-4">
           <div>
             <p className="mb-1 text-xs text-muted-foreground">Team</p>
-            <AssigneeAvatars users={teamUsers} />
+            <AssigneeAvatars users={invitedUsers} />
           </div>
 
           <div>

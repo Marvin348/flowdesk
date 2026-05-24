@@ -3,7 +3,7 @@ import type { User } from "@shared/types/user";
 import type { ProjectOptionUserDto } from "@shared/types/dto/projects/projectOptions.dto";
 import type { UserPreviewDto } from "@shared/types/dto/common/userPreview.dto";
 
-// refactor
+// refactor user types
 type AvatarGroupProps = {
   users?: User[] | ProjectOptionUserDto[] | UserPreviewDto[];
 };

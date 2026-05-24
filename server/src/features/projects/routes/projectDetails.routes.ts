@@ -21,7 +21,10 @@ import { toTaskDto } from "@/features/tasks/mappers/task.mapper.js";
 import { toProjectDto } from "@/features/projects/mappers/project.mapper.js";
 import { UserModel } from "@/features/users/models/user.modal.js";
 import { CommentModel } from "@/features/comments/models/comment.model.js";
-import { toUserDto } from "@/features/users/mappers/user.mapper.js";
+import {
+  toUserAvatarDto,
+  toUserDto,
+} from "@/features/users/mappers/user.mapper.js";
 import { toCommentDto } from "@/features/comments/mappers/comment.mapper.js";
 import { PAGE_LIMITS } from "@shared/constants/pagination.js";
 import { parsePagination } from "@/shared/parsers/parsePagination.js";
@@ -49,9 +52,18 @@ router.get("/:id/details", async (req: Request<{ id: string }>, res) => {
 
     const { progressPercent } = getProjectProgress(tasks);
 
+    const invitedUserIdsSet = Array.from(new Set(project.invitedUserIds));
+
+    const usersRecord = await UserModel.find({
+      id: { $in: invitedUserIdsSet },
+    }).lean();
+
+    const invitedUsers = usersRecord.map((u) => toUserAvatarDto(u));
+
     return res.status(200).json({
       data: {
         ...project,
+        invitedUsers,
         progressPercent,
       },
     });

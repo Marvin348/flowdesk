@@ -10,6 +10,7 @@ import { useProjectSearchParams } from "@/features/projects/hooks/searchParams/u
 import ProjectPageHeader from "@/features/projects/components/projectPage/header/ProjectPageHeader";
 import ProjectListSkeleton from "@/features/projects/components/projectPage/skeleton/ProjectListSkeleton";
 import { PAGE_LIMITS, DEFAULT_PAGE } from "@shared/constants/pagination";
+import ErrorMessage from "@/shared/components/ErrorMessage";
 
 const ProjectsPage = () => {
   const [filterDrawerOpen, setFilterDrawerOpen] = useState(false);
@@ -37,9 +38,7 @@ const ProjectsPage = () => {
 
   if (error)
     return (
-      <div className="flex-center text-muted-foreground">
-        Etwas ist schief gelaufen
-      </div>
+      <ErrorMessage message="Etwas ist schief gelaufen" className="flex-center text-muted-foreground"/>
     );
 
   return (
