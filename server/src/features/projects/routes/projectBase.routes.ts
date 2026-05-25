@@ -9,12 +9,12 @@ import type { CreateProjectInput } from "@shared/types/inputs/createProjectInput
 import { ProjectModel } from "@/features/projects/models/project.model.js";
 import { TaskModel } from "@/features/tasks/models/task.model.js";
 import { CommentModel } from "@/features/comments/models/comment.model.js";
-import { AttachmentModel } from "@/features/attchments/models/attachment.model.js";
+import { AttachmentModel } from "@/features/attachments/models/attachment.model.js";
 import { toProjectDto } from "@/features/projects/mappers/project.mapper.js";
 import { toTaskDto } from "@/features/tasks/mappers/task.mapper.js";
 import { toCommentDto } from "@/features/comments/mappers/comment.mapper.js";
-import { toAttachmentDto } from "@/features/attchments/mappers/attachment.mapper.js";
-import { DEFAULT_PAGE, PAGE_LIMITS } from "@shared/constants/pagination.js";
+import { toAttachmentDto } from "@/features/attachments/mappers/attachment.mapper.js";
+import { PAGE_LIMITS } from "@shared/constants/pagination.js";
 import { parsePagination } from "@/shared/parsers/parsePagination.js";
 import { UserModel } from "@/features/users/models/user.modal.js";
 import { toUserDto } from "@/features/users/mappers/user.mapper.js";
@@ -24,7 +24,7 @@ const router = express.Router();
 router.get("/", async (req, res) => {
   const projects = await ProjectModel.find();
 
-  return res.status(200).json({ data: projects });
+  return res.status(200).json({ data: projects.map(toProjectDto) });
 });
 
 router.get(
@@ -103,7 +103,6 @@ router.post("/", async (req: Request<{}, {}, CreateProjectInput>, res) => {
     }
 
     const newProject = await ProjectModel.create({
-      id: crypto.randomUUID(),
       title,
       priority,
       projectStatus,
@@ -127,7 +126,7 @@ router.get("/:id", async (req: Request<{ id: string }>, res) => {
     return res.status(400).json({ error: "Invalid id" });
   }
 
-  const project = await ProjectModel.findOne({ id });
+  const project = await ProjectModel.findById(id);
 
   if (!project) {
     return res.status(404).json({ error: "project not found" });
@@ -144,14 +143,14 @@ router.delete("/:id", async (req: Request<{ id: string }>, res) => {
       return res.status(400).json({ error: "projectId invalid input" });
     }
 
-    const project = await ProjectModel.findOne({ id: projectId });
+    const projectRecord = await ProjectModel.findById(projectId).lean();
 
-    if (!project) {
+    if (!projectRecord) {
       return res.status(404).json({ error: "project not found" });
     }
 
     const tasksToDelete = await TaskModel.find({ projectId });
-    const taskIdsToDelete = tasksToDelete.map((t) => t.id);
+    const taskIdsToDelete = tasksToDelete.map((t) => t._id.toString());
 
     await CommentModel.deleteMany({
       taskId: { $in: taskIdsToDelete },
@@ -164,7 +163,7 @@ router.delete("/:id", async (req: Request<{ id: string }>, res) => {
     await TaskModel.deleteMany({ projectId });
 
     const deletedProject = await ProjectModel.findOneAndDelete({
-      id: projectId,
+      _id: projectId,
     });
 
     return res.status(201).json({ data: deletedProject });

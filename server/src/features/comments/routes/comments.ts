@@ -1,10 +1,11 @@
 import express from "express";
-import type { Request, Response } from "express";
+import type { Request } from "express";
 import type { CreateCommentInput } from "@shared/types/inputs/createCommentInput.js";
 import { CommentModel } from "@/features/comments/models/comment.model.js";
 import { TaskModel } from "@/features/tasks/models/task.model.js";
 import { toCommentDto } from "@/features/comments/mappers/comment.mapper.js";
 import { touchProject } from "@/features/projects/services/project.service.js";
+import { UserModel } from "@/features/users/models/user.modal.js";
 
 const router = express.Router();
 
@@ -22,7 +23,7 @@ router.post("/", async (req: Request<{}, {}, CreateCommentInput>, res) => {
       return res.status(400).json({ error: "Missing required fields" });
     }
 
-    const task = await TaskModel.findOne({ id: taskId }).lean();
+    const task = await TaskModel.findById(taskId).lean();
 
     if (!task) {
       return res.status(404).json({ error: "Task not found" });
@@ -30,7 +31,7 @@ router.post("/", async (req: Request<{}, {}, CreateCommentInput>, res) => {
 
     if (parentCommentId) {
       const parentComment = await CommentModel.findOne({
-        id: parentCommentId,
+        _id: parentCommentId,
       }).lean();
 
       if (!parentComment) {
@@ -44,10 +45,21 @@ router.post("/", async (req: Request<{}, {}, CreateCommentInput>, res) => {
       }
     }
 
+    const devUser = await UserModel.findOne({
+      email: "daniel.weber@example.com",
+    }).lean();
+
+    if (!devUser) {
+      return res.status(500).json({ error: "Dev user not found" });
+    }
+
+    const userId = devUser._id.toString();
+
     const newCommentRecord = await CommentModel.create({
-      id: crypto.randomUUID(),
       taskId,
-      userId: "u3", // test, remove later
+
+      // TODO: Replace with authenticated user id once auth is implemented.
+      userId: userId,
       message,
       parentCommentId,
     });

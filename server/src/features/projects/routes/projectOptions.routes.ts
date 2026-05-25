@@ -36,7 +36,7 @@ router.get(
 
       if (search) {
         searchQuery.title = { $regex: search, $options: "i" };
-        searchQuery.id = { $nin: [...recentIdSet] };
+        searchQuery._id = { $nin: [...recentIdSet] };
       }
 
       const searchProjectRecords =
@@ -55,7 +55,7 @@ router.get(
       }
 
       const userRecords = await UserModel.find({
-        id: { $in: [...allUserIds] },
+        _id: { $in: [...allUserIds] },
       }).lean();
 
       const usersList = userRecords.map(toUserDto);

@@ -1,12 +1,5 @@
 import type { Project } from "@shared/types/project.js";
-
-type ProjectDbRecord = Omit<Project, "createdAt" | "updatedAt" | "dueDate"> & {
-  _id?: unknown;
-  __v?: number;
-  dueDate: string | Date;
-  createdAt: string | Date;
-  updatedAt?: string | Date;
-};
+import type { ProjectDocument } from "@/features/projects/types/project.document.js";
 
 const toIsoString = (value: string | Date | undefined): string => {
   if (!value) return "";
@@ -14,9 +7,9 @@ const toIsoString = (value: string | Date | undefined): string => {
   return value instanceof Date ? value.toISOString() : value;
 };
 
-export const toProjectDto = (project: ProjectDbRecord): Project => {
+export const toProjectDto = (project: ProjectDocument): Project => {
   return {
-    id: project.id,
+    id: project._id.toString(),
     title: project.title,
     description: project.description,
     priority: project.priority,
@@ -28,6 +21,6 @@ export const toProjectDto = (project: ProjectDbRecord): Project => {
   };
 };
 
-export const toProjectDtos = (projects: ProjectDbRecord[]): Project[] => {
+export const toProjectDtos = (projects: ProjectDocument[]): Project[] => {
   return projects.map(toProjectDto);
 };

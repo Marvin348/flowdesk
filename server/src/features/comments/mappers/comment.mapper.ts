@@ -1,10 +1,5 @@
 import type { Comment } from "@shared/types/comment.js";
-
-type CommentDbRecord = Omit<Comment, "createdAt"> & {
-  _id?: unknown;
-  __v?: number;
-  createdAt: string | Date;
-};
+import type { CommentDocument } from "@/features/comments/types/comment.document.js";
 
 const toIsoString = (value: string | Date | undefined): string => {
   if (!value) return "";
@@ -12,9 +7,9 @@ const toIsoString = (value: string | Date | undefined): string => {
   return value instanceof Date ? value.toISOString() : value;
 };
 
-export const toCommentDto = (comment: CommentDbRecord): Comment => {
+export const toCommentDto = (comment: CommentDocument): Comment => {
   return {
-    id: comment.id,
+    id: comment._id.toString(),
     taskId: comment.taskId,
     userId: comment.userId,
     message: comment.message ?? "",
@@ -23,6 +18,6 @@ export const toCommentDto = (comment: CommentDbRecord): Comment => {
   };
 };
 
-export const toCommentDtos = (comments: CommentDbRecord[]): Comment[] => {
+export const toCommentDtos = (comments: CommentDocument[]): Comment[] => {
   return comments.map(toCommentDto);
 };

@@ -1,14 +1,8 @@
-import { Project } from "@shared/types/project.js";
 import mongoose from "mongoose";
+import { ProjectDocument } from "@/features/projects/types/project.document.js";
 
 const projectSchema = new mongoose.Schema(
   {
-    id: { // id gets removed later
-      type: String,
-      required: true,
-      unique: true,
-    },
-
     title: {
       type: String,
       require: true,
@@ -45,4 +39,4 @@ const projectSchema = new mongoose.Schema(
   },
 );
 
-export const ProjectModel = mongoose.model<Project>("Project", projectSchema);
+export const ProjectModel = mongoose.model<ProjectDocument>("Project", projectSchema);

@@ -3,14 +3,10 @@ import {
   UserAvatarDto,
   UserPreviewDto,
 } from "@shared/types/dto/common/userPreview.dto.js";
+import type { UserDocument } from "@/features/users/types/user.document.js";
 
-type UserDbRecord = User & {
-  _id?: unknown;
-  __v?: number;
-};
-
-export const toUserDto = (user: UserDbRecord): User => ({
-  id: user.id,
+export const toUserDto = (user: UserDocument): User => ({
+  id: user._id.toString(),
   name: user.name,
   email: user.email,
   jobTitle: user.jobTitle,
