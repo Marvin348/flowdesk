@@ -1,15 +1,5 @@
 import type { Task } from "@shared/types/task.js";
-
-type TaskDbRecord = Omit<
-  Task,
-  "id" | "dueDate" | "reminderAt" | "completedAt"
-> & {
-  _id: { toString: () => string };
-  __v?: number;
-  dueDate: string | Date;
-  reminderAt?: string;
-  completedAt?: string | Date;
-};
+import type { TaskDocument } from "@/features/tasks/types/task.document.js";
 
 const toIsoString = (value: string | Date | undefined | null): string => {
   if (!value) return "";
@@ -17,7 +7,7 @@ const toIsoString = (value: string | Date | undefined | null): string => {
   return value instanceof Date ? value.toISOString() : value;
 };
 
-export const toTaskDto = (task: TaskDbRecord): Task => {
+export const toTaskDto = (task: TaskDocument): Task => {
   return {
     id: task._id.toString(),
     projectId: task.projectId,
@@ -33,6 +23,6 @@ export const toTaskDto = (task: TaskDbRecord): Task => {
   };
 };
 
-export const toTaskDtos = (tasks: TaskDbRecord[]): Task[] => {
+export const toTaskDtos = (tasks: TaskDocument[]): Task[] => {
   return tasks.map(toTaskDto);
 };

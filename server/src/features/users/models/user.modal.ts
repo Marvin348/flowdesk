@@ -1,5 +1,5 @@
-import type { User } from "@shared/types/user.js";
 import mongoose from "mongoose";
+import type { UserDocument } from "@/features/users/types/user.document.js";
 
 const userSchema = new mongoose.Schema(
   {
@@ -44,4 +44,4 @@ const userSchema = new mongoose.Schema(
   },
 );
 
-export const UserModel = mongoose.model<User>("User", userSchema);
+export const UserModel = mongoose.model<UserDocument>("User", userSchema);

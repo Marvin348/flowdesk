@@ -1,10 +1,5 @@
 import type { Attachment } from "@shared/types/attachment.js";
-
-type AttachmentDbRecord = Omit<Attachment, "id" | "createdAt"> & {
-  _id: { toString: () => string };
-  __v?: number;
-  createdAt: string | Date;
-};
+import type { AttachmentDocument } from "@/features/attachments/types/attachment.document.js";
 
 const toIsoString = (value: string | Date | undefined): string => {
   if (!value) return "";
@@ -12,7 +7,7 @@ const toIsoString = (value: string | Date | undefined): string => {
   return value instanceof Date ? value.toISOString() : value;
 };
 
-export const toAttachmentDto = (attachment: AttachmentDbRecord): Attachment => {
+export const toAttachmentDto = (attachment: AttachmentDocument): Attachment => {
   return {
     id: attachment._id.toString(),
     projectId: attachment.projectId,
@@ -27,7 +22,7 @@ export const toAttachmentDto = (attachment: AttachmentDbRecord): Attachment => {
 };
 
 export const toAttachmentDtos = (
-  attachments: AttachmentDbRecord[],
+  attachments: AttachmentDocument[],
 ): Attachment[] => {
   return attachments.map(toAttachmentDto);
 };

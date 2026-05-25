@@ -1,5 +1,5 @@
-import { Task } from "@shared/types/task.js";
 import mongoose from "mongoose";
+import { TaskDocument } from "@/features/tasks/types/task.document.js";
 
 const taskSchema = new mongoose.Schema(
   {
@@ -57,4 +57,4 @@ const taskSchema = new mongoose.Schema(
   },
 );
 
-export const TaskModel = mongoose.model<Task>("Task", taskSchema);
+export const TaskModel = mongoose.model<TaskDocument>("Task", taskSchema);

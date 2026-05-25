@@ -1,5 +1,5 @@
-import { Project } from "@shared/types/project.js";
 import mongoose from "mongoose";
+import { ProjectDocument } from "@/features/projects/types/project.document.js";
 
 const projectSchema = new mongoose.Schema(
   {
@@ -39,4 +39,4 @@ const projectSchema = new mongoose.Schema(
   },
 );
 
-export const ProjectModel = mongoose.model<Project>("Project", projectSchema);
+export const ProjectModel = mongoose.model<ProjectDocument>("Project", projectSchema);
