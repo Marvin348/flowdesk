@@ -23,16 +23,11 @@ const DashboardPage = () => {
     performanceHighlights,
   } = data;
 
-  console.log("DASHBOARD", data);
-
   const statCards = mapDashboardStatCards(overviewStats);
-
   const taskStatusItems = mapTaskStatusDistribution(taskStatusDistribution);
   
   const taskPriorityItems = mapTaskPriorityItems(taskPriorityDistribution);
-  console.log("mapTaskPriorityItems", taskPriorityItems)
 
-  // md:grid-cols-2
   return (
     <div className="grid grid-cols-1 xl:grid-cols-6 gap-6">
       <div className="col-span-1 xl:col-span-4 grid gap-6">

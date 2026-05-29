@@ -1,40 +1,20 @@
 import { calcPercent } from "@/shared/utils/calcPercent.js";
-import { Project } from "@shared/types/project.js";
-import { Task } from "@shared/types/task.js";
 import type { DashboardOverviewStatsDto } from "@shared/types/dto/dashboard/dashboardOverviewStats.dto.js";
 
-export const mapDashboardOverviewStats = (
-  projects: Project[],
-  tasks: Task[],
-): DashboardOverviewStatsDto => {
-  const stats = tasks.reduce(
-    (acc, t) => {
-      if (t.taskStatus === "done") {
-        acc.completedCount += 1;
-      }
+type MapDashboardOverviewStatsParams = {
+  activeProjects: number;
+  totalTasks: number;
+  doneTasks: number;
+  openTasks: number;
+};
 
-      acc.byStatusCounts[t.taskStatus] += 1;
-
-      return acc;
-    },
-    {
-      completedCount: 0,
-      byStatusCounts: {
-        pending: 0,
-        in_progress: 0,
-        done: 0,
-      },
-    },
-  );
-
-  const totalTasks = tasks.length;
-  const activeProjects = projects.filter(
-    (pro) => pro.projectStatus !== "done",
-  ).length;
-  const openTasks =
-    stats.byStatusCounts.pending + stats.byStatusCounts.in_progress;
-
-  const completionRate = calcPercent(stats.byStatusCounts.done, totalTasks);
+export const mapDashboardOverviewStats = ({
+  activeProjects,
+  totalTasks,
+  doneTasks,
+  openTasks,
+}: MapDashboardOverviewStatsParams): DashboardOverviewStatsDto => {
+  const completionRate = calcPercent(doneTasks, totalTasks);
 
   return {
     activeProjects,

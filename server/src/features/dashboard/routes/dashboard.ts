@@ -1,5 +1,5 @@
 import express from "express";
-import { getDashboardOverview } from "@/features/dashboard/services/dashboard.service.js";
+import { getDashboardOverview } from "../services/dashboard.service.js";
 
 const router = express.Router();
 

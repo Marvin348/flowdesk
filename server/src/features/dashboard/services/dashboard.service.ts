@@ -1,22 +1,29 @@
-import { toProjectDto } from "@/features/projects/mappers/project.mapper.js";
-import { ProjectModel } from "@/features/projects/models/project.model.js";
-import { toTaskDto } from "@/features/tasks/mappers/task.mapper.js";
-import { TaskModel } from "@/features/tasks/models/task.model.js";
-import { toUserDto } from "@/features/users/mappers/user.mapper.js";
-import { UserModel } from "@/features/users/models/user.modal.js";
-import { toDashboardOverviewDto } from "@/features/dashboard/mappers/toDashboardOverviewDto.js";
+import { getOverviewStats } from "@/features/dashboard/services/dashboardOverviewStats.service.js";
+import { getPerformanceHighlights } from "@/features/dashboard/services/dashboardPerformanceHighlights.service.js";
+import { getTaskPriorityDistribution } from "@/features/dashboard/services/dashboardTaskPriorityDistribution.service.js";
+import { getTaskStatusDistribution } from "@/features/dashboard/services/dashboardTaskStatusDistribution.service.js";
+import { getUpcomingTasks } from "@/features/dashboard/services/dashboardUpcomingTasks.service.js";
 
 export const getDashboardOverview = async () => {
-  // gets refactored later
-  const [projectRecords, taskRecords, userRecords] = await Promise.all([
-    ProjectModel.find().lean(),
-    TaskModel.find().lean(),
-    UserModel.find().lean(),
+  const [
+    overviewStats,
+    taskStatusDistribution,
+    taskPriorityDistribution,
+    upcomingTasks,
+    performanceHighlights,
+  ] = await Promise.all([
+    getOverviewStats(),
+    getTaskStatusDistribution(),
+    getTaskPriorityDistribution(),
+    getUpcomingTasks(),
+    getPerformanceHighlights(),
   ]);
 
-  const projects = projectRecords.map(toProjectDto);
-  const tasks = taskRecords.map(toTaskDto);
-  const users = userRecords.map(toUserDto);
-
-  return toDashboardOverviewDto({ projects, tasks, users });
+  return {
+    overviewStats,
+    taskStatusDistribution,
+    taskPriorityDistribution,
+    upcomingTasks,
+    performanceHighlights,
+  };
 };
