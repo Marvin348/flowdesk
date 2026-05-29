@@ -1,9 +1,9 @@
-import type { UpcomingTask } from "@/features/dashboard/utils/getUpcomingTasks";
 import UpcomingTasksCard from "@/features/dashboard/components/upcomingTasks/UpcomingTasksCard";
 import { Link } from "react-router";
+import type { UpcomingTaskDto } from "@shared/types/dto/dashboard/upcomingTask.dto";
 
 type UpcomingTasksProps = {
-  upcomingTasks: UpcomingTask[];
+  upcomingTasks: UpcomingTaskDto[];
 };
 
 const TABLE_HEADER = [

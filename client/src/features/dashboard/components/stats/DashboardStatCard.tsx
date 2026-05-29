@@ -12,7 +12,7 @@ const ICON_LOOKUP = {
   completionRate: { icon: TrendingUp, color: "#90EE90" },
 };
 
-import type { StatCardItem } from "@/features/dashboard/utils/mapDashboardStatCards";
+import type { StatCardItem } from "@/features/dashboard/mappers/mapDashboardStatCards";
 
 const DashboardStatCard = ({ stat }: { stat: StatCardItem }) => {
   const Icon = ICON_LOOKUP[stat.iconKey].icon;

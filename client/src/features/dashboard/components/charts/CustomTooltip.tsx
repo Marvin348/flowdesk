@@ -1,4 +1,5 @@
-import type { TaskPriorityItem } from "@/features/dashboard/utils/getTaskPriorityItems";
+import type { TaskPriorityItem } from "@/features/dashboard/mappers/mapTaskPriorityItems";
+
 
 type CustomTooltipProps = {
   active?: boolean;
