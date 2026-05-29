@@ -1,20 +1,12 @@
-import type { Priority } from "@shared/types/priority";
-import type { Project } from "@shared/types/project";
-import type { Task } from "@shared/types/task";
-import { getArrayLookup } from "@/shared/utils/getArrayLookup";
+import type { Project } from "@shared/types/project.js";
+import type { Task } from "@shared/types/task.js";
+import type { UpcomingTaskDto } from "@shared/types/dto/dashboard/upcomingTask.dto.js";
 
-export type UpcomingTask = {
-  taskId: string;
-  taskTitle: string;
-  projectTitle?: string;
-  priority: Priority;
-  dueDate: string;
-};
-
-export const getUpcomingTasks = (
+// gets refactored, sorted by db
+export const mapUpcomingTasks = (
   projects: Project[],
   tasks: Task[],
-): UpcomingTask[] => {
+): UpcomingTaskDto[] => {
   const openTasks = tasks.filter((t) => t.taskStatus !== "done");
 
   const tasksSortedByDueDate = openTasks
@@ -23,7 +15,7 @@ export const getUpcomingTasks = (
     )
     .slice(0, 5);
 
-  const projectsById = getArrayLookup(projects);
+  const projectsById = new Map(projects.map((p) => [p.id, p]));
 
   const upcomingTasks = tasksSortedByDueDate.map((t) => {
     const project = projectsById.get(t.projectId);

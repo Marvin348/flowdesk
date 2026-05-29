@@ -1,5 +1,5 @@
 import PriorityPieChart from "@/features/dashboard/components/charts/PriorityPieChart";
-import type { TaskPriorityItem } from "@/features/dashboard/utils/getTaskPriorityItems";
+import type { TaskPriorityItem } from "@/features/dashboard/mappers/mapTaskPriorityItems";
 import { EllipsisVertical } from "lucide-react";
 
 type PriorityChartSectionProps = {

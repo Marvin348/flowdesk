@@ -1,13 +1,10 @@
-import type { Task } from "@shared/types/task";
-import { calcPercent } from "@/shared/utils/calcPercent";
+import type { Task } from "@shared/types/task.js";
+import { calcPercent } from "@shared/utils/calcPercent.js";
+import type { TaskStatusDistributionDto } from "@shared/types/dto/dashboard/taskStatusDistribution.dto.js";
 
-export type TaskStatusDistribution = {
-  pending: number;
-  in_progress: number;
-  done: number;
-};
-
-export const getTaskStatusDistribution = (tasks: Task[]) => {
+export const mapTaskStatusDistribution = (
+  tasks: Task[],
+): TaskStatusDistributionDto => {
   const stats = tasks.reduce(
     (acc, task) => {
       acc.byStatusCounts[task.taskStatus] += 1;

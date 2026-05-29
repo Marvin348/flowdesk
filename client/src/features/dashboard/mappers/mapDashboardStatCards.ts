@@ -1,4 +1,4 @@
-import type { DashboardOverviewStats } from "@/features/dashboard/utils/getDashboardOverviewStats";
+import type { DashboardOverviewStatsDto } from "@shared/types/dto/dashboard/dashboardOverviewStats.dto";
 
 export type StatCardItem = {
   id: string;
@@ -8,7 +8,7 @@ export type StatCardItem = {
 };
 
 export const mapDashboardStatCards = (
-  stats: DashboardOverviewStats,
+  stats: DashboardOverviewStatsDto,
 ): StatCardItem[] => {
   return [
     {

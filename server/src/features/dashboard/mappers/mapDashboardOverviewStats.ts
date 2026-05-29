@@ -1,18 +1,12 @@
-import type { Project } from "@shared/types/project";
-import type { Task } from "@shared/types/task";
-import { calcPercent } from "@/shared/utils/calcPercent";
+import { calcPercent } from "@/shared/utils/calcPercent.js";
+import { Project } from "@shared/types/project.js";
+import { Task } from "@shared/types/task.js";
+import type { DashboardOverviewStatsDto } from "@shared/types/dto/dashboard/dashboardOverviewStats.dto.js";
 
-export type DashboardOverviewStats = {
-  activeProjects: number;
-  totalTasks: number;
-  openTasks: number;
-  completionRate: number;
-};
-
-export const getDashboardOverviewStats = (
+export const mapDashboardOverviewStats = (
   projects: Project[],
   tasks: Task[],
-) => {
+): DashboardOverviewStatsDto => {
   const stats = tasks.reduce(
     (acc, t) => {
       if (t.taskStatus === "done") {

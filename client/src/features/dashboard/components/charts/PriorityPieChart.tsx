@@ -1,9 +1,8 @@
-import type { TaskPriorityItem } from "@/features/dashboard/utils/getTaskPriorityItems";
+import type { TaskPriorityItem } from "@/features/dashboard/mappers/mapTaskPriorityItems";
 import CustomLegend from "@/features/dashboard/components/charts/CustomLegend";
 import {
   Pie,
   PieChart,
-  Sector,
   ResponsiveContainer,
   Tooltip,
   Cell,

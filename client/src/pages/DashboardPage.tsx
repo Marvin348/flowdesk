@@ -1,44 +1,36 @@
-import { useProjectDomainAll } from "@/domain/projects/useProjectDomainAll";
-import { useProjects } from "@/features/projects/hooks/useProjects";
-import { getDashboardOverviewStats } from "@/features/dashboard/utils/getDashboardOverviewStats";
 import DashboardStats from "@/features/dashboard/components/stats/DashboardStats";
-import { mapDashboardStatCards } from "@/features/dashboard/utils/mapDashboardStatCards";
-import { getTaskStatusDistribution } from "@/features/dashboard/utils/getTaskStatusDistribution";
+import { mapDashboardStatCards } from "@/features/dashboard/mappers/mapDashboardStatCards";
 import TaskStatusDistribution from "@/features/dashboard/components/statusDistribution/TaskStatusDistribution";
-import { mapTaskStatusDistributionToItems } from "@/features/dashboard/utils/mapTaskStatusDistributionToItems";
+import { mapTaskStatusDistribution } from "@/features/dashboard/mappers/mapTaskStatusDistribution";
 import PriorityChartSection from "@/features/dashboard/components/charts/PriorityChartSection";
-import { getTaskPriorityItems } from "@/features/dashboard/utils/getTaskPriorityItems";
 import UpcomingTasks from "@/features/dashboard/components/upcomingTasks/UpcomingTasks";
-import { getUpcomingTasks } from "@/features/dashboard/utils/getUpcomingTasks";
-import { getUserPerformance } from "@/features/users/utils/getUserPerformance";
 import PerformanceHighlights from "@/features/dashboard/components/performanceHighlights/PerformanceHighlights";
-import { getPerformanceHighlights } from "@/features/dashboard/utils/getPerformanceHighlights";
+import { mapTaskPriorityItems } from "@/features/dashboard/mappers/mapTaskPriorityItems";
 import DashboardSkeleton from "@/features/dashboard/components/skeleton/DashboardSkeleton";
+import { useDashboardOverview } from "@/features/dashboard/hooks/useDashboardOverview";
 
 const DashboardPage = () => {
-  // refactor later
-  const {
-    data: { users, comments, tasks, attachments },
-  } = useProjectDomainAll();
-
-  const { data: projects = [], isLoading, error } = useProjects();
-
-  const dashboardOverviewStats = getDashboardOverviewStats(projects, tasks);
-  const statCards = mapDashboardStatCards(dashboardOverviewStats);
-
-  const taskStatusDistribution = getTaskStatusDistribution(tasks);
-  const taskStatusItems = mapTaskStatusDistributionToItems(
-    taskStatusDistribution,
-  );
+  const { data, isLoading, error } = useDashboardOverview();
 
   if (isLoading) return <DashboardSkeleton />;
+  if (error || !data) return <div>Etwas ist schief gelaufen</div>;
 
-  const taskPriorityItems = getTaskPriorityItems(tasks);
+  const {
+    overviewStats,
+    taskStatusDistribution,
+    taskPriorityDistribution,
+    upcomingTasks,
+    performanceHighlights,
+  } = data;
 
-  const upcomingTasks = getUpcomingTasks(projects, tasks);
+  console.log("DASHBOARD", data);
 
-  const performance = getUserPerformance(users, tasks);
-  const performanceHighlights = getPerformanceHighlights(performance);
+  const statCards = mapDashboardStatCards(overviewStats);
+
+  const taskStatusItems = mapTaskStatusDistribution(taskStatusDistribution);
+  
+  const taskPriorityItems = mapTaskPriorityItems(taskPriorityDistribution);
+  console.log("mapTaskPriorityItems", taskPriorityItems)
 
   // md:grid-cols-2
   return (

@@ -1,4 +1,4 @@
-import type { StatCardItem } from "@/features/dashboard/utils/mapDashboardStatCards";
+import type { StatCardItem } from "@/features/dashboard/mappers/mapDashboardStatCards";
 import DashboardStatCard from "./DashboardStatCard";
 
 const DashboardStats = ({ stats }: { stats: StatCardItem[] }) => {

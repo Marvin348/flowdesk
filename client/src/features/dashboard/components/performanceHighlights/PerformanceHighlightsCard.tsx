@@ -1,15 +1,13 @@
-import type {
-  PerformanceHighlight,
-  PerformanceType,
-} from "@/features/dashboard/utils/getPerformanceHighlights";
+import type { PerformanceType } from "@/features/dashboard/utils/getPerformanceHighlights";
 import Avatar from "@/shared/components/ui/avatar/Avatar";
 import { PROGRESS_STATUS } from "@/shared/constants/progress-status";
 import { getStatusFromProgress } from "@shared/utils/getStatusFromProgress";
+import type { PerformanceHighlightDto } from "@shared/types/dto/dashboard/performanceHighlights.dto";
 
 const PerformanceHighlightsCard = ({
   highlight,
 }: {
-  highlight: PerformanceHighlight;
+  highlight: PerformanceHighlightDto;
 }) => {
   const {
     type,
@@ -19,7 +17,7 @@ const PerformanceHighlightsCard = ({
 
   const getHighlightInformation = (
     type: PerformanceType,
-    stats: PerformanceHighlight["stats"],
+    stats: PerformanceHighlightDto["stats"],
   ) => {
     switch (type) {
       case "overloaded":

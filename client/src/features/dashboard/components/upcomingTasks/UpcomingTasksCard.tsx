@@ -1,8 +1,9 @@
-import type { UpcomingTask } from "@/features/dashboard/utils/getUpcomingTasks";
 import { PRIORITY_OPTIONS } from "@/shared/constants/priority-options";
 import { formatDate } from "@/shared/utils/formatDate";
+import type { UpcomingTaskDto } from "@shared/types/dto/dashboard/upcomingTask.dto";
 
-const UpcomingTasksCard = ({ item }: { item: UpcomingTask }) => {
+
+const UpcomingTasksCard = ({ item }: { item: UpcomingTaskDto }) => {
   const { taskTitle, projectTitle, priority, dueDate } = item;
 
   const priorityLabel = PRIORITY_OPTIONS[priority].label;

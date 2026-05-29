@@ -1,9 +1,9 @@
-import type { PerformanceHighlight } from "@/features/dashboard/utils/getPerformanceHighlights";
 import { EllipsisVertical } from "lucide-react";
 import PerformanceHighlightsCard from "@/features/dashboard/components/performanceHighlights/PerformanceHighlightsCard";
+import type { PerformanceHighlightDto } from "@shared/types/dto/dashboard/performanceHighlights.dto";
 
 type PerformanceHighlightsProps = {
-  highlights: PerformanceHighlight[];
+  highlights: PerformanceHighlightDto[];
 };
 
 const PerformanceHighlights = ({ highlights }: PerformanceHighlightsProps) => {

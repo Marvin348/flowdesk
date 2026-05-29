@@ -1,4 +1,4 @@
-import type { TaskStatusDistributionItem } from "@/features/dashboard/utils/mapTaskStatusDistributionToItems";
+import type { TaskStatusDistributionItem } from "@/features/dashboard/mappers/mapTaskStatusDistribution";
 
 const TaskStatusDistributionCard = ({
   item,
