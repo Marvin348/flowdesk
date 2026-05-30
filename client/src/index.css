@@ -18,7 +18,7 @@ body {
     @apply text-error text-xs;
   }
   .form-input {
-    @apply w-full border rounded-md h-9 p-3 shadow-xs;
+    @apply w-full border rounded-md h-9  shadow-xs;
   }
   .flex-center {
     @apply flex items-center justify-center h-full;
@@ -39,6 +39,14 @@ body {
 .custom-scrollbar::-webkit-scrollbar-track {
   background: #f9fafb;
   border-radius: 9999px;
+}
+.public-auth-bg {
+  background: linear-gradient(
+    115deg,
+    var(--background) 0%,
+    var(--background) 30%,
+    color-mix(in oklch, var(--accent) 20%, transparent) 100%
+  );
 }
 
 @theme inline {
