@@ -15,6 +15,8 @@ import { Button } from "@/shared/components/ui/button";
 import { useLogin } from "@/features/auth/hooks/useLogin";
 import { useNavigate } from "react-router";
 import { Spinner } from "@/shared/components/ui/spinner";
+import ErrorMessage from "@/shared/components/ErrorMessage";
+import { DEMO_ACCOUNT } from "@/features/auth/constants/demoAccount";
 
 const loginSchema = z.object({
   email: z.string().min(1, "Email eingeben").email("Gültige Email eingeben"),
@@ -22,11 +24,6 @@ const loginSchema = z.object({
 });
 
 type LoginFields = z.infer<typeof loginSchema>;
-
-const demoAccount: LoginFields = {
-  email: "max.bauer@example.com",
-  password: "Demo1234!",
-};
 
 const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -45,26 +42,22 @@ const LoginPage = () => {
     },
   });
 
-  // Demo1234!
-  const { mutate, isPending } = useLogin();
+  const { mutate, isPending, error } = useLogin();
 
   const onSubmit = (data: LoginFields) => {
-
     mutate(data, {
       onSuccess: () => {
         navigate("/dashboard");
       },
     });
-
-    console.info("login submitted", { email: data.email });
   };
 
   const fillDemoAccount = () => {
-    setValue("email", demoAccount.email, {
+    setValue("email", DEMO_ACCOUNT.email, {
       shouldDirty: true,
       shouldValidate: true,
     });
-    setValue("password", demoAccount.password, {
+    setValue("password", DEMO_ACCOUNT.password, {
       shouldDirty: true,
       shouldValidate: true,
     });
@@ -123,7 +116,7 @@ const LoginPage = () => {
                 />
               </div>
               {errors.email && (
-                <p className="mt-1 error-text">{errors.email.message}</p>
+                <ErrorMessage message={errors.email.message} className="mt-1" />
               )}
             </div>
 
@@ -157,7 +150,10 @@ const LoginPage = () => {
                 </button>
               </div>
               {errors.password && (
-                <p className="mt-1 error-text">{errors.password.message}</p>
+                <ErrorMessage
+                  message={errors.password.message}
+                  className="mt-1"
+                />
               )}
             </div>
 
@@ -165,7 +161,7 @@ const LoginPage = () => {
               type="submit"
               size="lg"
               className="w-full"
-              disabled={isSubmitting}
+              disabled={isSubmitting || isPending}
             >
               {!isPending ? (
                 <span className="flex items-center gap-2">
@@ -176,6 +172,9 @@ const LoginPage = () => {
                 <Spinner />
               )}
             </Button>
+            {error && (
+              <ErrorMessage message="E-Mail oder Passwort ist falsch!" />
+            )}
 
             <button
               type="button"

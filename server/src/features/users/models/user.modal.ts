@@ -20,12 +20,13 @@ const userSchema = new mongoose.Schema(
 
     avatarKey: {
       type: String,
-      required: true,
+      default: "default",
     },
 
     role: {
       type: String,
       enum: ["admin", "member", "manager"],
+      default: "member",
       required: true,
     },
 

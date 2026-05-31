@@ -12,6 +12,10 @@ import { useForm } from "react-hook-form";
 import { Link } from "react-router";
 import { z } from "zod";
 import { Button } from "@/shared/components/ui/button";
+import { useRegister } from "@/features/auth/hooks/useRegister";
+import { useNavigate } from "react-router";
+import { Spinner } from "@/shared/components/ui/spinner";
+import ErrorMessage from "@/shared/components/ErrorMessage";
 
 const registerSchema = z.object({
   name: z.string().min(2, "Name eingeben"),
@@ -23,6 +27,7 @@ type RegisterFields = z.infer<typeof registerSchema>;
 
 const RegisterPage = () => {
   const [showPassword, setShowPassword] = useState(false);
+  const navigate = useNavigate();
 
   const {
     register,
@@ -37,10 +42,13 @@ const RegisterPage = () => {
     },
   });
 
+  const { mutate, isPending, error } = useRegister();
+
   const onSubmit = (data: RegisterFields) => {
-    console.info("register submitted", {
-      name: data.name,
-      email: data.email,
+    mutate(data, {
+      onSuccess: () => {
+        navigate("/dashboard");
+      },
     });
   };
 
@@ -108,7 +116,7 @@ const RegisterPage = () => {
                 />
               </div>
               {errors.name && (
-                <p className="mt-1 error-text">{errors.name.message}</p>
+                <ErrorMessage message={errors.name.message} className="mt-1" />
               )}
             </div>
 
@@ -128,7 +136,7 @@ const RegisterPage = () => {
                 />
               </div>
               {errors.email && (
-                <p className="mt-1 error-text">{errors.email.message}</p>
+                <ErrorMessage message={errors.email.message} className="mt-1" />
               )}
             </div>
 
@@ -162,7 +170,10 @@ const RegisterPage = () => {
                 </button>
               </div>
               {errors.password && (
-                <p className="mt-1 error-text">{errors.password.message}</p>
+                <ErrorMessage
+                  message={errors.password.message}
+                  className="mt-1"
+                />
               )}
             </div>
 
@@ -170,11 +181,19 @@ const RegisterPage = () => {
               type="submit"
               size="lg"
               className="w-full"
-              disabled={isSubmitting}
+              disabled={isSubmitting || isPending}
             >
-              Registrieren
-              <ArrowRight className="size-4" />
+              {isPending ? (
+                <Spinner />
+              ) : (
+                <span className="flex items-center gap-2">
+                  Registrieren <ArrowRight className="size-4" />
+                </span>
+              )}
             </Button>
+            {error && (
+              <ErrorMessage message="Diese E-Mail ist bereits registriert" />
+            )}
           </form>
 
           <p className="mt-6 text-center text-sm text-muted-foreground">
