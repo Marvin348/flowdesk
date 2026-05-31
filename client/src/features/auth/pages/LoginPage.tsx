@@ -1,10 +1,20 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ArrowRight, Eye, EyeOff, KeyRound, LockKeyhole, Mail } from "lucide-react";
+import {
+  ArrowRight,
+  Eye,
+  EyeOff,
+  KeyRound,
+  LockKeyhole,
+  Mail,
+} from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link } from "react-router";
 import { z } from "zod";
 import { Button } from "@/shared/components/ui/button";
+import { useLogin } from "@/features/auth/hooks/useLogin";
+import { useNavigate } from "react-router";
+import { Spinner } from "@/shared/components/ui/spinner";
 
 const loginSchema = z.object({
   email: z.string().min(1, "Email eingeben").email("Gültige Email eingeben"),
@@ -14,12 +24,13 @@ const loginSchema = z.object({
 type LoginFields = z.infer<typeof loginSchema>;
 
 const demoAccount: LoginFields = {
-  email: "demo@flowdesk.app",
-  password: "flowdesk-demo",
+  email: "max.bauer@example.com",
+  password: "Demo1234!",
 };
 
 const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
+  const navigate = useNavigate();
 
   const {
     register,
@@ -34,7 +45,17 @@ const LoginPage = () => {
     },
   });
 
+  // Demo1234!
+  const { mutate, isPending } = useLogin();
+
   const onSubmit = (data: LoginFields) => {
+
+    mutate(data, {
+      onSuccess: () => {
+        navigate("/dashboard");
+      },
+    });
+
     console.info("login submitted", { email: data.email });
   };
 
@@ -48,8 +69,6 @@ const LoginPage = () => {
       shouldValidate: true,
     });
   };
-
-//   min-h-[calc(100vh-48px)]
 
   return (
     <div className="flex min-h-screen px-5 py-6 text-foreground sm:px-8">
@@ -148,8 +167,14 @@ const LoginPage = () => {
               className="w-full"
               disabled={isSubmitting}
             >
-              Einloggen
-              <ArrowRight className="size-4" />
+              {!isPending ? (
+                <span className="flex items-center gap-2">
+                  Einloggen
+                  <ArrowRight className="size-4" />
+                </span>
+              ) : (
+                <Spinner />
+              )}
             </Button>
 
             <button

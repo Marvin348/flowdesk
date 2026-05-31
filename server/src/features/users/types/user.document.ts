@@ -6,6 +6,7 @@ export type UserDocument = {
   _id: Types.ObjectId;
   name: string;
   email: string;
+  passwordHash: string;
   avatarKey: string;
   role: UserRole;
   jobTitle?:
