@@ -10,6 +10,7 @@ The app focuses on real-world admin workflows: project overviews, detailed proje
 
 - Fullstack setup with **React (Vite)** frontend and a **custom Node.js / Express** backend
 - Backend uses **MongoDB with Mongoose** as persistent database
+- Authentication with JWT
 - Demo data can be seeded from the previous mock data file
 - Backend handles **search, filtering, pagination, and data shaping**
 - Data is fetched via structured endpoints and optimized with React Query
@@ -123,21 +124,16 @@ npm run dev
 
 ## Screenshots
 
-<p align="center">
-  <img src="./screenshots/flowdesk-dashboard.png" width="50%">
-  <img src="./screenshots/flowdesk-details.png" width="50%">
-</p>
-
-<p align="center">
-  <img src="./screenshots/flowdesk-projects.png" width="50%">
-  <img src="./screenshots/flowdesk-collaborator.png" width="50%">
-</p>
-
-<p align="center">
-  <img src="./screenshots/flowdesk-add-task.png" width="50%">
-  <img src="./screenshots/flowdesk-team.png" width="50%">
-</p>
-
+![login](./screenshots/flowdesk-login.png)
+![dashboard](./screenshots/flowdesk-dashboard.png)
+![details](./screenshots/flowdesk-details.png)
+![projects](./screenshots/flowdesk-projects.png)
 ![add Project](./screenshots/flowdesk-addProject.png)
-![team filter](./screenshots/flowdesk-team-filter.png)
+
 ![attachments](./screenshots/flowdesk-attachments.png)
+
+![collaborators](./screenshots/flowdesk-collaborator.png)
+![add tasks](./screenshots/flowdesk-add-task.png)
+
+![team](./screenshots/flowdesk-team.png)
+![team filter](./screenshots/flowdesk-team-filter.png)

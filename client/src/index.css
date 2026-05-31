@@ -41,12 +41,47 @@ body {
   border-radius: 9999px;
 }
 .public-auth-bg {
-  background: linear-gradient(
-    115deg,
-    var(--background) 0%,
-    var(--background) 30%,
-    color-mix(in oklch, var(--accent) 20%, transparent) 100%
-  );
+ background:
+    linear-gradient(
+      120deg,
+      transparent 0%,
+      color-mix(in oklch, var(--accent) 8%, transparent) 45%,
+      transparent 75%
+    ),
+    linear-gradient(
+      color-mix(in oklch, var(--foreground) 3.5%, transparent) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      90deg,
+      color-mix(in oklch, var(--foreground) 3.5%, transparent) 1px,
+      transparent 1px
+    ),
+    radial-gradient(
+      ellipse at 80% 75%,
+      color-mix(in oklch, var(--accent) 14%, transparent) 0%,
+      transparent 38%
+    ),
+    linear-gradient(
+      115deg,
+      var(--background) 0%,
+      var(--background) 45%,
+      color-mix(in oklch, var(--accent) 5%, var(--background)) 100%
+    );
+
+  background-size:
+    auto,
+    56px 56px,
+    56px 56px,
+    auto,
+    auto;
+
+  background-position:
+    center,
+    0 0,
+    0 0,
+    center,
+    center;
 }
 
 @theme inline {
