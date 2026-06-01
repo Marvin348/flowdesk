@@ -8,6 +8,7 @@ import commentsRouter from "@/features/comments/routes/comments.js";
 import dashboardRouter from "@/features/dashboard/routes/dashboard.js";
 import authRouter from "@/features/auth/routes/authRoutes.js";
 import cookieParser from "cookie-parser";
+import { requireAuth } from "@/features/auth/middleware/requireAuth.js";
 
 const app = express();
 
@@ -21,13 +22,12 @@ app.use(express.json());
 app.use("/uploads", express.static("uploads"));
 app.use(cookieParser());
 
-
 app.use("/auth", authRouter);
-app.use("/dashboard", dashboardRouter);
-app.use("/projects", projectsRouter);
-app.use("/tasks", tasksRouter);
-app.use("/users", usersRouter);
-app.use("/attachments", attachmentsRouter);
-app.use("/comments", commentsRouter);
+app.use("/dashboard", requireAuth, dashboardRouter);
+app.use("/projects", requireAuth, projectsRouter);
+app.use("/tasks", requireAuth, tasksRouter);
+app.use("/users", requireAuth, usersRouter);
+app.use("/attachments", requireAuth, attachmentsRouter);
+app.use("/comments", requireAuth, commentsRouter);
 
 export default app;

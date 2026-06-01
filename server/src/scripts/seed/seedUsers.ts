@@ -5,9 +5,22 @@ import { hashPassword } from "@/features/auth/utils/password.js";
 export const seedUsers = async (users: SeedUser[]) => {
   const userIdMap = new Map<string, string>();
 
-  const demoPasswordHash = await hashPassword("Demo1234!");
+  const DEMO_LOGIN_USER = {
+    id: "demo-user",
+    name: "Demo User",
+    email: "demo@flowdesk.dev",
+    jobTitle: "Project Manager",
+    role: "admin",
+    avatarKey: "default",
+  } as const;
 
-  for (const user of users) {
+  const DEMO_PASSWORD = "Demo1234!";
+
+  const demoPasswordHash = await hashPassword(DEMO_PASSWORD);
+
+  const usersToSeed = [DEMO_LOGIN_USER, ...users];
+
+  for (const user of usersToSeed) {
     const createdUser = await UserModel.create({
       name: user.name,
       email: user.email,

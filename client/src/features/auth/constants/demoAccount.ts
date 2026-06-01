@@ -1,4 +1,4 @@
 export const DEMO_ACCOUNT = {
-  email: "max.bauer@example.com",
+  email: "demo@flowdesk.dev",
   password: "Demo1234!",
 } as const;
