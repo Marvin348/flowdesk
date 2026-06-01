@@ -5,7 +5,6 @@ import { CommentModel } from "@/features/comments/models/comment.model.js";
 import { TaskModel } from "@/features/tasks/models/task.model.js";
 import { toCommentDto } from "@/features/comments/mappers/comment.mapper.js";
 import { touchProject } from "@/features/projects/services/project.service.js";
-import { UserModel } from "@/features/users/models/user.modal.js";
 
 const router = express.Router();
 
@@ -45,21 +44,15 @@ router.post("/", async (req: Request<{}, {}, CreateCommentInput>, res) => {
       }
     }
 
-    const devUser = await UserModel.findOne({
-      email: "daniel.weber@example.com",
-    }).lean();
+    const userId = req.user?.id;
 
-    if (!devUser) {
-      return res.status(500).json({ error: "Dev user not found" });
+    if (!userId) {
+      return res.status(401).json({ message: "Not authenticated" });
     }
-
-    const userId = devUser._id.toString();
 
     const newCommentRecord = await CommentModel.create({
       taskId,
-
-      // TODO: Replace with authenticated user id once auth is implemented.
-      userId: userId,
+      userId,
       message,
       parentCommentId,
     });

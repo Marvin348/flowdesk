@@ -196,22 +196,16 @@ router.post(
         return res.status(400).json({ error: "No files uploaded" });
       }
 
-      const devUser = await UserModel.findOne({
-        email: "daniel.weber@example.com",
-      }).lean();
+      const userId = req.user?.id;
 
-      if (!devUser) {
-        return res.status(500).json({ error: "Dev user not found" });
+      if (!userId) {
+        return res.status(401).json({ message: "Not authenticated" });
       }
-
-      const userId = devUser._id.toString();
 
       const attachmentsToCreate = files.map((f) => ({
         projectId,
         taskId,
-
-        // TODO: Replace with authenticated user id once auth is implemented.
-        userId: userId,
+        userId,
 
         fileName: f.originalname,
         fileUrl: `/uploads/${f.filename}`,
