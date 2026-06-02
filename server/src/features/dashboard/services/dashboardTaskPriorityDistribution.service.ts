@@ -1,4 +1,5 @@
 import { mapTaskPriorityItems } from "@/features/dashboard/mappers/mapTaskPriorityDistribution.js";
+import { getProjects } from "@/features/projects/services/project.service.js";
 import { TaskModel } from "@/features/tasks/models/task.model.js";
 import { PRIORITY, type Priority } from "@shared/types/priority.js";
 
@@ -7,8 +8,16 @@ type TaskPriorityCount = {
   count: number;
 };
 
-export const getTaskPriorityDistribution = async () => {
+export const getTaskPriorityDistribution = async (userId: string) => {
+  const projects = await getProjects(userId);
+  const projectIds = projects.map((project) => project.id);
+
   const priorityCounts = await TaskModel.aggregate<TaskPriorityCount>([
+    {
+      $match: {
+        projectId: { $in: projectIds },
+      },
+    },
     {
       $group: {
         _id: "$taskPriority",

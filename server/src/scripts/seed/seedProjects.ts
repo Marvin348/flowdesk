@@ -8,6 +8,8 @@ export const seedProjects = async (
 ) => {
   const projectIdMap = new Map<string, string>();
 
+  const demoUserId = requireMappedId(userIdMap, "demo-user", "project.ownerId");
+
   for (const project of projects) {
     const createdProject = await ProjectModel.create({
       title: project.title,
@@ -15,6 +17,8 @@ export const seedProjects = async (
       priority: project.priority,
       projectStatus: project.projectStatus,
       dueDate: project.dueDate,
+
+      ownerId: demoUserId,
 
       invitedUserIds: project.invitedUserIds.map((userId) =>
         requireMappedId(userIdMap, userId, "project.invitedUserIds"),

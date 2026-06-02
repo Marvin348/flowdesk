@@ -18,26 +18,50 @@ import { PAGE_LIMITS } from "@shared/constants/pagination.js";
 import { parsePagination } from "@/shared/parsers/parsePagination.js";
 import { UserModel } from "@/features/users/models/user.modal.js";
 import { toUserDto } from "@/features/users/mappers/user.mapper.js";
+import {
+  getProjectById,
+  getProjects,
+} from "@/features/projects/services/project.service.js";
 
 const router = express.Router();
 
 router.get("/", async (req, res) => {
-  const projects = await ProjectModel.find();
+  const userId = req.user?.id;
 
-  return res.status(200).json({ data: projects.map(toProjectDto) });
+  if (!userId) {
+    return res.status(401).json({ message: "Not authenticated" });
+  }
+
+  const projects = await getProjects(userId);
+
+  return res.status(200).json({ data: projects });
 });
 
 router.get(
   "/summaries",
   async (req: Request<{}, {}, {}, ProjectSummaryQuery>, res) => {
     try {
-      const projectDocs = await ProjectModel.find().lean();
-      const taskDocs = await TaskModel.find().lean();
-      const commentDocs = await CommentModel.find().lean();
-      const attachmentDocs = await AttachmentModel.find().lean();
+      const userId = req.user?.id;
+
+      if (!userId) {
+        return res.status(401).json({ message: "Not authenticated" });
+      }
+
+      const projects = await getProjects(userId);
+      const projectIds = projects.map((project) => project.id);
+
+      const taskDocs = await TaskModel.find({
+        projectId: { $in: projectIds },
+      }).lean();
+      const taskIds = taskDocs.map((task) => task._id.toString());
+      const commentDocs = await CommentModel.find({
+        taskId: { $in: taskIds },
+      }).lean();
+      const attachmentDocs = await AttachmentModel.find({
+        projectId: { $in: projectIds },
+      }).lean();
       const userDocs = await UserModel.find().lean();
 
-      const projects = projectDocs.map(toProjectDto);
       const tasks = taskDocs.map(toTaskDto);
       const comments = commentDocs.map(toCommentDto);
       const attachments = attachmentDocs.map(toAttachmentDto);
@@ -92,6 +116,12 @@ router.post("/", async (req: Request<{}, {}, CreateProjectInput>, res) => {
       description,
     } = req.body;
 
+    const userId = req.user?.id;
+
+    if (!userId) {
+      return res.status(401).json({ message: "Not authenticated" });
+    }
+
     if (
       !title ||
       !priority ||
@@ -105,6 +135,7 @@ router.post("/", async (req: Request<{}, {}, CreateProjectInput>, res) => {
     const newProject = await ProjectModel.create({
       title,
       priority,
+      ownerId: userId,
       projectStatus,
       dueDate,
       invitedUserIds,
@@ -126,7 +157,16 @@ router.get("/:id", async (req: Request<{ id: string }>, res) => {
     return res.status(400).json({ error: "Invalid id" });
   }
 
-  const project = await ProjectModel.findById(id);
+  const userId = req.user?.id;
+
+  if (!userId) {
+    return res.status(401).json({ message: "Not authenticated" });
+  }
+
+  const project = await getProjectById({
+    projectId: id,
+    userId,
+  });
 
   if (!project) {
     return res.status(404).json({ error: "project not found" });
@@ -143,9 +183,18 @@ router.delete("/:id", async (req: Request<{ id: string }>, res) => {
       return res.status(400).json({ error: "projectId invalid input" });
     }
 
-    const projectRecord = await ProjectModel.findById(projectId).lean();
+    const userId = req.user?.id;
 
-    if (!projectRecord) {
+    if (!userId) {
+      return res.status(401).json({ message: "Not authenticated" });
+    }
+
+    const project = await getProjectById({
+      projectId,
+      userId,
+    });
+
+    if (!project) {
       return res.status(404).json({ error: "project not found" });
     }
 

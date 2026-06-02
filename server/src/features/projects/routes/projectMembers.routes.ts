@@ -6,6 +6,10 @@ import { toProjectDto } from "@/features/projects/mappers/project.mapper.js";
 import { TaskModel } from "@/features/tasks/models/task.model.js";
 import { AttachmentModel } from "@/features/attachments/models/attachment.model.js";
 import { CommentModel } from "@/features/comments/models/comment.model.js";
+import {
+  getProjectById,
+  getProjects,
+} from "@/features/projects/services/project.service.js";
 
 const router = express.Router();
 
@@ -14,12 +18,16 @@ type AssignUserInput = {
   userId: string;
 };
 
-// add new userId to projects
 router.patch(
   "/assign-user",
   async (req: Request<{}, {}, AssignUserInput>, res) => {
     try {
       const { projectIdsToAdd, userId } = req.body;
+      const currentUserId = req.user?.id;
+
+      if (!currentUserId) {
+        return res.status(401).json({ message: "Not authenticated" });
+      }
 
       if (!Array.isArray(projectIdsToAdd) || typeof userId !== "string") {
         return res.status(400).json({ error: "Invalid input" });
@@ -31,11 +39,13 @@ router.patch(
         return res.status(404).json({ error: "User not found" });
       }
 
-      const matchingProjects = await ProjectModel.find({
-        _id: { $in: projectIdsToAdd },
-      });
-
+      const visibleProjects = await getProjects(currentUserId);
       const projectIdsToAddSet = new Set(projectIdsToAdd);
+      const matchingProjects = visibleProjects.filter((project) =>
+        projectIdsToAddSet.has(project.id),
+      );
+
+      const matchingProjectIds = matchingProjects.map((project) => project.id);
 
       if (projectIdsToAddSet.size !== matchingProjects.length) {
         return res
@@ -53,7 +63,7 @@ router.patch(
 
       await ProjectModel.updateMany(
         {
-          _id: { $in: projectIdsToAdd },
+          _id: { $in: matchingProjectIds },
         },
         {
           $addToSet: {
@@ -63,7 +73,7 @@ router.patch(
       );
 
       const updatedProjectDocs = await ProjectModel.find({
-        _id: { $in: projectIdsToAdd },
+        _id: { $in: matchingProjectIds },
       });
 
       const updatedProjects = updatedProjectDocs.map(toProjectDto);
@@ -86,6 +96,11 @@ router.delete(
     try {
       const projectId = req.params.id;
       const userId = req.params.userId;
+      const currentUserId = req.user?.id;
+
+      if (!currentUserId) {
+        return res.status(401).json({ message: "Not authenticated" });
+      }
 
       if (!projectId) {
         return res.status(400).json({ error: "Invalid projectId" });
@@ -95,7 +110,10 @@ router.delete(
         return res.status(400).json({ error: "Invalid userId" });
       }
 
-      const project = await ProjectModel.findById(projectId);
+      const project = await getProjectById({
+        projectId,
+        userId: currentUserId,
+      });
 
       if (!project) {
         return res.status(404).json({ error: "Project not found" });
@@ -170,12 +188,20 @@ router.patch(
     try {
       const projectId = req.params.id;
       const { userIdsToAdd } = req.body;
+      const currentUserId = req.user?.id;
+
+      if (!currentUserId) {
+        return res.status(401).json({ message: "Not authenticated" });
+      }
 
       if (!projectId || !Array.isArray(userIdsToAdd)) {
         return res.status(400).json({ error: "Invalid input" });
       }
 
-      const project = await ProjectModel.findById(projectId);
+      const project = await getProjectById({
+        projectId,
+        userId: currentUserId,
+      });
 
       if (!project) {
         return res.status(404).json({ error: "Project not found" });

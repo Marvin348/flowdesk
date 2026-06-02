@@ -12,6 +12,11 @@ const projectSchema = new mongoose.Schema(
       type: String,
     },
 
+    ownerId: {
+      type: String,
+      required: true,
+    },
+
     priority: {
       type: String,
       enum: ["low", "medium", "high"],
@@ -39,4 +44,7 @@ const projectSchema = new mongoose.Schema(
   },
 );
 
-export const ProjectModel = mongoose.model<ProjectDocument>("Project", projectSchema);
+export const ProjectModel = mongoose.model<ProjectDocument>(
+  "Project",
+  projectSchema,
+);

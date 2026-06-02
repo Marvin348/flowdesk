@@ -76,7 +76,7 @@ const CreateProjectForm = ({ onClose }: CreateProjectFormProps) => {
               {...register("title")}
               id="title"
               type="text"
-              className="form-input"
+              className="form-input px-2"
               placeholder="Name"
             />
             {errors.title && (
@@ -92,7 +92,7 @@ const CreateProjectForm = ({ onClose }: CreateProjectFormProps) => {
               {...register("dueDate")}
               id="dueDate"
               type="date"
-              className="form-input"
+              className="form-input px-2"
             />
             {errors.dueDate && (
               <p className="mt-1 error-text">{errors.dueDate.message}</p>
