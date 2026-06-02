@@ -10,7 +10,10 @@ The app focuses on real-world admin workflows: project overviews, detailed proje
 
 - Fullstack setup with **React (Vite)** frontend and a **custom Node.js / Express** backend
 - Backend uses **MongoDB with Mongoose** as persistent database
-- Authentication with JWT
+- Authentication with **JWT stored in an HttpOnly cookie**
+- Protected frontend routes using `/auth/me`
+- Protected backend API routes using an authentication middleware
+- Project-level authorization based on `ownerId` and project membership
 - Demo data can be seeded from the previous mock data file
 - Backend handles **search, filtering, pagination, and data shaping**
 - Data is fetched via structured endpoints and optimized with React Query
@@ -18,11 +21,18 @@ The app focuses on real-world admin workflows: project overviews, detailed proje
 
 ## 🧠 Architecture Notes
 
+- API routes are protected on the backend with a reusable `requireAuth` middleware
+- The middleware verifies the JWT from the HttpOnly cookie and attaches the authenticated user to `req.user`
+- Project data is scoped by the authenticated user:
+  - users can access projects they own
+  - users can access projects where they are included as members/collaborators
 - Filtering, search, and pagination are handled **server-side via query parameters**
 - A seed script is used to load demo/development data into MongoDB
 - API responses are shaped with DTO/mapper functions to avoid exposing database internals like `_id` and `__v`
 
-##### Frontend state is **synchronized with the URL**, enabling:
+### Frontend state synchronization
+
+Frontend state is synchronized with the URL where useful, enabling:
 
 - persistent state across refresh
 - shareable links
@@ -30,24 +40,27 @@ The app focuses on real-world admin workflows: project overviews, detailed proje
 
 ## ⚠️ Current Limitations
 
-- No authentication system yet → user-specific data (e.g. favorites, pinned items) is handled on the frontend only
+- Project authorization is currently implemented on a project level only
+- More advanced permissions such as workspace roles, fine-grained project permissions, or invitation flows are not implemented yet
+- Newly registered users start with no project data
+- Demo data is currently tied to a dedicated demo user
+- The demo user is used for showcasing seeded project data and is not meant to represent a real production user model
 
 ### Current upload limitation
 
-- File uploads currently use a hardcoded `userId` (`u3`) because authentication is not implemented yet.
-- In a production version, the uploader would be derived from the authenticated session/JWT instead of being sent manually or hardcoded.
+- File uploads are now associated with the authenticated user
+- Task selection during upload is still limited and will be improved in a later branch
 - User cannot select a task right now. (gets fixed in next branch)
 
 ## ⏳ Planned Improvements
 
-- Expand REST API with dedicated endpoints (dashboard, team details, etc.)
-- Add authentication & user-based data handling (JWT)
-- Improve caching strategy with React Query
+- Add workspace or organization-based ownership model
+- Improve dashboard empty states for newly registered users
+- Add invitation flow for project members
 - Refactor shared types and API contracts
+- Improve caching strategy with React Query
 - Add an Activity / History page for project changes, task updates, and user actions
-- Refactor overall structure
-- Create Attachment Tab
-- Delete Domain folder completely and only handle in backend
+- Move file storage to a production-ready storage solution
 - Implement Framer Motion for animations
 - Finalize layout/theme
 

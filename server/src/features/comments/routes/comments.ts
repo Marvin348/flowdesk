@@ -4,12 +4,34 @@ import type { CreateCommentInput } from "@shared/types/inputs/createCommentInput
 import { CommentModel } from "@/features/comments/models/comment.model.js";
 import { TaskModel } from "@/features/tasks/models/task.model.js";
 import { toCommentDto } from "@/features/comments/mappers/comment.mapper.js";
-import { touchProject } from "@/features/projects/services/project.service.js";
+import {
+  getProjectById,
+  getProjects,
+  touchProject,
+} from "@/features/projects/services/project.service.js";
 
 const router = express.Router();
 
 router.get("/", async (req, res) => {
-  const comments = await CommentModel.find().lean();
+  const userId = req.user?.id;
+
+  if (!userId) {
+    return res.status(401).json({ message: "Not authenticated" });
+  }
+
+  const projects = await getProjects(userId);
+  const projectIds = projects.map((project) => project.id);
+
+  const taskRecords = await TaskModel.find({
+    projectId: { $in: projectIds },
+  }).lean();
+
+  const taskIds = taskRecords.map((task) => task._id.toString());
+  
+  const comments = await CommentModel.find({
+    taskId: { $in: taskIds },
+  }).lean();
+
   res.json({ data: comments });
 });
 
@@ -28,6 +50,21 @@ router.post("/", async (req: Request<{}, {}, CreateCommentInput>, res) => {
       return res.status(404).json({ error: "Task not found" });
     }
 
+    const userId = req.user?.id;
+
+    if (!userId) {
+      return res.status(401).json({ message: "Not authenticated" });
+    }
+
+    const project = await getProjectById({
+      projectId: task.projectId,
+      userId,
+    });
+
+    if (!project) {
+      return res.status(404).json({ error: "Project not found" });
+    }
+
     if (parentCommentId) {
       const parentComment = await CommentModel.findOne({
         _id: parentCommentId,
@@ -42,12 +79,6 @@ router.post("/", async (req: Request<{}, {}, CreateCommentInput>, res) => {
           error: "Parent comment does not belong to this task",
         });
       }
-    }
-
-    const userId = req.user?.id;
-
-    if (!userId) {
-      return res.status(401).json({ message: "Not authenticated" });
     }
 
     const newCommentRecord = await CommentModel.create({

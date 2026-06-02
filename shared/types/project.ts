@@ -6,7 +6,7 @@ export type Project = {
 
   title: string;
   description?: string;
-
+  ownerId: string;
   priority: Priority;
   projectStatus: StatusBase;
 

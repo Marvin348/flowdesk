@@ -3,15 +3,12 @@ import type { Types } from "mongoose";
 
 export type ProjectDocument = {
   _id: Types.ObjectId;
-
   title: string;
   description?: string;
-
+  ownerId: string;
   priority: Priority;
   projectStatus: StatusBase;
-
   invitedUserIds: string[];
-  
   dueDate: Date;
   createdAt: Date;
   updatedAt?: Date;

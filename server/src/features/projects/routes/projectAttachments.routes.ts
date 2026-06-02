@@ -14,6 +14,7 @@ import { toUserDto } from "@/features/users/mappers/user.mapper.js";
 import { toTaskDto } from "@/features/tasks/mappers/task.mapper.js";
 import { toProjectAttachmentsDto } from "@/features/projects/mappers/project-attachments.mapper.js";
 import { ProjectModel } from "@/features/projects/models/project.model.js";
+import { getProjectById } from "@/features/projects/services/project.service.js";
 import multer from "multer";
 
 const router = express.Router();
@@ -40,9 +41,18 @@ router.delete(
         return res.status(400).json({ error: "Invalid attachmentId" });
       }
 
-      const projectRecord = await ProjectModel.findById(projectId).lean();
+      const userId = req.user?.id;
 
-      if (!projectRecord) {
+      if (!userId) {
+        return res.status(401).json({ message: "Not authenticated" });
+      }
+
+      const project = await getProjectById({
+        projectId,
+        userId,
+      });
+
+      if (!project) {
         return res.status(404).json({ error: "project not found" });
       }
 
@@ -90,6 +100,21 @@ router.get(
 
       if (!projectId) {
         return res.status(400).json({ error: "Invalid projectId" });
+      }
+
+      const userId = req.user?.id;
+
+      if (!userId) {
+        return res.status(401).json({ message: "Not authenticated" });
+      }
+
+      const project = await getProjectById({
+        projectId,
+        userId,
+      });
+
+      if (!project) {
+        return res.status(404).json({ error: "project not found" });
       }
 
       const search =
@@ -186,20 +211,23 @@ router.post(
         return res.status(400).json({ error: "Invalid projectId" });
       }
 
-      const projectRecord = await ProjectModel.findById(projectId).lean();
+      const userId = req.user?.id;
 
-      if (!projectRecord) {
+      if (!userId) {
+        return res.status(401).json({ message: "Not authenticated" });
+      }
+
+      const project = await getProjectById({
+        projectId,
+        userId,
+      });
+
+      if (!project) {
         return res.status(404).json({ error: "project not found" });
       }
 
       if (!files || files.length === 0) {
         return res.status(400).json({ error: "No files uploaded" });
-      }
-
-      const userId = req.user?.id;
-
-      if (!userId) {
-        return res.status(401).json({ message: "Not authenticated" });
       }
 
       const attachmentsToCreate = files.map((f) => ({

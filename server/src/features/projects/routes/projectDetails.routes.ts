@@ -15,10 +15,8 @@ import { parseProjectCommentsSort } from "@shared/parsers/parseProjectCommentsSo
 import { ProjectWorkloadQuery } from "@/features/projects/types/querys/projectWorkloadQuery.js";
 import { parseProjectWorkloadSort } from "@shared/parsers/parseProjectWorkloadSort.js";
 import { sortedWorkload } from "@/features/projects/utils/sortedWorkload.js";
-import { ProjectModel } from "@/features/projects/models/project.model.js";
 import { TaskModel } from "@/features/tasks/models/task.model.js";
 import { toTaskDto } from "@/features/tasks/mappers/task.mapper.js";
-import { toProjectDto } from "@/features/projects/mappers/project.mapper.js";
 import { UserModel } from "@/features/users/models/user.modal.js";
 import { CommentModel } from "@/features/comments/models/comment.model.js";
 import {
@@ -28,6 +26,7 @@ import {
 import { toCommentDto } from "@/features/comments/mappers/comment.mapper.js";
 import { PAGE_LIMITS } from "@shared/constants/pagination.js";
 import { parsePagination } from "@/shared/parsers/parsePagination.js";
+import { getProjectById } from "@/features/projects/services/project.service.js";
 
 const router = express.Router();
 
@@ -39,15 +38,23 @@ router.get("/:id/details", async (req: Request<{ id: string }>, res) => {
       return res.status(400).json({ error: "Invalid projectId" });
     }
 
-    const projectRecord = await ProjectModel.findById(projectId).lean();
+    const userId = req.user?.id;
 
-    if (!projectRecord) {
+    if (!userId) {
+      return res.status(401).json({ message: "Not authenticated" });
+    }
+
+    const project = await getProjectById({
+      projectId,
+      userId,
+    });
+
+    if (!project) {
       return res.status(404).json({ error: "project not found" });
     }
 
     const taskRecords = await TaskModel.find({ projectId }).lean();
 
-    const project = toProjectDto(projectRecord);
     const tasks = taskRecords.map(toTaskDto);
 
     const { progressPercent } = getProjectProgress(tasks);
@@ -82,15 +89,23 @@ router.get("/:id/overview", async (req, res) => {
       return res.status(400).json({ error: "Invalid projectId" });
     }
 
-    const projectRecord = await ProjectModel.findById(projectId).lean();
+    const userId = req.user?.id;
 
-    if (!projectRecord) {
-      return res.status(404).json({ error: "project not found" });
+    if (!userId) {
+      return res.status(401).json({ message: "Not authenticated" });
+    }
+
+    const project = await getProjectById({
+      projectId,
+      userId,
+    });
+
+    if (!project) {
+      return res.status(404).json({ message: "Project not found" });
     }
 
     const taskRecords = await TaskModel.find({ projectId }).lean();
 
-    const project = toProjectDto(projectRecord);
     const tasks = taskRecords.map(toTaskDto);
 
     const taskIds = tasks.map((task) => task.id);
@@ -134,10 +149,19 @@ router.get("/:id/tasks", async (req, res) => {
       return res.status(400).json({ error: "Invalid projectId" });
     }
 
-    const projectRecord = await ProjectModel.findById(projectId).lean();
+    const userId = req.user?.id;
 
-    if (!projectRecord) {
-      return res.status(404).json({ error: "project not found" });
+    if (!userId) {
+      return res.status(401).json({ message: "Not authenticated" });
+    }
+
+    const project = await getProjectById({
+      projectId,
+      userId,
+    });
+
+    if (!project) {
+      return res.status(404).json({ message: "Project not found" });
     }
 
     const taskRecords = await TaskModel.find({ projectId }).lean();
@@ -172,15 +196,22 @@ router.get(
         return res.status(400).json({ error: "Invalid projectId" });
       }
 
-      const parsedCollaboratorSort = parseCollaboratorSort(collaboratorsSort);
+      const userId = req.user?.id;
 
-      const projectRecord = await ProjectModel.findById(projectId).lean();
-
-      if (!projectRecord) {
-        return res.status(404).json({ error: "project not found" });
+      if (!userId) {
+        return res.status(401).json({ message: "Not authenticated" });
       }
 
-      const project = toProjectDto(projectRecord);
+      const parsedCollaboratorSort = parseCollaboratorSort(collaboratorsSort);
+
+      const project = await getProjectById({
+        projectId,
+        userId,
+      });
+
+      if (!project) {
+        return res.status(404).json({ error: "project not found" });
+      }
 
       const userRecords = await UserModel.find({
         _id: { $in: project.invitedUserIds },
@@ -217,11 +248,20 @@ router.get(
         return res.status(400).json({ error: "Invalid projectId" });
       }
 
+      const userId = req.user?.id;
+
+      if (!userId) {
+        return res.status(401).json({ message: "Not authenticated" });
+      }
+
       const parsedCommentsSort = parseProjectCommentsSort(commentsSort);
 
-      const projectRecord = await ProjectModel.findById(projectId).lean();
+      const project = await getProjectById({
+        projectId,
+        userId,
+      });
 
-      if (!projectRecord) {
+      if (!project) {
         return res.status(404).json({ error: "project not found" });
       }
 
@@ -283,13 +323,22 @@ router.get(
         return res.status(400).json({ error: "Invalid projectId" });
       }
 
+      const userId = req.user?.id;
+
+      if (!userId) {
+        return res.status(401).json({ message: "Not authenticated" });
+      }
+
       const parsedWorkloadSort = parseProjectWorkloadSort(
         req.query.workloadSort,
       );
 
-      const projectRecord = await ProjectModel.findById(projectId).lean();
+      const project = await getProjectById({
+        projectId,
+        userId,
+      });
 
-      if (!projectRecord) {
+      if (!project) {
         return res.status(404).json({ error: "project not found" });
       }
 

@@ -12,6 +12,7 @@ export const toProjectDto = (project: ProjectDocument): Project => {
     id: project._id.toString(),
     title: project.title,
     description: project.description,
+    ownerId: project.ownerId,
     priority: project.priority,
     projectStatus: project.projectStatus,
     dueDate: toIsoString(project.dueDate),

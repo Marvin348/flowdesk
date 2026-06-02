@@ -174,7 +174,7 @@ const AddTaskForm = ({
               value={tagsInput}
               onChange={(e) => setTagsInput(e.target.value)}
               placeholder="Tags..."
-              className="form-input !pr-8"
+              className="form-input pl-2 !pr-8"
               disabled={tags.length >= 2}
             />
             {tagsInput?.length >= 2 && (
@@ -215,7 +215,7 @@ const AddTaskForm = ({
           id="dueDate"
           type="date"
           placeholder="Wähle ein Datum"
-          className="form-input"
+          className="form-input px-2"
         />
         {errors.dueDate && (
           <p className="error-text">{errors.dueDate?.message}</p>
