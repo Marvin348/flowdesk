@@ -1,5 +1,5 @@
 import { Outlet } from "react-router";
-import Sidebar from "@/shared/components/layout/Sidebar";
+import Sidebar from "@/shared/components/layout/sidebar/Sidebar";
 import Header from "@/shared/components/layout/Header";
 import { useState } from "react";
 const AppLayout = () => {

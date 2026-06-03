@@ -4,11 +4,11 @@ import { Navigate } from "react-router";
 import { Outlet } from "react-router";
 
 const ProtectedRoute = () => {
-  const { data, isLoading, error } = useCurrentUser();
+  const { data: user, isLoading, error } = useCurrentUser();
 
   if (isLoading) return <Spinner className="size-12 text-accent"/>;
 
-  if (error || !data?.user) {
+  if (error || !user) {
     return <Navigate to="/login" replace />;
   }
 

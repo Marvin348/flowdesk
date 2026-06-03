@@ -5,8 +5,3 @@ export const SIDEBAR_MAIN_LINKS = [
   { to: "/projects", label: "Projekte", icon: Folders },
   { to: "/team", label: "Team", icon: Users },
 ] as const;
-
-export const SIDEBAR_FOOTER_LINKS = [
-  { to: "/account", label: "Account", icon: CircleUserRound },
-  // { to: "/settings", label: "Einstellungen", icon: Settings },
-];
