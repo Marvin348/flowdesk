@@ -1,16 +1,12 @@
-import {
-  SIDEBAR_MAIN_LINKS,
-  SIDEBAR_FOOTER_LINKS,
-} from "@/shared/constants/sidebar-links";
-import { NavLink, replace } from "react-router";
+import { SIDEBAR_MAIN_LINKS } from "@/shared/constants/sidebar-links";
+import { NavLink } from "react-router";
 import { Button } from "@/shared/components/ui/button";
 import logo from "@/assets/logo.svg";
 import { useScrollLock } from "@/shared/hooks/useScrollLock";
-import { Star, LogOut } from "lucide-react";
+import { Star } from "lucide-react";
 import { useAppStore } from "@/store";
 import { useProjects } from "@/features/projects/hooks/useProjects";
-import { useLogout } from "@/features/auth/hooks/useLogout";
-import { useNavigate } from "react-router";
+import SidebarUserMenu from "@/shared/components/layout/sidebar/SidebarUserMenu";
 
 type SidebarProps = {
   onOpen: boolean;
@@ -18,17 +14,6 @@ type SidebarProps = {
 };
 const Sidebar = ({ onOpen, onClose }: SidebarProps) => {
   useScrollLock(onOpen);
-  const navigate = useNavigate();
-
-  const { mutate, isPending, error } = useLogout();
-
-  const onLogout = () => {
-    mutate(undefined, {
-      onSuccess: () => {
-        navigate("/login", { replace: true });
-      },
-    });
-  };
 
   const { data: projects = [] } = useProjects();
 
@@ -135,25 +120,7 @@ const Sidebar = ({ onOpen, onClose }: SidebarProps) => {
           </div>
 
           <div className="mt-auto">
-            {SIDEBAR_FOOTER_LINKS.map(({ label, to, icon: Icon }) => (
-              <NavLink
-                key={to}
-                to={to}
-                onClick={onClose}
-                className={({ isActive }) => `
-              flex items-center gap-2 p-2 rounded-md text-muted-foreground ${isActive ? "bg-muted-foreground/10 text-foreground" : "text-muted-foreground hover:bg-muted/60 hover:text-foreground"}`}
-              >
-                <Icon className="size-5" />
-                <p>{label}</p>
-              </NavLink>
-            ))}
-            <button
-              className="flex items-center gap-2 p-2 text-base text-muted-foreground hover:bg-muted/60 hover:text-foreground"
-              onClick={onLogout}
-            >
-              <LogOut className="size-5 rotate-180" />
-              {isPending ? "Logging out..." : "Logout"}
-            </button>
+            <SidebarUserMenu />
           </div>
         </div>
       </nav>
