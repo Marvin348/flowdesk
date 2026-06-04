@@ -9,7 +9,7 @@ import DashboardPage from "@/pages/DashboardPage";
 import ProjectsPage from "@/pages/ProjectsPage";
 import TeamPage from "@/pages/TeamPage";
 import ProjectDetailsPage from "@/pages/ProjectDetailsPage";
-import AccountPage from "@/pages/AccountPage";
+import SettingsPage from "@/features/settings/pages/SettingsPage";
 import PublicLayout from "@/features/auth/routes/PublicLayout";
 import LoginPage from "@/features/auth/pages/LoginPage";
 import RegisterPage from "@/features/auth/pages/RegisterPage";
@@ -49,7 +49,7 @@ const rounter = createBrowserRouter([
             path: "/team",
             element: <TeamPage />,
           },
-          { path: "/account", element: <AccountPage /> },
+          { path: "/settings", element: <SettingsPage /> },
         ],
       },
     ],
