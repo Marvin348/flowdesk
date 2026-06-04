@@ -28,17 +28,20 @@ const SidebarUserMenu = () => {
       {isOpen && (
         <div className="absolute bottom-full left-0 mb-2 w-full rounded-md border bg-background p-1 shadow-md">
           <Link
-            to="/account"
+            to="/settings"
             className="flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm hover:bg-muted"
           >
             <User className="h-4 w-4" />
             Account
           </Link>
 
-          <button className="flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm hover:bg-muted">
+          <Link
+            to="/settings"
+            className="flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm hover:bg-muted"
+          >
             <Settings className="h-4 w-4" />
             Einstellungen
-          </button>
+          </Link>
 
           <div className="my-1 h-px bg-border" />
 

@@ -1,4 +1,5 @@
 import { AVATARS } from "@/shared/assets/avatars";
+import { User } from "lucide-react";
 
 type AvatarProps = {
   avatarKey?: string;
@@ -11,7 +12,7 @@ const Avatar = ({ avatarKey, size }: AvatarProps) => {
   const xl = size === "xl" && "size-20";
 
   const src = avatarKey ? AVATARS[avatarKey] : undefined;
-  //  const fallback
+
   return (
     <>
       {src ? (
@@ -21,7 +22,13 @@ const Avatar = ({ avatarKey, size }: AvatarProps) => {
           className={`${sm} ${lg} ${xl} rounded-full`}
         />
       ) : (
-        <div className={`${sm} ${lg} ${xl} rounded-full bg-gray-300`}></div>
+        <div
+          className={`${sm} ${lg} ${xl} rounded-full bg-muted-foreground/10 flex items-center justify-center`}
+        >
+          <User
+            className={`text-muted-foreground ${(sm && "size-4") || (lg && "size-6") || (xl && "size-10")}`}
+          />
+        </div>
       )}
     </>
   );
