@@ -32,17 +32,6 @@ const userSchema = new mongoose.Schema(
 
     jobTitle: {
       type: String,
-      enum: [
-        "Frontend Developer",
-        "Designer",
-        "Project Manager",
-        "Backend Developer",
-        "Art Director",
-        "Fullstack Developer",
-        "DevOps Engineer",
-        "QA Engineer",
-        "Motion Designer",
-      ],
     },
   },
   {

@@ -21,6 +21,8 @@ import { toProjectDto } from "@/features/projects/mappers/project.mapper.js";
 import { buildUserQuery } from "@/features/users/queries/buildUserQuery.js";
 import { PAGE_LIMITS, DEFAULT_PAGE } from "@shared/constants/pagination.js";
 import { parsePagination } from "@/shared/parsers/parsePagination.js";
+import { updateCurrentUserSchema } from "@/features/users/validators/user.validator.js";
+import { updateCurrentUser } from "../services/user.service.js";
 
 const router = express.Router();
 
@@ -81,6 +83,31 @@ router.get("/team", async (req: Request<{}, {}, {}, TeamMembersQuery>, res) => {
     return res.status(500).json({
       error: "Failed to fetch team",
     });
+  }
+});
+
+router.patch("/me", async (req, res) => {
+  try {
+    const result = updateCurrentUserSchema.safeParse(req.body);
+
+    if (!result.success) {
+      return res.status(400).json({
+        message: "Invalid profile data",
+      });
+    }
+
+    const input = result.data;
+    const userId = req.user?.id;
+
+    if (!userId) {
+      return res.status(400).json({ error: "Not authenticated" });
+    }
+
+    const updatedUser = await updateCurrentUser({ input, userId });
+
+    return res.status(201).json({ user: updatedUser });
+  } catch (error) {
+    return res.status(500).json({ message: "Failed to update profile" });
   }
 });
 

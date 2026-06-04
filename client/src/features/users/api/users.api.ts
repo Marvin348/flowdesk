@@ -6,6 +6,7 @@ import type {
   UserDetailsDto,
 } from "@shared/types/dto/users/user";
 import type { TeamMembersInput } from "@shared/types/inputs/teamMemberInput";
+import type { UpdateUserProfileInput } from "@/features/users/types/updateUserProfile";
 
 export const fetchUsers = async (): Promise<User[]> => {
   const res = await apiClient.get("/users");
@@ -47,4 +48,11 @@ export const changeUserRole = async (
     role: input.role,
   });
   return res.data;
+};
+
+export const updateUserProfile = async (
+  input: UpdateUserProfileInput,
+): Promise<User> => {
+  const res = await apiClient.patch("/users/me", input);
+  return res.data.user;
 };

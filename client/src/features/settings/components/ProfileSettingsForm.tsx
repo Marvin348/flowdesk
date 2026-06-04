@@ -14,25 +14,27 @@ import {
   UserRound,
 } from "lucide-react";
 import { FormInput } from "@/shared/components/ui/FormInput";
+import { useUpdateUserProfile } from "@/features/users/hooks/useUpdateUserProfile";
+import { Spinner } from "@/shared/components/ui/spinner";
 
 const profileSettingsSchema = z.object({
   avatarKey: z.string(), // ??
   name: z.string().min(3, "Name eingeben"),
   email: z.string().min(8, "Mindestens 8 Zeichen"),
-  jobTitle: z.string().min(5, "Job Titel eingeben"), // ??
-  role: z.string(), // ??
+  jobTitle: z.string().min(3, "Mindestens 3 Zeichen").optional(),
 });
 
 type ProfileSettingsFields = z.infer<typeof profileSettingsSchema>;
 
 const ProfileSettingsForm = () => {
-  const { data: user, isLoading, error } = useCurrentUser();
+  const { data: user, error } = useCurrentUser();
+  const { mutate, isPending, error: updateError } = useUpdateUserProfile();
 
   const {
     register,
     handleSubmit,
     reset,
-    formState: { errors },
+    formState: { errors, dirtyFields, isDirty },
   } = useForm<ProfileSettingsFields>({
     resolver: zodResolver(profileSettingsSchema),
     defaultValues: {
@@ -40,7 +42,6 @@ const ProfileSettingsForm = () => {
       name: "",
       email: "",
       jobTitle: "",
-      role: "",
     },
   });
 
@@ -51,12 +52,44 @@ const ProfileSettingsForm = () => {
       avatarKey: user.avatarKey,
       name: user.name,
       email: user.email,
-      jobTitle: user.jobTitle,
-      role: user.role,
+      jobTitle: user?.jobTitle,
     });
   }, []);
 
-  const onSubmit = (data: ProfileSettingsFields) => {};
+  const onSubmit = (data: ProfileSettingsFields) => {
+    const payload: Partial<ProfileSettingsFields> = {};
+
+    if (dirtyFields.name) {
+      payload.name = data.name;
+    }
+
+    if (dirtyFields.email) {
+      payload.email = data.email;
+    }
+
+    if (dirtyFields.avatarKey) {
+      payload.avatarKey = data.avatarKey;
+    }
+
+    if (dirtyFields.jobTitle) {
+      payload.jobTitle = data.jobTitle;
+    }
+
+    if (Object.keys(payload).length === 0) {
+      return;
+    }
+
+    mutate(payload, {
+      onSuccess: (updatedUser) => {
+        reset({
+          avatarKey: updatedUser.avatarKey,
+          name: updatedUser.name,
+          email: updatedUser.email,
+          jobTitle: updatedUser?.jobTitle,
+        });
+      },
+    });
+  };
 
   if (error) {
     return <ErrorMessage message="Profil konnte nicht geladen werden." />;
@@ -103,6 +136,9 @@ const ProfileSettingsForm = () => {
               icon={<UserRound className="size-4" />}
               {...register("name")}
             />
+            {errors.name && (
+              <ErrorMessage message={errors.name.message} className="mt-1" />
+            )}
           </div>
 
           <div>
@@ -114,6 +150,9 @@ const ProfileSettingsForm = () => {
               icon={<Mail className="size-4" />}
               {...register("email")}
             />
+            {errors.email && (
+              <ErrorMessage message={errors.email.message} className="mt-1" />
+            )}
           </div>
         </div>
 
@@ -126,29 +165,38 @@ const ProfileSettingsForm = () => {
               icon={<BriefcaseBusiness className="size-4" />}
               {...register("jobTitle")}
             />
+            {errors.jobTitle && (
+              <ErrorMessage
+                message={errors.jobTitle.message}
+                className="mt-1"
+              />
+            )}
           </div>
 
-          <div>
-            <FormInput
-              label="Rolle"
-              id="role"
-              type="text"
-              icon={<ShieldCheck className="size-4" />}
-              {...register("role")}
-            />
-            {errors.role && (
-              <ErrorMessage message={errors.role.message} className="mt-1" />
-            )}
+          <div className="space-y-2">
+            <p className="mb-1.5 block text-sm">Rolle</p>
+
+            <div className="flex items-center gap-3 rounded-md border bg-muted/40 px-3 py-2 text-sm text-muted-foreground">
+              <ShieldCheck className="size-4" />
+              <span className="capitalize">{user?.role}</span>
+            </div>
           </div>
         </div>
       </div>
+
+      {updateError && (
+        <ErrorMessage
+          message="Es gibt keine neuen Änderungen zum Speichern"
+          className="mx-2"
+        />
+      )}
 
       <div className="flex items-center justify-end gap-3 px-6 py-4">
         <Button variant="outline" type="button">
           Abbrechen
         </Button>
-        <Button type="submit" disabled={true}>
-          Änderungen speichern
+        <Button type="submit" disabled={!isDirty || isPending}>
+          {isPending ? <Spinner /> : "Änderungen speichern"}
         </Button>
       </div>
     </form>
