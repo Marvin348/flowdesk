@@ -10,20 +10,13 @@ import {
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link } from "react-router";
-import { z } from "zod";
 import { Button } from "@/shared/components/ui/button";
 import { useRegister } from "@/features/auth/hooks/useRegister";
 import { useNavigate } from "react-router";
 import { Spinner } from "@/shared/components/ui/spinner";
 import ErrorMessage from "@/shared/components/ErrorMessage";
-
-const registerSchema = z.object({
-  name: z.string().min(2, "Name eingeben"),
-  email: z.string().min(1, "Email eingeben").email("Gültige Email eingeben"),
-  password: z.string().min(8, "Mindestens 8 Zeichen"),
-});
-
-type RegisterFields = z.infer<typeof registerSchema>;
+import type { RegisterFields } from "@/features/auth/schemas/registerSchema";
+import { registerSchema } from "@/features/auth/schemas/registerSchema";
 
 const RegisterPage = () => {
   const [showPassword, setShowPassword] = useState(false);

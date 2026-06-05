@@ -10,20 +10,14 @@ import {
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link } from "react-router";
-import { z } from "zod";
 import { Button } from "@/shared/components/ui/button";
 import { useLogin } from "@/features/auth/hooks/useLogin";
 import { useNavigate } from "react-router";
 import { Spinner } from "@/shared/components/ui/spinner";
 import ErrorMessage from "@/shared/components/ErrorMessage";
 import { DEMO_ACCOUNT } from "@/features/auth/constants/demoAccount";
-
-const loginSchema = z.object({
-  email: z.string().min(1, "Email eingeben").email("Gültige Email eingeben"),
-  password: z.string().min(8, "Mindestens 8 Zeichen"),
-});
-
-type LoginFields = z.infer<typeof loginSchema>;
+import { loginSchema } from "@/features/auth/schemas/loginSchema";
+import type { LoginFields } from "@/features/auth/schemas/loginSchema";
 
 const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);

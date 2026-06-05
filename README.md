@@ -56,7 +56,10 @@ Frontend state is synchronized with the URL where useful, enabling:
 
 - Add workspace or organization-based ownership model
 - Improve dashboard empty states for newly registered users
-- - Avatar handling currently uses an `avatarKey`. A full profile image upload flow is planned for a later iteration.
+- Avatar handling currently uses an `avatarKey`. A full profile image upload flow is planned for a later iteration.
+- Add centralized error handling middleware
+- Replace route-level error checks with typed application errors
+- Improve API error responses for auth and profile update flows
 - Add invitation flow for project members
 - Refactor shared types and API contracts
 - Improve caching strategy with React Query

@@ -6,6 +6,7 @@ import {
 import { createAccessToken } from "@/features/auth/utils/tokens.js";
 import {
   LoginInput,
+  PasswordInput,
   RegisterInput,
 } from "@/features/auth/validators/auth.validators.js";
 import { toUserDto } from "@/features/users/mappers/user.mapper.js";
@@ -56,4 +57,40 @@ export const loginUser = async (input: LoginInput) => {
     user: toUserDto(user),
     accessToken,
   };
+};
+
+export const changePassword = async (input: PasswordInput, userId: string) => {
+  const { currentPassword, newPassword } = input;
+
+  const user = await UserModel.findById(userId);
+
+  if (!user) {
+    throw new Error("Invalid user");
+  }
+
+  const isPasswordValid = await comparePassword(
+    currentPassword,
+    user.passwordHash,
+  );
+
+  if (!isPasswordValid) {
+    throw new Error("Invalid password");
+  }
+
+  const isSameAsOldPassword = await comparePassword(
+    newPassword,
+    user.passwordHash,
+  );
+
+  if (isSameAsOldPassword) {
+    throw new Error("New password must be different from current password");
+  }
+
+  const hashedNewPassword = await hashPassword(newPassword);
+
+  user.passwordHash = hashedNewPassword;
+
+  await user.save();
+
+  return { success: true };
 };

@@ -1,18 +1,10 @@
 import { apiClient } from "@/shared/api/client";
 import type { User } from "@shared/types/user";
+import type { PasswordFields } from "@/features/auth/schemas/securitySchema";
+import type { RegisterFields } from "@/features/auth/schemas/registerSchema";
+import type { LoginFields } from "@/features/auth/schemas/loginSchema";
 
-type LoginInput = {
-  email: string;
-  password: string;
-};
-
-type RegisterInput = {
-  name: string;
-  email: string;
-  password: string;
-};
-
-export const login = async (input: LoginInput) => {
+export const login = async (input: LoginFields) => {
   const res = await apiClient.post("/auth/login", input);
   return res.data;
 };
@@ -27,7 +19,12 @@ export const logout = async () => {
   return res.data.user;
 };
 
-export const register = async (input: RegisterInput) => {
+export const register = async (input: RegisterFields) => {
   const res = await apiClient.post("/auth/register", input);
+  return res.data;
+};
+
+export const updatePassword = async (input: PasswordFields) => {
+  const res = await apiClient.patch("/auth/password", input);
   return res.data;
 };
