@@ -1,15 +1,18 @@
 import express from "express";
 import {
   loginSchema,
+  passwordSchema,
   registerSchema,
 } from "@/features/auth/validators/auth.validators.js";
 import {
+  changePassword,
   loginUser,
   registerUser,
 } from "@/features/auth/services/auth.service.js";
 import { verifyAccessToken } from "@/features/auth/utils/tokens.js";
 import { UserModel } from "@/features/users/models/user.modal.js";
 import { toUserDto } from "@/features/users/mappers/user.mapper.js";
+import { requireAuth } from "@/features/auth/middleware/requireAuth.js";
 
 const router = express.Router();
 
@@ -102,6 +105,37 @@ router.post("/register", async (req, res) => {
     }
 
     return res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+router.patch("/password", requireAuth, async (req, res) => {
+  try {
+    const result = passwordSchema.safeParse(req.body);
+
+    if (!result.success) {
+      return res.status(400).json({ message: "Invalid request body" });
+    }
+
+    const input = result.data;
+    const userId = req.user?.id;
+
+    if (!userId) {
+      return res.status(401).json({ message: "Not authenticated" });
+    }
+
+    await changePassword(input, userId);
+
+    return res.status(200).json({ message: "Password updated successfully" });
+  } catch (error) {
+    if (error instanceof Error && error.message === "Invalid user") {
+      return res.status(401).json({ message: "Invalid user" });
+    }
+
+    if (error instanceof Error && error.message === "Invalid password") {
+      return res.status(400).json({ message: "Invalid password" });
+    }
+
+    return res.status(500).json({ message: "Failed to update password" });
   }
 });
 

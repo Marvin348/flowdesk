@@ -1,6 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import z from "zod";
 import { useCurrentUser } from "@/features/auth/hooks/useCurrentUser";
 import { useEffect } from "react";
 import Avatar from "@/shared/components/ui/avatar/Avatar";
@@ -12,23 +11,22 @@ import {
   ShieldCheck,
   Upload,
   UserRound,
+  CheckCircle2,
 } from "lucide-react";
 import { FormInput } from "@/shared/components/ui/FormInput";
 import { useUpdateUserProfile } from "@/features/users/hooks/useUpdateUserProfile";
 import { Spinner } from "@/shared/components/ui/spinner";
-
-const profileSettingsSchema = z.object({
-  avatarKey: z.string(), // ??
-  name: z.string().min(3, "Name eingeben"),
-  email: z.string().min(8, "Mindestens 8 Zeichen"),
-  jobTitle: z.string().min(3, "Mindestens 3 Zeichen").optional(),
-});
-
-type ProfileSettingsFields = z.infer<typeof profileSettingsSchema>;
+import type { ProfileSettingsFields } from "@/features/settings/schemas/profileSettingsSchema";
+import { profileSettingsSchema } from "@/features/settings/schemas/profileSettingsSchema";
 
 const ProfileSettingsForm = () => {
   const { data: user, error } = useCurrentUser();
-  const { mutate, isPending, error: updateError } = useUpdateUserProfile();
+  const {
+    mutate,
+    isPending,
+    error: updateError,
+    isSuccess,
+  } = useUpdateUserProfile();
 
   const {
     register,
@@ -96,8 +94,8 @@ const ProfileSettingsForm = () => {
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <div className="p-4 border-b">
+    <form onSubmit={handleSubmit(onSubmit)} className="p-4">
+      <div className="pb-4 border-b">
         <h3 className="text-lg font-semibold">Profil</h3>
         <p className="mt-1 text-sm text-muted-foreground">
           Verwalte deine persönlichen Informationen und deine Rolle im
@@ -105,7 +103,7 @@ const ProfileSettingsForm = () => {
         </p>
       </div>
 
-      <div className="p-4">
+      <div className="mt-6">
         <div className="flex flex-col gap-4 rounded-md border bg-muted/35 p-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-4">
             <Avatar avatarKey={user?.avatarKey} size="lg" />
@@ -191,8 +189,19 @@ const ProfileSettingsForm = () => {
         />
       )}
 
-      <div className="flex items-center justify-end gap-3 px-6 py-4">
-        <Button variant="outline" type="button">
+      {isSuccess && (
+        <div className="mt-6 flex items-center gap-2 border bg-muted rounded-md px-4 py-3 text-sm">
+          <CheckCircle2 className="size-4 text-emerald-500" />
+          <span>Dein Profil wurde erfolgreich geändert.</span>
+        </div>
+      )}
+
+      <div className="mt-8 flex items-center justify-end gap-3">
+        <Button
+          variant="outline"
+          type="button"
+          disabled={!isDirty || isPending}
+        >
           Abbrechen
         </Button>
         <Button type="submit" disabled={!isDirty || isPending}>
