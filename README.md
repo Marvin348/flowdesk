@@ -148,6 +148,7 @@ npm run dev
 ![add Project](./screenshots/flowdesk-addProject.png)
 
 ![attachments](./screenshots/flowdesk-attachments.png)
+![settings](./screenshots/flowdesk-settings.png)
 
 ![collaborators](./screenshots/flowdesk-collaborator.png)
 ![add tasks](./screenshots/flowdesk-add-task.png)
