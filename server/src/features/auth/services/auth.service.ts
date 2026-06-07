@@ -10,6 +10,8 @@ import {
   RegisterInput,
 } from "@/features/auth/validators/auth.validators.js";
 import { toUserDto } from "@/features/users/mappers/user.mapper.js";
+import { WorkspaceModel } from "@/features/workspace/models/workspace.model.js";
+import { Types } from "mongoose";
 
 export const registerUser = async (input: RegisterInput) => {
   const { email, name, password } = input;
@@ -22,9 +24,21 @@ export const registerUser = async (input: RegisterInput) => {
 
   const passwordHash = await hashPassword(password);
 
+  const userId = new Types.ObjectId();
+  const workspaceId = new Types.ObjectId();
+
+  const newWorkspace = await WorkspaceModel.create({
+    _id: workspaceId,
+    ownerId: userId,
+    name: `${name}s Workspace`,
+  });
+
   const newUser = await UserModel.create({
+    _id: userId,
+    workspaceId,
     email,
     name,
+    role: "admin",
     passwordHash,
   });
 

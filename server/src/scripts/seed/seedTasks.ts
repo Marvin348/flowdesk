@@ -1,12 +1,21 @@
 import { TaskModel } from "@/features/tasks/models/task.model.js";
 import { requireMappedId } from "@/scripts/seed/seedUtils.js";
 import type { SeedTask } from "@/scripts/seed/types.js";
+import { Types } from "mongoose";
 
-export const seedTasks = async (
-  tasks: SeedTask[],
-  projectIdMap: Map<string, string>,
-  userIdMap: Map<string, string>,
-) => {
+type SeedTaskInput = {
+  tasks: SeedTask[];
+  projectIdMap: Map<string, string>;
+  userIdMap: Map<string, string>;
+  workspaceId: Types.ObjectId;
+};
+
+export const seedTasks = async ({
+  tasks,
+  projectIdMap,
+  userIdMap,
+  workspaceId,
+}: SeedTaskInput) => {
   const taskIdMap = new Map<string, string>();
 
   for (const task of tasks) {
@@ -16,6 +25,8 @@ export const seedTasks = async (
         task.projectId,
         "task.projectId",
       ),
+
+      workspaceId,
 
       title: task.title,
       dueDate: task.dueDate,

@@ -5,11 +5,19 @@ import { toUserDto } from "@/features/users/mappers/user.mapper.js";
 type UpdateUserInput = {
   input: UpdateCurrentUserInput;
   userId: string;
+  workspaceId: string;
 };
 
-export const updateCurrentUser = async ({ input, userId }: UpdateUserInput) => {
-  const user = await UserModel.findByIdAndUpdate(
-    userId,
+export const updateCurrentUser = async ({
+  input,
+  userId,
+  workspaceId,
+}: UpdateUserInput) => {
+  const user = await UserModel.findOneAndUpdate(
+    {
+      _id: userId,
+      workspaceId,
+    },
     {
       $set: input,
     },

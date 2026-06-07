@@ -1,8 +1,8 @@
 import type { Types } from "mongoose";
 
-
 export type ProjectDocument = {
   _id: Types.ObjectId;
+  workspaceId: Types.ObjectId;
   title: string;
   description?: string;
   ownerId: string;

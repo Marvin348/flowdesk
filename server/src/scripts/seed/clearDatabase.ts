@@ -3,9 +3,11 @@ import { TaskModel } from "@/features/tasks/models/task.model.js";
 import { UserModel } from "@/features/users/models/user.modal.js";
 import { CommentModel } from "@/features/comments/models/comment.model.js";
 import { AttachmentModel } from "@/features/attachments/models/attachment.model.js";
+import { WorkspaceModel } from "@/features/workspace/models/workspace.model.js";
 
 export const clearDatabase = async () => {
   await Promise.all([
+    WorkspaceModel.deleteMany({}),
     ProjectModel.deleteMany({}),
     TaskModel.deleteMany({}),
     UserModel.deleteMany({}),
