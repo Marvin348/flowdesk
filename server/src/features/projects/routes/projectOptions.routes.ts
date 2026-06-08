@@ -4,6 +4,7 @@ import { UserModel } from "@/features/users/models/user.modal.js";
 import { toUserDto } from "@/features/users/mappers/user.mapper.js";
 import { toProjectOptionDto } from "@/features/projects/mappers/project-option.mapper.js";
 import { getProjects } from "@/features/projects/services/project.service.js";
+import { getAuthContext } from "@/features/auth/utils/getAuthContext.js";
 
 const router = express.Router();
 
@@ -16,18 +17,20 @@ router.get(
     try {
       const search =
         typeof req.query.search === "string" ? req.query.search.trim() : "";
-      const userId = req.query.userId;
-      const currentUserId = req.user?.id;
 
-      if (!currentUserId) {
+      const selectedUserId = req.query.userId;
+
+      const { userId, workspaceId } = getAuthContext(req);
+
+      if (!selectedUserId) {
         return res.status(401).json({ message: "Not authenticated" });
       }
 
-      if (!userId) {
-        return res.status(400).json({ error: "Invalid userId" });
-      }
+      const visibleProjects = await getProjects({
+        userId,
+        workspaceId,
+      });
 
-      const visibleProjects = await getProjects(currentUserId);
       const sortedProjects = [...visibleProjects].sort(
         (a, b) =>
           new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
@@ -56,6 +59,7 @@ router.get(
       }
 
       const userRecords = await UserModel.find({
+        workspaceId,
         _id: { $in: [...allUserIds] },
       }).lean();
 
@@ -63,11 +67,11 @@ router.get(
       const usersById = new Map(usersList.map((user) => [user.id, user]));
 
       const recent = recentProjects.map((p) =>
-        toProjectOptionDto(p, usersById, userId),
+        toProjectOptionDto(p, usersById, selectedUserId),
       );
 
       const results = searchProjectRecords.map((p) =>
-        toProjectOptionDto(p, usersById, userId),
+        toProjectOptionDto(p, usersById, selectedUserId),
       );
 
       return res.status(200).json({

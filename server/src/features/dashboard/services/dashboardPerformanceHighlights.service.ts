@@ -6,13 +6,20 @@ import { TaskModel } from "@/features/tasks/models/task.model.js";
 import { toUserDto } from "@/features/users/mappers/user.mapper.js";
 import { UserModel } from "@/features/users/models/user.modal.js";
 
-export const getPerformanceHighlights = async (userId: string) => {
-  const projects = await getProjects(userId);
+export const getPerformanceHighlights = async ({
+  userId,
+  workspaceId,
+}: {
+  userId: string;
+  workspaceId: string;
+}) => {
+  const projects = await getProjects({ userId, workspaceId });
   const projectIds = projects.map((project) => project.id);
 
   const [userRecords, taskRecords] = await Promise.all([
-    UserModel.find().lean(),
+    UserModel.find({ workspaceId }).lean(),
     TaskModel.find({
+      workspaceId,
       projectId: { $in: projectIds },
     }).lean(),
   ]);

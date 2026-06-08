@@ -142,6 +142,7 @@ npm run dev
 ## Screenshots
 
 ![login](./screenshots/flowdesk-login.png)
+
 ![dashboard](./screenshots/flowdesk-dashboard.png)
 ![details](./screenshots/flowdesk-details.png)
 ![projects](./screenshots/flowdesk-projects.png)
@@ -149,9 +150,11 @@ npm run dev
 
 ![attachments](./screenshots/flowdesk-attachments.png)
 ![settings](./screenshots/flowdesk-settings.png)
+![settings-appearance](./screenshots/flowdesk-settings-appearance.png)
 
 ![collaborators](./screenshots/flowdesk-collaborator.png)
 ![add tasks](./screenshots/flowdesk-add-task.png)
 
+![team details](./screenshots/flowdesk-team-details.png)
 ![team](./screenshots/flowdesk-team.png)
 ![team filter](./screenshots/flowdesk-team-filter.png)

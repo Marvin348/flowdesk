@@ -27,6 +27,7 @@ import { toCommentDto } from "@/features/comments/mappers/comment.mapper.js";
 import { PAGE_LIMITS } from "@shared/constants/pagination.js";
 import { parsePagination } from "@/shared/parsers/parsePagination.js";
 import { getProjectById } from "@/features/projects/services/project.service.js";
+import { getAuthContext } from "@/features/auth/utils/getAuthContext.js";
 
 const router = express.Router();
 
@@ -38,22 +39,19 @@ router.get("/:id/details", async (req: Request<{ id: string }>, res) => {
       return res.status(400).json({ error: "Invalid projectId" });
     }
 
-    const userId = req.user?.id;
-
-    if (!userId) {
-      return res.status(401).json({ message: "Not authenticated" });
-    }
+    const { userId, workspaceId } = getAuthContext(req);
 
     const project = await getProjectById({
       projectId,
       userId,
+      workspaceId,
     });
 
     if (!project) {
       return res.status(404).json({ error: "project not found" });
     }
 
-    const taskRecords = await TaskModel.find({ projectId }).lean();
+    const taskRecords = await TaskModel.find({ projectId, workspaceId }).lean();
 
     const tasks = taskRecords.map(toTaskDto);
 
@@ -62,6 +60,7 @@ router.get("/:id/details", async (req: Request<{ id: string }>, res) => {
     const invitedUserIdsSet = Array.from(new Set(project.invitedUserIds));
 
     const usersRecord = await UserModel.find({
+      workspaceId,
       _id: { $in: invitedUserIdsSet },
     }).lean();
 
@@ -89,22 +88,19 @@ router.get("/:id/overview", async (req, res) => {
       return res.status(400).json({ error: "Invalid projectId" });
     }
 
-    const userId = req.user?.id;
-
-    if (!userId) {
-      return res.status(401).json({ message: "Not authenticated" });
-    }
+    const { userId, workspaceId } = getAuthContext(req);
 
     const project = await getProjectById({
       projectId,
       userId,
+      workspaceId,
     });
 
     if (!project) {
       return res.status(404).json({ message: "Project not found" });
     }
 
-    const taskRecords = await TaskModel.find({ projectId }).lean();
+    const taskRecords = await TaskModel.find({ projectId, workspaceId }).lean();
 
     const tasks = taskRecords.map(toTaskDto);
 
@@ -113,11 +109,12 @@ router.get("/:id/overview", async (req, res) => {
     const commentsRecords =
       taskIds.length > 0
         ? await CommentModel.find({
+            workspaceId,
             taskId: { $in: taskIds },
           }).lean()
         : [];
 
-    const userRecords = await UserModel.find().lean();
+    const userRecords = await UserModel.find({ workspaceId }).lean();
 
     const users = userRecords.map(toUserDto);
     const comments = commentsRecords.map(toCommentDto);
@@ -149,23 +146,20 @@ router.get("/:id/tasks", async (req, res) => {
       return res.status(400).json({ error: "Invalid projectId" });
     }
 
-    const userId = req.user?.id;
-
-    if (!userId) {
-      return res.status(401).json({ message: "Not authenticated" });
-    }
+    const { userId, workspaceId } = getAuthContext(req);
 
     const project = await getProjectById({
       projectId,
       userId,
+      workspaceId,
     });
 
     if (!project) {
       return res.status(404).json({ message: "Project not found" });
     }
 
-    const taskRecords = await TaskModel.find({ projectId }).lean();
-    const userRecords = await UserModel.find().lean();
+    const taskRecords = await TaskModel.find({ projectId, workspaceId }).lean();
+    const userRecords = await UserModel.find({ workspaceId }).lean();
 
     const tasks = taskRecords.map(toTaskDto);
     const users = userRecords.map(toUserDto);
@@ -196,17 +190,14 @@ router.get(
         return res.status(400).json({ error: "Invalid projectId" });
       }
 
-      const userId = req.user?.id;
-
-      if (!userId) {
-        return res.status(401).json({ message: "Not authenticated" });
-      }
-
       const parsedCollaboratorSort = parseCollaboratorSort(collaboratorsSort);
+
+      const { userId, workspaceId } = getAuthContext(req);
 
       const project = await getProjectById({
         projectId,
         userId,
+        workspaceId,
       });
 
       if (!project) {
@@ -214,6 +205,7 @@ router.get(
       }
 
       const userRecords = await UserModel.find({
+        workspaceId,
         _id: { $in: project.invitedUserIds },
       }).lean();
 
@@ -248,33 +240,34 @@ router.get(
         return res.status(400).json({ error: "Invalid projectId" });
       }
 
-      const userId = req.user?.id;
-
-      if (!userId) {
-        return res.status(401).json({ message: "Not authenticated" });
-      }
+      const { userId, workspaceId } = getAuthContext(req);
 
       const parsedCommentsSort = parseProjectCommentsSort(commentsSort);
 
       const project = await getProjectById({
         projectId,
         userId,
+        workspaceId,
       });
 
       if (!project) {
         return res.status(404).json({ error: "project not found" });
       }
 
-      const taskRecords = await TaskModel.find({ projectId }).lean();
+      const taskRecords = await TaskModel.find({
+        projectId,
+        workspaceId,
+      }).lean();
       const tasks = taskRecords.map(toTaskDto);
 
       const taskIds = tasks.map((task) => task.id);
 
       const commentRecords = await CommentModel.find({
+        workspaceId,
         taskId: { $in: taskIds },
       }).lean();
 
-      const userRecords = await UserModel.find().lean();
+      const userRecords = await UserModel.find({ workspaceId }).lean();
 
       const comments = commentRecords.map(toCommentDto);
       const users = userRecords.map(toUserDto);
@@ -323,26 +316,26 @@ router.get(
         return res.status(400).json({ error: "Invalid projectId" });
       }
 
-      const userId = req.user?.id;
-
-      if (!userId) {
-        return res.status(401).json({ message: "Not authenticated" });
-      }
-
       const parsedWorkloadSort = parseProjectWorkloadSort(
         req.query.workloadSort,
       );
 
+      const { userId, workspaceId } = getAuthContext(req);
+
       const project = await getProjectById({
         projectId,
         userId,
+        workspaceId,
       });
 
       if (!project) {
         return res.status(404).json({ error: "project not found" });
       }
 
-      const taskRecords = await TaskModel.find({ projectId }).lean();
+      const taskRecords = await TaskModel.find({
+        projectId,
+        workspaceId,
+      }).lean();
 
       const tasks = taskRecords.map(toTaskDto);
 
@@ -351,6 +344,7 @@ router.get(
       );
 
       const userRecords = await UserModel.find({
+        workspaceId,
         _id: { $in: [...collaboratorIds] },
       }).lean();
 

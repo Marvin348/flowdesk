@@ -23,18 +23,22 @@ import { PAGE_LIMITS, DEFAULT_PAGE } from "@shared/constants/pagination.js";
 import { parsePagination } from "@/shared/parsers/parsePagination.js";
 import { updateCurrentUserSchema } from "@/features/users/validators/user.validator.js";
 import { updateCurrentUser } from "../services/user.service.js";
+import { getAuthContext } from "@/features/auth/utils/getAuthContext.js";
 
 const router = express.Router();
 
 router.get("/", async (req, res) => {
-  const workspaceId = req.user?.workspaceId;
+  try {
+    const { workspaceId } = getAuthContext(req);
 
-  if (!workspaceId) {
-    return res.status(401).json({ message: "Not authenticated" });
+    const users = await UserModel.find({ workspaceId }).lean();
+
+    return res.json({ data: users.map(toUserDto) });
+  } catch (error) {
+    return res.status(500).json({
+      error: "Failed to fetch users",
+    });
   }
-
-  const users = await UserModel.find({ workspaceId }).lean();
-  res.json({ data: users.map(toUserDto) });
 });
 
 export type TeamMembersQuery = {
@@ -54,11 +58,7 @@ router.get("/team", async (req: Request<{}, {}, {}, TeamMembersQuery>, res) => {
 
     const parsedTeamFilter = parseTeamFilter(req.query);
 
-    const workspaceId = req.user?.workspaceId;
-
-    if (!workspaceId) {
-      return res.status(401).json({ message: "Not authenticated" });
-    }
+    const { workspaceId } = getAuthContext(req);
 
     const userQuery = buildUserQuery({
       search,
@@ -114,12 +114,7 @@ router.patch("/me", async (req, res) => {
 
     const input = result.data;
 
-    const userId = req.user?.id;
-    const workspaceId = req.user?.workspaceId;
-
-    if (!userId || !workspaceId) {
-      return res.status(401).json({ error: "Not authenticated" });
-    }
+    const { userId, workspaceId } = getAuthContext(req);
 
     const updatedUser = await updateCurrentUser({ input, userId, workspaceId });
 
@@ -131,15 +126,15 @@ router.patch("/me", async (req, res) => {
 
 router.get("/:id/details", async (req, res) => {
   try {
-    const userId = req.params.id;
-    const workspaceId = req.user?.workspaceId;
+    const { workspaceId } = getAuthContext(req);
+    const targetUserId = req.params.id;
 
-    if (!userId || !workspaceId) {
-      return res.status(401).json({ error: "Not authenticated" });
+    if (!targetUserId) {
+      return res.status(404).json({ message: "Invalid userId" });
     }
 
     const userRecord = await UserModel.findOne({
-      _id: userId,
+      _id: targetUserId,
       workspaceId,
     }).lean();
 
@@ -168,14 +163,14 @@ router.patch(
   "/:id",
   async (req: Request<{ id: string }, {}, { role: UserRole }>, res) => {
     try {
-      const userId = req.params.id;
-      const workspaceId = req.user?.workspaceId;
+      const { workspaceId } = getAuthContext(req);
+      const targetUserId = req.params.id;
+
+      if (!targetUserId) {
+        return res.status(404).json({ message: "Invalid userId" });
+      }
 
       const { role } = req.body;
-
-      if (!userId || !workspaceId) {
-        return res.status(401).json({ error: "Not authenticated" });
-      }
 
       const isValidRole =
         role === "admin" || role === "member" || role === "manager";
@@ -184,7 +179,10 @@ router.patch(
         return res.status(400).json({ error: "Invalid role" });
       }
 
-      const user = await UserModel.findOne({ _id: userId, workspaceId }).lean();
+      const user = await UserModel.findOne({
+        _id: targetUserId,
+        workspaceId,
+      }).lean();
 
       if (!user) {
         return res.status(404).json({ message: "User not found" });
@@ -195,7 +193,7 @@ router.patch(
       }
 
       const updatedUser = await UserModel.findOneAndUpdate(
-        { _id: userId, workspaceId },
+        { _id: targetUserId, workspaceId },
         { role },
         { returnDocument: "after" },
       ).lean();

@@ -10,6 +10,7 @@ import {
   getProjectById,
   getProjects,
 } from "@/features/projects/services/project.service.js";
+import { getAuthContext } from "@/features/auth/utils/getAuthContext.js";
 
 const router = express.Router();
 
@@ -23,23 +24,23 @@ router.patch(
   async (req: Request<{}, {}, AssignUserInput>, res) => {
     try {
       const { projectIdsToAdd, userId } = req.body;
-      const currentUserId = req.user?.id;
 
-      if (!currentUserId) {
-        return res.status(401).json({ message: "Not authenticated" });
-      }
+      const { userId: currentUserId, workspaceId } = getAuthContext(req);
 
       if (!Array.isArray(projectIdsToAdd) || typeof userId !== "string") {
         return res.status(400).json({ error: "Invalid input" });
       }
 
-      const user = await UserModel.findById(userId);
+      const user = await UserModel.findOne({ _id: userId, workspaceId }).lean();
 
       if (!user) {
         return res.status(404).json({ error: "User not found" });
       }
 
-      const visibleProjects = await getProjects(currentUserId);
+      const visibleProjects = await getProjects({
+        userId: currentUserId,
+        workspaceId,
+      });
       const projectIdsToAddSet = new Set(projectIdsToAdd);
       const matchingProjects = visibleProjects.filter((project) =>
         projectIdsToAddSet.has(project.id),
@@ -64,6 +65,7 @@ router.patch(
       await ProjectModel.updateMany(
         {
           _id: { $in: matchingProjectIds },
+          workspaceId,
         },
         {
           $addToSet: {
@@ -74,6 +76,7 @@ router.patch(
 
       const updatedProjectDocs = await ProjectModel.find({
         _id: { $in: matchingProjectIds },
+        workspaceId,
       });
 
       const updatedProjects = updatedProjectDocs.map(toProjectDto);
@@ -96,11 +99,8 @@ router.delete(
     try {
       const projectId = req.params.id;
       const userId = req.params.userId;
-      const currentUserId = req.user?.id;
 
-      if (!currentUserId) {
-        return res.status(401).json({ message: "Not authenticated" });
-      }
+      const { userId: currentUserId, workspaceId } = getAuthContext(req);
 
       if (!projectId) {
         return res.status(400).json({ error: "Invalid projectId" });
@@ -113,6 +113,7 @@ router.delete(
       const project = await getProjectById({
         projectId,
         userId: currentUserId,
+        workspaceId,
       });
 
       if (!project) {
@@ -124,7 +125,7 @@ router.delete(
       }
 
       const updatedProject = await ProjectModel.findOneAndUpdate(
-        { _id: projectId },
+        { _id: projectId, workspaceId },
         {
           $pull: {
             invitedUserIds: userId,
@@ -139,6 +140,7 @@ router.delete(
 
       await TaskModel.updateMany(
         {
+          workspaceId,
           projectId,
           collaboratorIds: userId,
         },
@@ -150,6 +152,7 @@ router.delete(
       );
 
       const tasksWithoutCollaborators = await TaskModel.find({
+        workspaceId,
         projectId,
         collaboratorIds: { $size: 0 },
       }).lean();
@@ -160,14 +163,19 @@ router.delete(
 
       if (taskIdsToDelete.length > 0) {
         await AttachmentModel.deleteMany({
+          workspaceId,
+          projectId,
           taskId: { $in: taskIdsToDelete },
         });
 
         await CommentModel.deleteMany({
+          workspaceId,
           taskId: { $in: taskIdsToDelete },
         });
 
         await TaskModel.deleteMany({
+          workspaceId,
+          projectId,
           _id: { $in: taskIdsToDelete },
         });
       }
@@ -188,11 +196,8 @@ router.patch(
     try {
       const projectId = req.params.id;
       const { userIdsToAdd } = req.body;
-      const currentUserId = req.user?.id;
 
-      if (!currentUserId) {
-        return res.status(401).json({ message: "Not authenticated" });
-      }
+      const { userId: currentUserId, workspaceId } = getAuthContext(req);
 
       if (!projectId || !Array.isArray(userIdsToAdd)) {
         return res.status(400).json({ error: "Invalid input" });
@@ -201,6 +206,7 @@ router.patch(
       const project = await getProjectById({
         projectId,
         userId: currentUserId,
+        workspaceId,
       });
 
       if (!project) {
@@ -208,7 +214,7 @@ router.patch(
       }
 
       const updatedProject = await ProjectModel.findOneAndUpdate(
-        { _id: projectId },
+        { _id: projectId, workspaceId },
         {
           $addToSet: {
             invitedUserIds: {

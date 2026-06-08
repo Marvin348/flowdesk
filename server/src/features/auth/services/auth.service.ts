@@ -27,7 +27,7 @@ export const registerUser = async (input: RegisterInput) => {
   const userId = new Types.ObjectId();
   const workspaceId = new Types.ObjectId();
 
-  const newWorkspace = await WorkspaceModel.create({
+  await WorkspaceModel.create({
     _id: workspaceId,
     ownerId: userId,
     name: `${name}s Workspace`,
