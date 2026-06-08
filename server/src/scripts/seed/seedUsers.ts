@@ -1,8 +1,18 @@
 import { UserModel } from "@/features/users/models/user.modal.js";
 import type { SeedUser } from "@/scripts/seed/types.js";
 import { hashPassword } from "@/features/auth/utils/password.js";
+import { Types } from "mongoose";
 
-export const seedUsers = async (users: SeedUser[]) => {
+export const seedUsers = async (
+  users: SeedUser[],
+  {
+    demoUserId,
+    workspaceId,
+  }: {
+    demoUserId: Types.ObjectId;
+    workspaceId: Types.ObjectId;
+  },
+) => {
   const userIdMap = new Map<string, string>();
 
   const DEMO_LOGIN_USER = {
@@ -21,13 +31,18 @@ export const seedUsers = async (users: SeedUser[]) => {
   const usersToSeed = [DEMO_LOGIN_USER, ...users];
 
   for (const user of usersToSeed) {
+    const mongoUserId =
+      user.id === "demo-user" ? demoUserId : new Types.ObjectId();
+
     const createdUser = await UserModel.create({
+      _id: mongoUserId,
       name: user.name,
       email: user.email,
       jobTitle: user.jobTitle,
       role: user.role,
       avatarKey: user.avatarKey,
       passwordHash: demoPasswordHash,
+      workspaceId,
     });
 
     userIdMap.set(user.id, createdUser._id.toString());

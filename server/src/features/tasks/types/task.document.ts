@@ -2,6 +2,7 @@ import type { Types } from "mongoose";
 
 export type TaskDocument = {
   _id: Types.ObjectId;
+  workspaceId: Types.ObjectId;
   projectId: string;
   title: string;
 

@@ -1,13 +1,16 @@
 type BuildAttachmentQueryInput = {
   projectId: string;
+  workspaceId: string;
   search: string;
 };
 
 export const buildAttachmentQuery = ({
   projectId,
+  workspaceId,
   search,
 }: BuildAttachmentQueryInput): Record<string, unknown> => {
   const query: Record<string, unknown> = {
+    workspaceId,
     projectId,
   };
 

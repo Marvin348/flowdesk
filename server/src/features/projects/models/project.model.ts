@@ -3,6 +3,11 @@ import { ProjectDocument } from "@/features/projects/types/project.document.js";
 
 const projectSchema = new mongoose.Schema(
   {
+    workspaceId: {
+      type: mongoose.Schema.Types.ObjectId,
+      required: true,
+    },
+
     title: {
       type: String,
       require: true,

@@ -8,20 +8,18 @@ import {
   getProjects,
   touchProject,
 } from "@/features/projects/services/project.service.js";
+import { getAuthContext } from "@/features/auth/utils/getAuthContext.js";
 
 const router = express.Router();
 
 router.get("/", async (req, res) => {
-  const userId = req.user?.id;
+  const { userId, workspaceId } = getAuthContext(req);
 
-  if (!userId) {
-    return res.status(401).json({ message: "Not authenticated" });
-  }
-
-  const projects = await getProjects(userId);
+  const projects = await getProjects({ userId, workspaceId });
   const projectIds = projects.map((project) => project.id);
 
   const tasks = await TaskModel.find({
+    workspaceId,
     projectId: { $in: projectIds },
   }).lean();
 
@@ -45,15 +43,12 @@ router.post("/", async (req: Request<{}, {}, CreateTaskInput>, res) => {
       return res.status(400).json({ error: "Missing required fields" });
     }
 
-    const userId = req.user?.id;
-
-    if (!userId) {
-      return res.status(401).json({ message: "Not authenticated" });
-    }
+    const { userId, workspaceId } = getAuthContext(req);
 
     const project = await getProjectById({
       projectId,
       userId,
+      workspaceId,
     });
 
     if (!project) {
@@ -70,9 +65,10 @@ router.post("/", async (req: Request<{}, {}, CreateTaskInput>, res) => {
       taskPriority,
       reminderAt: reminderAt ?? "none",
       description,
+      workspaceId,
     });
 
-    await touchProject(projectId);
+    await touchProject({ projectId, workspaceId });
 
     return res.status(201).json({
       data: toTaskDto(newTaskRecord.toObject()),

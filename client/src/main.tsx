@@ -5,7 +5,7 @@ import "@/index.css";
 import { createBrowserRouter, RouterProvider } from "react-router";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import AppLayout from "@/shared/components/layout/AppLayout";
-import DashboardPage from "@/pages/DashboardPage";
+import DashboardPage from "@/features/dashboard/pages/DashboardPage";
 import ProjectsPage from "@/pages/ProjectsPage";
 import TeamPage from "@/pages/TeamPage";
 import ProjectDetailsPage from "@/pages/ProjectDetailsPage";

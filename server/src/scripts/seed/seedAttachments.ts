@@ -1,13 +1,23 @@
 import type { SeedAttachment } from "@/scripts/seed/types.js";
 import { requireMappedId } from "@/scripts/seed/seedUtils.js";
 import { AttachmentModel } from "@/features/attachments/models/attachment.model.js";
+import { Types } from "mongoose";
 
-export const seedAttachments = async (
-  attachments: SeedAttachment[],
-  projectIdMap: Map<string, string>,
-  taskIdMap: Map<string, string>,
-  userIdMap: Map<string, string>,
-) => {
+type SeedAttachmentInput = {
+  attachments: SeedAttachment[];
+  projectIdMap: Map<string, string>;
+  taskIdMap: Map<string, string>;
+  userIdMap: Map<string, string>;
+  workspaceId: Types.ObjectId;
+};
+
+export const seedAttachments = async ({
+  attachments,
+  projectIdMap,
+  taskIdMap,
+  userIdMap,
+  workspaceId,
+}: SeedAttachmentInput) => {
   const attachmentIdMap = new Map<string, string>();
 
   for (const attachment of attachments) {
@@ -17,6 +27,8 @@ export const seedAttachments = async (
         attachment.projectId,
         "attachment.projectId",
       ),
+
+      workspaceId,
 
       taskId: attachment.taskId
         ? requireMappedId(taskIdMap, attachment.taskId, "attachment.taskId")

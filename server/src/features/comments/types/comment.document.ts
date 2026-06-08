@@ -2,6 +2,7 @@ import type { Types } from "mongoose";
 
 export type CommentDocument = {
   _id: Types.ObjectId;
+  workspaceId: Types.ObjectId;
   taskId: string;
   userId: string;
   message: string;

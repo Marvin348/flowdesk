@@ -16,6 +16,7 @@ import { toProjectAttachmentsDto } from "@/features/projects/mappers/project-att
 import { ProjectModel } from "@/features/projects/models/project.model.js";
 import { getProjectById } from "@/features/projects/services/project.service.js";
 import multer from "multer";
+import { getAuthContext } from "@/features/auth/utils/getAuthContext.js";
 
 const router = express.Router();
 
@@ -41,15 +42,12 @@ router.delete(
         return res.status(400).json({ error: "Invalid attachmentId" });
       }
 
-      const userId = req.user?.id;
-
-      if (!userId) {
-        return res.status(401).json({ message: "Not authenticated" });
-      }
+      const { userId, workspaceId } = getAuthContext(req);
 
       const project = await getProjectById({
         projectId,
         userId,
+        workspaceId,
       });
 
       if (!project) {
@@ -58,6 +56,7 @@ router.delete(
 
       const attachmentRecord = await AttachmentModel.findOne({
         _id: attachmentId,
+        workspaceId,
         projectId,
       }).lean();
 
@@ -76,12 +75,16 @@ router.delete(
 
       const deletedAttachment = await AttachmentModel.deleteOne({
         _id: attachmentId,
+        workspaceId,
         projectId,
       });
 
-      await ProjectModel.findByIdAndUpdate(projectId, {
-        $currentDate: { updatedAt: true },
-      });
+      await ProjectModel.findOneAndUpdate(
+        { _id: projectId, workspaceId },
+        {
+          $currentDate: { updatedAt: true },
+        },
+      );
 
       return res.status(200).json({ data: deletedAttachment });
     } catch (error) {
@@ -102,15 +105,12 @@ router.get(
         return res.status(400).json({ error: "Invalid projectId" });
       }
 
-      const userId = req.user?.id;
-
-      if (!userId) {
-        return res.status(401).json({ message: "Not authenticated" });
-      }
+      const { userId, workspaceId } = getAuthContext(req);
 
       const project = await getProjectById({
         projectId,
         userId,
+        workspaceId,
       });
 
       if (!project) {
@@ -128,6 +128,7 @@ router.get(
 
       const attachmentQuery = buildAttachmentQuery({
         projectId,
+        workspaceId,
         search,
       });
 
@@ -152,9 +153,12 @@ router.get(
       ];
 
       const userRecords = await UserModel.find({
+        workspaceId,
         _id: { $in: userIds },
       }).lean();
       const taskRecords = await TaskModel.find({
+        workspaceId,
+        projectId,
         _id: { $in: taskIds },
       }).lean();
 
@@ -211,19 +215,28 @@ router.post(
         return res.status(400).json({ error: "Invalid projectId" });
       }
 
-      const userId = req.user?.id;
-
-      if (!userId) {
-        return res.status(401).json({ message: "Not authenticated" });
-      }
+      const { userId, workspaceId } = getAuthContext(req);
 
       const project = await getProjectById({
         projectId,
         userId,
+        workspaceId,
       });
 
       if (!project) {
         return res.status(404).json({ error: "project not found" });
+      }
+
+      if (taskId) {
+        const task = await TaskModel.findOne({
+          _id: taskId,
+          workspaceId,
+          projectId,
+        }).lean();
+
+        if (!task) {
+          return res.status(404).json({ error: "task not found" });
+        }
       }
 
       if (!files || files.length === 0) {
@@ -231,6 +244,7 @@ router.post(
       }
 
       const attachmentsToCreate = files.map((f) => ({
+        workspaceId,
         projectId,
         taskId,
         userId,
@@ -244,9 +258,12 @@ router.post(
       const createdAttachments =
         await AttachmentModel.insertMany(attachmentsToCreate);
 
-      await ProjectModel.findByIdAndUpdate(projectId, {
-        $currentDate: { updatedAt: true },
-      });
+      await ProjectModel.findOneAndUpdate(
+        { _id: projectId, workspaceId },
+        {
+          $currentDate: { updatedAt: true },
+        },
+      );
 
       return res.status(201).json({ data: createdAttachments });
     } catch (error) {

@@ -23,12 +23,22 @@ import { PAGE_LIMITS, DEFAULT_PAGE } from "@shared/constants/pagination.js";
 import { parsePagination } from "@/shared/parsers/parsePagination.js";
 import { updateCurrentUserSchema } from "@/features/users/validators/user.validator.js";
 import { updateCurrentUser } from "../services/user.service.js";
+import { getAuthContext } from "@/features/auth/utils/getAuthContext.js";
 
 const router = express.Router();
 
 router.get("/", async (req, res) => {
-  const users = await UserModel.find().lean();
-  res.json({ data: users.map(toUserDto) });
+  try {
+    const { workspaceId } = getAuthContext(req);
+
+    const users = await UserModel.find({ workspaceId }).lean();
+
+    return res.json({ data: users.map(toUserDto) });
+  } catch (error) {
+    return res.status(500).json({
+      error: "Failed to fetch users",
+    });
+  }
 });
 
 export type TeamMembersQuery = {
@@ -48,10 +58,16 @@ router.get("/team", async (req: Request<{}, {}, {}, TeamMembersQuery>, res) => {
 
     const parsedTeamFilter = parseTeamFilter(req.query);
 
-    const userQuery = buildUserQuery({ search, role: parsedTeamFilter.role });
+    const { workspaceId } = getAuthContext(req);
+
+    const userQuery = buildUserQuery({
+      search,
+      role: parsedTeamFilter.role,
+      workspaceId,
+    });
 
     const userRecords = await UserModel.find(userQuery).lean();
-    const taskRecords = await TaskModel.find().lean();
+    const taskRecords = await TaskModel.find({ workspaceId }).lean();
 
     const tasks = taskRecords.map(toTaskDto);
     const users = userRecords.map(toUserDto);
@@ -97,13 +113,10 @@ router.patch("/me", async (req, res) => {
     }
 
     const input = result.data;
-    const userId = req.user?.id;
 
-    if (!userId) {
-      return res.status(400).json({ error: "Not authenticated" });
-    }
+    const { userId, workspaceId } = getAuthContext(req);
 
-    const updatedUser = await updateCurrentUser({ input, userId });
+    const updatedUser = await updateCurrentUser({ input, userId, workspaceId });
 
     return res.status(201).json({ user: updatedUser });
   } catch (error) {
@@ -113,20 +126,24 @@ router.patch("/me", async (req, res) => {
 
 router.get("/:id/details", async (req, res) => {
   try {
-    const userId = req.params.id;
+    const { workspaceId } = getAuthContext(req);
+    const targetUserId = req.params.id;
 
-    if (!userId) {
-      return res.status(400).json({ error: "userId invalid input" });
+    if (!targetUserId) {
+      return res.status(404).json({ message: "Invalid userId" });
     }
 
-    const userRecord = await UserModel.findById(userId).lean();
+    const userRecord = await UserModel.findOne({
+      _id: targetUserId,
+      workspaceId,
+    }).lean();
 
     if (!userRecord) {
       return res.status(404).json({ error: "User not found" });
     }
 
-    const projectRecords = await ProjectModel.find().lean();
-    const taskRecords = await TaskModel.find().lean();
+    const projectRecords = await ProjectModel.find({ workspaceId }).lean();
+    const taskRecords = await TaskModel.find({ workspaceId }).lean();
 
     const user = toUserDto(userRecord);
     const projects = projectRecords.map(toProjectDto);
@@ -146,12 +163,14 @@ router.patch(
   "/:id",
   async (req: Request<{ id: string }, {}, { role: UserRole }>, res) => {
     try {
-      const userId = req.params.id;
-      const { role } = req.body;
+      const { workspaceId } = getAuthContext(req);
+      const targetUserId = req.params.id;
 
-      if (!userId) {
-        return res.status(400).json({ error: "Invalid input" });
+      if (!targetUserId) {
+        return res.status(404).json({ message: "Invalid userId" });
       }
+
+      const { role } = req.body;
 
       const isValidRole =
         role === "admin" || role === "member" || role === "manager";
@@ -160,7 +179,10 @@ router.patch(
         return res.status(400).json({ error: "Invalid role" });
       }
 
-      const user = await UserModel.findById(userId).lean();
+      const user = await UserModel.findOne({
+        _id: targetUserId,
+        workspaceId,
+      }).lean();
 
       if (!user) {
         return res.status(404).json({ message: "User not found" });
@@ -171,7 +193,7 @@ router.patch(
       }
 
       const updatedUser = await UserModel.findOneAndUpdate(
-        { _id: userId },
+        { _id: targetUserId, workspaceId },
         { role },
         { returnDocument: "after" },
       ).lean();

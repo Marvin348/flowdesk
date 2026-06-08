@@ -3,6 +3,11 @@ import { TaskDocument } from "@/features/tasks/types/task.document.js";
 
 const taskSchema = new mongoose.Schema(
   {
+    workspaceId: {
+      type: mongoose.Schema.Types.ObjectId,
+      required: true,
+    },
+
     projectId: {
       type: String,
       required: true,

@@ -9,6 +9,8 @@ import { seedTasks } from "@/scripts/seed/seedTasks.js";
 import { seedComments } from "@/scripts/seed/seedComments.js";
 import { seedAttachments } from "@/scripts/seed/seedAttachments.js";
 import { clearDatabase } from "@/scripts/seed/clearDatabase.js";
+import { Types } from "mongoose";
+import { seedWorkspace } from "@/scripts/seed/seedWorkspace.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -26,22 +28,54 @@ const seed = async () => {
   const file = fs.readFileSync(filePath, "utf-8");
   const db = JSON.parse(file);
 
+  const demoUserId = new Types.ObjectId();
+  const demoWorkspaceId = new Types.ObjectId();
+
   await clearDatabase();
   console.log("Cleared database");
 
-  const userIdMap = await seedUsers(db.users);
+  await seedWorkspace({
+    workspaceId: demoWorkspaceId,
+    ownerId: demoUserId,
+  });
+  console.log("Seeded workspace");
+
+  const userIdMap = await seedUsers(db.users, {
+    demoUserId,
+    workspaceId: demoWorkspaceId,
+  });
   console.log("Seeded users");
 
-  const projectIdMap = await seedProjects(db.projects, userIdMap);
+  const projectIdMap = await seedProjects({
+    projects: db.projects,
+    userIdMap,
+    workspaceId: demoWorkspaceId,
+  });
   console.log("Seeded projects");
 
-  const taskIdMap = await seedTasks(db.tasks, projectIdMap, userIdMap);
+  const taskIdMap = await seedTasks({
+    tasks: db.tasks,
+    projectIdMap,
+    userIdMap,
+    workspaceId: demoWorkspaceId,
+  });
   console.log("Seeded tasks");
 
-  const commentIdMap = await seedComments(db.comments, taskIdMap, userIdMap);
+  const commentIdMap = await seedComments({
+    comments: db.comments,
+    taskIdMap,
+    userIdMap,
+    workspaceId: demoWorkspaceId,
+  });
   console.log("Seeded comments");
 
-  await seedAttachments(db.attachments, projectIdMap, taskIdMap, userIdMap);
+  await seedAttachments({
+    attachments: db.attachments,
+    projectIdMap,
+    taskIdMap,
+    userIdMap,
+    workspaceId: demoWorkspaceId,
+  });
   console.log("Seeded attachments");
 
   console.log("Database was seeded successfully");

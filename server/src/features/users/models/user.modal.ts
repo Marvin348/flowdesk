@@ -3,6 +3,11 @@ import type { UserDocument } from "@/features/users/types/user.document.js";
 
 const userSchema = new mongoose.Schema(
   {
+    workspaceId: {
+      type: mongoose.Schema.Types.ObjectId,
+      required: true,
+    },
+
     name: {
       type: String,
       required: true,

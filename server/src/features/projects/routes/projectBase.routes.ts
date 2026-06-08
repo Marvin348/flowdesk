@@ -22,17 +22,14 @@ import {
   getProjectById,
   getProjects,
 } from "@/features/projects/services/project.service.js";
+import { getAuthContext } from "@/features/auth/utils/getAuthContext.js";
 
 const router = express.Router();
 
 router.get("/", async (req, res) => {
-  const userId = req.user?.id;
+  const { userId, workspaceId } = getAuthContext(req);
 
-  if (!userId) {
-    return res.status(401).json({ message: "Not authenticated" });
-  }
-
-  const projects = await getProjects(userId);
+  const projects = await getProjects({ userId, workspaceId });
 
   return res.status(200).json({ data: projects });
 });
@@ -41,26 +38,28 @@ router.get(
   "/summaries",
   async (req: Request<{}, {}, {}, ProjectSummaryQuery>, res) => {
     try {
-      const userId = req.user?.id;
+      const { userId, workspaceId } = getAuthContext(req);
 
-      if (!userId) {
-        return res.status(401).json({ message: "Not authenticated" });
-      }
-
-      const projects = await getProjects(userId);
+      const projects = await getProjects({ userId, workspaceId });
       const projectIds = projects.map((project) => project.id);
 
       const taskDocs = await TaskModel.find({
+        workspaceId,
         projectId: { $in: projectIds },
       }).lean();
       const taskIds = taskDocs.map((task) => task._id.toString());
+
       const commentDocs = await CommentModel.find({
+        workspaceId,
         taskId: { $in: taskIds },
       }).lean();
+
       const attachmentDocs = await AttachmentModel.find({
+        workspaceId,
         projectId: { $in: projectIds },
       }).lean();
-      const userDocs = await UserModel.find().lean();
+
+      const userDocs = await UserModel.find({ workspaceId }).lean();
 
       const tasks = taskDocs.map(toTaskDto);
       const comments = commentDocs.map(toCommentDto);
@@ -116,11 +115,7 @@ router.post("/", async (req: Request<{}, {}, CreateProjectInput>, res) => {
       description,
     } = req.body;
 
-    const userId = req.user?.id;
-
-    if (!userId) {
-      return res.status(401).json({ message: "Not authenticated" });
-    }
+    const { userId, workspaceId } = getAuthContext(req);
 
     if (
       !title ||
@@ -133,6 +128,7 @@ router.post("/", async (req: Request<{}, {}, CreateProjectInput>, res) => {
     }
 
     const newProject = await ProjectModel.create({
+      workspaceId,
       title,
       priority,
       ownerId: userId,
@@ -151,21 +147,18 @@ router.post("/", async (req: Request<{}, {}, CreateProjectInput>, res) => {
 });
 
 router.get("/:id", async (req: Request<{ id: string }>, res) => {
-  const id = req.params.id;
+  const projectId = req.params.id;
 
-  if (!id) {
+  if (!projectId) {
     return res.status(400).json({ error: "Invalid id" });
   }
 
-  const userId = req.user?.id;
-
-  if (!userId) {
-    return res.status(401).json({ message: "Not authenticated" });
-  }
+  const { userId, workspaceId } = getAuthContext(req);
 
   const project = await getProjectById({
-    projectId: id,
+    projectId,
     userId,
+    workspaceId,
   });
 
   if (!project) {
@@ -183,35 +176,35 @@ router.delete("/:id", async (req: Request<{ id: string }>, res) => {
       return res.status(400).json({ error: "projectId invalid input" });
     }
 
-    const userId = req.user?.id;
-
-    if (!userId) {
-      return res.status(401).json({ message: "Not authenticated" });
-    }
+    const { userId, workspaceId } = getAuthContext(req);
 
     const project = await getProjectById({
       projectId,
       userId,
+      workspaceId,
     });
 
     if (!project) {
       return res.status(404).json({ error: "project not found" });
     }
 
-    const tasksToDelete = await TaskModel.find({ projectId });
+    const tasksToDelete = await TaskModel.find({ projectId, workspaceId });
     const taskIdsToDelete = tasksToDelete.map((t) => t._id.toString());
 
     await CommentModel.deleteMany({
+      workspaceId,
       taskId: { $in: taskIdsToDelete },
     });
 
     await AttachmentModel.deleteMany({
-      taskId: { $in: taskIdsToDelete },
+      workspaceId,
+      projectId,
     });
 
-    await TaskModel.deleteMany({ projectId });
+    await TaskModel.deleteMany({ projectId, workspaceId });
 
     const deletedProject = await ProjectModel.findOneAndDelete({
+      workspaceId,
       _id: projectId,
     });
 

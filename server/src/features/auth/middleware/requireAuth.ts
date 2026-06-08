@@ -1,7 +1,8 @@
 import type { Request, Response, NextFunction } from "express";
 import { verifyAccessToken } from "@/features/auth/utils/tokens.js";
+import { UserModel } from "@/features/users/models/user.modal.js";
 
-export const requireAuth = (
+export const requireAuth = async (
   req: Request,
   res: Response,
   next: NextFunction,
@@ -21,7 +22,21 @@ export const requireAuth = (
 
     const userId = payload.sub;
 
-    req.user = { id: userId };
+    const user = await UserModel.findById(userId).lean();
+
+    if (!user) {
+      return res.status(401).json({ message: "Invalid User" });
+    }
+
+    if (!user.workspaceId) {
+      return res.status(401).json({ message: "WorkspaceId not found" });
+    }
+
+    req.user = {
+      id: userId,
+      workspaceId: user.workspaceId.toString(),
+      role: user.role,
+    };
 
     next();
   } catch (error) {

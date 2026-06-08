@@ -3,6 +3,11 @@ import { CommentDocument } from "../types/comment.document.js";
 
 const commentSchema = new mongoose.Schema(
   {
+    workspaceId: {
+      type: mongoose.Schema.Types.ObjectId,
+      required: true,
+    },
+
     taskId: {
       type: String,
       required: true,

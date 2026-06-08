@@ -4,19 +4,11 @@ export type UserRole = "admin" | "member" | "manager";
 
 export type UserDocument = {
   _id: Types.ObjectId;
+  workspaceId: Types.ObjectId;
   name: string;
   email: string;
   passwordHash: string;
   avatarKey: string;
   role: UserRole;
-  jobTitle?:
-    | "Frontend Developer"
-    | "Designer"
-    | "Project Manager"
-    | "Backend Developer"
-    | "Art Director"
-    | "Fullstack Developer"
-    | "DevOps Engineer"
-    | "QA Engineer"
-    | "Motion Designer";
+  jobTitle?: string;
 };

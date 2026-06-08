@@ -1,11 +1,19 @@
 import { ProjectModel } from "@/features/projects/models/project.model.js";
 import { requireMappedId } from "@/scripts/seed/seedUtils.js";
 import type { SeedProject } from "@/scripts/seed/types.js";
+import { Types } from "mongoose";
 
-export const seedProjects = async (
-  projects: SeedProject[],
-  userIdMap: Map<string, string>,
-) => {
+type SeedProjectInput = {
+  projects: SeedProject[];
+  userIdMap: Map<string, string>;
+  workspaceId: Types.ObjectId;
+};
+
+export const seedProjects = async ({
+  projects,
+  userIdMap,
+  workspaceId,
+}: SeedProjectInput) => {
   const projectIdMap = new Map<string, string>();
 
   const demoUserId = requireMappedId(userIdMap, "demo-user", "project.ownerId");
@@ -19,6 +27,7 @@ export const seedProjects = async (
       dueDate: project.dueDate,
 
       ownerId: demoUserId,
+      workspaceId,
 
       invitedUserIds: project.invitedUserIds.map((userId) =>
         requireMappedId(userIdMap, userId, "project.invitedUserIds"),

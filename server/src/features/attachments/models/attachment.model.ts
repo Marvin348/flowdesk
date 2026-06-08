@@ -3,6 +3,11 @@ import { AttachmentDocument } from "@/features/attachments/types/attachment.docu
 
 const attachmentSchema = new mongoose.Schema(
   {
+    workspaceId: {
+      type: mongoose.Schema.Types.ObjectId,
+      required: true,
+    },
+
     projectId: {
       type: String,
       required: true,

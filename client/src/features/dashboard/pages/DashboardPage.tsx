@@ -27,7 +27,7 @@ const DashboardPage = () => {
   const taskStatusItems = mapTaskStatusDistribution(taskStatusDistribution);
   
   const taskPriorityItems = mapTaskPriorityItems(taskPriorityDistribution);
-
+  
   return (
     <div className="grid grid-cols-1 xl:grid-cols-6 gap-6">
       <div className="col-span-1 xl:col-span-4 grid gap-6">
