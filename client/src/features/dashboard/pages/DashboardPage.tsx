@@ -8,6 +8,7 @@ import PerformanceHighlights from "@/features/dashboard/components/performanceHi
 import { mapTaskPriorityItems } from "@/features/dashboard/mappers/mapTaskPriorityItems";
 import DashboardSkeleton from "@/features/dashboard/components/skeleton/DashboardSkeleton";
 import { useDashboardOverview } from "@/features/dashboard/hooks/useDashboardOverview";
+import DashboardZeroState from "@/features/dashboard/components/DashboardZeroState";
 
 const DashboardPage = () => {
   const { data, isLoading, error } = useDashboardOverview();
@@ -25,11 +26,15 @@ const DashboardPage = () => {
 
   const statCards = mapDashboardStatCards(overviewStats);
   const taskStatusItems = mapTaskStatusDistribution(taskStatusDistribution);
-  
+
   const taskPriorityItems = mapTaskPriorityItems(taskPriorityDistribution);
-  
+
+  const hasNoProjects = overviewStats.activeProjects === 0;
+
+  if (hasNoProjects) return <DashboardZeroState />;
+
   return (
-    <div className="grid grid-cols-1 xl:grid-cols-6 gap-6">
+    <div className="grid grid-cols-1 xl:grid-cols-6 gap-6 xl:auto-rows-[minmax(320px,auto)]">
       <div className="col-span-1 xl:col-span-4 grid gap-6">
         <DashboardStats stats={statCards} />
         <TaskStatusDistribution statusItems={taskStatusItems} />
