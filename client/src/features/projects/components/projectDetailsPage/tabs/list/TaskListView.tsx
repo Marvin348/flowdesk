@@ -12,10 +12,14 @@ type TaskListViewProps = {
 };
 
 const TaskListView = ({ projectId }: TaskListViewProps) => {
-  const [openStatus, setOpenStatus] = useState<StatusBase | null>("pending");
+  const [openStatus, setOpenStatus] = useState<StatusBase[]>(["pending"]);
 
   const toggleOpenStatus = (value: StatusBase) =>
-    setOpenStatus((prev) => (prev === value ? null : value));
+    setOpenStatus((prev) =>
+      prev.includes(value)
+        ? prev.filter((status) => status !== value)
+        : [...prev, value],
+    );
 
   const { data, isLoading, error } = useProjectTasks(projectId);
 
@@ -50,7 +54,7 @@ const TaskListView = ({ projectId }: TaskListViewProps) => {
               >
                 <span className="border p-0.5 rounded-full hover:bg-muted transform">
                   <ChevronDown
-                    className={`transform duration-200 ${openStatus === opt.value ? "rotate-180" : ""} text-muted-foreground`}
+                    className={`transform duration-200 ${openStatus.includes(opt.value) ? "rotate-180" : ""} text-muted-foreground`}
                   />
                 </span>
                 {opt.label}
@@ -59,7 +63,7 @@ const TaskListView = ({ projectId }: TaskListViewProps) => {
                   {filteredByStatus.length}
                 </span>
 
-                {openStatus === opt.value && (
+                {openStatus.includes(opt.value) && (
                   <div className="flex items-center gap-3">
                     <div className="h-2 w-30 overflow-hidden rounded-full bg-muted">
                       <div
@@ -75,7 +79,7 @@ const TaskListView = ({ projectId }: TaskListViewProps) => {
                 )}
               </button>
 
-              {openStatus === opt.value && (
+              {openStatus.includes(opt.value) && (
                 <div className="mt-2 p-4 rounded-md bg-muted">
                   {filteredByStatus.map((task) => (
                     <TaskRow key={task.id} task={task} />
