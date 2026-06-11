@@ -28,7 +28,7 @@ const attachmentSchema = new mongoose.Schema(
       required: true,
     },
 
-    fileUrl: {
+    storageKey: {
       type: String,
       required: true,
     },

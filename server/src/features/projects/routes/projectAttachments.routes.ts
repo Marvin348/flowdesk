@@ -1,6 +1,4 @@
 import { parsePagination } from "@/shared/parsers/parsePagination.js";
-import fs from "node:fs/promises";
-import path from "node:path";
 import express from "express";
 import { Request, Response } from "express";
 import type { ProjectAttachmentQuery } from "@/features/projects/types/querys/projectAttachmentsQuery.js";
@@ -17,10 +15,17 @@ import { ProjectModel } from "@/features/projects/models/project.model.js";
 import { getProjectById } from "@/features/projects/services/project.service.js";
 import multer from "multer";
 import { getAuthContext } from "@/features/auth/utils/getAuthContext.js";
+import {
+  deleteFileFromR2,
+  uploadFileToR2,
+} from "@/features/attachments/services/attachmentStorage.service.js";
 
 const router = express.Router();
 
-const upload = multer({ dest: "uploads/" });
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB
+});
 
 type DeleteAttachmentParams = {
   id: string;
@@ -64,13 +69,10 @@ router.delete(
         return res.status(404).json({ error: "atachment not found" });
       }
 
-      const relativeFilePath = attachmentRecord.fileUrl.replace(/^\/+/, "");
-      const filePath = path.join(process.cwd(), relativeFilePath);
-
       try {
-        await fs.unlink(filePath);
+        await deleteFileFromR2(attachmentRecord.storageKey);
       } catch (error) {
-        console.error("Failed to delete file from uploads folder", error);
+        console.error("Failed to delete file from R2", error);
       }
 
       const deletedAttachment = await AttachmentModel.deleteOne({
@@ -243,17 +245,22 @@ router.post(
         return res.status(400).json({ error: "No files uploaded" });
       }
 
-      const attachmentsToCreate = files.map((f) => ({
-        workspaceId,
-        projectId,
-        taskId,
-        userId,
+      const attachmentsToCreate = [];
 
-        fileName: f.originalname,
-        fileUrl: `/uploads/${f.filename}`,
-        mimeType: f.mimetype,
-        fileSize: f.size,
-      }));
+      for (const file of files) {
+        const storageKey = await uploadFileToR2(file);
+
+        attachmentsToCreate.push({
+          workspaceId,
+          projectId,
+          taskId,
+          userId,
+          fileName: file.originalname,
+          storageKey,
+          mimeType: file.mimetype,
+          fileSize: file.size,
+        });
+      }
 
       const createdAttachments =
         await AttachmentModel.insertMany(attachmentsToCreate);

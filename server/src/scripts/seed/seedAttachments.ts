@@ -41,7 +41,7 @@ export const seedAttachments = async ({
       ),
 
       fileName: attachment.fileName,
-      fileUrl: attachment.fileUrl,
+      storageKey: attachment.storageKey,
       mimeType: attachment.mimeType,
       fileSize: attachment.fileSize,
 
