@@ -43,7 +43,7 @@ const AttachmentUploadDropzone = ({
         <p className="text-sm font-medium">Datei auswählen</p>
 
         <p className="mt-1 text-xs text-muted-foreground">
-          PDF, PNG, JPG, DOCX oder MP4 bis max. 25 MB
+          PDF, PNG, JPG, DOCX oder MP4 bis max. 5 MB
         </p>
       </button>
     </div>

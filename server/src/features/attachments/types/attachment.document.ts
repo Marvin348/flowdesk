@@ -8,7 +8,7 @@ export type AttachmentDocument = {
   userId: string;
 
   fileName: string;
-  fileUrl: string;
+  storageKey: string;
   mimeType: string;
   fileSize: number;
 

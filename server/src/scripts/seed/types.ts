@@ -2,7 +2,6 @@ import { User } from "@shared/types/user.js";
 import { Project } from "@shared/types/project.js";
 import { Task } from "@shared/types/task.js";
 import { Comment } from "@shared/types/comment.js";
-import { Attachment } from "@shared/types/attachment.js";
 
 // Seed types describe the db.json source.
 // The id fields are seed aliases like "u1", "p1", "t1",
@@ -11,4 +10,15 @@ export type SeedUser = User;
 export type SeedProject = Project;
 export type SeedTask = Task;
 export type SeedComment = Comment;
-export type SeedAttachment = Attachment;
+
+export type SeedAttachment = {
+  id: string;
+  projectId: string;
+  taskId?: string | null | undefined;
+  userId: string;
+  fileName: string;
+  storageKey: string;
+  mimeType: string;
+  fileSize: number;
+  createdAt: string;
+};

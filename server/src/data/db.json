@@ -652,7 +652,7 @@
       "taskId": "t1",
       "userId": "u4",
       "fileName": "tracking-audit.xlsx",
-      "fileUrl": "https://cdn.example.com/files/tracking-audit.xlsx",
+      "storageKey": "attachments/p1/t1/tracking-audit.xlsx",
       "mimeType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
       "fileSize": 184320,
       "createdAt": "2026-04-03T09:18:00.000Z"
@@ -663,7 +663,7 @@
       "taskId": "t2",
       "userId": "u1",
       "fileName": "landing-components-spec.pdf",
-      "fileUrl": "https://cdn.example.com/files/landing-components-spec.pdf",
+      "storageKey": "attachments/p1/t2/landing-components-spec.pdf",
       "mimeType": "application/pdf",
       "fileSize": 524288,
       "createdAt": "2026-04-04T11:42:00.000Z"
@@ -674,7 +674,7 @@
       "taskId": "t2",
       "userId": "u12",
       "fileName": "figma-components-link.txt",
-      "fileUrl": "https://cdn.example.com/files/figma-components-link.txt",
+      "storageKey": "attachments/p1/t2/figma-components-link.txt",
       "mimeType": "text/plain",
       "fileSize": 2048,
       "createdAt": "2026-04-04T14:07:00.000Z"
@@ -685,7 +685,7 @@
       "taskId": "t3",
       "userId": "u8",
       "fileName": "hero-illustration-v1.png",
-      "fileUrl": "https://cdn.example.com/files/hero-illustration-v1.png",
+      "storageKey": "attachments/p1/t3/hero-illustration-v1.png",
       "mimeType": "image/png",
       "fileSize": 1357824,
       "createdAt": "2026-04-05T08:55:00.000Z"
@@ -696,7 +696,7 @@
       "taskId": "t3",
       "userId": "u6",
       "fileName": "motion-styleframes.pdf",
-      "fileUrl": "https://cdn.example.com/files/motion-styleframes.pdf",
+      "storageKey": "attachments/p1/t3/motion-styleframes.pdf",
       "mimeType": "application/pdf",
       "fileSize": 1048576,
       "createdAt": "2026-04-05T16:21:00.000Z"
@@ -707,7 +707,7 @@
       "taskId": "t4",
       "userId": "u7",
       "fileName": "performance-budget.md",
-      "fileUrl": "https://cdn.example.com/files/performance-budget.md",
+      "storageKey": "attachments/p1/t4/performance-budget.md",
       "mimeType": "text/markdown",
       "fileSize": 8192,
       "createdAt": "2026-04-06T10:12:00.000Z"
@@ -718,7 +718,7 @@
       "taskId": "t5",
       "userId": "u10",
       "fileName": "seo-checklist.docx",
-      "fileUrl": "https://cdn.example.com/files/seo-checklist.docx",
+      "storageKey": "attachments/p1/t5/seo-checklist.docx",
       "mimeType": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
       "fileSize": 98304,
       "createdAt": "2026-04-07T13:34:00.000Z"
@@ -729,7 +729,7 @@
       "taskId": "t6",
       "userId": "u15",
       "fileName": "auth-wireframes.png",
-      "fileUrl": "https://cdn.example.com/files/auth-wireframes.png",
+      "storageKey": "attachments/p2/t6/auth-wireframes.png",
       "mimeType": "image/png",
       "fileSize": 876544,
       "createdAt": "2026-04-08T09:46:00.000Z"
@@ -740,7 +740,7 @@
       "taskId": "t7",
       "userId": "u5",
       "fileName": "feed-mvp-spec.pdf",
-      "fileUrl": "https://cdn.example.com/files/feed-mvp-spec.pdf",
+      "storageKey": "attachments/p2/t7/feed-mvp-spec.pdf",
       "mimeType": "application/pdf",
       "fileSize": 786432,
       "createdAt": "2026-04-09T15:03:00.000Z"
@@ -751,7 +751,7 @@
       "taskId": "t8",
       "userId": "u13",
       "fileName": "push-topics-matrix.xlsx",
-      "fileUrl": "https://cdn.example.com/files/push-topics-matrix.xlsx",
+      "storageKey": "attachments/p2/t8/push-topics-matrix.xlsx",
       "mimeType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
       "fileSize": 221184,
       "createdAt": "2026-04-10T12:27:00.000Z"
@@ -762,7 +762,7 @@
       "taskId": "t9",
       "userId": "u11",
       "fileName": "api-contract-openapi.yaml",
-      "fileUrl": "https://cdn.example.com/files/api-contract-openapi.yaml",
+      "storageKey": "attachments/p2/t9/api-contract-openapi.yaml",
       "mimeType": "application/x-yaml",
       "fileSize": 32768,
       "createdAt": "2026-04-11T08:39:00.000Z"
@@ -773,7 +773,7 @@
       "taskId": "t10",
       "userId": "u6",
       "fileName": "tokens.json",
-      "fileUrl": "https://cdn.example.com/files/tokens.json",
+      "storageKey": "attachments/p3/t10/tokens.json",
       "mimeType": "application/json",
       "fileSize": 24576,
       "createdAt": "2026-04-11T17:18:00.000Z"
@@ -784,7 +784,7 @@
       "taskId": "t11",
       "userId": "u5",
       "fileName": "components-preview.png",
-      "fileUrl": "https://cdn.example.com/files/components-preview.png",
+      "storageKey": "attachments/p3/t11/components-preview.png",
       "mimeType": "image/png",
       "fileSize": 642252,
       "createdAt": "2026-04-12T10:51:00.000Z"
@@ -795,7 +795,7 @@
       "taskId": "t12",
       "userId": "u10",
       "fileName": "docs-ia.md",
-      "fileUrl": "https://cdn.example.com/files/docs-ia.md",
+      "storageKey": "attachments/p3/t12/docs-ia.md",
       "mimeType": "text/markdown",
       "fileSize": 12288,
       "createdAt": "2026-04-13T09:24:00.000Z"
@@ -806,7 +806,7 @@
       "taskId": "t13",
       "userId": "u2",
       "fileName": "theme-proposal.pdf",
-      "fileUrl": "https://cdn.example.com/files/theme-proposal.pdf",
+      "storageKey": "attachments/p3/t13/theme-proposal.pdf",
       "mimeType": "application/pdf",
       "fileSize": 917504,
       "createdAt": "2026-04-14T14:36:00.000Z"
@@ -817,7 +817,7 @@
       "taskId": "t14",
       "userId": "u3",
       "fileName": "service-map.drawio",
-      "fileUrl": "https://cdn.example.com/files/service-map.drawio",
+      "storageKey": "attachments/p4/t14/service-map.drawio",
       "mimeType": "application/vnd.jgraph.mxfile",
       "fileSize": 65536,
       "createdAt": "2026-04-15T11:09:00.000Z"
@@ -828,7 +828,7 @@
       "taskId": "t15",
       "userId": "u7",
       "fileName": "dashboards-links.txt",
-      "fileUrl": "https://cdn.example.com/files/dashboards-links.txt",
+      "storageKey": "attachments/p4/t15/dashboards-links.txt",
       "mimeType": "text/plain",
       "fileSize": 4096,
       "createdAt": "2026-04-16T16:44:00.000Z"
@@ -839,7 +839,7 @@
       "taskId": "t16",
       "userId": "u3",
       "fileName": "query-hotspots.sql",
-      "fileUrl": "https://cdn.example.com/files/query-hotspots.sql",
+      "storageKey": "attachments/p4/t16/query-hotspots.sql",
       "mimeType": "application/sql",
       "fileSize": 18432,
       "createdAt": "2026-04-17T08:31:00.000Z"
@@ -850,7 +850,7 @@
       "taskId": "t17",
       "userId": "u7",
       "fileName": "slos-and-error-budgets.pdf",
-      "fileUrl": "https://cdn.example.com/files/slos-and-error-budgets.pdf",
+      "storageKey": "attachments/p4/t17/slos-and-error-budgets.pdf",
       "mimeType": "application/pdf",
       "fileSize": 1114112,
       "createdAt": "2026-04-18T13:57:00.000Z"
@@ -861,7 +861,7 @@
       "taskId": "t18",
       "userId": "u9",
       "fileName": "e2e-setup-notes.md",
-      "fileUrl": "https://cdn.example.com/files/e2e-setup-notes.md",
+      "storageKey": "attachments/p5/t18/e2e-setup-notes.md",
       "mimeType": "text/markdown",
       "fileSize": 16384,
       "createdAt": "2026-04-19T10:16:00.000Z"
@@ -872,7 +872,7 @@
       "taskId": "t19",
       "userId": "u9",
       "fileName": "smoke-test-cases.xlsx",
-      "fileUrl": "https://cdn.example.com/files/smoke-test-cases.xlsx",
+      "storageKey": "attachments/p5/t19/smoke-test-cases.xlsx",
       "mimeType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
       "fileSize": 147456,
       "createdAt": "2026-04-20T15:28:00.000Z"
@@ -883,7 +883,7 @@
       "taskId": "t20",
       "userId": "u7",
       "fileName": "ci-workflow.yml",
-      "fileUrl": "https://cdn.example.com/files/ci-workflow.yml",
+      "storageKey": "attachments/p5/t20/ci-workflow.yml",
       "mimeType": "application/x-yaml",
       "fileSize": 10240,
       "createdAt": "2026-04-21T09:05:00.000Z"
@@ -894,7 +894,7 @@
       "taskId": "t21",
       "userId": "u8",
       "fileName": "key-visuals-set-a.zip",
-      "fileUrl": "https://cdn.example.com/files/key-visuals-set-a.zip",
+      "storageKey": "attachments/p6/t21/key-visuals-set-a.zip",
       "mimeType": "application/zip",
       "fileSize": 5242880,
       "createdAt": "2026-04-22T12:49:00.000Z"
@@ -905,7 +905,7 @@
       "taskId": "t22",
       "userId": "u10",
       "fileName": "landing-copy-variants.docx",
-      "fileUrl": "https://cdn.example.com/files/landing-copy-variants.docx",
+      "storageKey": "attachments/p6/t22/landing-copy-variants.docx",
       "mimeType": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
       "fileSize": 131072,
       "createdAt": "2026-04-23T14:11:00.000Z"
@@ -916,7 +916,7 @@
       "taskId": "t25",
       "userId": "u11",
       "fileName": "cache-architecture.png",
-      "fileUrl": "https://cdn.example.com/files/cache-architecture.png",
+      "storageKey": "attachments/p7/t25/cache-architecture.png",
       "mimeType": "image/png",
       "fileSize": 943718,
       "createdAt": "2026-04-24T10:33:00.000Z"
@@ -927,7 +927,7 @@
       "taskId": "t27",
       "userId": "u7",
       "fileName": "rightsizing-plan.xlsx",
-      "fileUrl": "https://cdn.example.com/files/rightsizing-plan.xlsx",
+      "storageKey": "attachments/p7/t27/rightsizing-plan.xlsx",
       "mimeType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
       "fileSize": 212992,
       "createdAt": "2026-04-25T16:02:00.000Z"

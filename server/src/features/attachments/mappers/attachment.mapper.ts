@@ -14,7 +14,7 @@ export const toAttachmentDto = (attachment: AttachmentDocument): Attachment => {
     taskId: attachment.taskId,
     userId: attachment.userId,
     fileName: attachment.fileName,
-    fileUrl: attachment.fileUrl,
+    fileUrl: `/attachments/${attachment._id}/download`,
     mimeType: attachment.mimeType,
     fileSize: attachment.fileSize,
     createdAt: toIsoString(attachment.createdAt),
