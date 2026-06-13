@@ -22,7 +22,7 @@ const ProjectCardMenu = ({
 
   return (
     <div
-      className="absolute top-7 right-2 bg-white border rounded-md z-10"
+      className="absolute top-7 right-2 bg-background border rounded-md z-10"
       onClick={(e) => e.stopPropagation()}
     >
       <div className="p-1">
@@ -32,7 +32,7 @@ const ProjectCardMenu = ({
             <button
               key={value}
               onClick={() => onClick(value)}
-              className="w-full flex items-center gap-2 p-2 text-sm rounded-md hover:bg-gray-100"
+              className="w-full flex items-center gap-2 p-2 text-sm rounded-md hover:bg-muted"
             >
               <Icon className="size-4" />{" "}
               {isActiveBadge ? "Zurücksetzen" : label}
@@ -43,7 +43,7 @@ const ProjectCardMenu = ({
 
       <div className="border-t p-1">
         <button
-          className="w-full flex items-center gap-2 p-2 text-sm rounded-md hover:bg-gray-100"
+          className="w-full flex items-center gap-2 p-2 text-sm rounded-md hover:bg-destructive"
           onClick={onDialog}
         >
           <Trash2 className="size-4" /> Löschen

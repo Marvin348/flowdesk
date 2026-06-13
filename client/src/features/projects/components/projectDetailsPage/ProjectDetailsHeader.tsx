@@ -43,7 +43,7 @@ const ProjectDetailsHeader = ({
         )}
 
         <div className="hidden xl:flex items-center gap-2 ml-4">
-          <div className="bg-gray-200 h-2 rounded-md w-40">
+          <div className="bg-muted h-2 rounded-md w-40">
             <div
               style={{ width: `${progressPercent}%` }}
               className="bg-accent h-2 rounded-md"

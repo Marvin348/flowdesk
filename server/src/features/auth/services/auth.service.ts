@@ -9,7 +9,7 @@ import {
   PasswordInput,
   RegisterInput,
 } from "@/features/auth/validators/auth.validators.js";
-import { toUserDto } from "@/features/users/mappers/user.mapper.js";
+import { toAuthUserDto } from "@/features/users/mappers/user.mapper.js";
 import { WorkspaceModel } from "@/features/workspace/models/workspace.model.js";
 import { Types } from "mongoose";
 
@@ -45,7 +45,7 @@ export const registerUser = async (input: RegisterInput) => {
   const accessToken = createAccessToken(newUser._id.toString());
 
   return {
-    user: toUserDto(newUser),
+    user: toAuthUserDto(newUser),
     accessToken,
   };
 };
@@ -68,7 +68,7 @@ export const loginUser = async (input: LoginInput) => {
   const accessToken = createAccessToken(user._id.toString());
 
   return {
-    user: toUserDto(user),
+    user: toAuthUserDto(user),
     accessToken,
   };
 };

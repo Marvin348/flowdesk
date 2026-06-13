@@ -70,7 +70,7 @@ const CollaboratorMultiSelect = ({
         />
 
         {isDropdownOpen && (
-          <div className="absolute top-12 border bg-white p-1 w-full rounded-md shadow-2xl text-sm text-foreground z-30">
+          <div className="absolute top-12 border bg-background p-1 w-full rounded-md shadow-2xl text-sm text-foreground z-30">
             <>
               {maxFilteredUsers.map((user) => {
                 const isDisabled = disabledUserIds?.includes(user.id);

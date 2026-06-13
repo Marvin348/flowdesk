@@ -13,8 +13,7 @@ const CreateProjectModal = ({ onClose, isOpen }: CreateProjectModalProps) => {
 
   return (
     <div className="overlay flex items-center justify-center">
-      <div className="bg-white w-md h-auto rounded-md p-4 z-100">
-        {/**Header */}
+      <div className="bg-background w-md h-auto rounded-md border p-4 z-100">
         <div className="flex items-center justify-between gap-4 border-b pb-4">
           <div className="flex items-center gap-2">
             <div className="bg-muted p-2 rounded-md">

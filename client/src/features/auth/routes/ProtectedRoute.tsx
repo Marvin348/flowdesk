@@ -1,7 +1,7 @@
 import { useCurrentUser } from "@/features/auth/hooks/useCurrentUser";
 import { Spinner } from "@/shared/components/ui/spinner";
 import { Navigate } from "react-router";
-import { Outlet } from "react-router";
+import ProtectedApp from "@/features/auth/routes/ProtectedApp";
 
 const ProtectedRoute = () => {
   const { data: user, isLoading, error } = useCurrentUser();
@@ -12,8 +12,6 @@ const ProtectedRoute = () => {
     return <Navigate to="/login" replace />;
   }
 
-  console.log("currentUser", user);
-
-  return <Outlet />;
+  return <ProtectedApp user={user} />;
 };
 export default ProtectedRoute;

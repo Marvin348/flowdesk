@@ -6,7 +6,7 @@ import type { LoginFields } from "@/features/auth/schemas/loginSchema";
 
 export const login = async (input: LoginFields) => {
   const res = await apiClient.post("/auth/login", input);
-  return res.data;
+  return res.data.user;
 };
 
 export const getCurrentUser = async (): Promise<AuthUser> => {
@@ -19,9 +19,9 @@ export const logout = async () => {
   return res.data.user;
 };
 
-export const register = async (input: RegisterFields) => {
+export const register = async (input: RegisterFields): Promise<AuthUser> => {
   const res = await apiClient.post("/auth/register", input);
-  return res.data;
+  return res.data.user;
 };
 
 export const updatePassword = async (input: PasswordFields) => {

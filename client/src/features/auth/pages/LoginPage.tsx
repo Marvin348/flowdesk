@@ -18,6 +18,7 @@ import ErrorMessage from "@/shared/components/ErrorMessage";
 import { DEMO_ACCOUNT } from "@/features/auth/constants/demoAccount";
 import { loginSchema } from "@/features/auth/schemas/loginSchema";
 import type { LoginFields } from "@/features/auth/schemas/loginSchema";
+import { getStartViewPath } from "@/shared/lib/getStartViewPath";
 
 const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -40,8 +41,9 @@ const LoginPage = () => {
 
   const onSubmit = (data: LoginFields) => {
     mutate(data, {
-      onSuccess: () => {
-        navigate("/dashboard");
+      onSuccess: (user) => {
+        const path = getStartViewPath(user.appearanceSettings.startView);
+        navigate(path);
       },
     });
   };

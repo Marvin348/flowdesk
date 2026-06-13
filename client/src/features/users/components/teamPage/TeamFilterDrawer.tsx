@@ -30,7 +30,7 @@ const TeamFilterDrawer = ({ onClose }: TeamFilterDrawerProps) => {
   return (
     <div
       className={
-        "absolute top-full right-0 mt-2 w-100 border rounded-md bg-white shadow-xl z-100"
+        "absolute top-full right-0 mt-2 w-100 border rounded-md bg-background shadow-xl z-100"
       }
       ref={filterRef}
       onClick={(e) => e.stopPropagation()}

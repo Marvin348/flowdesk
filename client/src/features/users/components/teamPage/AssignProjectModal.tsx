@@ -63,7 +63,7 @@ const AssignProjectModal = ({ onClose, selectedUser }: AssignProjectModal) => {
 
   return (
     <div className="overlay flex items-center justify-center">
-      <div className="w-[500px] overflow-hidden rounded-md bg-white">
+      <div className="w-[500px] overflow-hidden rounded-md bg-background border">
         <div className="p-4 flex items-center gap-4 border-b pb-4">
           <div className="bg-muted p-2 rounded-md">
             <FolderPen />
