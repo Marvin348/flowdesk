@@ -21,8 +21,14 @@ import { toProjectDto } from "@/features/projects/mappers/project.mapper.js";
 import { buildUserQuery } from "@/features/users/queries/buildUserQuery.js";
 import { PAGE_LIMITS, DEFAULT_PAGE } from "@shared/constants/pagination.js";
 import { parsePagination } from "@/shared/parsers/parsePagination.js";
-import { updateCurrentUserSchema } from "@/features/users/validators/user.validator.js";
-import { updateCurrentUser } from "../services/user.service.js";
+import {
+  updateCurrentUserSchema,
+  appearanceSettingsSchema,
+} from "@/features/users/validators/user.validator.js";
+import {
+  updateCurrentUser,
+  updateAppearanceSettings,
+} from "@/features/users/services/user.service.js";
 import { getAuthContext } from "@/features/auth/utils/getAuthContext.js";
 
 const router = express.Router();
@@ -121,6 +127,34 @@ router.patch("/me", async (req, res) => {
     return res.status(201).json({ user: updatedUser });
   } catch (error) {
     return res.status(500).json({ message: "Failed to update profile" });
+  }
+});
+
+router.patch("/appearance", async (req, res) => {
+  try {
+    const result = appearanceSettingsSchema.safeParse(req.body);
+
+    if (!result.success) {
+      return res.status(400).json({
+        message: "Invalid appearance setting",
+      });
+    }
+
+    const input = result.data;
+
+    const { userId, workspaceId } = getAuthContext(req);
+
+    const updatedUserSettings = await updateAppearanceSettings({
+      input,
+      userId,
+      workspaceId,
+    });
+
+    return res.status(201).json({ user: updatedUserSettings });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ message: "Failed to update appearance settings" });
   }
 });
 

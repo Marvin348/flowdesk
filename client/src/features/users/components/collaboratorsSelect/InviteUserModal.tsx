@@ -40,7 +40,7 @@ const InviteUserModal = ({
   return (
     <>
       <div className="overlay flex items-center justify-center p-8">
-        <div className="w-100 h-auto bg-white p-4 rounded-md z-100">
+        <div className="w-100 h-auto bg-background border p-4 rounded-md z-100">
           <h4 className="font-semibold text-xl">Mitarbeiter Einladen</h4>
 
           <form onSubmit={handleSubmit}>

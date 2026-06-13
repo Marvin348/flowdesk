@@ -24,9 +24,9 @@ const buttonVariants = cva(
         link: "text-primary underline-offset-4 hover:underline",
 
         filter:
-          "relative h-8 w-fit rounded-none px-2 text-sm font-normal gap-1 text-foreground/90 hover:text-foreground " +
+          "relative h-8 w-fit rounded-none px-2 text-sm font-normal gap-1 text-foreground" +
           "after:content-[''] after:absolute after:left-0 after:right-0 after:h-[2px] after:bg-transparent after:-bottom-2 " +
-          "data-[state=active]:after:bg-accent data-[state=active]:text-black",
+          "data-[state=active]:after:bg-accent data-[state=active]:text-foreground",
 
         filter_drawer:
           "h-8 w-fit border font-normal duration-200 hover:bg-surface/5 data-[state=active]:bg-muted data-[state=active]:text-foreground data-[state=active]:border-transparent",

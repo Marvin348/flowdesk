@@ -11,9 +11,8 @@ import {
 } from "@/features/auth/services/auth.service.js";
 import { verifyAccessToken } from "@/features/auth/utils/tokens.js";
 import { UserModel } from "@/features/users/models/user.modal.js";
-import { toUserDto } from "@/features/users/mappers/user.mapper.js";
+import { toAuthUserDto } from "@/features/users/mappers/user.mapper.js";
 import { requireAuth } from "@/features/auth/middleware/requireAuth.js";
-import { getAuthContext } from "@/features/auth/utils/getAuthContext.js";
 
 const router = express.Router();
 
@@ -39,7 +38,7 @@ router.get("/me", async (req, res) => {
       return res.status(401).json({ message: "Not authenticated" });
     }
 
-    return res.status(200).json({ user: toUserDto(user) });
+    return res.status(200).json({ user: toAuthUserDto(user) });
   } catch (error) {
     return res.status(401).json({ message: "Not authenticated" });
   }
@@ -64,7 +63,7 @@ router.post("/login", async (req, res) => {
       maxAge: 1000 * 60 * 60 * 24,
     });
 
-    return res.status(200).json({ message: "Login successful", user });
+    return res.status(200).json({ user });
   } catch (error) {
     return res.status(500).json({ message: "Internal server error" });
   }
@@ -99,7 +98,7 @@ router.post("/register", async (req, res) => {
       maxAge: 1000 * 60 * 60 * 24,
     });
 
-    return res.status(201).json({ message: "Register successful", user });
+    return res.status(201).json({ user });
   } catch (error) {
     if (error instanceof Error && error.message === "Email already exists") {
       return res.status(409).json({ message: "Email already exists" });

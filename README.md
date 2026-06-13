@@ -14,6 +14,7 @@ The app focuses on real-world admin workflows: project overviews, detailed proje
 - Protected frontend routes using `/auth/me`
 - Protected backend API routes using an authentication middleware
 - Project-level authorization based on `ownerId` and project membership
+- File uploads are stored in **Cloudflare R2** object storage using S3-compatible APIs
 - Demo data can be seeded from the previous mock data file
 - Backend handles **search, filtering, pagination, and data shaping**
 - Data is fetched via structured endpoints and optimized with React Query

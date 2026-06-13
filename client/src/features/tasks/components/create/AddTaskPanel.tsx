@@ -28,7 +28,7 @@ const AddTaskPanel = ({
       <div
         className={`fixed right-0 top-0 bottom-0 transition-transform duration-300 ease-in-out ${isOpen ? "translate-x-0" : "translate-x-full"} z-100`}
       >
-        <div className="p-4 h-full w-100 bg-white rounded-l-md">
+        <div className="p-4 h-full w-100 bg-background border-l rounded-l-md">
           <div className="flex items-center justify-between border-b pb-4">
             <h3 className="font-medium text-xl">Neue Aufgabe erstellen</h3>
             <button

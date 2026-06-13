@@ -1,9 +1,21 @@
-import { UpdateCurrentUserInput } from "@/features/users/validators/user.validator.js";
+import {
+  UpdateCurrentUserInput,
+  AppearanceSettingsInput,
+} from "@/features/users/validators/user.validator.js";
 import { UserModel } from "@/features/users/models/user.modal.js";
-import { toUserDto } from "@/features/users/mappers/user.mapper.js";
+import {
+  toUserDto,
+  toAuthUserDto,
+} from "@/features/users/mappers/user.mapper.js";
 
 type UpdateUserInput = {
   input: UpdateCurrentUserInput;
+  userId: string;
+  workspaceId: string;
+};
+
+type UpdateAppearanceSettingsInput = {
+  input: AppearanceSettingsInput;
   userId: string;
   workspaceId: string;
 };
@@ -32,4 +44,28 @@ export const updateCurrentUser = async ({
   }
 
   return toUserDto(user);
+};
+
+export const updateAppearanceSettings = async ({
+  input,
+  userId,
+  workspaceId,
+}: UpdateAppearanceSettingsInput) => {
+  const updateData: Record<string, unknown> = {};
+
+  for (const [key, value] of Object.entries(input)) {
+    updateData[`appearanceSettings.${key}`] = value;
+  }
+
+  const user = await UserModel.findOneAndUpdate(
+    { _id: userId, workspaceId },
+    { $set: updateData },
+    { returnDocument: "after", runValidators: true },
+  );
+
+  if (!user) {
+    throw new Error("User not found");
+  }
+
+  return toAuthUserDto(user);
 };

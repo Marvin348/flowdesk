@@ -1,5 +1,10 @@
 import mongoose from "mongoose";
 import type { UserDocument } from "@/features/users/types/user.document.js";
+import {
+  APPEARANCE_DENSITIES,
+  APPEARANCE_START_VIEWS,
+  APPEARANCE_THEMES,
+} from "@shared/types/user.js";
 
 const userSchema = new mongoose.Schema(
   {
@@ -30,13 +35,31 @@ const userSchema = new mongoose.Schema(
 
     role: {
       type: String,
-      enum: ["admin", "member", "manager"],
+      enum: ["member", "manager", "admin"],
       default: "member",
       required: true,
     },
 
     jobTitle: {
       type: String,
+    },
+
+    appearanceSettings: {
+      theme: {
+        type: String,
+        enum: APPEARANCE_THEMES,
+        default: "system",
+      },
+      density: {
+        type: String,
+        enum: APPEARANCE_DENSITIES,
+        default: "default",
+      },
+      startView: {
+        type: String,
+        enum: APPEARANCE_START_VIEWS,
+        default: "dashboard",
+      },
     },
   },
   {

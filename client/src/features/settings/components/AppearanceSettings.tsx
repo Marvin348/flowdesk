@@ -1,6 +1,33 @@
-import { Check, LayoutDashboard, Moon, Palette, Rows3, Sun } from "lucide-react";
+import { Check, LayoutDashboard, Palette, Rows3 } from "lucide-react";
+import {
+  THEME_SETTINGS,
+  DENSITY_SETTINGS,
+  START_VIEW_SETTINGS,
+} from "@/features/settings/constants/appearanceSettings";
+import { useUpdateAppearanceSettings } from "@/features/users/hooks/useUpdateAppearanceSettings";
+import { useCurrentUser } from "@/features/auth/hooks/useCurrentUser";
+import type { AppearanceSettings } from "@shared/types/user";
+import ErrorMessage from "@/shared/components/ErrorMessage";
 
 const AppearanceSettings = () => {
+  const { mutate, isPending, error} = useUpdateAppearanceSettings();
+  const { data: user } = useCurrentUser();
+
+  if (!user) return null;
+
+  const appearanceSettings = user.appearanceSettings;
+
+  const handleAppearanceChange = <K extends keyof AppearanceSettings>(
+    key: K,
+    value: AppearanceSettings[K],
+  ) => {
+    if (appearanceSettings[key] === value) return;
+
+    mutate({
+      [key]: value,
+    });
+  };
+
   return (
     <section>
       <div className="border-b p-4">
@@ -11,7 +38,7 @@ const AppearanceSettings = () => {
       </div>
 
       <div className="space-y-8 p-4">
-        <div className="rounded-md border bg-muted/35 p-4">
+        <div className="rounded-md">
           <div className="flex items-start justify-between gap-4">
             <div>
               <div className="flex items-center gap-2">
@@ -24,43 +51,27 @@ const AppearanceSettings = () => {
             </div>
           </div>
 
-          <div className="mt-4 grid grid-cols-2 gap-3">
-            <button
-              type="button"
-              aria-pressed="true"
-              className="flex items-center justify-between rounded-md border border-accent/60 bg-card p-3 text-left shadow-xs"
-            >
-              <span className="flex items-center gap-3">
-                <span className="flex size-9 items-center justify-center rounded-md bg-muted">
-                  <Sun className="size-4 text-accent" />
-                </span>
-                <span>
-                  <span className="block text-sm font-medium">Hell</span>
-                  <span className="text-xs text-muted-foreground">
-                    Aktuell aktiv
+          <div className="mt-4 grid grid-cols-2 sm:grid-cols-3 gap-3">
+            {THEME_SETTINGS.map(({ label, value, icon: Icon }) => (
+              <button
+                key={value}
+                type="button"
+                className={`flex items-center justify-between rounded-md bg-card border p-3 text-left shadow-xs ${appearanceSettings.theme === value && "border-accent/60"}`}
+                onClick={() => handleAppearanceChange("theme", value)}
+                disabled={appearanceSettings.theme === value || isPending}
+              >
+                <span className="flex items-center gap-3">
+                  <span className="flex size-9 items-center justify-center rounded-md bg-muted">
+                    <Icon
+                      className={`size-4 ${appearanceSettings.theme === value ? "text-accent" : "text-muted-foreground"}`}
+                    />
+                  </span>
+                  <span>
+                    <span className="block text-sm font-medium">{label}</span>
                   </span>
                 </span>
-              </span>
-              <Check className="size-4 text-accent" />
-            </button>
-
-            <button
-              type="button"
-              aria-pressed="false"
-              className="flex items-center justify-between rounded-md border bg-card p-3 text-left shadow-xs duration-200 hover:bg-muted/40"
-            >
-              <span className="flex items-center gap-3">
-                <span className="flex size-9 items-center justify-center rounded-md bg-muted">
-                  <Moon className="size-4 text-muted-foreground" />
-                </span>
-                <span>
-                  <span className="block text-sm font-medium">Dunkel</span>
-                  <span className="text-xs text-muted-foreground">
-                    Vorschau
-                  </span>
-                </span>
-              </span>
-            </button>
+              </button>
+            ))}
           </div>
         </div>
 
@@ -75,18 +86,21 @@ const AppearanceSettings = () => {
             </p>
 
             <div className="mt-4 grid grid-cols-2 rounded-md border bg-muted/35 p-1">
-              <button
-                type="button"
-                className="rounded-md bg-card px-3 py-2 text-sm font-medium shadow-xs"
-              >
-                Standard
-              </button>
-              <button
-                type="button"
-                className="rounded-md px-3 py-2 text-sm text-muted-foreground"
-              >
-                Kompakt
-              </button>
+              {DENSITY_SETTINGS.map(({ label, value }) => (
+                <button
+                  key={value}
+                  type="button"
+                  className={`rounded-md px-3 py-2 text-sm ${
+                    appearanceSettings.density === value
+                      ? "bg-card font-medium shadow-xs"
+                      : "text-muted-foreground"
+                  }`}
+                  onClick={() => handleAppearanceChange("density", value)}
+                  disabled={appearanceSettings.density === value || isPending}
+                >
+                  {label}
+                </button>
+              ))}
             </div>
           </div>
 
@@ -100,23 +114,30 @@ const AppearanceSettings = () => {
             </p>
 
             <div className="mt-4 rounded-md border bg-muted/35 p-1">
-              {["Dashboard", "Projekte", "Team"].map((item) => (
+              {START_VIEW_SETTINGS.map(({ label, value }) => (
                 <button
                   type="button"
-                  key={item}
+                  key={value}
                   className={`flex w-full items-center justify-between rounded-md px-3 py-2 text-sm ${
-                    item === "Dashboard"
+                    appearanceSettings.startView === value
                       ? "bg-card font-medium shadow-xs"
                       : "text-muted-foreground"
                   }`}
+                  onClick={() => handleAppearanceChange("startView", value)}
+                  disabled={appearanceSettings.startView === value || isPending}
                 >
-                  {item}
-                  {item === "Dashboard" && <Check className="size-4 text-accent" />}
+                  {label}
+                  {appearanceSettings.startView === value && (
+                    <Check className="size-4 text-accent" />
+                  )}
                 </button>
               ))}
             </div>
           </div>
         </div>
+        {error && (
+          <ErrorMessage message="Die Einstellung konnte nicht gespeichert werden. Bitte versuche es erneut." />
+        )}
       </div>
     </section>
   );

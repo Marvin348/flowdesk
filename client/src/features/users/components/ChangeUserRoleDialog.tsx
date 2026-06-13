@@ -43,7 +43,7 @@ const ChangeUserRoleDialog = ({
 
   return (
     <div className="overlay flex items-center justify-center px-8">
-      <div className="w-[380px] bg-white rounded-md">
+      <div className="w-[380px] bg-background border rounded-md">
         {/**header */}
         <div className="flex items-center gap-4 border-b p-4">
           <div className="bg-muted p-3 rounded-md">
