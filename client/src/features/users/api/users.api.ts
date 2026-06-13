@@ -1,4 +1,4 @@
-import type { User } from "@shared/types/user";
+import type { AuthUser, User } from "@shared/types/user";
 import { apiClient } from "@/shared/api/client";
 import type { ChangeUserRoleInput } from "@shared/types/inputs/changeUserRoleInput";
 import type {
@@ -7,7 +7,7 @@ import type {
 } from "@shared/types/dto/users/user";
 import type { TeamMembersInput } from "@shared/types/inputs/teamMemberInput";
 import type { UpdateUserProfileInput } from "@/features/users/types/updateUserProfile";
-
+import type { UpdateAppearanceSettingsInput } from "@/features/users/types/UpdateAppearanceSettings";
 export const fetchUsers = async (): Promise<User[]> => {
   const res = await apiClient.get("/users");
   return res.data.data;
@@ -54,5 +54,12 @@ export const updateUserProfile = async (
   input: UpdateUserProfileInput,
 ): Promise<User> => {
   const res = await apiClient.patch("/users/me", input);
+  return res.data.user;
+};
+
+export const updateAppearanceSettings = async (
+  input: UpdateAppearanceSettingsInput,
+): Promise<AuthUser> => {
+  const res = await apiClient.patch("/users/appearance", input);
   return res.data.user;
 };

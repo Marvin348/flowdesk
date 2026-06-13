@@ -1,3 +1,8 @@
+import {
+  APPEARANCE_THEMES,
+  APPEARANCE_DENSITIES,
+  APPEARANCE_START_VIEWS,
+} from "@shared/types/user.js";
 import { z } from "zod";
 
 export const updateCurrentUserSchema = z
@@ -12,3 +17,15 @@ export const updateCurrentUserSchema = z
   });
 
 export type UpdateCurrentUserInput = z.infer<typeof updateCurrentUserSchema>;
+
+export const appearanceSettingsSchema = z
+  .object({
+    theme: z.enum(APPEARANCE_THEMES).optional(),
+    density: z.enum(APPEARANCE_DENSITIES).optional(),
+    startView: z.enum(APPEARANCE_START_VIEWS).optional(),
+  })
+  .refine((data) => Object.keys(data).length > 0, {
+    message: "At least one field is required",
+  });
+
+export type AppearanceSettingsInput = z.infer<typeof appearanceSettingsSchema>;

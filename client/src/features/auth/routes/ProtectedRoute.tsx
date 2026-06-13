@@ -6,11 +6,13 @@ import { Outlet } from "react-router";
 const ProtectedRoute = () => {
   const { data: user, isLoading, error } = useCurrentUser();
 
-  if (isLoading) return <Spinner className="size-12 text-accent"/>;
+  if (isLoading) return <Spinner className="size-12 text-accent" />;
 
   if (error || !user) {
     return <Navigate to="/login" replace />;
   }
+
+  console.log("currentUser", user);
 
   return <Outlet />;
 };

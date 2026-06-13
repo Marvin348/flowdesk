@@ -1,4 +1,4 @@
-import { User } from "@shared/types/user.js";
+import { User, AuthUser } from "@shared/types/user.js";
 import {
   UserAvatarDto,
   UserPreviewDto,
@@ -12,6 +12,20 @@ export const toUserDto = (user: UserDocument): User => ({
   jobTitle: user.jobTitle,
   role: user.role,
   avatarKey: user.avatarKey,
+});
+
+export const toAuthUserDto = (user: UserDocument): AuthUser => ({
+  id: user._id.toString(),
+  name: user.name,
+  email: user.email,
+  jobTitle: user.jobTitle,
+  role: user.role,
+  avatarKey: user.avatarKey,
+  appearanceSettings: {
+    theme: user.appearanceSettings?.theme ?? "system",
+    density: user.appearanceSettings?.density ?? "default",
+    startView: user.appearanceSettings?.startView ?? "dashboard",
+  },
 });
 
 export const toUserPreviewDto = (user: User): UserPreviewDto => ({

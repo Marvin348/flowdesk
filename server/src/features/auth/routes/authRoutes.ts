@@ -11,9 +11,8 @@ import {
 } from "@/features/auth/services/auth.service.js";
 import { verifyAccessToken } from "@/features/auth/utils/tokens.js";
 import { UserModel } from "@/features/users/models/user.modal.js";
-import { toUserDto } from "@/features/users/mappers/user.mapper.js";
+import { toAuthUserDto } from "@/features/users/mappers/user.mapper.js";
 import { requireAuth } from "@/features/auth/middleware/requireAuth.js";
-import { getAuthContext } from "@/features/auth/utils/getAuthContext.js";
 
 const router = express.Router();
 
@@ -39,7 +38,7 @@ router.get("/me", async (req, res) => {
       return res.status(401).json({ message: "Not authenticated" });
     }
 
-    return res.status(200).json({ user: toUserDto(user) });
+    return res.status(200).json({ user: toAuthUserDto(user) });
   } catch (error) {
     return res.status(401).json({ message: "Not authenticated" });
   }

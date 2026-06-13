@@ -1,5 +1,5 @@
 import { apiClient } from "@/shared/api/client";
-import type { User } from "@shared/types/user";
+import type { AuthUser } from "@shared/types/user";
 import type { PasswordFields } from "@/features/auth/schemas/securitySchema";
 import type { RegisterFields } from "@/features/auth/schemas/registerSchema";
 import type { LoginFields } from "@/features/auth/schemas/loginSchema";
@@ -9,7 +9,7 @@ export const login = async (input: LoginFields) => {
   return res.data;
 };
 
-export const getCurrentUser = async (): Promise<User> => {
+export const getCurrentUser = async (): Promise<AuthUser> => {
   const res = await apiClient.get("/auth/me");
   return res.data.user;
 };
