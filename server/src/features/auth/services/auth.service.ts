@@ -12,6 +12,7 @@ import {
 import { toAuthUserDto } from "@/features/users/mappers/user.mapper.js";
 import { WorkspaceModel } from "@/features/workspace/models/workspace.model.js";
 import { Types } from "mongoose";
+import { AppError } from "@/utils/AppError.js";
 
 export const registerUser = async (input: RegisterInput) => {
   const { email, name, password } = input;
@@ -19,7 +20,7 @@ export const registerUser = async (input: RegisterInput) => {
   const existingUser = await UserModel.findOne({ email });
 
   if (existingUser) {
-    throw new Error("Email already exists");
+    throw new AppError("Email already exists", 409);
   }
 
   const passwordHash = await hashPassword(password);
@@ -56,13 +57,13 @@ export const loginUser = async (input: LoginInput) => {
   const user = await UserModel.findOne({ email }).lean();
 
   if (!user) {
-    throw new Error("Invalid credentials");
+    throw new AppError("Invalid credentials", 401);
   }
 
   const isPasswordValid = await comparePassword(password, user.passwordHash);
 
   if (!isPasswordValid) {
-    throw new Error("Invalid credentials");
+    throw new AppError("Invalid credentials", 401);
   }
 
   const accessToken = createAccessToken(user._id.toString());
@@ -79,7 +80,7 @@ export const changePassword = async (input: PasswordInput, userId: string) => {
   const user = await UserModel.findById(userId);
 
   if (!user) {
-    throw new Error("Invalid user");
+    throw new AppError("Invalid user", 401);
   }
 
   const isPasswordValid = await comparePassword(
@@ -88,7 +89,7 @@ export const changePassword = async (input: PasswordInput, userId: string) => {
   );
 
   if (!isPasswordValid) {
-    throw new Error("Invalid password");
+    throw new AppError("Invalid password", 400);
   }
 
   const isSameAsOldPassword = await comparePassword(
@@ -97,7 +98,10 @@ export const changePassword = async (input: PasswordInput, userId: string) => {
   );
 
   if (isSameAsOldPassword) {
-    throw new Error("New password must be different from current password");
+    throw new AppError(
+      "New password must be different from current password",
+      401,
+    );
   }
 
   const hashedNewPassword = await hashPassword(newPassword);

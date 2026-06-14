@@ -9,47 +9,38 @@ import {
   loginUser,
   registerUser,
 } from "@/features/auth/services/auth.service.js";
-import { verifyAccessToken } from "@/features/auth/utils/tokens.js";
 import { UserModel } from "@/features/users/models/user.modal.js";
 import { toAuthUserDto } from "@/features/users/mappers/user.mapper.js";
 import { requireAuth } from "@/features/auth/middleware/requireAuth.js";
+import { asyncHandler } from "@/utils/asyncHandler.js";
+import { AppError } from "@/utils/AppError.js";
+import { getAuthContext } from "@/features/auth/utils/getAuthContext.js";
 
 const router = express.Router();
 
-router.get("/me", async (req, res) => {
-  try {
-    const token = req.cookies.accessToken;
+router.get(
+  "/me",
+  requireAuth,
+  asyncHandler(async (req, res) => {
+    const { userId, workspaceId } = getAuthContext(req);
 
-    if (!token) {
-      return res.status(401).json({ message: "Not authenticated" });
-    }
-
-    const payload = verifyAccessToken(token);
-
-    if (typeof payload === "string" || !payload.sub) {
-      return res.status(401).json({ message: "Not authenticated" });
-    }
-
-    const userId = payload.sub;
-
-    const user = await UserModel.findById(userId).lean();
+    const user = await UserModel.findOne({ _id: userId, workspaceId }).lean();
 
     if (!user) {
-      return res.status(401).json({ message: "Not authenticated" });
+      throw new AppError("Not authenticated", 401);
     }
 
     return res.status(200).json({ user: toAuthUserDto(user) });
-  } catch (error) {
-    return res.status(401).json({ message: "Not authenticated" });
-  }
-});
+  }),
+);
 
-router.post("/login", async (req, res) => {
-  try {
+router.post(
+  "/login",
+  asyncHandler(async (req, res) => {
     const result = loginSchema.safeParse(req.body);
 
     if (!result.success) {
-      return res.status(400).json({ message: "Invalid request body" });
+      throw new AppError("Invalid request body", 400);
     }
 
     const input = result.data;
@@ -64,10 +55,8 @@ router.post("/login", async (req, res) => {
     });
 
     return res.status(200).json({ user });
-  } catch (error) {
-    return res.status(500).json({ message: "Internal server error" });
-  }
-});
+  }),
+);
 
 router.post("/logout", (req, res) => {
   res.clearCookie("accessToken", {
@@ -79,12 +68,13 @@ router.post("/logout", (req, res) => {
   return res.status(200).json({ message: "Logout successful" });
 });
 
-router.post("/register", async (req, res) => {
-  try {
+router.post(
+  "/register",
+  asyncHandler(async (req, res) => {
     const result = registerSchema.safeParse(req.body);
 
     if (!result.success) {
-      return res.status(400).json({ message: "Invalid request body" });
+      throw new AppError("Invalid request body", 400);
     }
 
     const input = result.data;
@@ -99,44 +89,30 @@ router.post("/register", async (req, res) => {
     });
 
     return res.status(201).json({ user });
-  } catch (error) {
-    if (error instanceof Error && error.message === "Email already exists") {
-      return res.status(409).json({ message: "Email already exists" });
-    }
+  }),
+);
 
-    return res.status(500).json({ message: "Internal server error" });
-  }
-});
-
-router.patch("/password", requireAuth, async (req, res) => {
-  try {
+router.patch(
+  "/password",
+  requireAuth,
+  asyncHandler(async (req, res) => {
     const result = passwordSchema.safeParse(req.body);
 
     if (!result.success) {
-      return res.status(400).json({ message: "Invalid request body" });
+      throw new AppError("Invalid request body", 400);
     }
 
     const input = result.data;
     const userId = req.user?.id;
 
     if (!userId) {
-      return res.status(401).json({ message: "Not authenticated" });
+      throw new AppError("Not authenticated", 401);
     }
 
     await changePassword(input, userId);
 
     return res.status(200).json({ message: "Password updated successfully" });
-  } catch (error) {
-    if (error instanceof Error && error.message === "Invalid user") {
-      return res.status(401).json({ message: "Invalid user" });
-    }
-
-    if (error instanceof Error && error.message === "Invalid password") {
-      return res.status(400).json({ message: "Invalid password" });
-    }
-
-    return res.status(500).json({ message: "Failed to update password" });
-  }
-});
+  }),
+);
 
 export default router;
