@@ -19,7 +19,7 @@ import { toTaskDto } from "@/features/tasks/mappers/task.mapper.js";
 import { ProjectModel } from "@/features/projects/models/project.model.js";
 import { toProjectDto } from "@/features/projects/mappers/project.mapper.js";
 import { buildUserQuery } from "@/features/users/queries/buildUserQuery.js";
-import { PAGE_LIMITS, DEFAULT_PAGE } from "@shared/constants/pagination.js";
+import { PAGE_LIMITS } from "@shared/constants/pagination.js";
 import { parsePagination } from "@/shared/parsers/parsePagination.js";
 import {
   updateCurrentUserSchema,
@@ -30,22 +30,21 @@ import {
   updateAppearanceSettings,
 } from "@/features/users/services/user.service.js";
 import { getAuthContext } from "@/features/auth/utils/getAuthContext.js";
+import { asyncHandler } from "@/utils/asyncHandler.js";
+import { AppError } from "@/utils/AppError.js";
 
 const router = express.Router();
 
-router.get("/", async (req, res) => {
-  try {
+router.get(
+  "/",
+  asyncHandler(async (req, res) => {
     const { workspaceId } = getAuthContext(req);
 
     const users = await UserModel.find({ workspaceId }).lean();
 
     return res.json({ data: users.map(toUserDto) });
-  } catch (error) {
-    return res.status(500).json({
-      error: "Failed to fetch users",
-    });
-  }
-});
+  }),
+);
 
 export type TeamMembersQuery = {
   search?: string;
@@ -57,8 +56,9 @@ export type TeamMembersQuery = {
   activity?: TeamActivity;
 };
 
-router.get("/team", async (req: Request<{}, {}, {}, TeamMembersQuery>, res) => {
-  try {
+router.get(
+  "/team",
+  asyncHandler(async (req: Request<{}, {}, {}, TeamMembersQuery>, res) => {
     const search =
       typeof req.query.search === "string" ? req.query.search.trim() : "";
 
@@ -101,21 +101,16 @@ router.get("/team", async (req: Request<{}, {}, {}, TeamMembersQuery>, res) => {
     return res.status(200).json({
       data: paginationItems,
     });
-  } catch (error) {
-    return res.status(500).json({
-      error: "Failed to fetch team",
-    });
-  }
-});
+  }),
+);
 
-router.patch("/me", async (req, res) => {
-  try {
+router.patch(
+  "/me",
+  asyncHandler(async (req, res) => {
     const result = updateCurrentUserSchema.safeParse(req.body);
 
     if (!result.success) {
-      return res.status(400).json({
-        message: "Invalid profile data",
-      });
+      throw new AppError("Invalid profile data", 400);
     }
 
     const input = result.data;
@@ -125,19 +120,16 @@ router.patch("/me", async (req, res) => {
     const updatedUser = await updateCurrentUser({ input, userId, workspaceId });
 
     return res.status(201).json({ user: updatedUser });
-  } catch (error) {
-    return res.status(500).json({ message: "Failed to update profile" });
-  }
-});
+  }),
+);
 
-router.patch("/appearance", async (req, res) => {
-  try {
+router.patch(
+  "/appearance",
+  asyncHandler(async (req, res) => {
     const result = appearanceSettingsSchema.safeParse(req.body);
 
     if (!result.success) {
-      return res.status(400).json({
-        message: "Invalid appearance setting",
-      });
+      throw new AppError("Invalid appearance setting", 400);
     }
 
     const input = result.data;
@@ -151,20 +143,17 @@ router.patch("/appearance", async (req, res) => {
     });
 
     return res.status(201).json({ user: updatedUserSettings });
-  } catch (error) {
-    return res
-      .status(500)
-      .json({ message: "Failed to update appearance settings" });
-  }
-});
+  }),
+);
 
-router.get("/:id/details", async (req, res) => {
-  try {
+router.get(
+  "/:id/details",
+  asyncHandler(async (req, res) => {
     const { workspaceId } = getAuthContext(req);
     const targetUserId = req.params.id;
 
     if (!targetUserId) {
-      return res.status(404).json({ message: "Invalid userId" });
+      throw new AppError("Invalid userId", 404);
     }
 
     const userRecord = await UserModel.findOne({
@@ -173,7 +162,7 @@ router.get("/:id/details", async (req, res) => {
     }).lean();
 
     if (!userRecord) {
-      return res.status(404).json({ error: "User not found" });
+      throw new AppError("User not found", 404);
     }
 
     const projectRecords = await ProjectModel.find({ workspaceId }).lean();
@@ -186,22 +175,18 @@ router.get("/:id/details", async (req, res) => {
     const userDetails = toUserDetailsDto(user, projects, tasks);
 
     return res.status(200).json({ data: userDetails });
-  } catch (error) {
-    return res.status(500).json({
-      error: "Failed to fetch user details",
-    });
-  }
-});
+  }),
+);
 
 router.patch(
   "/:id",
-  async (req: Request<{ id: string }, {}, { role: UserRole }>, res) => {
-    try {
+  asyncHandler(
+    async (req: Request<{ id?: string }, {}, { role?: UserRole }>, res) => {
       const { workspaceId } = getAuthContext(req);
       const targetUserId = req.params.id;
 
       if (!targetUserId) {
-        return res.status(404).json({ message: "Invalid userId" });
+        throw new AppError("Invalid userId", 404);
       }
 
       const { role } = req.body;
@@ -210,7 +195,7 @@ router.patch(
         role === "admin" || role === "member" || role === "manager";
 
       if (!isValidRole) {
-        return res.status(400).json({ error: "Invalid role" });
+        throw new AppError("Invalid role", 400);
       }
 
       const user = await UserModel.findOne({
@@ -219,11 +204,11 @@ router.patch(
       }).lean();
 
       if (!user) {
-        return res.status(404).json({ message: "User not found" });
+        throw new AppError("User not found", 404);
       }
 
       if (user.role === role) {
-        return res.status(400).json({ error: "User already has this role" });
+        throw new AppError("User already has this role", 400);
       }
 
       const updatedUser = await UserModel.findOneAndUpdate(
@@ -233,18 +218,14 @@ router.patch(
       ).lean();
 
       if (!updatedUser) {
-        return res.status(404).json({ message: "User not found" });
+        throw new AppError("User not found", 404);
       }
 
       return res.status(200).json({
         data: toUserDto(updatedUser),
       });
-    } catch (error) {
-      return res.status(500).json({
-        error: "Failed to update user role",
-      });
-    }
-  },
+    },
+  ),
 );
 
 export default router;

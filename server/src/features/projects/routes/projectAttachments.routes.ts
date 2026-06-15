@@ -1,6 +1,6 @@
 import { parsePagination } from "@/shared/parsers/parsePagination.js";
 import express from "express";
-import { Request, Response } from "express";
+import { Request } from "express";
 import type { ProjectAttachmentQuery } from "@/features/projects/types/querys/projectAttachmentsQuery.js";
 import { PAGE_LIMITS } from "@shared/constants/pagination.js";
 import { buildAttachmentQuery } from "@/features/attachments/queries/buildAttachmentQuery.js";
@@ -19,6 +19,8 @@ import {
   deleteFileFromR2,
   uploadFileToR2,
 } from "@/features/attachments/services/attachmentStorage.service.js";
+import { asyncHandler } from "@/utils/asyncHandler.js";
+import { AppError } from "@/utils/AppError.js";
 
 const router = express.Router();
 
@@ -28,83 +30,73 @@ const upload = multer({
 });
 
 type DeleteAttachmentParams = {
-  id: string;
-  fileId: string;
+  id?: string;
+  fileId?: string;
 };
 
 router.delete(
   "/:id/files/:fileId",
-  async (req: Request<DeleteAttachmentParams, {}, {}, {}>, res) => {
-    try {
-      const projectId = req.params.id;
-      const attachmentId = req.params.fileId;
+  asyncHandler(async (req: Request<DeleteAttachmentParams, {}, {}, {}>, res) => {
+    const projectId = req.params.id;
+    const attachmentId = req.params.fileId;
 
-      if (!projectId) {
-        return res.status(400).json({ error: "Invalid projectId" });
-      }
-
-      if (!attachmentId) {
-        return res.status(400).json({ error: "Invalid attachmentId" });
-      }
-
-      const { userId, workspaceId } = getAuthContext(req);
-
-      const project = await getProjectById({
-        projectId,
-        userId,
-        workspaceId,
-      });
-
-      if (!project) {
-        return res.status(404).json({ error: "project not found" });
-      }
-
-      const attachmentRecord = await AttachmentModel.findOne({
-        _id: attachmentId,
-        workspaceId,
-        projectId,
-      }).lean();
-
-      if (!attachmentRecord) {
-        return res.status(404).json({ error: "atachment not found" });
-      }
-
-      try {
-        await deleteFileFromR2(attachmentRecord.storageKey);
-      } catch (error) {
-        console.error("Failed to delete file from R2", error);
-      }
-
-      const deletedAttachment = await AttachmentModel.deleteOne({
-        _id: attachmentId,
-        workspaceId,
-        projectId,
-      });
-
-      await ProjectModel.findOneAndUpdate(
-        { _id: projectId, workspaceId },
-        {
-          $currentDate: { updatedAt: true },
-        },
-      );
-
-      return res.status(200).json({ data: deletedAttachment });
-    } catch (error) {
-      return res.status(500).json({
-        error: "Failed to delete attachments",
-      });
+    if (!projectId) {
+      throw new AppError("Invalid projectId", 400);
     }
-  },
+
+    if (!attachmentId) {
+      throw new AppError("Invalid attachmentId", 400);
+    }
+
+    const { userId, workspaceId } = getAuthContext(req);
+
+    const project = await getProjectById({
+      projectId,
+      userId,
+      workspaceId,
+    });
+
+    if (!project) {
+      throw new AppError("Project not found", 404);
+    }
+
+    const attachmentRecord = await AttachmentModel.findOne({
+      _id: attachmentId,
+      workspaceId,
+      projectId,
+    }).lean();
+
+    if (!attachmentRecord) {
+      throw new AppError("Attachment not found", 404);
+    }
+
+    await deleteFileFromR2(attachmentRecord.storageKey);
+
+    const deletedAttachment = await AttachmentModel.deleteOne({
+      _id: attachmentId,
+      workspaceId,
+      projectId,
+    });
+
+    await ProjectModel.findOneAndUpdate(
+      { _id: projectId, workspaceId },
+      {
+        $currentDate: { updatedAt: true },
+      },
+    );
+
+    return res.status(200).json({ data: deletedAttachment });
+  }),
 );
 
 router.get(
   "/:id/files",
-  async (req: Request<{ id: string }, {}, {}, ProjectAttachmentQuery>, res) => {
-    try {
+  asyncHandler(
+    async (req: Request<{ id?: string }, {}, {}, ProjectAttachmentQuery>, res) => {
       const projectId = req.params.id;
 
       if (!projectId) {
-        return res.status(400).json({ error: "Invalid projectId" });
+        throw new AppError("Invalid projectId", 400);
       }
 
       const { userId, workspaceId } = getAuthContext(req);
@@ -116,7 +108,7 @@ router.get(
       });
 
       if (!project) {
-        return res.status(404).json({ error: "project not found" });
+        throw new AppError("Project not found", 404);
       }
 
       const search =
@@ -175,9 +167,7 @@ router.get(
       )?.userId;
 
       if (missingUserId) {
-        return res.status(500).json({
-          error: `Missing user for attachment: ${missingUserId}`,
-        });
+        throw new AppError(`Missing user for attachment: ${missingUserId}`, 500);
       }
 
       const projectAttachments = toProjectAttachmentsDto(
@@ -193,28 +183,21 @@ router.get(
           currentPage: page,
         },
       });
-    } catch (error) {
-      return res.status(500).json({
-        error: "Failed to fetch project files",
-      });
-    }
-  },
+    },
+  ),
 );
 
 router.post(
   "/:id/files",
   upload.array("files"),
-  async (
-    req: Request<{ id: string }, {}, { taskId?: string }>,
-    res: Response,
-  ) => {
-    try {
+  asyncHandler(
+    async (req: Request<{ id?: string }, {}, { taskId?: string }>, res) => {
       const projectId = req.params.id;
       const taskId = req.body.taskId ?? null;
       const files = req.files as Express.Multer.File[] | undefined;
 
       if (!projectId) {
-        return res.status(400).json({ error: "Invalid projectId" });
+        throw new AppError("Invalid projectId", 400);
       }
 
       const { userId, workspaceId } = getAuthContext(req);
@@ -226,7 +209,7 @@ router.post(
       });
 
       if (!project) {
-        return res.status(404).json({ error: "project not found" });
+        throw new AppError("Project not found", 404);
       }
 
       if (taskId) {
@@ -237,12 +220,12 @@ router.post(
         }).lean();
 
         if (!task) {
-          return res.status(404).json({ error: "task not found" });
+          throw new AppError("Task not found", 404);
         }
       }
 
       if (!files || files.length === 0) {
-        return res.status(400).json({ error: "No files uploaded" });
+        throw new AppError("No files uploaded", 400);
       }
 
       const attachmentsToCreate = [];
@@ -273,12 +256,8 @@ router.post(
       );
 
       return res.status(201).json({ data: createdAttachments });
-    } catch (error) {
-      return res.status(500).json({
-        error: "Failed to add new attachments",
-      });
-    }
-  },
+    },
+  ),
 );
 
 export default router;

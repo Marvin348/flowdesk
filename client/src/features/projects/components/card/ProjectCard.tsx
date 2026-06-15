@@ -64,7 +64,7 @@ const ProjectCard = ({ project }: ProjectCardType) => {
 
         <div className="flex items-center gap-2">
           <button className="order-1" onClick={onMenuClick}>
-            <EllipsisVertical strokeWidth={1} fill="black" />
+            <EllipsisVertical strokeWidth={1} fill="black"/>
           </button>
 
           {badge && <ActiveMenuBadge badge={badge} />}

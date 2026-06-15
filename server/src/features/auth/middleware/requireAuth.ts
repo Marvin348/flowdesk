@@ -1,23 +1,21 @@
 import type { Request, Response, NextFunction } from "express";
 import { verifyAccessToken } from "@/features/auth/utils/tokens.js";
 import { UserModel } from "@/features/users/models/user.modal.js";
+import { AppError } from "@/utils/AppError.js";
+import { asyncHandler } from "@/utils/asyncHandler.js";
 
-export const requireAuth = async (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
-  try {
+export const requireAuth = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
     const token = req.cookies.accessToken;
 
     if (!token) {
-      return res.status(401).json({ message: "Not authenticated" });
+      throw new AppError("Not authenticated", 401);
     }
 
     const payload = verifyAccessToken(token);
 
     if (typeof payload === "string" || !payload.sub) {
-      return res.status(401).json({ message: "Not authenticated" });
+      throw new AppError("Not authenticated", 401);
     }
 
     const userId = payload.sub;
@@ -25,11 +23,11 @@ export const requireAuth = async (
     const user = await UserModel.findById(userId).lean();
 
     if (!user) {
-      return res.status(401).json({ message: "Invalid User" });
+      throw new AppError("Invalid User", 401);
     }
 
     if (!user.workspaceId) {
-      return res.status(401).json({ message: "WorkspaceId not found" });
+      throw new AppError("WorkspaceId not found", 401);
     }
 
     req.user = {
@@ -39,7 +37,5 @@ export const requireAuth = async (
     };
 
     next();
-  } catch (error) {
-    return res.status(401).json({ message: "Not authenticated" });
-  }
-};
+  },
+);

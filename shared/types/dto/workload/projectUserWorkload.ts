@@ -4,16 +4,7 @@ export type UserWorkloadStats = {
     id: string;
     name: string;
     avatarKey: string;
-    jobTitle?:
-      | "Frontend Developer"
-      | "Designer"
-      | "Project Manager"
-      | "Backend Developer"
-      | "Art Director"
-      | "Fullstack Developer"
-      | "DevOps Engineer"
-      | "QA Engineer"
-      | "Motion Designer";
+    jobTitle?: string
   };
   byStatusCounts: { pending: number; in_progress: number; done: number };
 };

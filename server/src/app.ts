@@ -9,6 +9,7 @@ import dashboardRouter from "@/features/dashboard/routes/dashboard.js";
 import authRouter from "@/features/auth/routes/authRoutes.js";
 import cookieParser from "cookie-parser";
 import { requireAuth } from "@/features/auth/middleware/requireAuth.js";
+import { errorHandler } from "@/middleware/errorHandler.js";
 
 const app = express();
 
@@ -29,5 +30,7 @@ app.use("/tasks", requireAuth, tasksRouter);
 app.use("/users", requireAuth, usersRouter);
 app.use("/attachments", requireAuth, attachmentsRouter);
 app.use("/comments", requireAuth, commentsRouter);
+
+app.use(errorHandler);
 
 export default app;

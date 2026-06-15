@@ -1,8 +1,9 @@
+import { AppError } from "@/utils/AppError.js";
 import { Request } from "express";
 
 export const getAuthContext = (req: Request) => {
   if (!req.user) {
-    throw new Error("Not authenticated");
+    throw new AppError("Not authenticated", 401);
   }
 
   return {

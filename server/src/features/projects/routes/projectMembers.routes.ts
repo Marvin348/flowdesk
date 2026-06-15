@@ -11,6 +11,8 @@ import {
   getProjects,
 } from "@/features/projects/services/project.service.js";
 import { getAuthContext } from "@/features/auth/utils/getAuthContext.js";
+import { asyncHandler } from "@/utils/asyncHandler.js";
+import { AppError } from "@/utils/AppError.js";
 
 const router = express.Router();
 
@@ -21,186 +23,175 @@ type AssignUserInput = {
 
 router.patch(
   "/assign-user",
-  async (req: Request<{}, {}, AssignUserInput>, res) => {
-    try {
-      const { projectIdsToAdd, userId } = req.body;
+  asyncHandler(async (req: Request<{}, {}, AssignUserInput>, res) => {
+    const { projectIdsToAdd, userId } = req.body;
 
-      const { userId: currentUserId, workspaceId } = getAuthContext(req);
+    const { userId: currentUserId, workspaceId } = getAuthContext(req);
 
-      if (!Array.isArray(projectIdsToAdd) || typeof userId !== "string") {
-        return res.status(400).json({ error: "Invalid input" });
-      }
+    if (!Array.isArray(projectIdsToAdd) || typeof userId !== "string") {
+      throw new AppError("Invalid input", 400);
+    }
 
-      const user = await UserModel.findOne({ _id: userId, workspaceId }).lean();
+    const user = await UserModel.findOne({ _id: userId, workspaceId }).lean();
 
-      if (!user) {
-        return res.status(404).json({ error: "User not found" });
-      }
+    if (!user) {
+      throw new AppError("User not found", 404);
+    }
 
-      const visibleProjects = await getProjects({
-        userId: currentUserId,
-        workspaceId,
-      });
-      const projectIdsToAddSet = new Set(projectIdsToAdd);
-      const matchingProjects = visibleProjects.filter((project) =>
-        projectIdsToAddSet.has(project.id),
-      );
+    const visibleProjects = await getProjects({
+      userId: currentUserId,
+      workspaceId,
+    });
+    const projectIdsToAddSet = new Set(projectIdsToAdd);
+    const matchingProjects = visibleProjects.filter((project) =>
+      projectIdsToAddSet.has(project.id),
+    );
 
-      const matchingProjectIds = matchingProjects.map((project) => project.id);
+    const matchingProjectIds = matchingProjects.map((project) => project.id);
 
-      if (projectIdsToAddSet.size !== matchingProjects.length) {
-        return res
-          .status(400)
-          .json({ error: "one or more projects are missing" });
-      }
+    if (projectIdsToAddSet.size !== matchingProjects.length) {
+      throw new AppError("One or more projects are missing", 400);
+    }
 
-      const alreadyAssignedProject = matchingProjects.find((p) =>
-        p.invitedUserIds.includes(userId),
-      );
+    const alreadyAssignedProject = matchingProjects.find((p) =>
+      p.invitedUserIds.includes(userId),
+    );
 
-      if (alreadyAssignedProject) {
-        return res.status(409).json({ error: "User already in project" });
-      }
+    if (alreadyAssignedProject) {
+      throw new AppError("User already in project", 409);
+    }
 
-      await ProjectModel.updateMany(
-        {
-          _id: { $in: matchingProjectIds },
-          workspaceId,
-        },
-        {
-          $addToSet: {
-            invitedUserIds: userId,
-          },
-        },
-      );
-
-      const updatedProjectDocs = await ProjectModel.find({
+    await ProjectModel.updateMany(
+      {
         _id: { $in: matchingProjectIds },
         workspaceId,
-      });
+      },
+      {
+        $addToSet: {
+          invitedUserIds: userId,
+        },
+      },
+    );
 
-      const updatedProjects = updatedProjectDocs.map(toProjectDto);
+    const updatedProjectDocs = await ProjectModel.find({
+      _id: { $in: matchingProjectIds },
+      workspaceId,
+    });
 
-      return res.status(200).json({
-        data: updatedProjects,
-      });
-    } catch (error) {
-      return res.status(500).json({
-        error: "Failed to assign user to projects",
-      });
-    }
-  },
+    const updatedProjects = updatedProjectDocs.map(toProjectDto);
+
+    return res.status(200).json({
+      data: updatedProjects,
+    });
+  }),
 );
 
 // delete user from project
 router.delete(
   "/:id/members/:userId",
-  async (req: Request<{ id: string; userId: string }>, res) => {
-    try {
-      const projectId = req.params.id;
-      const userId = req.params.userId;
+  asyncHandler(async (req: Request<{ id?: string; userId?: string }>, res) => {
+    const projectId = req.params.id;
+    const userId = req.params.userId;
 
-      const { userId: currentUserId, workspaceId } = getAuthContext(req);
+    const { userId: currentUserId, workspaceId } = getAuthContext(req);
 
-      if (!projectId) {
-        return res.status(400).json({ error: "Invalid projectId" });
-      }
+    if (!projectId) {
+      throw new AppError("Invalid projectId", 400);
+    }
 
-      if (!userId) {
-        return res.status(400).json({ error: "Invalid userId" });
-      }
+    if (!userId) {
+      throw new AppError("Invalid userId", 400);
+    }
 
-      const project = await getProjectById({
-        projectId,
-        userId: currentUserId,
-        workspaceId,
-      });
+    const project = await getProjectById({
+      projectId,
+      userId: currentUserId,
+      workspaceId,
+    });
 
-      if (!project) {
-        return res.status(404).json({ error: "Project not found" });
-      }
+    if (!project) {
+      throw new AppError("Project not found", 404);
+    }
 
-      if (!project.invitedUserIds.includes(userId)) {
-        return res.status(400).json({ error: "User is not a project member" });
-      }
+    if (!project.invitedUserIds.includes(userId)) {
+      throw new AppError("User is not a project member", 400);
+    }
 
-      const updatedProject = await ProjectModel.findOneAndUpdate(
-        { _id: projectId, workspaceId },
-        {
-          $pull: {
-            invitedUserIds: userId,
-          },
+    const updatedProject = await ProjectModel.findOneAndUpdate(
+      { _id: projectId, workspaceId },
+      {
+        $pull: {
+          invitedUserIds: userId,
         },
-        { returnDocument: "after" },
-      ).lean();
+      },
+      { returnDocument: "after" },
+    ).lean();
 
-      if (!updatedProject) {
-        return res.status(404).json({ error: "Project not found" });
-      }
+    if (!updatedProject) {
+      throw new AppError("Project not found", 404);
+    }
 
-      await TaskModel.updateMany(
-        {
-          workspaceId,
-          projectId,
+    await TaskModel.updateMany(
+      {
+        workspaceId,
+        projectId,
+        collaboratorIds: userId,
+      },
+      {
+        $pull: {
           collaboratorIds: userId,
         },
-        {
-          $pull: {
-            collaboratorIds: userId,
-          },
-        },
-      );
+      },
+    );
 
-      const tasksWithoutCollaborators = await TaskModel.find({
+    const tasksWithoutCollaborators = await TaskModel.find({
+      workspaceId,
+      projectId,
+      collaboratorIds: { $size: 0 },
+    }).lean();
+
+    const taskIdsToDelete = tasksWithoutCollaborators.map((task) =>
+      task._id.toString(),
+    );
+
+    if (taskIdsToDelete.length > 0) {
+      await AttachmentModel.deleteMany({
         workspaceId,
         projectId,
-        collaboratorIds: { $size: 0 },
-      }).lean();
+        taskId: { $in: taskIdsToDelete },
+      });
 
-      const taskIdsToDelete = tasksWithoutCollaborators.map((task) =>
-        task._id.toString(),
-      );
+      await CommentModel.deleteMany({
+        workspaceId,
+        taskId: { $in: taskIdsToDelete },
+      });
 
-      if (taskIdsToDelete.length > 0) {
-        await AttachmentModel.deleteMany({
-          workspaceId,
-          projectId,
-          taskId: { $in: taskIdsToDelete },
-        });
-
-        await CommentModel.deleteMany({
-          workspaceId,
-          taskId: { $in: taskIdsToDelete },
-        });
-
-        await TaskModel.deleteMany({
-          workspaceId,
-          projectId,
-          _id: { $in: taskIdsToDelete },
-        });
-      }
-
-      return res.status(200).json({ data: toProjectDto(updatedProject) });
-    } catch (error) {
-      return res.status(500).json({
-        error: "Failed to remove user from project",
+      await TaskModel.deleteMany({
+        workspaceId,
+        projectId,
+        _id: { $in: taskIdsToDelete },
       });
     }
-  },
+
+    return res.status(200).json({ data: toProjectDto(updatedProject) });
+  }),
 );
 
 // update invitedUserIds
 router.patch(
   "/:id/members",
-  async (req: Request<{ id: string }, {}, { userIdsToAdd: string[] }>, res) => {
-    try {
+  asyncHandler(
+    async (
+      req: Request<{ id?: string }, {}, { userIdsToAdd: string[] }>,
+      res,
+    ) => {
       const projectId = req.params.id;
       const { userIdsToAdd } = req.body;
 
       const { userId: currentUserId, workspaceId } = getAuthContext(req);
 
       if (!projectId || !Array.isArray(userIdsToAdd)) {
-        return res.status(400).json({ error: "Invalid input" });
+        throw new AppError("Invalid input", 400);
       }
 
       const project = await getProjectById({
@@ -210,7 +201,7 @@ router.patch(
       });
 
       if (!project) {
-        return res.status(404).json({ error: "Project not found" });
+        throw new AppError("Project not found", 404);
       }
 
       const updatedProject = await ProjectModel.findOneAndUpdate(
@@ -226,18 +217,14 @@ router.patch(
       ).lean();
 
       if (!updatedProject) {
-        return res.status(404).json({ error: "project not found" });
+        throw new AppError("Project not found", 404);
       }
 
       return res.status(200).json({
         data: toProjectDto(updatedProject),
       });
-    } catch (error) {
-      return res.status(500).json({
-        error: "Failed to update project members",
-      });
-    }
-  },
+    },
+  ),
 );
 
 export default router;

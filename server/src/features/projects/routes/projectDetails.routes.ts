@@ -28,15 +28,18 @@ import { PAGE_LIMITS } from "@shared/constants/pagination.js";
 import { parsePagination } from "@/shared/parsers/parsePagination.js";
 import { getProjectById } from "@/features/projects/services/project.service.js";
 import { getAuthContext } from "@/features/auth/utils/getAuthContext.js";
+import { asyncHandler } from "@/utils/asyncHandler.js";
+import { AppError } from "@/utils/AppError.js";
 
 const router = express.Router();
 
-router.get("/:id/details", async (req: Request<{ id: string }>, res) => {
-  try {
+router.get(
+  "/:id/details",
+  asyncHandler(async (req: Request<{ id?: string }>, res) => {
     const projectId = req.params.id;
 
     if (!projectId) {
-      return res.status(400).json({ error: "Invalid projectId" });
+      throw new AppError("Invalid projectId", 400);
     }
 
     const { userId, workspaceId } = getAuthContext(req);
@@ -48,7 +51,7 @@ router.get("/:id/details", async (req: Request<{ id: string }>, res) => {
     });
 
     if (!project) {
-      return res.status(404).json({ error: "project not found" });
+      throw new AppError("Project not found", 404);
     }
 
     const taskRecords = await TaskModel.find({ projectId, workspaceId }).lean();
@@ -73,19 +76,16 @@ router.get("/:id/details", async (req: Request<{ id: string }>, res) => {
         progressPercent,
       },
     });
-  } catch (error) {
-    return res.status(500).json({
-      error: "Failed to fetch project details",
-    });
-  }
-});
+  }),
+);
 
-router.get("/:id/overview", async (req, res) => {
-  try {
+router.get(
+  "/:id/overview",
+  asyncHandler(async (req: Request<{ id?: string }>, res) => {
     const projectId = req.params.id;
 
     if (!projectId) {
-      return res.status(400).json({ error: "Invalid projectId" });
+      throw new AppError("Invalid projectId", 400);
     }
 
     const { userId, workspaceId } = getAuthContext(req);
@@ -97,7 +97,7 @@ router.get("/:id/overview", async (req, res) => {
     });
 
     if (!project) {
-      return res.status(404).json({ message: "Project not found" });
+      throw new AppError("Project not found", 404);
     }
 
     const taskRecords = await TaskModel.find({ projectId, workspaceId }).lean();
@@ -131,19 +131,16 @@ router.get("/:id/overview", async (req, res) => {
     return res.status(200).json({
       data: overview,
     });
-  } catch (error) {
-    return res.status(500).json({
-      error: "Failed to fetch project overview",
-    });
-  }
-});
+  }),
+);
 
-router.get("/:id/tasks", async (req, res) => {
-  try {
+router.get(
+  "/:id/tasks",
+  asyncHandler(async (req: Request<{ id?: string }>, res) => {
     const projectId = req.params.id;
 
     if (!projectId) {
-      return res.status(400).json({ error: "Invalid projectId" });
+      throw new AppError("Invalid projectId", 400);
     }
 
     const { userId, workspaceId } = getAuthContext(req);
@@ -155,7 +152,7 @@ router.get("/:id/tasks", async (req, res) => {
     });
 
     if (!project) {
-      return res.status(404).json({ message: "Project not found" });
+      throw new AppError("Project not found", 404);
     }
 
     const taskRecords = await TaskModel.find({ projectId, workspaceId }).lean();
@@ -169,25 +166,21 @@ router.get("/:id/tasks", async (req, res) => {
     const projectTasks = toProjectTasksDto(tasks, usersById);
 
     return res.status(200).json({ data: projectTasks });
-  } catch (error) {
-    return res.status(500).json({
-      error: "Failed to fetch project tasks",
-    });
-  }
-});
+  }),
+);
 
 router.get(
   "/:id/collaborators",
-  async (
-    req: Request<{ id: string }, {}, {}, ProjectCollaboratorsQuery>,
-    res,
-  ) => {
-    try {
+  asyncHandler(
+    async (
+      req: Request<{ id?: string }, {}, {}, ProjectCollaboratorsQuery>,
+      res,
+    ) => {
       const projectId = req.params.id;
       const { collaboratorsSort } = req.query;
 
       if (!projectId) {
-        return res.status(400).json({ error: "Invalid projectId" });
+        throw new AppError("Invalid projectId", 400);
       }
 
       const parsedCollaboratorSort = parseCollaboratorSort(collaboratorsSort);
@@ -201,7 +194,7 @@ router.get(
       });
 
       if (!project) {
-        return res.status(404).json({ error: "project not found" });
+        throw new AppError("Project not found", 404);
       }
 
       const userRecords = await UserModel.find({
@@ -221,23 +214,19 @@ router.get(
       const paginationItems = pagination(sorted, page, limit);
 
       return res.status(200).json({ data: paginationItems });
-    } catch (error) {
-      return res.status(500).json({
-        error: "Failed to fetch project collaborators",
-      });
-    }
-  },
+    },
+  ),
 );
 
 router.get(
   "/:id/comments",
-  async (req: Request<{ id: string }, {}, {}, ProjectCommentsQuery>, res) => {
-    try {
+  asyncHandler(
+    async (req: Request<{ id?: string }, {}, {}, ProjectCommentsQuery>, res) => {
       const projectId = req.params.id;
       const { commentsSort } = req.query;
 
       if (!projectId) {
-        return res.status(400).json({ error: "Invalid projectId" });
+        throw new AppError("Invalid projectId", 400);
       }
 
       const { userId, workspaceId } = getAuthContext(req);
@@ -251,7 +240,7 @@ router.get(
       });
 
       if (!project) {
-        return res.status(404).json({ error: "project not found" });
+        throw new AppError("Project not found", 404);
       }
 
       const taskRecords = await TaskModel.find({
@@ -298,22 +287,18 @@ router.get(
           hasMore: limited.length < sorted.length,
         },
       });
-    } catch (error) {
-      return res.status(500).json({
-        error: "Failed to fetch project comments",
-      });
-    }
-  },
+    },
+  ),
 );
 
 router.get(
   "/:id/workload",
-  async (req: Request<{ id: string }, {}, {}, ProjectWorkloadQuery>, res) => {
-    try {
+  asyncHandler(
+    async (req: Request<{ id?: string }, {}, {}, ProjectWorkloadQuery>, res) => {
       const projectId = req.params.id;
 
       if (!projectId) {
-        return res.status(400).json({ error: "Invalid projectId" });
+        throw new AppError("Invalid projectId", 400);
       }
 
       const parsedWorkloadSort = parseProjectWorkloadSort(
@@ -329,7 +314,7 @@ router.get(
       });
 
       if (!project) {
-        return res.status(404).json({ error: "project not found" });
+        throw new AppError("Project not found", 404);
       }
 
       const taskRecords = await TaskModel.find({
@@ -363,11 +348,7 @@ router.get(
       const paginationItems = pagination(sorted, page, limit);
 
       return res.status(200).json({ data: paginationItems });
-    } catch (error) {
-      return res.status(500).json({
-        error: "Failed to fetch project workload",
-      });
-    }
-  },
+    },
+  ),
 );
 export default router;
