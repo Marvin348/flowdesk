@@ -34,7 +34,7 @@ const DeleteProjectDialog = ({
       className="overlay cursor-auto px-8 flex items-center justify-center"
       onClick={(e) => e.stopPropagation()}
     >
-      <div className="bg-white max-w-[400px] text-center p-4 rounded-md z-100">
+      <div className="bg-background border max-w-[400px] text-center p-4 rounded-md z-100">
         <span className="mx-auto flex items-center justify-center size-10 bg-error/10 rounded-full">
           <TriangleAlert className="text-error" />
         </span>

@@ -5,16 +5,18 @@ import { toUserDto } from "@/features/users/mappers/user.mapper.js";
 import { toProjectOptionDto } from "@/features/projects/mappers/project-option.mapper.js";
 import { getProjects } from "@/features/projects/services/project.service.js";
 import { getAuthContext } from "@/features/auth/utils/getAuthContext.js";
+import { asyncHandler } from "@/utils/asyncHandler.js";
+import { AppError } from "@/utils/AppError.js";
 
 const router = express.Router();
 
 router.get(
   "/options",
-  async (
-    req: Request<{}, {}, {}, { search?: string; userId?: string }>,
-    res,
-  ) => {
-    try {
+  asyncHandler(
+    async (
+      req: Request<{}, {}, {}, { search?: string; userId?: string }>,
+      res,
+    ) => {
       const search =
         typeof req.query.search === "string" ? req.query.search.trim() : "";
 
@@ -23,7 +25,7 @@ router.get(
       const { userId, workspaceId } = getAuthContext(req);
 
       if (!selectedUserId) {
-        return res.status(401).json({ message: "Not authenticated" });
+        throw new AppError("Not authenticated", 401);
       }
 
       const visibleProjects = await getProjects({
@@ -80,10 +82,8 @@ router.get(
           results: search === "" ? [] : results,
         },
       });
-    } catch (error) {
-      return res.status(500).json({ error: "Failed to fetch project options" });
-    }
-  },
+    },
+  ),
 );
 
 export default router;

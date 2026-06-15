@@ -9,25 +9,31 @@ import {
   touchProject,
 } from "@/features/projects/services/project.service.js";
 import { getAuthContext } from "@/features/auth/utils/getAuthContext.js";
+import { asyncHandler } from "@/utils/asyncHandler.js";
+import { AppError } from "@/utils/AppError.js";
 
 const router = express.Router();
 
-router.get("/", async (req, res) => {
-  const { userId, workspaceId } = getAuthContext(req);
+router.get(
+  "/",
+  asyncHandler(async (req, res) => {
+    const { userId, workspaceId } = getAuthContext(req);
 
-  const projects = await getProjects({ userId, workspaceId });
-  const projectIds = projects.map((project) => project.id);
+    const projects = await getProjects({ userId, workspaceId });
+    const projectIds = projects.map((project) => project.id);
 
-  const tasks = await TaskModel.find({
-    workspaceId,
-    projectId: { $in: projectIds },
-  }).lean();
+    const tasks = await TaskModel.find({
+      workspaceId,
+      projectId: { $in: projectIds },
+    }).lean();
 
-  res.json({ data: tasks.map(toTaskDto) });
-});
+    return res.json({ data: tasks.map(toTaskDto) });
+  }),
+);
 
-router.post("/", async (req: Request<{}, {}, CreateTaskInput>, res) => {
-  try {
+router.post(
+  "/",
+  asyncHandler(async (req: Request<{}, {}, CreateTaskInput>, res) => {
     const {
       projectId,
       title,
@@ -40,7 +46,7 @@ router.post("/", async (req: Request<{}, {}, CreateTaskInput>, res) => {
     } = req.body;
 
     if (!projectId || !title || !collaboratorIds || !dueDate || !taskPriority) {
-      return res.status(400).json({ error: "Missing required fields" });
+      throw new AppError("Missing required fields", 400);
     }
 
     const { userId, workspaceId } = getAuthContext(req);
@@ -52,7 +58,7 @@ router.post("/", async (req: Request<{}, {}, CreateTaskInput>, res) => {
     });
 
     if (!project) {
-      return res.status(404).json({ error: "project not found" });
+      throw new AppError("Project not found", 404);
     }
 
     const newTaskRecord = await TaskModel.create({
@@ -73,11 +79,7 @@ router.post("/", async (req: Request<{}, {}, CreateTaskInput>, res) => {
     return res.status(201).json({
       data: toTaskDto(newTaskRecord.toObject()),
     });
-  } catch (error) {
-    return res.status(500).json({
-      error: "Failed to create task",
-    });
-  }
-});
+  }),
+);
 
 export default router;

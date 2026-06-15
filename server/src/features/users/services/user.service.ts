@@ -7,6 +7,7 @@ import {
   toUserDto,
   toAuthUserDto,
 } from "@/features/users/mappers/user.mapper.js";
+import { AppError } from "@/utils/AppError.js";
 
 type UpdateUserInput = {
   input: UpdateCurrentUserInput;
@@ -40,7 +41,7 @@ export const updateCurrentUser = async ({
   ).lean();
 
   if (!user) {
-    throw new Error("User not found");
+    throw new AppError("User not found", 404);
   }
 
   return toUserDto(user);
@@ -64,7 +65,7 @@ export const updateAppearanceSettings = async ({
   );
 
   if (!user) {
-    throw new Error("User not found");
+    throw new AppError("User not found", 404);
   }
 
   return toAuthUserDto(user);

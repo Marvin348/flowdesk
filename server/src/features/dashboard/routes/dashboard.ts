@@ -1,15 +1,19 @@
 import express from "express";
 import { getDashboardOverview } from "@/features/dashboard/services/dashboard.service.js";
 import { getAuthContext } from "@/features/auth/utils/getAuthContext.js";
+import { asyncHandler } from "@/utils/asyncHandler.js";
 
 const router = express.Router();
 
-router.get("/", async (req, res) => {
-  const { userId, workspaceId } = getAuthContext(req);
+router.get(
+  "/",
+  asyncHandler(async (req, res) => {
+    const { userId, workspaceId } = getAuthContext(req);
 
-  const dashborad = await getDashboardOverview({ userId, workspaceId });
+    const dashborad = await getDashboardOverview({ userId, workspaceId });
 
-  res.status(200).json({ data: dashborad });
-});
+    res.status(200).json({ data: dashborad });
+  }),
+);
 
 export default router;

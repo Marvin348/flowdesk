@@ -1,4 +1,4 @@
-import type { ProjectWorkloadSort } from "../types/sort/projectWorkloadSort";
+import type { ProjectWorkloadSort } from "../types/sort/projectWorkloadSort.js";
 
 export const parseProjectWorkloadSort = (
   value?: string | null,

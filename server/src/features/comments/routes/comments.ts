@@ -10,37 +10,43 @@ import {
   touchProject,
 } from "@/features/projects/services/project.service.js";
 import { getAuthContext } from "@/features/auth/utils/getAuthContext.js";
+import { asyncHandler } from "@/utils/asyncHandler.js";
+import { AppError } from "@/utils/AppError.js";
 
 const router = express.Router();
 
-router.get("/", async (req, res) => {
-  const { userId, workspaceId } = getAuthContext(req);
+router.get(
+  "/",
+  asyncHandler(async (req, res) => {
+    const { userId, workspaceId } = getAuthContext(req);
 
-  const projects = await getProjects({ userId, workspaceId });
-  const projectIds = projects.map((project) => project.id);
+    const projects = await getProjects({ userId, workspaceId });
+    const projectIds = projects.map((project) => project.id);
 
-  const taskRecords = await TaskModel.find({
-    workspaceId,
-    projectId: { $in: projectIds },
-  }).lean();
+    const taskRecords = await TaskModel.find({
+      workspaceId,
+      projectId: { $in: projectIds },
+    }).lean();
 
-  const taskIds = taskRecords.map((task) => task._id.toString());
+    const taskIds = taskRecords.map((task) => task._id.toString());
 
-  const comments = await CommentModel.find({
-    workspaceId,
-    taskId: { $in: taskIds },
-  }).lean();
+    const comments = await CommentModel.find({
+      workspaceId,
+      taskId: { $in: taskIds },
+    }).lean();
 
-  res.json({ data: comments });
-});
+    res.json({ data: comments });
+  }),
+);
 
 // new comment
-router.post("/", async (req: Request<{}, {}, CreateCommentInput>, res) => {
-  try {
+router.post(
+  "/",
+  asyncHandler(async (req: Request<{}, {}, CreateCommentInput>, res) => {
     const { taskId, message, parentCommentId } = req.body;
 
     if (!taskId || !message) {
-      return res.status(400).json({ error: "Missing required fields" });
+      throw new AppError("Missing required fields", 400);
     }
 
     const { userId, workspaceId } = getAuthContext(req);
@@ -51,7 +57,7 @@ router.post("/", async (req: Request<{}, {}, CreateCommentInput>, res) => {
     }).lean();
 
     if (!task) {
-      return res.status(404).json({ error: "Task not found" });
+      throw new AppError("Task not found", 404);
     }
 
     const project = await getProjectById({
@@ -61,7 +67,7 @@ router.post("/", async (req: Request<{}, {}, CreateCommentInput>, res) => {
     });
 
     if (!project) {
-      return res.status(404).json({ error: "Project not found" });
+      throw new AppError("Project not found", 404);
     }
 
     if (parentCommentId) {
@@ -72,13 +78,11 @@ router.post("/", async (req: Request<{}, {}, CreateCommentInput>, res) => {
       }).lean();
 
       if (!parentComment) {
-        return res.status(404).json({ error: "Parent comment not found" });
+        throw new AppError("Parent comment not found", 404);
       }
 
       if (parentComment.taskId !== taskId) {
-        return res.status(400).json({
-          error: "Parent comment does not belong to this task",
-        });
+        throw new AppError("Parent comment does not belong to this task", 400);
       }
     }
 
@@ -95,11 +99,7 @@ router.post("/", async (req: Request<{}, {}, CreateCommentInput>, res) => {
     return res.status(201).json({
       data: toCommentDto(newCommentRecord.toObject()),
     });
-  } catch (error) {
-    return res.status(500).json({
-      error: "Failed to create comment",
-    });
-  }
-});
+  }),
+);
 
 export default router;

@@ -23,89 +23,89 @@ import {
   getProjects,
 } from "@/features/projects/services/project.service.js";
 import { getAuthContext } from "@/features/auth/utils/getAuthContext.js";
+import { asyncHandler } from "@/utils/asyncHandler.js";
+import { AppError } from "@/utils/AppError.js";
 
 const router = express.Router();
 
-router.get("/", async (req, res) => {
-  const { userId, workspaceId } = getAuthContext(req);
+router.get(
+  "/",
+  asyncHandler(async (req, res) => {
+    const { userId, workspaceId } = getAuthContext(req);
 
-  const projects = await getProjects({ userId, workspaceId });
+    const projects = await getProjects({ userId, workspaceId });
 
-  return res.status(200).json({ data: projects });
-});
+    return res.status(200).json({ data: projects });
+  }),
+);
 
 router.get(
   "/summaries",
-  async (req: Request<{}, {}, {}, ProjectSummaryQuery>, res) => {
-    try {
-      const { userId, workspaceId } = getAuthContext(req);
+  asyncHandler(async (req: Request<{}, {}, {}, ProjectSummaryQuery>, res) => {
+    const { userId, workspaceId } = getAuthContext(req);
 
-      const projects = await getProjects({ userId, workspaceId });
-      const projectIds = projects.map((project) => project.id);
+    const projects = await getProjects({ userId, workspaceId });
+    const projectIds = projects.map((project) => project.id);
 
-      const taskDocs = await TaskModel.find({
-        workspaceId,
-        projectId: { $in: projectIds },
-      }).lean();
-      const taskIds = taskDocs.map((task) => task._id.toString());
+    const taskDocs = await TaskModel.find({
+      workspaceId,
+      projectId: { $in: projectIds },
+    }).lean();
+    const taskIds = taskDocs.map((task) => task._id.toString());
 
-      const commentDocs = await CommentModel.find({
-        workspaceId,
-        taskId: { $in: taskIds },
-      }).lean();
+    const commentDocs = await CommentModel.find({
+      workspaceId,
+      taskId: { $in: taskIds },
+    }).lean();
 
-      const attachmentDocs = await AttachmentModel.find({
-        workspaceId,
-        projectId: { $in: projectIds },
-      }).lean();
+    const attachmentDocs = await AttachmentModel.find({
+      workspaceId,
+      projectId: { $in: projectIds },
+    }).lean();
 
-      const userDocs = await UserModel.find({ workspaceId }).lean();
+    const userDocs = await UserModel.find({ workspaceId }).lean();
 
-      const tasks = taskDocs.map(toTaskDto);
-      const comments = commentDocs.map(toCommentDto);
-      const attachments = attachmentDocs.map(toAttachmentDto);
-      const users = userDocs.map(toUserDto);
+    const tasks = taskDocs.map(toTaskDto);
+    const comments = commentDocs.map(toCommentDto);
+    const attachments = attachmentDocs.map(toAttachmentDto);
+    const users = userDocs.map(toUserDto);
 
-      const usersById = new Map(users.map((u) => [u.id, u]));
+    const usersById = new Map(users.map((u) => [u.id, u]));
 
-      const projectListItems = toProjectsSummaryDto(
-        projects,
-        tasks,
-        comments,
-        attachments,
-        usersById,
-      );
+    const projectListItems = toProjectsSummaryDto(
+      projects,
+      tasks,
+      comments,
+      attachments,
+      usersById,
+    );
 
-      const search =
-        typeof req.query.search === "string" ? req.query.search.trim() : "";
+    const search =
+      typeof req.query.search === "string" ? req.query.search.trim() : "";
 
-      const parsedFilter = parseProjectQueryFilter(req.query);
+    const parsedFilter = parseProjectQueryFilter(req.query);
 
-      const filteredProjects = getFilteredProjectsList(
-        projectListItems,
-        search,
-        parsedFilter,
-      );
+    const filteredProjects = getFilteredProjectsList(
+      projectListItems,
+      search,
+      parsedFilter,
+    );
 
-      const { page, limit } = parsePagination({
-        page: req.query.page,
-        limit: req.query.limit,
-        defaultLimit: PAGE_LIMITS.attachments,
-      });
+    const { page, limit } = parsePagination({
+      page: req.query.page,
+      limit: req.query.limit,
+      defaultLimit: PAGE_LIMITS.attachments,
+    });
 
-      const paginationItems = pagination(filteredProjects, page, limit);
+    const paginationItems = pagination(filteredProjects, page, limit);
 
-      return res.status(200).json({ data: paginationItems });
-    } catch (error) {
-      return res.status(500).json({
-        error: "Failed to fetch project summaries",
-      });
-    }
-  },
+    return res.status(200).json({ data: paginationItems });
+  }),
 );
 
-router.post("/", async (req: Request<{}, {}, CreateProjectInput>, res) => {
-  try {
+router.post(
+  "/",
+  asyncHandler(async (req: Request<{}, {}, CreateProjectInput>, res) => {
     const {
       title,
       priority,
@@ -124,7 +124,7 @@ router.post("/", async (req: Request<{}, {}, CreateProjectInput>, res) => {
       !dueDate ||
       !Array.isArray(invitedUserIds)
     ) {
-      return res.status(400).json({ error: "Invalid input" });
+      throw new AppError("Invalid input", 400);
     }
 
     const newProject = await ProjectModel.create({
@@ -139,41 +139,16 @@ router.post("/", async (req: Request<{}, {}, CreateProjectInput>, res) => {
     });
 
     return res.status(201).json({ data: toProjectDto(newProject.toObject()) });
-  } catch (error) {
-    return res.status(500).json({
-      error: "Failed to add new project",
-    });
-  }
-});
+  }),
+);
 
-router.get("/:id", async (req: Request<{ id: string }>, res) => {
-  const projectId = req.params.id;
-
-  if (!projectId) {
-    return res.status(400).json({ error: "Invalid id" });
-  }
-
-  const { userId, workspaceId } = getAuthContext(req);
-
-  const project = await getProjectById({
-    projectId,
-    userId,
-    workspaceId,
-  });
-
-  if (!project) {
-    return res.status(404).json({ error: "project not found" });
-  }
-
-  return res.status(200).json({ data: project });
-});
-
-router.delete("/:id", async (req: Request<{ id: string }>, res) => {
-  try {
+router.get(
+  "/:id",
+  asyncHandler(async (req: Request<{ id?: string }>, res) => {
     const projectId = req.params.id;
 
     if (!projectId) {
-      return res.status(400).json({ error: "projectId invalid input" });
+      throw new AppError("Invalid id", 400);
     }
 
     const { userId, workspaceId } = getAuthContext(req);
@@ -185,7 +160,32 @@ router.delete("/:id", async (req: Request<{ id: string }>, res) => {
     });
 
     if (!project) {
-      return res.status(404).json({ error: "project not found" });
+      throw new AppError("Project not found", 404);
+    }
+
+    return res.status(200).json({ data: project });
+  }),
+);
+
+router.delete(
+  "/:id",
+  asyncHandler(async (req: Request<{ id?: string }>, res) => {
+    const projectId = req.params.id;
+
+    if (!projectId) {
+      throw new AppError("projectId invalid input", 400);
+    }
+
+    const { userId, workspaceId } = getAuthContext(req);
+
+    const project = await getProjectById({
+      projectId,
+      userId,
+      workspaceId,
+    });
+
+    if (!project) {
+      throw new AppError("Project not found", 404);
     }
 
     const tasksToDelete = await TaskModel.find({ projectId, workspaceId });
@@ -209,9 +209,7 @@ router.delete("/:id", async (req: Request<{ id: string }>, res) => {
     });
 
     return res.status(201).json({ data: deletedProject });
-  } catch (error) {
-    return res.status(500).json({ error: "Failed to delete project" });
-  }
-});
+  }),
+);
 
 export default router;

@@ -1,4 +1,4 @@
-import type { Priority } from "../priority";
+import type { Priority } from "../priority.js";
 
 export type CreateTaskInput = {
   projectId: string;

@@ -1,16 +1,16 @@
 import express from "express";
 import { AttachmentModel } from "@/features/attachments/models/attachment.model.js";
 import { toAttachmentDto } from "@/features/attachments/mappers/attachment.mapper.js";
-import { requireAuth } from "@/features/auth/middleware/requireAuth.js";
 import { getAuthContext } from "@/features/auth/utils/getAuthContext.js";
 import { createSignedDownloadUrl } from "@/features/attachments/services/attachmentStorage.service.js";
+import { asyncHandler } from "@/utils/asyncHandler.js";
+import { AppError } from "@/utils/AppError.js";
 
 const router = express.Router();
 
-router.use(requireAuth);
-
-router.get("/", async (req, res) => {
-  try {
+router.get(
+  "/",
+  asyncHandler(async (req, res) => {
     const { workspaceId } = getAuthContext(req);
 
     const attachmentRecords = await AttachmentModel.find({
@@ -18,13 +18,18 @@ router.get("/", async (req, res) => {
     }).lean();
 
     return res.json({ data: attachmentRecords.map(toAttachmentDto) });
-  } catch (error) {}
-});
+  }),
+);
 
-router.get("/:attachmentId/download", async (req, res) => {
-  try {
+router.get(
+  "/:attachmentId/download",
+  asyncHandler(async (req, res) => {
     const { attachmentId } = req.params;
     const { workspaceId } = getAuthContext(req);
+
+    if (!attachmentId) {
+      throw new AppError("Invalid AttachmentId", 400);
+    }
 
     const attachment = await AttachmentModel.findOne({
       _id: attachmentId,
@@ -32,17 +37,13 @@ router.get("/:attachmentId/download", async (req, res) => {
     }).lean();
 
     if (!attachment) {
-      return res.status(404).json({ error: "Attachment not found" });
+      throw new AppError("Attachment not found", 404);
     }
 
     const signedUrl = await createSignedDownloadUrl(attachment.storageKey);
 
     return res.redirect(signedUrl);
-  } catch (error) {
-    return res.status(500).json({
-      error: "Failed to open attachment",
-    });
-  }
-});
+  }),
+);
 
 export default router;
