@@ -1,29 +1,21 @@
 import { SETTING_TABS } from "@/features/settings/constants/settingsTabs";
-import { Button } from "@/shared/components/ui/button";
-import type { SettingTabs } from "@/features/settings/constants/settingsTabs";
+import { NavLink } from "react-router";
 
-type SettingsTabsProps = {
-  onNavigation: (tabs: SettingTabs) => void;
-  activeTab: SettingTabs;
-};
-
-const SettingsTabs = ({ onNavigation, activeTab }: SettingsTabsProps) => {
+const SettingsTabs = () => {
   return (
-    <section>
-      <div>
-        {SETTING_TABS.map((setting) => (
-          <Button
-            key={setting.value}
-            variant="secondary"
-            className="border-none bg-transparent block my-2 text-base text-muted-foreground  hover:bg-transparent data-[state=active]:text-foreground data-[state=active]:font-medium"
-            onClick={() => onNavigation(setting.value)}
-            data-state={activeTab === setting.value ? "active" : "inactive"}
-          >
-            {setting.label}
-          </Button>
-        ))}
-      </div>
-    </section>
+    <div className="flex flex-col gap-6">
+      {SETTING_TABS.map((setting) => (
+        <NavLink
+          key={setting.path}
+          to={setting.path}
+          className={({ isActive }) =>
+            `text-base duration-200 ${isActive && "font-medium text-foreground"}`
+          }
+        >
+          {setting.label}
+        </NavLink>
+      ))}
+    </div>
   );
 };
 export default SettingsTabs;

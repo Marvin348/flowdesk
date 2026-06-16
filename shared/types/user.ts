@@ -10,10 +10,10 @@ export type User = {
 };
 
 export type AuthUser = User & {
-  appearanceSettings: AppearanceSettings;
+  appearanceSettings: AppearanceSettingsType;
 };
 
-export type AppearanceSettings = {
+export type AppearanceSettingsType = {
   theme: AppearanceTheme;
   density: AppearanceDensity;
   startView: AppearanceStartView;

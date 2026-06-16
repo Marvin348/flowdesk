@@ -6,7 +6,7 @@ import {
 } from "@/features/settings/constants/appearanceSettings";
 import { useUpdateAppearanceSettings } from "@/features/users/hooks/useUpdateAppearanceSettings";
 import { useCurrentUser } from "@/features/auth/hooks/useCurrentUser";
-import type { AppearanceSettings } from "@shared/types/user";
+import type { AppearanceSettingsType } from "@shared/types/user";
 import ErrorMessage from "@/shared/components/ErrorMessage";
 
 const AppearanceSettings = () => {
@@ -17,9 +17,9 @@ const AppearanceSettings = () => {
 
   const appearanceSettings = user.appearanceSettings;
 
-  const handleAppearanceChange = <K extends keyof AppearanceSettings>(
+  const handleAppearanceChange = <K extends keyof AppearanceSettingsType>(
     key: K,
-    value: AppearanceSettings[K],
+    value: AppearanceSettingsType[K],
   ) => {
     if (appearanceSettings[key] === value) return;
 
