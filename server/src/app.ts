@@ -6,6 +6,7 @@ import usersRouter from "@/features/users/routes/users.js";
 import attachmentsRouter from "@/features/attachments/routes/attachments.js";
 import commentsRouter from "@/features/comments/routes/comments.js";
 import dashboardRouter from "@/features/dashboard/routes/dashboard.js";
+import workspaceInvitesRouter from "@/features/workspace-invites/routes/workspaceInvite.routes.js";
 import authRouter from "@/features/auth/routes/authRoutes.js";
 import cookieParser from "cookie-parser";
 import { requireAuth } from "@/features/auth/middleware/requireAuth.js";
@@ -30,6 +31,8 @@ app.use("/tasks", requireAuth, tasksRouter);
 app.use("/users", requireAuth, usersRouter);
 app.use("/attachments", requireAuth, attachmentsRouter);
 app.use("/comments", requireAuth, commentsRouter);
+
+app.use("/workspace-invites", requireAuth, workspaceInvitesRouter);
 
 app.use(errorHandler);
 
