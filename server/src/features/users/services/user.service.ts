@@ -70,3 +70,13 @@ export const updateAppearanceSettings = async ({
 
   return toAuthUserDto(user);
 };
+
+export const findUserInWorkspace = async ({
+  userId,
+  workspaceId,
+}: {
+  userId: string;
+  workspaceId: string;
+}) => {
+  return await UserModel.findOne({ _id: userId, workspaceId }).lean();
+};
