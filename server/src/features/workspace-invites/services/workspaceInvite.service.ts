@@ -3,6 +3,7 @@ import { UserRole } from "@shared/types/user.js";
 import { UserModel } from "@/features/users/models/user.modal.js";
 import { createRandomToken } from "@/utils/createRandomToken.js";
 import { WorkspaceInviteModel } from "../models/workspaceInvite.model.js";
+import { addDays } from "@/utils/date.js";
 
 type CreateWorkspaceInviteInput = {
   email: string;
@@ -39,8 +40,7 @@ export const createWorkspaceInvite = async ({
   }
 
   const token = createRandomToken();
-  const expiresAt = new Date(Date.now() + 1000 * 60 * 60 * 24 * 7);
-
+  const expiresAt = addDays(7);
   const newInvite = await WorkspaceInviteModel.create({
     email,
     workspaceId,

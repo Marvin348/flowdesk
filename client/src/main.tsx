@@ -14,6 +14,11 @@ import PublicLayout from "@/features/auth/routes/PublicLayout";
 import LoginPage from "@/features/auth/pages/LoginPage";
 import RegisterPage from "@/features/auth/pages/RegisterPage";
 import ProtectedRoute from "./features/auth/routes/ProtectedRoute";
+import ProfileSettingsPage from "./features/settings/pages/ProfileSettingsPage";
+import SecuritySettingsPage from "./features/settings/pages/SecuritySettingsPage";
+import AppearanceSettingsPage from "./features/settings/pages/AppearanceSettingsPage";
+import TeamSettingsPage from "./features/settings/pages/TeamSettingsPage";
+import NotificationSettingsPage from "./features/settings/pages/NotificationSettingsPage";
 
 const queryClient = new QueryClient();
 
@@ -49,7 +54,17 @@ const rounter = createBrowserRouter([
             path: "/team",
             element: <TeamPage />,
           },
-          { path: "/settings", element: <SettingsPage /> },
+          {
+            path: "/settings",
+            element: <SettingsPage />,
+            children: [
+              { path: "profile", element: <ProfileSettingsPage /> },
+              { path: "security", element: <SecuritySettingsPage /> },
+              { path: "appearance", element: <AppearanceSettingsPage /> },
+              { path: "team", element: <TeamSettingsPage /> },
+              { path: "notification", element: <NotificationSettingsPage /> },
+            ],
+          },
         ],
       },
     ],

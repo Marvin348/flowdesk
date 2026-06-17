@@ -34,7 +34,7 @@ router.post(
       role: user.role,
     });
 
-    return res.status(201).json({ data: invite });
+    return res.status(201).json({ invite });
   }),
 );
 
