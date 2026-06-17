@@ -8,7 +8,8 @@ type FormInputProps = React.InputHTMLAttributes<HTMLInputElement> & {
 export const FormInput = forwardRef<HTMLInputElement, FormInputProps>(
   ({ label, icon, id, className, ...props }, ref) => {
     return (
-      <div className="space-y-2">
+      <div className="space-y-2 w-full
+      ">
         {label && id && (
           <label htmlFor={id} className="mb-1.5 block text-sm">
             {label}

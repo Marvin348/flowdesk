@@ -1,22 +1,23 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Mail } from "lucide-react";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
 import ErrorMessage from "@/shared/components/ErrorMessage";
 import { Button } from "@/shared/components/ui/button";
 import { FormInput } from "@/shared/components/ui/FormInput";
+import { inviteMemberSchema } from "@/features/workspace-invites/schemas/inviteMemberSchema";
+import type { InviteMemberFields } from "@/features/workspace-invites/schemas/inviteMemberSchema";
 
-const inviteMemberSchema = z.object({
-  email: z
-    .string()
-    .trim()
-    .min(1, "Email eingeben")
-    .email("Gültige Email eingeben"),
-});
+type InviteMemberFormProps = {
+  onInviteMember: (data: InviteMemberFields) => void;
+  isInviting: boolean;
+  isError?: boolean;
+};
 
-type InviteMemberFields = z.infer<typeof inviteMemberSchema>;
-
-const InviteMemberForm = () => {
+const InviteMemberForm = ({
+  onInviteMember,
+  isInviting,
+  isError,
+}: InviteMemberFormProps) => {
   const {
     register,
     handleSubmit,
@@ -27,13 +28,15 @@ const InviteMemberForm = () => {
     defaultValues: {
       email: "",
     },
-    mode: "onChange",
   });
 
-  const onSubmit = () => {};
+  const onSubmit = (data: InviteMemberFields) => {
+    onInviteMember(data);
+    reset();
+  };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="p-4">
+    <form onSubmit={handleSubmit(onSubmit)}>
       <div className="border-b pb-4">
         <div className="flex items-center gap-3">
           <div>
@@ -45,7 +48,7 @@ const InviteMemberForm = () => {
         </div>
       </div>
 
-      <div className="mt-6">
+      <div className="mt-6 sm:flex flex-end sm:items-end sm:justify-between gap-4">
         <FormInput
           id="invite-email"
           label="Email"
@@ -58,13 +61,20 @@ const InviteMemberForm = () => {
         {errors.email && (
           <ErrorMessage message={errors.email.message} className="mt-1" />
         )}
-      </div>
 
-      <div className="mt-8 flex justify-end">
-        <Button type="submit" disabled={!isDirty || !isValid}>
-          Einladung senden
+        <div>
+        <Button className="mt-4 sm:mt-0 w-full sm:w-fit" type="submit" disabled={isInviting || !isDirty || !isValid}>
+          Einladen
         </Button>
       </div>
+      </div>
+
+      {isError && (
+        <ErrorMessage
+          message="Etwas ist schief gelaufen. Bitte versuche es erneut"
+          className="mt-4"
+        />
+      )}
     </form>
   );
 };
