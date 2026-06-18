@@ -19,6 +19,7 @@ import SecuritySettingsPage from "./features/settings/pages/SecuritySettingsPage
 import AppearanceSettingsPage from "./features/settings/pages/AppearanceSettingsPage";
 import TeamSettingsPage from "./features/settings/pages/TeamSettingsPage";
 import NotificationSettingsPage from "./features/settings/pages/NotificationSettingsPage";
+import InvitePage from "./features/workspace-invites/pages/InvitePage";
 
 const queryClient = new QueryClient();
 
@@ -30,6 +31,7 @@ const rounter = createBrowserRouter([
       { index: true, element: <Navigate to="/login" replace /> },
       { path: "login", element: <LoginPage /> },
       { path: "register", element: <RegisterPage /> },
+      { path: "invite/:token", element: <InvitePage /> },
     ],
   },
   {

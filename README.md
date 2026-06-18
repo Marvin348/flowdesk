@@ -16,9 +16,9 @@ The app focuses on real-world admin workflows: project overviews, detailed proje
 - Project-level authorization based on `ownerId` and project membership
 - File uploads are stored in **Cloudflare R2** object storage using S3-compatible APIs
 - Demo data can be seeded from the previous mock data file
+- Workspace invite flow: admins can create invite links for new members. Invites are token-based, expire after a defined time, can only be used once, and register the invited user into the existing workspace as a member.
 - Backend handles **search, filtering, pagination, and data shaping**
 - Data is fetched via structured endpoints and optimized with React Query
-- Features are being developed iteratively, with ongoing refinements
 
 ## 🧠 Architecture Notes
 
@@ -65,7 +65,6 @@ Frontend state is synchronized with the URL where useful, enabling:
 - Refactor shared types and API contracts
 - Improve caching strategy with React Query
 - Add an Activity / History page for project changes, task updates, and user actions
-- Move file storage to a production-ready storage solution
 - Implement Framer Motion for animations
 - Finalize layout/theme
 
@@ -143,6 +142,7 @@ npm run dev
 ## Screenshots
 
 ![login](./screenshots/flowdesk-login.png)
+![invite](./screenshots/flowdesk-invite.png)
 
 ![dashboard](./screenshots/flowdesk-dashboard.png)
 ![details](./screenshots/flowdesk-details.png)

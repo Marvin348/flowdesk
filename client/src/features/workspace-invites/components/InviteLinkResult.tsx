@@ -1,17 +1,25 @@
-import { CheckCircle2, Copy } from "lucide-react";
+import { CheckCircle2, Copy, Check } from "lucide-react";
 import { Button } from "@/shared/components/ui/button";
 import type { CreatedWorkspaceInviteDto } from "@shared/types/dto/workspace-invites/workspace-invites";
 import { formatInviteExpiry } from "@/shared/utils/formatInviteExpiry";
+import { useState } from "react";
 
 const InviteLinkResult = ({
   invite,
 }: {
   invite: CreatedWorkspaceInviteDto;
 }) => {
+  const [copied, setCopied] = useState(false);
+
   const { expiresAt, inviteUrl } = invite;
 
-  const handleCopyInviteLink = () => {
-    void navigator.clipboard.writeText(inviteUrl);
+  const handleCopyInviteLink = async () => {
+    await navigator.clipboard.writeText(inviteUrl);
+    setCopied(true);
+
+    window.setTimeout(() => {
+      setCopied(false);
+    }, 2000);
   };
 
   const expiryLabel = formatInviteExpiry(expiresAt);
@@ -34,11 +42,20 @@ const InviteLinkResult = ({
               type="button"
               variant="accentOutline"
               size="sm"
-              className="shrink-0"
+              className="shrink-0 w-31"
               onClick={handleCopyInviteLink}
             >
-              <Copy className="size-4" />
-              Link kopieren
+              {copied ? (
+                <>
+                  <Check className="size-4" />
+                  Kopiert
+                </>
+              ) : (
+                <>
+                  <Copy className="size-4" />
+                  Link kopieren
+                </>
+              )}
             </Button>
           </div>
         </div>
