@@ -3,3 +3,9 @@ export type CreatedWorkspaceInviteDto = {
   inviteUrl: string;
   expiresAt: string;
 };
+
+export type WorkspaceInvitePreviewDto = {
+  email: string;
+  workspaceName: string;
+  expiresAt: string;
+};

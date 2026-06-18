@@ -32,7 +32,7 @@ app.use("/users", requireAuth, usersRouter);
 app.use("/attachments", requireAuth, attachmentsRouter);
 app.use("/comments", requireAuth, commentsRouter);
 
-app.use("/workspace-invites", requireAuth, workspaceInvitesRouter);
+app.use("/workspace-invites", workspaceInvitesRouter);
 
 app.use(errorHandler);
 
