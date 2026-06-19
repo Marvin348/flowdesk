@@ -33,11 +33,11 @@ const Sidebar = ({ onOpen, onClose }: SidebarProps) => {
   const sidebarLinkClass = (isActive: boolean) =>
     `flex items-center gap-2 rounded-md p-2 transition-colors ${
       isActive
-        ? "bg-muted-foreground/10 text-foreground"
+        ? "bg-muted-foreground/5 text-foreground"
         : "text-muted-foreground hover:bg-muted/60 hover:text-foreground"
     }`;
   const sidebarIconClass = (isActive: boolean) =>
-    `size-5 ${isActive ? "text-accent" : "text-muted-foreground"}`;
+    `size-4 ${isActive ? "text-accent" : "text-muted-foreground"}`;
 
   return (
     <>
