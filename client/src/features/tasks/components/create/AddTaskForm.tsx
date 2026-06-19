@@ -1,14 +1,12 @@
 import CollaboratorMultiSelectField from "@/features/users/components/collaboratorsSelect/CollaboratorMultiSelectField";
 import { Button } from "@/shared/components/ui/button";
 import SelectedReminder from "@/shared/components/ui/select/SelectedReminder";
-import { z } from "zod";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
 import { useCreateTask } from "@/features/tasks/hooks/useCreateTask";
 import type { CreateTaskInput } from "@shared/types/inputs/createTaskInput";
 import { Spinner } from "@/shared/components/ui/spinner";
-import { PRIORITY } from "@shared/types/priority";
 import SelectedPriority from "@/shared/components/ui/select/SelectedPriority";
 import {
   CalendarClock,
@@ -17,6 +15,9 @@ import {
   CircleArrowRight,
   CircleArrowUp,
 } from "lucide-react";
+import { newTaskSchema } from "@/features/tasks/schemas/newTaskSchema";
+import type { NewTaskFields } from "@/features/tasks/schemas/newTaskSchema";
+import ErrorMessage from "@/shared/components/ErrorMessage";
 
 type AddTaskFormProps = {
   onClose: () => void;
@@ -35,22 +36,7 @@ const AddTaskForm = ({
 }: AddTaskFormProps) => {
   const [tagsInput, setTagsInput] = useState("");
 
-  const { mutate, isPending, error } = useCreateTask(projectId);
-
-  const formSchema = z.object({
-    title: z.string().min(3, "Titel eingeben"),
-    collaboratorIds: z.array(z.string()).min(1, "Mitarbeiter angeben"),
-    dueDate: z.string().min(1, "Deadline wählen"),
-    tags: z
-      .array(z.string().min(2, "Tag min. 2 Zeichen"))
-      .max(3, "Maximal 3 Tags")
-      .optional(),
-    taskPriority: z.enum(PRIORITY),
-    reminderAt: z.string().optional(),
-    description: z.string().optional(),
-  });
-
-  type FormFields = z.infer<typeof formSchema>;
+  const { mutate, isPending, isError } = useCreateTask(projectId);
 
   const {
     register,
@@ -60,8 +46,8 @@ const AddTaskForm = ({
     control,
     setValue,
     reset,
-  } = useForm<FormFields>({
-    resolver: zodResolver(formSchema),
+  } = useForm<NewTaskFields>({
+    resolver: zodResolver(newTaskSchema),
     defaultValues: {
       title: "",
       tags: [],
@@ -87,7 +73,7 @@ const AddTaskForm = ({
     }
   }, [isOpen, initialCollaboratorIds]);
 
-  const onSubmit = (data: FormFields) => {
+  const onSubmit = (data: NewTaskFields) => {
     const input: CreateTaskInput = {
       projectId,
       ...data,
@@ -266,6 +252,10 @@ const AddTaskForm = ({
           className="w-full h-20 p-2 resize-none rounded-md bg-muted"
         />
       </div>
+
+      {isError && (
+        <ErrorMessage message="Etwas ist schief gelaufen. Bitte probiere es erneut." />
+      )}
 
       <div className="mt-4 border-t pt-4 flex items-center justify-end gap-6">
         <Button

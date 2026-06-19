@@ -1,13 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  ArrowRight,
-  Eye,
-  EyeOff,
-  LockKeyhole,
-  Mail,
-  UserRound,
-} from "lucide-react";
-import { useState } from "react";
+import { ArrowRight, Mail, UserRound } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { Link } from "react-router";
 import { Button } from "@/shared/components/ui/button";
@@ -17,9 +9,10 @@ import { Spinner } from "@/shared/components/ui/spinner";
 import ErrorMessage from "@/shared/components/ErrorMessage";
 import type { RegisterFields } from "@/features/auth/schemas/registerSchema";
 import { registerSchema } from "@/features/auth/schemas/registerSchema";
+import { FormInput } from "@/shared/components/ui/FormInput";
+import { PasswordInput } from "@/shared/components/ui/PasswordInput";
 
 const RegisterPage = () => {
-  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
   const {
@@ -94,74 +87,46 @@ const RegisterPage = () => {
 
           <form onSubmit={handleSubmit(onSubmit)} className="mt-8 space-y-5">
             <div>
-              <label htmlFor="firstName" className="mb-1.5 block text-sm">
-                Name
-              </label>
-              <div className="relative">
-                <UserRound className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-                <input
-                  {...register("name")}
-                  id="firstName"
-                  type="text"
-                  autoComplete="given-name"
-                  className="form-input pl-10"
-                  placeholder="Max Mustermann"
-                />
-              </div>
+              <FormInput
+                id="name"
+                label="Name"
+                type="text"
+                autoComplete="name"
+                placeholder="Max Mustermann"
+                icon={<UserRound className="size-4" />}
+                {...register("name")}
+              />
+
               {errors.name && (
                 <ErrorMessage message={errors.name.message} className="mt-1" />
               )}
             </div>
 
             <div>
-              <label htmlFor="email" className="mb-1.5 block text-sm">
-                Email
-              </label>
-              <div className="relative">
-                <Mail className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-                <input
-                  {...register("email")}
-                  id="email"
-                  type="email"
-                  autoComplete="email"
-                  className="form-input h-11 pl-10"
-                  placeholder="max@mustermann.de"
-                />
-              </div>
+              <FormInput
+                id="email"
+                label="Email"
+                type="email"
+                autoComplete="email"
+                placeholder="max@mustermann.de"
+                icon={<Mail className="size-4" />}
+                {...register("email")}
+              />
+
               {errors.email && (
                 <ErrorMessage message={errors.email.message} className="mt-1" />
               )}
             </div>
 
             <div>
-              <label htmlFor="password" className="mb-1.5 block text-sm">
-                Passwort
-              </label>
-              <div className="relative">
-                <LockKeyhole className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-                <input
-                  {...register("password")}
-                  id="password"
-                  type={showPassword ? "text" : "password"}
-                  autoComplete="new-password"
-                  className="form-input px-10"
-                  placeholder="••••••••"
-                />
-                <button
-                  type="button"
-                  aria-label={
-                    showPassword ? "Passwort ausblenden" : "Passwort anzeigen"
-                  }
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-                  onClick={() => setShowPassword((value) => !value)}
-                >
-                  {showPassword ? (
-                    <EyeOff className="size-4" />
-                  ) : (
-                    <Eye className="size-4" />
-                  )}
-                </button>
-              </div>
+              <PasswordInput
+                id="password"
+                label="Passwort"
+                autoComplete="new-password"
+                placeholder="••••••••"
+                {...register("password")}
+              />
+
               {errors.password && (
                 <ErrorMessage
                   message={errors.password.message}

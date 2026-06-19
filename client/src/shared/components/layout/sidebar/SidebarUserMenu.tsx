@@ -28,7 +28,7 @@ const SidebarUserMenu = () => {
       {isOpen && (
         <div className="absolute bottom-full left-0 mb-2 w-full rounded-md border bg-background p-1 shadow-md">
           <Link
-            to="/settings"
+            to="/settings/profile"
             className="flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm hover:bg-muted"
           >
             <User className="h-4 w-4" />
@@ -36,7 +36,7 @@ const SidebarUserMenu = () => {
           </Link>
 
           <Link
-            to="/settings"
+            to="/settings/profile"
             className="flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm hover:bg-muted"
           >
             <Settings className="h-4 w-4" />

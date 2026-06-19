@@ -1,13 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  ArrowRight,
-  Eye,
-  EyeOff,
-  KeyRound,
-  LockKeyhole,
-  Mail,
-} from "lucide-react";
-import { useState } from "react";
+import { ArrowRight, KeyRound, Mail } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { Link } from "react-router";
 import { Button } from "@/shared/components/ui/button";
@@ -19,9 +11,10 @@ import { DEMO_ACCOUNT } from "@/features/auth/constants/demoAccount";
 import { loginSchema } from "@/features/auth/schemas/loginSchema";
 import type { LoginFields } from "@/features/auth/schemas/loginSchema";
 import { getStartViewPath } from "@/shared/lib/getStartViewPath";
+import { FormInput } from "@/shared/components/ui/FormInput";
+import { PasswordInput } from "@/shared/components/ui/PasswordInput";
 
 const LoginPage = () => {
-  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
   const {
@@ -97,54 +90,30 @@ const LoginPage = () => {
 
           <form onSubmit={handleSubmit(onSubmit)} className="mt-8 space-y-5">
             <div>
-              <label htmlFor="email" className="mb-1.5 block text-sm">
-                Email
-              </label>
-              <div className="relative">
-                <Mail className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-                <input
-                  {...register("email")}
-                  id="email"
-                  type="email"
-                  autoComplete="email"
-                  className="form-input pl-10"
-                  placeholder="max@mustermann.de"
-                />
-              </div>
+              <FormInput
+                id="email"
+                label="Email"
+                type="email"
+                autoComplete="email"
+                placeholder="max@mustermann.de"
+                icon={<Mail className="size-4" />}
+                {...register("email")}
+              />
+
               {errors.email && (
                 <ErrorMessage message={errors.email.message} className="mt-1" />
               )}
             </div>
 
             <div>
-              <label htmlFor="password" className="mb-1.5 block text-sm">
-                Passwort
-              </label>
-              <div className="relative">
-                <LockKeyhole className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-                <input
-                  {...register("password")}
-                  id="password"
-                  type={showPassword ? "text" : "password"}
-                  autoComplete="current-password"
-                  className="form-input h-11 px-10"
-                  placeholder="••••••••"
-                />
-                <button
-                  type="button"
-                  aria-label={
-                    showPassword ? "Passwort ausblenden" : "Passwort anzeigen"
-                  }
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-                  onClick={() => setShowPassword((value) => !value)}
-                >
-                  {showPassword ? (
-                    <EyeOff className="size-4" />
-                  ) : (
-                    <Eye className="size-4" />
-                  )}
-                </button>
-              </div>
+              <PasswordInput
+                id="password"
+                label="Passwort"
+                autoComplete="current-password"
+                placeholder="••••••••"
+                {...register("password")}
+              />
+
               {errors.password && (
                 <ErrorMessage
                   message={errors.password.message}
@@ -179,7 +148,7 @@ const LoginPage = () => {
             >
               <span>
                 <span className="block font-medium text-foreground">
-                  Demo account nutzen
+                  Demo Account nutzen
                 </span>
                 <span className="mt-0.5 block text-xs text-muted-foreground">
                   Zugangsdaten automatisch eintragen

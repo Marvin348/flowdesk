@@ -32,7 +32,7 @@ const AddTaskPanel = ({
           <div className="flex items-center justify-between border-b pb-4">
             <h3 className="font-medium text-xl">Neue Aufgabe erstellen</h3>
             <button
-              className="text-surface/80 hover:text-black"
+              className="text-muted-foreground"
               onClick={onClose}
             >
               <X />
