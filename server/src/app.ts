@@ -11,6 +11,7 @@ import authRouter from "@/features/auth/routes/authRoutes.js";
 import cookieParser from "cookie-parser";
 import { requireAuth } from "@/features/auth/middleware/requireAuth.js";
 import { errorHandler } from "@/middleware/errorHandler.js";
+import activityRouter from "@/features/activity/routes/activity.routes.js";
 
 const app = express();
 
@@ -33,6 +34,7 @@ app.use("/attachments", requireAuth, attachmentsRouter);
 app.use("/comments", requireAuth, commentsRouter);
 
 app.use("/workspace-invites", workspaceInvitesRouter);
+app.use("/activity", requireAuth, activityRouter);
 
 app.use(errorHandler);
 
