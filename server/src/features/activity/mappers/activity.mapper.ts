@@ -22,7 +22,6 @@ export const toActivityDto = (activity: PopulatedActivity): ActivityDto => {
     type: activity.type,
     entityType: activity.entityType,
     entityId: activity.entityId?.toString(),
-    message: activity.message,
     metadata: activity.metadata,
     createdAt: toIsoString(activity.createdAt),
     actor: {

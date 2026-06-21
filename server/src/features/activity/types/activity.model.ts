@@ -15,4 +15,3 @@ export type ActivityDocument = {
   createdAt: Date;
   updatedAt: Date;
 };
-

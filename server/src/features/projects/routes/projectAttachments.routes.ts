@@ -15,12 +15,10 @@ import { ProjectModel } from "@/features/projects/models/project.model.js";
 import { getProjectById } from "@/features/projects/services/project.service.js";
 import multer from "multer";
 import { getAuthContext } from "@/features/auth/utils/getAuthContext.js";
-import {
-  deleteFileFromR2,
-  uploadFileToR2,
-} from "@/features/attachments/services/attachmentStorage.service.js";
+import { deleteFileFromR2 } from "@/features/attachments/services/attachmentStorage.service.js";
 import { asyncHandler } from "@/utils/asyncHandler.js";
 import { AppError } from "@/utils/AppError.js";
+import { createAttachments } from "@/features/attachments/services/createAttachments.service.js";
 
 const router = express.Router();
 
@@ -36,63 +34,68 @@ type DeleteAttachmentParams = {
 
 router.delete(
   "/:id/files/:fileId",
-  asyncHandler(async (req: Request<DeleteAttachmentParams, {}, {}, {}>, res) => {
-    const projectId = req.params.id;
-    const attachmentId = req.params.fileId;
+  asyncHandler(
+    async (req: Request<DeleteAttachmentParams, {}, {}, {}>, res) => {
+      const projectId = req.params.id;
+      const attachmentId = req.params.fileId;
 
-    if (!projectId) {
-      throw new AppError("Invalid projectId", 400);
-    }
+      if (!projectId) {
+        throw new AppError("Invalid projectId", 400);
+      }
 
-    if (!attachmentId) {
-      throw new AppError("Invalid attachmentId", 400);
-    }
+      if (!attachmentId) {
+        throw new AppError("Invalid attachmentId", 400);
+      }
 
-    const { userId, workspaceId } = getAuthContext(req);
+      const { userId, workspaceId } = getAuthContext(req);
 
-    const project = await getProjectById({
-      projectId,
-      userId,
-      workspaceId,
-    });
+      const project = await getProjectById({
+        projectId,
+        userId,
+        workspaceId,
+      });
 
-    if (!project) {
-      throw new AppError("Project not found", 404);
-    }
+      if (!project) {
+        throw new AppError("Project not found", 404);
+      }
 
-    const attachmentRecord = await AttachmentModel.findOne({
-      _id: attachmentId,
-      workspaceId,
-      projectId,
-    }).lean();
+      const attachmentRecord = await AttachmentModel.findOne({
+        _id: attachmentId,
+        workspaceId,
+        projectId,
+      }).lean();
 
-    if (!attachmentRecord) {
-      throw new AppError("Attachment not found", 404);
-    }
+      if (!attachmentRecord) {
+        throw new AppError("Attachment not found", 404);
+      }
 
-    await deleteFileFromR2(attachmentRecord.storageKey);
+      await deleteFileFromR2(attachmentRecord.storageKey);
 
-    const deletedAttachment = await AttachmentModel.deleteOne({
-      _id: attachmentId,
-      workspaceId,
-      projectId,
-    });
+      const deletedAttachment = await AttachmentModel.deleteOne({
+        _id: attachmentId,
+        workspaceId,
+        projectId,
+      });
 
-    await ProjectModel.findOneAndUpdate(
-      { _id: projectId, workspaceId },
-      {
-        $currentDate: { updatedAt: true },
-      },
-    );
+      await ProjectModel.findOneAndUpdate(
+        { _id: projectId, workspaceId },
+        {
+          $currentDate: { updatedAt: true },
+        },
+      );
 
-    return res.status(200).json({ data: deletedAttachment });
-  }),
+      return res.status(200).json({ data: deletedAttachment });
+    },
+  ),
 );
 
 router.get(
   "/:id/files",
   asyncHandler(
-    async (req: Request<{ id?: string }, {}, {}, ProjectAttachmentQuery>, res) => {
+    async (
+      req: Request<{ id?: string }, {}, {}, ProjectAttachmentQuery>,
+      res,
+    ) => {
       const projectId = req.params.id;
 
       if (!projectId) {
@@ -167,7 +170,10 @@ router.get(
       )?.userId;
 
       if (missingUserId) {
-        throw new AppError(`Missing user for attachment: ${missingUserId}`, 500);
+        throw new AppError(
+          `Missing user for attachment: ${missingUserId}`,
+          500,
+        );
       }
 
       const projectAttachments = toProjectAttachmentsDto(
@@ -193,69 +199,28 @@ router.post(
   asyncHandler(
     async (req: Request<{ id?: string }, {}, { taskId?: string }>, res) => {
       const projectId = req.params.id;
-      const taskId = req.body.taskId ?? null;
+      const taskId = req.body.taskId?.trim() || null;
       const files = req.files as Express.Multer.File[] | undefined;
 
       if (!projectId) {
         throw new AppError("Invalid projectId", 400);
       }
 
-      const { userId, workspaceId } = getAuthContext(req);
-
-      const project = await getProjectById({
-        projectId,
-        userId,
-        workspaceId,
-      });
-
-      if (!project) {
-        throw new AppError("Project not found", 404);
-      }
-
-      if (taskId) {
-        const task = await TaskModel.findOne({
-          _id: taskId,
-          workspaceId,
-          projectId,
-        }).lean();
-
-        if (!task) {
-          throw new AppError("Task not found", 404);
-        }
-      }
-
       if (!files || files.length === 0) {
         throw new AppError("No files uploaded", 400);
       }
 
-      const attachmentsToCreate = [];
+      const { userId, workspaceId } = getAuthContext(req);
 
-      for (const file of files) {
-        const storageKey = await uploadFileToR2(file);
+      const newAttachments = await createAttachments({
+        projectId,
+        userId,
+        workspaceId,
+        taskId,
+        files,
+      });
 
-        attachmentsToCreate.push({
-          workspaceId,
-          projectId,
-          taskId,
-          userId,
-          fileName: file.originalname,
-          storageKey,
-          mimeType: file.mimetype,
-          fileSize: file.size,
-        });
-      }
-
-      const createdAttachments =
-        await AttachmentModel.insertMany(attachmentsToCreate);
-
-      await ProjectModel.findOneAndUpdate(
-        { _id: projectId, workspaceId },
-        {
-          $currentDate: { updatedAt: true },
-        },
-      );
-
-      return res.status(201).json({ data: createdAttachments });
+      return res.status(201).json({ data: newAttachments });
     },
   ),
 );

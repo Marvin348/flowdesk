@@ -9,7 +9,7 @@ type CreateActivityInput = {
   actorId: string;
   type: ActivityType;
   entityType: EntityType;
-  entityId?: string;
+  entityId: string;
   metadata?: Record<string, unknown>;
 };
 
