@@ -4,6 +4,7 @@ import { UserModel } from "@/features/users/models/user.modal.js";
 import { createRandomToken } from "@/utils/createRandomToken.js";
 import { WorkspaceInviteModel } from "../models/workspaceInvite.model.js";
 import { addDays } from "@/utils/date.js";
+import { createActivity } from "@/features/activity/services/createActivity.service.js";
 
 type CreateWorkspaceInviteInput = {
   email: string;
@@ -41,6 +42,7 @@ export const createWorkspaceInvite = async ({
 
   const token = createRandomToken();
   const expiresAt = addDays(7);
+
   const newInvite = await WorkspaceInviteModel.create({
     email,
     workspaceId,
@@ -51,6 +53,18 @@ export const createWorkspaceInvite = async ({
   });
 
   const inviteUrl = `${process.env.CLIENT_URL}/invite/${newInvite.token}`;
+
+  await createActivity({
+    workspaceId,
+    actorId: userId,
+    type: "workspace_invite.created",
+    entityType: "workspace_invite",
+    entityId: newInvite._id.toString(),
+    metadata: {
+      invitedEmail: newInvite.email,
+      invitedRole: newInvite.role,
+    },
+  });
 
   return {
     inviteUrl,

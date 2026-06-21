@@ -10,7 +10,7 @@ import { findUserInWorkspace } from "@/features/users/services/user.service.js";
 import { createWorkspaceInvite } from "@/features/workspace-invites/services/workspaceInvite.service.js";
 import { requireAuth } from "@/features/auth/middleware/requireAuth.js";
 import { getWorkspaceInviteByToken } from "@/features/workspace-invites/services/getWorkspaceInviteByToken.service.js";
-import { acceptWorkspaceInvite } from "../services/acceptWorkspaceInvite.service.js";
+import { acceptWorkspaceInvite } from "@/features/workspace-invites/services/acceptWorkspaceInvite.service.js";
 
 const router = express.Router();
 
