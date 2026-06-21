@@ -25,6 +25,8 @@ import {
 import { getAuthContext } from "@/features/auth/utils/getAuthContext.js";
 import { asyncHandler } from "@/utils/asyncHandler.js";
 import { AppError } from "@/utils/AppError.js";
+import { createProjectSchema } from "../validation/project.validator.js";
+import { createProject } from "../services/createProject.service.js";
 
 const router = express.Router();
 
@@ -106,39 +108,21 @@ router.get(
 router.post(
   "/",
   asyncHandler(async (req: Request<{}, {}, CreateProjectInput>, res) => {
-    const {
-      title,
-      priority,
-      projectStatus,
-      dueDate,
-      invitedUserIds,
-      description,
-    } = req.body;
+    const result = createProjectSchema.safeParse(req.body);
 
-    const { userId, workspaceId } = getAuthContext(req);
-
-    if (
-      !title ||
-      !priority ||
-      !projectStatus ||
-      !dueDate ||
-      !Array.isArray(invitedUserIds)
-    ) {
+    if (!result.success) {
       throw new AppError("Invalid input", 400);
     }
 
-    const newProject = await ProjectModel.create({
+    const { userId, workspaceId } = getAuthContext(req);
+
+    const newProject = await createProject({
+      input: result.data,
       workspaceId,
-      title,
-      priority,
-      ownerId: userId,
-      projectStatus,
-      dueDate,
-      invitedUserIds,
-      description,
+      userId,
     });
 
-    return res.status(201).json({ data: toProjectDto(newProject.toObject()) });
+    return res.status(201).json({ data: newProject });
   }),
 );
 

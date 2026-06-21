@@ -35,11 +35,6 @@ const activitySchema = new mongoose.Schema(
       required: false,
     },
 
-    message: {
-      type: String,
-      required: true,
-    },
-
     metadata: {
       type: mongoose.Schema.Types.Mixed,
       default: {},

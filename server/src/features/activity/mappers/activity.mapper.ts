@@ -6,7 +6,7 @@ export type PopulatedActivity = Omit<ActivityDocument, "actorId"> & {
   actorId: {
     _id: Types.ObjectId;
     name: string;
-    email: string;
+    avatarKey: string;
   };
 };
 
@@ -22,13 +22,12 @@ export const toActivityDto = (activity: PopulatedActivity): ActivityDto => {
     type: activity.type,
     entityType: activity.entityType,
     entityId: activity.entityId?.toString(),
-    message: activity.message,
     metadata: activity.metadata,
     createdAt: toIsoString(activity.createdAt),
     actor: {
       id: activity.actorId._id.toString(),
       name: activity.actorId.name,
-      email: activity.actorId.email,
+      avatarKey: activity.actorId.avatarKey,
     },
   };
 };
