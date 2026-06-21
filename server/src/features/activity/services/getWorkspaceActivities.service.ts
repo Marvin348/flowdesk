@@ -1,4 +1,4 @@
-import { ActivityModel } from "@/features/activity/models/activity.document.js";
+import { ActivityModel } from "@/features/activity/models/activity.model.js";
 import { toActivityDto } from "@/features/activity/mappers/activity.mapper.js";
 import type { UserDocument } from "@/features/users/types/user.document.js";
 

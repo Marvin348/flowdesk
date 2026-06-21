@@ -1,4 +1,4 @@
-import { ActivityDocument } from "@/features/activity/types/activity.model.js";
+import { ActivityDocument } from "@/features/activity/types/activity.document.js";
 import type { ActivityDto } from "@shared/types/dto/activity/activity.dto.js";
 import { Types } from "mongoose";
 

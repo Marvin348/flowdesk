@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { ActivityDocument } from "@/features/activity/types/activity.model.js";
+import { ActivityDocument } from "@/features/activity/types/activity.document.js";
 import {
   ACTIVITY_TYPES,
   ENTITY_TYPES,
