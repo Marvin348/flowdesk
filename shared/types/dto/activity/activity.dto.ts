@@ -3,7 +3,6 @@ export type ActivityDto = {
   type: ActivityType;
   entityType: EntityType;
   entityId?: string;
-  message: string;
   metadata: Record<string, unknown>;
   createdAt: string;
   actor: {

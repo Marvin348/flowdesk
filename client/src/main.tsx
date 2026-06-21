@@ -13,13 +13,14 @@ import SettingsPage from "@/features/settings/pages/SettingsPage";
 import PublicLayout from "@/features/auth/routes/PublicLayout";
 import LoginPage from "@/features/auth/pages/LoginPage";
 import RegisterPage from "@/features/auth/pages/RegisterPage";
-import ProtectedRoute from "./features/auth/routes/ProtectedRoute";
-import ProfileSettingsPage from "./features/settings/pages/ProfileSettingsPage";
-import SecuritySettingsPage from "./features/settings/pages/SecuritySettingsPage";
-import AppearanceSettingsPage from "./features/settings/pages/AppearanceSettingsPage";
-import TeamSettingsPage from "./features/settings/pages/TeamSettingsPage";
-import NotificationSettingsPage from "./features/settings/pages/NotificationSettingsPage";
-import InvitePage from "./features/workspace-invites/pages/InvitePage";
+import ProtectedRoute from "@/features/auth/routes/ProtectedRoute";
+import ProfileSettingsPage from "@/features/settings/pages/ProfileSettingsPage";
+import SecuritySettingsPage from "@/features/settings/pages/SecuritySettingsPage";
+import AppearanceSettingsPage from "@/features/settings/pages/AppearanceSettingsPage";
+import TeamSettingsPage from "@/features/settings/pages/TeamSettingsPage";
+import NotificationSettingsPage from "@/features/settings/pages/NotificationSettingsPage";
+import InvitePage from "@/features/workspace-invites/pages/InvitePage";
+import ActivityPage from "@/features/activity/page/ActivityPage";
 
 const queryClient = new QueryClient();
 
@@ -56,6 +57,7 @@ const rounter = createBrowserRouter([
             path: "/team",
             element: <TeamPage />,
           },
+          { path: "/activity", element: <ActivityPage /> },
           {
             path: "/settings",
             element: <SettingsPage />,

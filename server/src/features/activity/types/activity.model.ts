@@ -11,7 +11,6 @@ export type ActivityDocument = {
   type: ActivityType;
   entityType: EntityType;
   entityId: Types.ObjectId;
-  message: string;
   metadata: Record<string, unknown>;
   createdAt: Date;
   updatedAt: Date;
