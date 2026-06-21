@@ -1,8 +1,8 @@
 import type { ActivityDto } from "@shared/types/dto/activity/activity.dto";
 import { ACTIVITY_ICON } from "@/features/activity/constants/activityIcon";
-import { getActivityMessage } from "../util/getActivityMessage";
 import { formatDate } from "@/shared/utils/formatDate";
 import Avatar from "@/shared/components/ui/avatar/Avatar";
+import ActivityMessage from "./ActivityMessage";
 
 type ActivityItemProps = {
   activity: ActivityDto;
@@ -13,7 +13,6 @@ const ActivityItem = ({ activity, isLast }: ActivityItemProps) => {
   const { type, entityType, createdAt, metadata, actor } = activity;
 
   const IconType = ACTIVITY_ICON[entityType];
-  const message = getActivityMessage(activity);
 
   const commentMessage =
     typeof metadata.message === "string" ? metadata.message : null;
@@ -36,7 +35,9 @@ const ActivityItem = ({ activity, isLast }: ActivityItemProps) => {
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-1 text-sm">
             <p className="font-medium">{actor.name}</p>
-            <p className="text-muted-foreground">{message}</p>
+            <p className="text-muted-foreground">
+              <ActivityMessage activity={activity} />
+            </p>
 
             <span className="text-muted-foreground">·</span>
 

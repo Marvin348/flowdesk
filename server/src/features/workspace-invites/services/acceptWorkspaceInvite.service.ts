@@ -3,6 +3,7 @@ import { UserModel } from "@/features/users/models/user.modal.js";
 import { WorkspaceInviteModel } from "@/features/workspace-invites/models/workspaceInvite.model.js";
 import { hashPassword } from "@/features/auth/utils/password.js";
 import { toUserDto } from "@/features/users/mappers/user.mapper.js";
+import { createActivity } from "@/features/activity/services/createActivity.service.js";
 
 type AcceptWorkspaceInviteParams = {
   token: string;
@@ -49,6 +50,19 @@ export const acceptWorkspaceInvite = async ({
 
   invite.usedAt = new Date();
   await invite.save();
+
+  await createActivity({
+    workspaceId: invite.workspaceId.toString(),
+    actorId: newUser._id.toString(),
+    type: "workspace_invite.accepted",
+    entityType: "workspace_invite",
+    entityId: invite._id.toString(),
+    metadata: {
+      invitedEmail: invite.email,
+      joinedUserName: newUser.name,
+      role: newUser.role,
+    },
+  });
 
   return toUserDto(newUser);
 };
