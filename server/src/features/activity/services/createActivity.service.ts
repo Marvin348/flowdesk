@@ -1,4 +1,4 @@
-import { ActivityModel } from "@/features/activity/models/activity.document.js";
+import { ActivityModel } from "@/features/activity/models/activity.model.js";
 import type {
   ActivityType,
   EntityType,

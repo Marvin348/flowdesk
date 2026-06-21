@@ -29,6 +29,15 @@ export const getActivityMessage = (activity: ActivityDto) => {
       return `hat "${fileName}" hochgeladen`;
     }
 
+    case "task.created": {
+      const taskTitle =
+        typeof activity.metadata.taskTitle === "string"
+          ? activity.metadata.taskTitle
+          : "eine Aufgabe";
+
+      return `hat die Aufgabe "${taskTitle}" erstellt`;
+    }
+
     default:
       return "hat eine Aktion ausgeführt";
   }
