@@ -182,11 +182,20 @@ router.patch(
   "/:id",
   asyncHandler(
     async (req: Request<{ id?: string }, {}, { role?: UserRole }>, res) => {
-      const { workspaceId } = getAuthContext(req);
+      const { userId, workspaceId } = getAuthContext(req);
       const targetUserId = req.params.id;
 
       if (!targetUserId) {
         throw new AppError("Invalid userId", 404);
+      }
+
+      const currentUser = await UserModel.findOne({
+        _id: userId,
+        workspaceId,
+      }).lean();
+
+      if (!currentUser || currentUser.role !== "admin") {
+        throw new AppError("Only admins can change user roles", 403);
       }
 
       const { role } = req.body;
