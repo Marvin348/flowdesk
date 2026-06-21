@@ -4,10 +4,13 @@ import ActivityItem from "./ActivityItem";
 const ActivityList = ({ activities }: { activities: ActivityDto[] }) => {
   return (
     <section>
-      ActivityList
       <div>
-        {activities.map((activity) => (
-          <ActivityItem key={activity.id} activity={activity} />
+        {activities.map((activity, index) => (
+          <ActivityItem
+            key={activity.id}
+            activity={activity}
+            isLast={index === activities.length - 1}
+          />
         ))}
       </div>
     </section>

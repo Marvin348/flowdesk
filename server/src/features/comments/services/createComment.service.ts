@@ -75,6 +75,7 @@ export const createComment = async ({
       taskId,
       taskTitle: task.title,
       projectId: project.id,
+      commentMessage: newComment.message,
     },
   });
 

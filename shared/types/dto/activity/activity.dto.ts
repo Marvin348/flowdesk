@@ -8,7 +8,7 @@ export type ActivityDto = {
   actor: {
     id: string;
     name: string;
-    email: string;
+    avatarKey: string;
   };
 };
 
