@@ -2,7 +2,7 @@ import type { ActivityDto } from "@shared/types/dto/activity/activity.dto";
 import { ACTIVITY_ICON } from "@/features/activity/constants/activityIcon";
 import { formatDate } from "@/shared/utils/formatDate";
 import Avatar from "@/shared/components/ui/avatar/Avatar";
-import ActivityMessage from "./ActivityMessage";
+import ActivityMessage from "@/features/activity/components/ActivityMessage";
 
 type ActivityItemProps = {
   activity: ActivityDto;
@@ -12,8 +12,8 @@ type ActivityItemProps = {
 const ActivityItem = ({ activity, isLast }: ActivityItemProps) => {
   const { type, entityType, createdAt, metadata, actor } = activity;
 
-  const IconType = ACTIVITY_ICON[entityType];
-
+  const IconType = ACTIVITY_ICON[type].icon;
+  
   const commentMessage =
     typeof metadata.message === "string" ? metadata.message : null;
 
@@ -28,11 +28,11 @@ const ActivityItem = ({ activity, isLast }: ActivityItemProps) => {
       </div>
 
       <div className="flex min-w-0 flex-1 items- gap-3 pb-6">
-        <div className="shrink-0 pt-0.5">
+        <div className="shrink-0">
           <Avatar avatarKey={actor.avatarKey} size="sm" />
         </div>
 
-        <div className="min-w-0 flex-1">
+        <div className="min-w-0 flex-1 pt-1.5">
           <div className="flex flex-wrap items-center gap-1 text-sm">
             <p className="font-medium">{actor.name}</p>
             <p className="text-muted-foreground">
@@ -40,7 +40,6 @@ const ActivityItem = ({ activity, isLast }: ActivityItemProps) => {
             </p>
 
             <span className="text-muted-foreground">·</span>
-
             <p className="text-muted-foreground">{formatDate(createdAt)}</p>
           </div>
 

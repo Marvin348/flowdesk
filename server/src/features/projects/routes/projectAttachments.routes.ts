@@ -11,14 +11,13 @@ import { toAttachmentDto } from "@/features/attachments/mappers/attachment.mappe
 import { toUserDto } from "@/features/users/mappers/user.mapper.js";
 import { toTaskDto } from "@/features/tasks/mappers/task.mapper.js";
 import { toProjectAttachmentsDto } from "@/features/projects/mappers/project-attachments.mapper.js";
-import { ProjectModel } from "@/features/projects/models/project.model.js";
 import { getProjectById } from "@/features/projects/services/project.service.js";
 import multer from "multer";
 import { getAuthContext } from "@/features/auth/utils/getAuthContext.js";
-import { deleteFileFromR2 } from "@/features/attachments/services/attachmentStorage.service.js";
 import { asyncHandler } from "@/utils/asyncHandler.js";
 import { AppError } from "@/utils/AppError.js";
 import { createAttachments } from "@/features/attachments/services/createAttachments.service.js";
+import { deleteAttachment } from "@/features/attachments/services/deleteAttachment.service.js";
 
 const router = express.Router();
 
@@ -49,40 +48,12 @@ router.delete(
 
       const { userId, workspaceId } = getAuthContext(req);
 
-      const project = await getProjectById({
+      const deletedAttachment = await deleteAttachment({
         projectId,
         userId,
         workspaceId,
+        attachmentId,
       });
-
-      if (!project) {
-        throw new AppError("Project not found", 404);
-      }
-
-      const attachmentRecord = await AttachmentModel.findOne({
-        _id: attachmentId,
-        workspaceId,
-        projectId,
-      }).lean();
-
-      if (!attachmentRecord) {
-        throw new AppError("Attachment not found", 404);
-      }
-
-      await deleteFileFromR2(attachmentRecord.storageKey);
-
-      const deletedAttachment = await AttachmentModel.deleteOne({
-        _id: attachmentId,
-        workspaceId,
-        projectId,
-      });
-
-      await ProjectModel.findOneAndUpdate(
-        { _id: projectId, workspaceId },
-        {
-          $currentDate: { updatedAt: true },
-        },
-      );
 
       return res.status(200).json({ data: deletedAttachment });
     },
