@@ -1,6 +1,6 @@
 import { useActivities } from "@/features/activity/hooks/useActivities";
-import ActivityToolbar from "@/features/activity/components/ActivityToolbar";
 import ActivityList from "@/features/activity/components/ActivityList";
+import ActivityPageHeader from "../components/ActivityPageHeader";
 
 const ActivityPage = () => {
   const { data: activities, isLoading, error } = useActivities();
@@ -12,8 +12,8 @@ const ActivityPage = () => {
 
   return (
     <div>
-      <div>
-        <ActivityToolbar />
+      <div className="mb-6">
+        <ActivityPageHeader/>
       </div>
 
       <div>

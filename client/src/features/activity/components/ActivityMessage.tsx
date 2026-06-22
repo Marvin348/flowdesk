@@ -31,6 +31,20 @@ const ActivityMessage = ({ activity }: { activity: ActivityDto }) => {
       );
     }
 
+    case "attachment.deleted": {
+      const fileName =
+        typeof activity.metadata.fileName === "string"
+          ? activity.metadata.fileName
+          : "eine Datei";
+
+      return (
+        <>
+          hat <span className="font-medium text-foreground">{fileName}</span>{" "}
+          gelöscht
+        </>
+      );
+    }
+
     case "task.created": {
       const taskTitle =
         typeof activity.metadata.taskTitle === "string"
