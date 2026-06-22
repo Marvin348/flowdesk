@@ -71,7 +71,7 @@ router.post<{ token: string }>(
       throw new AppError("Invalid Input", 400);
     }
 
-    const user = acceptWorkspaceInvite({
+    const user = await acceptWorkspaceInvite({
       token,
       name: result.data.name,
       password: result.data.password,
