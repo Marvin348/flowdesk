@@ -17,16 +17,9 @@ export const touchProject = async ({
   );
 };
 
-export const getProjects = async ({
-  userId,
-  workspaceId,
-}: {
-  userId: string;
-  workspaceId: string;
-}) => {
+export const getProjects = async ({ workspaceId }: { workspaceId: string }) => {
   const projectRecords = await ProjectModel.find({
     workspaceId,
-    $or: [{ ownerId: userId }, { invitedUserIds: userId }],
   }).lean();
 
   return toProjectDtos(projectRecords);
@@ -34,17 +27,14 @@ export const getProjects = async ({
 
 export const getProjectById = async ({
   projectId,
-  userId,
   workspaceId,
 }: {
   projectId: string;
-  userId: string;
   workspaceId: string;
 }) => {
   const projectRecord = await ProjectModel.findOne({
     _id: projectId,
     workspaceId,
-    $or: [{ ownerId: userId }, { invitedUserIds: userId }],
   }).lean();
 
   if (!projectRecord) {

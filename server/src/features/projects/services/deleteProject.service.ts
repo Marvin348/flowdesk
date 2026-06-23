@@ -5,26 +5,32 @@ import { CommentModel } from "@/features/comments/models/comment.model.js";
 import { AppError } from "@/utils/AppError.js";
 import { getProjectById } from "@/features/projects/services/project.service.js";
 import { createActivity } from "@/features/activity/services/createActivity.service.js";
+import { UserRole } from "@shared/types/user.js";
 
 type DeleteProjectInput = {
   projectId: string;
   userId: string;
+  role: UserRole;
   workspaceId: string;
 };
 
 export const deleteProject = async ({
   projectId,
   userId,
+  role,
   workspaceId,
 }: DeleteProjectInput) => {
   const project = await getProjectById({
     projectId,
-    userId,
     workspaceId,
   });
 
   if (!project) {
     throw new AppError("Project not found", 404);
+  }
+
+  if (role !== "admin") {
+    throw new AppError("Only admins can delete projects", 403);
   }
 
   const tasksToDelete = await TaskModel.find({ projectId, workspaceId });

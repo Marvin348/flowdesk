@@ -22,14 +22,13 @@ router.get(
 
       const selectedUserId = req.query.userId;
 
-      const { userId, workspaceId } = getAuthContext(req);
+      const { workspaceId } = getAuthContext(req);
 
       if (!selectedUserId) {
-        throw new AppError("Not authenticated", 401);
+        throw new AppError("Missing userId", 400);
       }
 
       const visibleProjects = await getProjects({
-        userId,
         workspaceId,
       });
 

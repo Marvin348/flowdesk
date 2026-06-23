@@ -73,11 +73,10 @@ router.get(
         throw new AppError("Invalid projectId", 400);
       }
 
-      const { userId, workspaceId } = getAuthContext(req);
+      const { workspaceId } = getAuthContext(req);
 
       const project = await getProjectById({
         projectId,
-        userId,
         workspaceId,
       });
 

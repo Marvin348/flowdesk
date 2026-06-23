@@ -22,7 +22,6 @@ export const deleteAttachment = async ({
 }: DeleteAttachmentParams) => {
   const project = await getProjectById({
     projectId,
-    userId,
     workspaceId,
   });
 
