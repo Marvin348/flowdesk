@@ -75,6 +75,21 @@ const ActivityMessage = ({ activity }: { activity: ActivityDto }) => {
       );
     }
 
+    case "project.deleted": {
+      const projectTitle =
+        typeof activity.metadata.projectTitle === "string"
+          ? activity.metadata.projectTitle
+          : "einem Projekt";
+
+      return (
+        <>
+          hat das Projekt{" "}
+          <span className="font-medium text-foreground">{projectTitle}</span>{" "}
+          gelöscht
+        </>
+      );
+    }
+
     case "workspace_invite.created": {
       const invitedEmail =
         typeof activity.metadata.invitedEmail === "string"

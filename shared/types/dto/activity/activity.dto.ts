@@ -39,7 +39,6 @@ export const ACTIVITY_TYPES = [
 
   // Comments
   "comment.created",
-  "comment.deleted",
 
   // Attachments
   "attachment.uploaded",

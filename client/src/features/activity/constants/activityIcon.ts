@@ -37,7 +37,6 @@ export const ACTIVITY_ICON = {
   "comment.created": {
     icon: MessageSquareMore,
   },
-  "comment.deleted": { icon: X },
 
   "attachment.uploaded": {
     icon: Paperclip,

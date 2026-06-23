@@ -41,7 +41,7 @@ export const createProject = async ({
     entityType: "project",
     entityId: newProject._id.toString(),
     metadata: {
-      title: newProject.title,
+      projectTitle: newProject.title,
       projectStatus: newProject.projectStatus,
       priority: newProject.priority,
     },
