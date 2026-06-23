@@ -6,11 +6,9 @@ import { parseProjectQueryFilter } from "@/shared/parsers/project-query.parsers.
 import { getFilteredProjectsList } from "@/features/projects/utils/getFilteredProjectsList.js";
 import { pagination } from "@/shared/utils/pagination.js";
 import type { CreateProjectInput } from "@shared/types/inputs/createProjectInput.js";
-import { ProjectModel } from "@/features/projects/models/project.model.js";
 import { TaskModel } from "@/features/tasks/models/task.model.js";
 import { CommentModel } from "@/features/comments/models/comment.model.js";
 import { AttachmentModel } from "@/features/attachments/models/attachment.model.js";
-import { toProjectDto } from "@/features/projects/mappers/project.mapper.js";
 import { toTaskDto } from "@/features/tasks/mappers/task.mapper.js";
 import { toCommentDto } from "@/features/comments/mappers/comment.mapper.js";
 import { toAttachmentDto } from "@/features/attachments/mappers/attachment.mapper.js";
@@ -25,8 +23,9 @@ import {
 import { getAuthContext } from "@/features/auth/utils/getAuthContext.js";
 import { asyncHandler } from "@/utils/asyncHandler.js";
 import { AppError } from "@/utils/AppError.js";
-import { createProjectSchema } from "../validation/project.validator.js";
-import { createProject } from "../services/createProject.service.js";
+import { createProjectSchema } from "@/features/projects/validation/project.validator.js";
+import { createProject } from "@/features/projects/services/createProject.service.js";
+import { deleteProject } from "@/features/projects/services/deleteProject.service.js";
 
 const router = express.Router();
 
@@ -162,34 +161,10 @@ router.delete(
 
     const { userId, workspaceId } = getAuthContext(req);
 
-    const project = await getProjectById({
+    const deletedProject = await deleteProject({
       projectId,
       userId,
       workspaceId,
-    });
-
-    if (!project) {
-      throw new AppError("Project not found", 404);
-    }
-
-    const tasksToDelete = await TaskModel.find({ projectId, workspaceId });
-    const taskIdsToDelete = tasksToDelete.map((t) => t._id.toString());
-
-    await CommentModel.deleteMany({
-      workspaceId,
-      taskId: { $in: taskIdsToDelete },
-    });
-
-    await AttachmentModel.deleteMany({
-      workspaceId,
-      projectId,
-    });
-
-    await TaskModel.deleteMany({ projectId, workspaceId });
-
-    const deletedProject = await ProjectModel.findOneAndDelete({
-      workspaceId,
-      _id: projectId,
     });
 
     return res.status(201).json({ data: deletedProject });

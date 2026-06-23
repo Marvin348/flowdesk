@@ -10,7 +10,7 @@ type ActivityItemProps = {
 };
 
 const ActivityItem = ({ activity, isLast }: ActivityItemProps) => {
-  const { type, entityType, createdAt, metadata, actor } = activity;
+  const { type, createdAt, metadata, actor } = activity;
 
   const IconType = ACTIVITY_ICON[type].icon;
   

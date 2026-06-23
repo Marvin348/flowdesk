@@ -55,7 +55,7 @@ export const createProject = async (
   return res.data.data;
 };
 
-export const deleteProject = async (id: string): Promise<Project> => {
+export const deleteProject = async (id: string): Promise<{id: string}> => {
   const res = await apiClient.delete(`/projects/${id}`);
   return res.data;
 };

@@ -8,7 +8,7 @@ import {
 
 const ActivityToolbar = () => {
   return (
-    <section
+    <div
       aria-label="Aktivitäten filtern"
       className="flex items-center justify-end "
     >
@@ -24,7 +24,7 @@ const ActivityToolbar = () => {
           <SelectItem value="last-30-days">Letzte 30 Tage</SelectItem>
         </SelectContent>
       </Select>
-    </section>
+    </div>
   );
 };
 
