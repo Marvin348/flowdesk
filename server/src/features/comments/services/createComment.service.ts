@@ -31,7 +31,6 @@ export const createComment = async ({
 
   const project = await getProjectById({
     projectId: task.projectId,
-    userId,
     workspaceId,
   });
 

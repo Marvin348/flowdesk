@@ -7,6 +7,7 @@ import { AppError } from "@/utils/AppError.js";
 import { TaskModel } from "@/features/tasks/models/task.model.js";
 import { toTaskDto } from "@/features/tasks/mappers/task.mapper.js";
 import { createActivity } from "@/features/activity/services/createActivity.service.js";
+import { UserModel } from "@/features/users/models/user.modal.js";
 
 type CreateTaskInput = {
   input: CreateTaskFields;
@@ -32,12 +33,22 @@ export const createTask = async ({
 
   const project = await getProjectById({
     projectId,
-    userId,
     workspaceId,
   });
 
   if (!project) {
     throw new AppError("Project not found", 404);
+  }
+
+  const uniqueCollaboratorIds = [...new Set(collaboratorIds)];
+
+  const matchingUsers = await UserModel.countDocuments({
+    _id: { $in: uniqueCollaboratorIds },
+    workspaceId,
+  });
+
+  if (matchingUsers !== uniqueCollaboratorIds.length) {
+    throw new AppError("One or more users are invalid", 400);
   }
 
   const newTask = await TaskModel.create({

@@ -182,19 +182,18 @@ router.patch(
   "/:id",
   asyncHandler(
     async (req: Request<{ id?: string }, {}, { role?: UserRole }>, res) => {
-      const { userId, workspaceId } = getAuthContext(req);
+      const {
+        userId: currentUserId,
+        workspaceId,
+        role: currentUserRole,
+      } = getAuthContext(req);
       const targetUserId = req.params.id;
 
       if (!targetUserId) {
         throw new AppError("Invalid userId", 404);
       }
 
-      const currentUser = await UserModel.findOne({
-        _id: userId,
-        workspaceId,
-      }).lean();
-
-      if (!currentUser || currentUser.role !== "admin") {
+      if (currentUserRole !== "admin") {
         throw new AppError("Only admins can change user roles", 403);
       }
 
@@ -205,6 +204,10 @@ router.patch(
 
       if (!isValidRole) {
         throw new AppError("Invalid role", 400);
+      }
+
+      if (targetUserId === currentUserId && role !== "admin") {
+        throw new AppError("Admins cannot demote themselves", 403);
       }
 
       const user = await UserModel.findOne({

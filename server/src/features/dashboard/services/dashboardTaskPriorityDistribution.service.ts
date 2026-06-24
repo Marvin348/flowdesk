@@ -10,13 +10,11 @@ type TaskPriorityCount = {
 };
 
 export const getTaskPriorityDistribution = async ({
-  userId,
   workspaceId,
 }: {
-  userId: string;
   workspaceId: string;
 }) => {
-  const projects = await getProjects({ userId, workspaceId });
+  const projects = await getProjects({ workspaceId });
   const projectIds = projects.map((project) => project.id);
 
   const priorityCounts = await TaskModel.aggregate<TaskPriorityCount>([

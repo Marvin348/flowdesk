@@ -46,7 +46,11 @@ router.delete(
         throw new AppError("Invalid attachmentId", 400);
       }
 
-      const { userId, workspaceId } = getAuthContext(req);
+      const { userId, workspaceId, role } = getAuthContext(req);
+
+      if (role !== "admin") {
+        throw new AppError("Only admins can delete attachments", 403);
+      }
 
       const deletedAttachment = await deleteAttachment({
         projectId,
