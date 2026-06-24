@@ -25,7 +25,6 @@ export const createAttachments = async ({
 }: CreateAttachmentInput) => {
   const project = await getProjectById({
     projectId,
-    userId,
     workspaceId,
   });
 

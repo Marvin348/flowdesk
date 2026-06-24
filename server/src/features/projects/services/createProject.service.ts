@@ -2,6 +2,8 @@ import { CreateProjectFields } from "@/features/projects/validation/project.vali
 import { ProjectModel } from "@/features/projects/models/project.model.js";
 import { toProjectDto } from "@/features/projects/mappers/project.mapper.js";
 import { createActivity } from "@/features/activity/services/createActivity.service.js";
+import { AppError } from "@/utils/AppError.js";
+import { UserModel } from "@/features/users/models/user.modal.js";
 
 type CreateProjectInput = {
   input: CreateProjectFields;
@@ -22,6 +24,17 @@ export const createProject = async ({
     invitedUserIds,
     description,
   } = input;
+
+  const uniqueUserIds = [...new Set(invitedUserIds)];
+
+  const matchingUsers = await UserModel.countDocuments({
+    _id: { $in: uniqueUserIds },
+    workspaceId,
+  });
+
+  if (matchingUsers !== uniqueUserIds.length) {
+    throw new AppError("One or more users are invalid", 400);
+  }
 
   const newProject = await ProjectModel.create({
     workspaceId,

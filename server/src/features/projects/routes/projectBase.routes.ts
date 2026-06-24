@@ -32,9 +32,9 @@ const router = express.Router();
 router.get(
   "/",
   asyncHandler(async (req, res) => {
-    const { userId, workspaceId } = getAuthContext(req);
+    const { workspaceId } = getAuthContext(req);
 
-    const projects = await getProjects({ userId, workspaceId });
+    const projects = await getProjects({ workspaceId });
 
     return res.status(200).json({ data: projects });
   }),
@@ -43,9 +43,9 @@ router.get(
 router.get(
   "/summaries",
   asyncHandler(async (req: Request<{}, {}, {}, ProjectSummaryQuery>, res) => {
-    const { userId, workspaceId } = getAuthContext(req);
+    const { workspaceId } = getAuthContext(req);
 
-    const projects = await getProjects({ userId, workspaceId });
+    const projects = await getProjects({ workspaceId });
     const projectIds = projects.map((project) => project.id);
 
     const taskDocs = await TaskModel.find({
@@ -113,7 +113,11 @@ router.post(
       throw new AppError("Invalid input", 400);
     }
 
-    const { userId, workspaceId } = getAuthContext(req);
+    const { userId, workspaceId, role } = getAuthContext(req);
+
+    if (role !== "admin") {
+      throw new AppError("Only admins can create projects", 403);
+    }
 
     const newProject = await createProject({
       input: result.data,
@@ -134,11 +138,10 @@ router.get(
       throw new AppError("Invalid id", 400);
     }
 
-    const { userId, workspaceId } = getAuthContext(req);
+    const { workspaceId } = getAuthContext(req);
 
     const project = await getProjectById({
       projectId,
-      userId,
       workspaceId,
     });
 
@@ -159,15 +162,16 @@ router.delete(
       throw new AppError("projectId invalid input", 400);
     }
 
-    const { userId, workspaceId } = getAuthContext(req);
+    const { userId, role, workspaceId } = getAuthContext(req);
 
     const deletedProject = await deleteProject({
       projectId,
       userId,
+      role,
       workspaceId,
     });
 
-    return res.status(201).json({ data: deletedProject });
+    return res.status(200).json({ data: deletedProject });
   }),
 );
 

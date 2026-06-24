@@ -4,13 +4,7 @@ import { getTaskPriorityDistribution } from "@/features/dashboard/services/dashb
 import { getTaskStatusDistribution } from "@/features/dashboard/services/dashboardTaskStatusDistribution.service.js";
 import { getUpcomingTasks } from "@/features/dashboard/services/dashboardUpcomingTasks.service.js";
 
-export const getDashboardOverview = async ({
-  userId,
-  workspaceId,
-}: {
-  userId: string;
-  workspaceId: string;
-}) => {
+export const getDashboardOverview = async (workspaceId: string) => {
   const [
     overviewStats,
     taskStatusDistribution,
@@ -18,11 +12,11 @@ export const getDashboardOverview = async ({
     upcomingTasks,
     performanceHighlights,
   ] = await Promise.all([
-    getOverviewStats({ userId, workspaceId }),
-    getTaskStatusDistribution({ userId, workspaceId }),
-    getTaskPriorityDistribution({ userId, workspaceId }),
-    getUpcomingTasks({ userId, workspaceId }),
-    getPerformanceHighlights({ userId, workspaceId }),
+    getOverviewStats({ workspaceId }),
+    getTaskStatusDistribution({ workspaceId }),
+    getTaskPriorityDistribution({ workspaceId }),
+    getUpcomingTasks({ workspaceId }),
+    getPerformanceHighlights({ workspaceId }),
   ]);
 
   return {

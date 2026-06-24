@@ -42,11 +42,10 @@ router.get(
       throw new AppError("Invalid projectId", 400);
     }
 
-    const { userId, workspaceId } = getAuthContext(req);
+    const { workspaceId } = getAuthContext(req);
 
     const project = await getProjectById({
       projectId,
-      userId,
       workspaceId,
     });
 
@@ -88,11 +87,10 @@ router.get(
       throw new AppError("Invalid projectId", 400);
     }
 
-    const { userId, workspaceId } = getAuthContext(req);
+    const { workspaceId } = getAuthContext(req);
 
     const project = await getProjectById({
       projectId,
-      userId,
       workspaceId,
     });
 
@@ -143,11 +141,10 @@ router.get(
       throw new AppError("Invalid projectId", 400);
     }
 
-    const { userId, workspaceId } = getAuthContext(req);
+    const { workspaceId } = getAuthContext(req);
 
     const project = await getProjectById({
       projectId,
-      userId,
       workspaceId,
     });
 
@@ -185,11 +182,10 @@ router.get(
 
       const parsedCollaboratorSort = parseCollaboratorSort(collaboratorsSort);
 
-      const { userId, workspaceId } = getAuthContext(req);
+      const { workspaceId } = getAuthContext(req);
 
       const project = await getProjectById({
         projectId,
-        userId,
         workspaceId,
       });
 
@@ -221,7 +217,10 @@ router.get(
 router.get(
   "/:id/comments",
   asyncHandler(
-    async (req: Request<{ id?: string }, {}, {}, ProjectCommentsQuery>, res) => {
+    async (
+      req: Request<{ id?: string }, {}, {}, ProjectCommentsQuery>,
+      res,
+    ) => {
       const projectId = req.params.id;
       const { commentsSort } = req.query;
 
@@ -229,13 +228,12 @@ router.get(
         throw new AppError("Invalid projectId", 400);
       }
 
-      const { userId, workspaceId } = getAuthContext(req);
+      const { workspaceId } = getAuthContext(req);
 
       const parsedCommentsSort = parseProjectCommentsSort(commentsSort);
 
       const project = await getProjectById({
         projectId,
-        userId,
         workspaceId,
       });
 
@@ -294,7 +292,10 @@ router.get(
 router.get(
   "/:id/workload",
   asyncHandler(
-    async (req: Request<{ id?: string }, {}, {}, ProjectWorkloadQuery>, res) => {
+    async (
+      req: Request<{ id?: string }, {}, {}, ProjectWorkloadQuery>,
+      res,
+    ) => {
       const projectId = req.params.id;
 
       if (!projectId) {
@@ -305,11 +306,10 @@ router.get(
         req.query.workloadSort,
       );
 
-      const { userId, workspaceId } = getAuthContext(req);
+      const { workspaceId } = getAuthContext(req);
 
       const project = await getProjectById({
         projectId,
-        userId,
         workspaceId,
       });
 

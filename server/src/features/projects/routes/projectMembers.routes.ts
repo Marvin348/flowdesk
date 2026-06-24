@@ -26,9 +26,13 @@ router.patch(
   asyncHandler(async (req: Request<{}, {}, AssignUserInput>, res) => {
     const { projectIdsToAdd, userId } = req.body;
 
-    const { userId: currentUserId, workspaceId } = getAuthContext(req);
+    const { role, workspaceId } = getAuthContext(req);
 
-    if (!Array.isArray(projectIdsToAdd) || typeof userId !== "string") {
+    if (typeof userId !== "string") {
+      throw new AppError("Invalid userId", 400);
+    }
+
+    if (!Array.isArray(projectIdsToAdd) || projectIdsToAdd.length === 0) {
       throw new AppError("Invalid input", 400);
     }
 
@@ -38,10 +42,14 @@ router.patch(
       throw new AppError("User not found", 404);
     }
 
+    if (role !== "admin") {
+      throw new AppError("Only admins can assign new projects", 403);
+    }
+
     const visibleProjects = await getProjects({
-      userId: currentUserId,
       workspaceId,
     });
+
     const projectIdsToAddSet = new Set(projectIdsToAdd);
     const matchingProjects = visibleProjects.filter((project) =>
       projectIdsToAddSet.has(project.id),
@@ -93,7 +101,7 @@ router.delete(
     const projectId = req.params.id;
     const userId = req.params.userId;
 
-    const { userId: currentUserId, workspaceId } = getAuthContext(req);
+    const { role, workspaceId } = getAuthContext(req);
 
     if (!projectId) {
       throw new AppError("Invalid projectId", 400);
@@ -105,12 +113,15 @@ router.delete(
 
     const project = await getProjectById({
       projectId,
-      userId: currentUserId,
       workspaceId,
     });
 
     if (!project) {
       throw new AppError("Project not found", 404);
+    }
+
+    if (role !== "admin") {
+      throw new AppError("Only admins can delete user", 403);
     }
 
     if (!project.invitedUserIds.includes(userId)) {
@@ -182,26 +193,44 @@ router.patch(
   "/:id/members",
   asyncHandler(
     async (
-      req: Request<{ id?: string }, {}, { userIdsToAdd: string[] }>,
+      req: Request<{ id: string }, {}, { userIdsToAdd: string[] }>,
       res,
     ) => {
       const projectId = req.params.id;
       const { userIdsToAdd } = req.body;
 
-      const { userId: currentUserId, workspaceId } = getAuthContext(req);
+      const { role, workspaceId } = getAuthContext(req);
 
-      if (!projectId || !Array.isArray(userIdsToAdd)) {
+      if (!projectId) {
+        throw new AppError("Invalid projectId", 400);
+      }
+
+      if (!Array.isArray(userIdsToAdd) || userIdsToAdd.length === 0) {
         throw new AppError("Invalid input", 400);
       }
 
       const project = await getProjectById({
         projectId,
-        userId: currentUserId,
         workspaceId,
       });
 
       if (!project) {
         throw new AppError("Project not found", 404);
+      }
+
+      if (role !== "admin") {
+        throw new AppError("Only admins can update invitedUsers", 403);
+      }
+
+      const uniqueUserIds = [...new Set(userIdsToAdd)];
+
+      const matchingUsers = await UserModel.countDocuments({
+        _id: { $in: uniqueUserIds },
+        workspaceId,
+      });
+
+      if (matchingUsers !== uniqueUserIds.length) {
+        throw new AppError("One or more users are invalid", 400);
       }
 
       const updatedProject = await ProjectModel.findOneAndUpdate(

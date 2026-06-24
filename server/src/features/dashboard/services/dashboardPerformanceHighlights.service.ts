@@ -7,13 +7,11 @@ import { toUserDto } from "@/features/users/mappers/user.mapper.js";
 import { UserModel } from "@/features/users/models/user.modal.js";
 
 export const getPerformanceHighlights = async ({
-  userId,
   workspaceId,
 }: {
-  userId: string;
   workspaceId: string;
 }) => {
-  const projects = await getProjects({ userId, workspaceId });
+  const projects = await getProjects({ workspaceId });
   const projectIds = projects.map((project) => project.id);
 
   const [userRecords, taskRecords] = await Promise.all([

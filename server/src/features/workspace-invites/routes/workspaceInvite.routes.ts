@@ -26,12 +26,16 @@ router.post(
 
     const email = result.data.email;
 
-    const { userId, workspaceId } = getAuthContext(req);
+    const { userId, workspaceId, role } = getAuthContext(req);
 
     const user = await findUserInWorkspace({ userId, workspaceId });
 
     if (!user) {
       throw new AppError("User not found", 404);
+    }
+
+    if (role !== "admin") {
+      throw new AppError("Only admins can create workspace-invites", 403);
     }
 
     const invite = await createWorkspaceInvite({

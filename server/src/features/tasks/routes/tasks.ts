@@ -15,9 +15,9 @@ const router = express.Router();
 router.get(
   "/",
   asyncHandler(async (req, res) => {
-    const { userId, workspaceId } = getAuthContext(req);
+    const { workspaceId } = getAuthContext(req);
 
-    const projects = await getProjects({ userId, workspaceId });
+    const projects = await getProjects({ workspaceId });
     const projectIds = projects.map((project) => project.id);
 
     const tasks = await TaskModel.find({
