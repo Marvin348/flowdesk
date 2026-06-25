@@ -67,6 +67,10 @@ export const loginUser = async (input: LoginInput) => {
     throw new AppError("Invalid credentials", 401);
   }
 
+  if (!user.isEmailVerified) {
+    throw new AppError("Please verify your email first.", 403);
+  }
+
   const accessToken = createAccessToken(user._id.toString());
 
   return {

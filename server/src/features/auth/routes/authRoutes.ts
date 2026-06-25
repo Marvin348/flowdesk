@@ -15,6 +15,8 @@ import { requireAuth } from "@/features/auth/middleware/requireAuth.js";
 import { asyncHandler } from "@/utils/asyncHandler.js";
 import { AppError } from "@/utils/AppError.js";
 import { getAuthContext } from "@/features/auth/utils/getAuthContext.js";
+import { verifyEmailSchema } from "@/features/verification-tokens/validators/verifyEmailSchema.js";
+import { verifyEmail } from "@/features/verification-tokens/services/verifyEmail.service.js";
 
 const router = express.Router();
 
@@ -79,18 +81,26 @@ router.post(
 
     const input = result.data;
 
-    // const { user, accessToken } = await registerUser(input);
-
-    // res.cookie("accessToken", accessToken, {
-    //   httpOnly: true,
-    //   sameSite: "lax",
-    //   secure: process.env.NODE_ENV === "production",
-    //   maxAge: 1000 * 60 * 60 * 24,
-    // });
+    await registerUser(input);
 
     return res
       .status(201)
       .json({ message: "Registration successful. Please check your email." });
+  }),
+);
+
+router.post(
+  "/verify-email",
+  asyncHandler(async (req, res) => {
+    const result = verifyEmailSchema.safeParse(req.body);
+
+    if (!result.success) {
+      throw new AppError("Invalid request body", 400);
+    }
+
+    await verifyEmail({ token: result.data.token });
+
+    return res.status(200).json({ message: "Email verified successfully." });
   }),
 );
 
