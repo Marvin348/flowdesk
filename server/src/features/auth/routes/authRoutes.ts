@@ -79,16 +79,18 @@ router.post(
 
     const input = result.data;
 
-    const { user, accessToken } = await registerUser(input);
+    // const { user, accessToken } = await registerUser(input);
 
-    res.cookie("accessToken", accessToken, {
-      httpOnly: true,
-      sameSite: "lax",
-      secure: process.env.NODE_ENV === "production",
-      maxAge: 1000 * 60 * 60 * 24,
-    });
+    // res.cookie("accessToken", accessToken, {
+    //   httpOnly: true,
+    //   sameSite: "lax",
+    //   secure: process.env.NODE_ENV === "production",
+    //   maxAge: 1000 * 60 * 60 * 24,
+    // });
 
-    return res.status(201).json({ user });
+    return res
+      .status(201)
+      .json({ message: "Registration successful. Please check your email." });
   }),
 );
 

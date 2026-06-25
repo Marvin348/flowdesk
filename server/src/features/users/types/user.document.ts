@@ -1,5 +1,5 @@
 import type { Types } from "mongoose";
-import type { AppearanceSettings } from "@shared/types/user.js";
+import type { AppearanceSettingsType } from "@shared/types/user.js";
 
 export type UserRole = "admin" | "member" | "manager";
 
@@ -9,9 +9,11 @@ export type UserDocument = {
   name: string;
   email: string;
   passwordHash: string;
+  isEmailVerified: boolean;
+  emailVerifiedAt?: Date;
   avatarKey: string;
   role: UserRole;
   jobTitle?: string;
 
-  appearanceSettings: AppearanceSettings;
+  appearanceSettings: AppearanceSettingsType;
 };

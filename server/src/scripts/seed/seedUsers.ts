@@ -40,6 +40,8 @@ export const seedUsers = async (
       email: user.email,
       jobTitle: user.jobTitle,
       role: user.role,
+      isEmailVerified: true,
+      emailVerifiedAt: new Date(),
       avatarKey: user.avatarKey,
       passwordHash: demoPasswordHash,
       workspaceId,
