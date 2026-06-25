@@ -44,6 +44,16 @@ const userSchema = new mongoose.Schema(
       type: String,
     },
 
+    isEmailVerified: {
+      type: Boolean,
+      required: true,
+      default: false,
+    },
+
+    emailVerifiedAt: {
+      type: Date,
+    },
+
     appearanceSettings: {
       theme: {
         type: String,
