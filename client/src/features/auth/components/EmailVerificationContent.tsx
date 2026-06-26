@@ -56,7 +56,7 @@ const EmailVerificationContent = ({ token }: { token: string }) => {
   if (isError) {
     content = (
       <ErrorMessage
-        message="Etwas ist schief gelaufen. Bitte versuche es erneut."
+        message="Der Link ist abgelaufen. Bitte versuche es erneut."
         className="text-center"
       />
     );

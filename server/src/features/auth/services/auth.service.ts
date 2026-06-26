@@ -14,6 +14,7 @@ import { WorkspaceModel } from "@/features/workspace/models/workspace.model.js";
 import { Types } from "mongoose";
 import { AppError } from "@/utils/AppError.js";
 import { createEmailVerificationToken } from "@/features/verification-tokens/services/createEmailVerificationToken.service.js";
+import { sendVerificationEmail } from "@/features/email/services/email.service.js";
 
 export const registerUser = async (input: RegisterInput) => {
   const { email, name, password } = input;
@@ -49,7 +50,10 @@ export const registerUser = async (input: RegisterInput) => {
 
   const verificationUrl = `${process.env.CLIENT_URL}/verify-email/${emailVerificationToken}`;
 
-  console.log("Email verification URL:", verificationUrl); // test
+  await sendVerificationEmail({
+    to: newUser.email,
+    verificationUrl,
+  });
 };
 
 export const loginUser = async (input: LoginInput) => {
