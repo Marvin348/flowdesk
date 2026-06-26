@@ -33,7 +33,7 @@ const RegisterPage = () => {
   const onSubmit = (data: RegisterFields) => {
     mutate(data, {
       onSuccess: () => {
-        navigate("/dashboard");
+        navigate("/check-email");
       },
     });
   };

@@ -47,9 +47,9 @@ export const registerUser = async (input: RegisterInput) => {
 
   const emailVerificationToken = await createEmailVerificationToken(userId);
 
-  const verificationUrl = `${process.env.CLIENT_URL}/email-verification?token=${emailVerificationToken}`;
+  const verificationUrl = `${process.env.CLIENT_URL}/verify-email/${emailVerificationToken}`;
 
-  console.log("Email verification URL:", verificationUrl);
+  console.log("Email verification URL:", verificationUrl); // test
 };
 
 export const loginUser = async (input: LoginInput) => {

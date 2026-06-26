@@ -5,7 +5,7 @@ type ErrorMessageProps = {
 
 const ErrorMessage = ({ message, className }: ErrorMessageProps) => {
   return (
-    <div className={`text-sm error-text ${className}`}>{message}</div>
+    <div className={`text-sm ${className} error-text`}>{message}</div>
   );
 };
 export default ErrorMessage;
