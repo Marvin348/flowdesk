@@ -21,6 +21,8 @@ import TeamSettingsPage from "@/features/settings/pages/TeamSettingsPage";
 import NotificationSettingsPage from "@/features/settings/pages/NotificationSettingsPage";
 import InvitePage from "@/features/workspace-invites/pages/InvitePage";
 import ActivityPage from "@/features/activity/page/ActivityPage";
+import CheckEmailPage from "@/features/auth/pages/CheckEmailPage";
+import EmailVerificationPage from "@/features/auth/pages/EmailVerificationPage";
 
 const queryClient = new QueryClient();
 
@@ -32,6 +34,8 @@ const rounter = createBrowserRouter([
       { index: true, element: <Navigate to="/login" replace /> },
       { path: "login", element: <LoginPage /> },
       { path: "register", element: <RegisterPage /> },
+      { path: "check-email", element: <CheckEmailPage /> },
+      { path: "verify-email/:token", element: <EmailVerificationPage /> },
       { path: "invite/:token", element: <InvitePage /> },
     ],
   },

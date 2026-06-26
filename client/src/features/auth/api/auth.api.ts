@@ -24,6 +24,11 @@ export const register = async (input: RegisterFields): Promise<AuthUser> => {
   return res.data.user;
 };
 
+export const verifyEmail = async (token: string): Promise<string> => {
+  const res = await apiClient.post("/auth/verify-email", { token });
+  return res.data.message;
+};
+
 export const updatePassword = async (input: PasswordFields) => {
   const res = await apiClient.patch("/auth/password", input);
   return res.data;
