@@ -11,8 +11,6 @@ The app focuses on real-world admin workflows: project overviews, detailed proje
 - Fullstack setup with **React (Vite)** frontend and a **custom Node.js / Express** backend
 - Backend uses **MongoDB with Mongoose** as persistent database
 - Authentication with **JWT stored in an HttpOnly cookie**
-- Protected frontend routes using `/auth/me`
-- Protected backend API routes using an authentication middleware
 - Project-level authorization based on `ownerId` and project membership
 - File uploads are stored in **Cloudflare R2** object storage using S3-compatible APIs
 - Demo data can be seeded from the previous mock data file
@@ -31,13 +29,11 @@ The app focuses on real-world admin workflows: project overviews, detailed proje
 - A seed script is used to load demo/development data into MongoDB
 - API responses are shaped with DTO/mapper functions to avoid exposing database internals like `_id` and `__v`
 
-### Frontend state synchronization
+### Authentication & Email Verification
 
-Frontend state is synchronized with the URL where useful, enabling:
+FlowDesk uses cookie-based JWT authentication with protected backend routes. New accounts are not activated immediately after registration. Instead, the backend creates a one-time email verification token, stores only its hashed value, and sends a verification link via email.
 
-- persistent state across refresh
-- shareable links
-- consistent data flow
+After the user confirms the link, the backend validates the token, checks expiration and usage state, marks the account as verified, and only then allows login. This keeps authentication separate from account activation and follows a real-world verification flow.
 
 ## ⚠️ Current Limitations
 
@@ -64,7 +60,6 @@ Frontend state is synchronized with the URL where useful, enabling:
 - Add invitation flow for project members
 - Refactor shared types and API contracts
 - Improve caching strategy with React Query
-- Add an Activity / History page for project changes, task updates, and user actions
 - Implement Framer Motion for animations
 - Finalize layout/theme
 
