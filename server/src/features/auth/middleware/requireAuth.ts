@@ -12,7 +12,13 @@ export const requireAuth = asyncHandler(
       throw new AppError("Not authenticated", 401);
     }
 
-    const payload = verifyAccessToken(token);
+    let payload;
+
+    try {
+      payload = verifyAccessToken(token);
+    } catch {
+      throw new AppError("Not authenticated", 401);
+    }
 
     if (typeof payload === "string" || !payload.sub) {
       throw new AppError("Not authenticated", 401);

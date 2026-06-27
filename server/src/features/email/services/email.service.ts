@@ -1,10 +1,18 @@
 import { Resend } from "resend";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
-
 type SendVerificationEmailInput = {
   to: string;
   verificationUrl: string;
+};
+
+const getResendClient = () => {
+  const apiKey = process.env.RESEND_API_KEY;
+
+  if (!apiKey) {
+    throw new Error("RESEND_API_KEY is not configured");
+  }
+
+  return new Resend(apiKey);
 };
 
 export const sendVerificationEmail = async ({
@@ -12,6 +20,8 @@ export const sendVerificationEmail = async ({
   verificationUrl,
 }: SendVerificationEmailInput) => {
   // Local Resend testing with onboarding@resend.dev only works when `to` is the Resend account email.
+  const resend = getResendClient();
+
   await resend.emails.send({
     from: process.env.EMAIL_FROM!,
     to,
