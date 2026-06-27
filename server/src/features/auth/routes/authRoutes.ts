@@ -15,8 +15,12 @@ import { requireAuth } from "@/features/auth/middleware/requireAuth.js";
 import { asyncHandler } from "@/utils/asyncHandler.js";
 import { AppError } from "@/utils/AppError.js";
 import { getAuthContext } from "@/features/auth/utils/getAuthContext.js";
-import { verifyEmailSchema } from "@/features/verification-tokens/validators/verifyEmailSchema.js";
+import {
+  resendEmailVerificationSchema,
+  verifyEmailSchema,
+} from "@/features/verification-tokens/validators/verifyEmailSchema.js";
 import { verifyEmail } from "@/features/verification-tokens/services/verifyEmail.service.js";
+import { resendVerificationEmail } from "@/features/verification-tokens/services/resendVerificationEmail.service.js";
 
 const router = express.Router();
 
@@ -101,6 +105,23 @@ router.post(
     await verifyEmail({ token: result.data.token });
 
     return res.status(200).json({ message: "Email verified successfully." });
+  }),
+);
+
+router.post(
+  "/resend-verification-email",
+  asyncHandler(async (req, res) => {
+    const result = resendEmailVerificationSchema.safeParse(req.body);
+
+    if (!result.success) {
+      throw new AppError("Invalid email", 400);
+    }
+
+    await resendVerificationEmail({ email: result.data.email });
+
+    return res
+      .status(200)
+      .json({ message: "If an account exists, a new verification email has been sent." });
   }),
 );
 

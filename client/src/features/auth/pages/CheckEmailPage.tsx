@@ -1,6 +1,9 @@
-import { ArrowLeft, MailCheck, RefreshCw } from "lucide-react";
+import { ArrowLeft, MailCheck, RefreshCw, CheckCircle } from "lucide-react";
 import { Link, useLocation } from "react-router";
 import { Button } from "@/shared/components/ui/button";
+import { useResendVerificationEmail } from "@/features/auth/hooks/useResendVerificationEmail";
+import ErrorMessage from "@/shared/components/ErrorMessage";
+import { Spinner } from "@/shared/components/ui/spinner";
 
 type CheckEmailLocationState = {
   email?: string;
@@ -10,6 +13,15 @@ const CheckEmailPage = () => {
   const location = useLocation();
   const email = (location.state as CheckEmailLocationState | null)?.email;
   const recipient = email ?? "deine E-Mail-Adresse";
+
+  const { mutate, isPending, isError, isSuccess } =
+    useResendVerificationEmail();
+
+  const handleResend = () => {
+    if (!email) return;
+
+    mutate(email);
+  };
 
   return (
     <section className="flex min-h-screen items-center justify-center px-5 py-6 text-foreground">
@@ -30,9 +42,25 @@ const CheckEmailPage = () => {
         </p>
 
         <div className="mt-6 space-y-3">
-          <Button type="button" size="lg" className="w-full">
-            <RefreshCw className="size-4" />
-            E-Mail erneut senden
+          <Button
+            type="button"
+            size="lg"
+            className="w-full"
+            disabled={!email || isPending}
+            onClick={handleResend}
+          >
+            {isSuccess ? (
+              <span className="flex items-center gap-3">
+                <CheckCircle />
+                E-Mail erneut gesendet
+              </span>
+            ) : (
+              <span className="flex items-center gap-3">
+                <RefreshCw className="size-4" />
+                E-Mail erneut senden{" "}
+                {isPending && <Spinner className="size-4" />}
+              </span>
+            )}
           </Button>
 
           <Link
@@ -43,6 +71,9 @@ const CheckEmailPage = () => {
             Zurück zum Login
           </Link>
         </div>
+        {isError && (
+          <ErrorMessage message="E-Mail konnte nicht nochmal gesendet werden." />
+        )}
       </div>
     </section>
   );
