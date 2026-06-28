@@ -86,4 +86,54 @@ describe("POST /workspace-invites/:token/accept", () => {
     expect(usedInvite.usedAt).toBeDefined();
     expect(await WorkspaceModel.countDocuments()).toBe(1);
   });
+
+  it("returns 400 if the body is invalid", async () => {
+    const response = await request(app).post(
+      "/workspace-invites/:token/accept",
+    );
+
+    expect(response.status).toBe(400);
+    expect(response.body).toEqual({ message: "Invalid Input" });
+  });
+
+  it("returns 404 when the invite token does not exist", async () => {
+    const response = await request(app)
+      .post("/workspace-invites/unknown-invite-token/accept")
+      .send({
+        name: "Test Member",
+        password: "Password123!",
+      });
+
+    expect(response.status).toBe(404);
+    expect(response.body).toEqual({ message: "Token not found" });
+    expect(await UserModel.countDocuments()).toBe(0);
+  });
+
+  it("returns 409 when the invite token was already used", async () => {
+    const ownerId = new mongoose.Types.ObjectId();
+    const workspaceId = new mongoose.Types.ObjectId();
+
+    const invite = await WorkspaceInviteModel.create({
+      email: "member@example.com",
+      token: "used-invite-token",
+      workspaceId,
+      role: "member",
+      createdBy: ownerId,
+      expiresAt: new Date(Date.now() + 1000 * 60 * 60),
+      usedAt: new Date(),
+    });
+
+    const response = await request(app)
+      .post(`/workspace-invites/${invite.token}/accept`)
+      .send({
+        name: "Test Member",
+        password: "Password123!",
+      });
+
+    expect(response.status).toBe(409);
+    expect(response.body).toEqual({ message: "Token was already used" });
+    expect(
+      await UserModel.countDocuments({ email: "member@example.com" }),
+    ).toBe(0);
+  });
 });
