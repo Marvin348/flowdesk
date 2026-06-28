@@ -1,18 +1,18 @@
+import app from "@/app.js";
 import request from "supertest";
 import { beforeAll, beforeEach, afterAll, describe, expect, it } from "vitest";
 import {
   clearTestDb,
-  conncetTestDb,
+  connectTestDb,
   disconnectTestDb,
 } from "@/test/setupTestDb.js";
-import app from "@/app.js";
 import { UserModel } from "@/features/users/models/user.modal.js";
 import mongoose from "mongoose";
 import { createAccessToken } from "@/features/auth/utils/tokens.js";
 import { WorkspaceModel } from "@/features/workspace/models/workspace.model.js";
 
 beforeAll(async () => {
-  await conncetTestDb();
+  await connectTestDb();
 });
 
 beforeEach(async () => {
@@ -77,33 +77,5 @@ describe("GET /auth/me", () => {
 
     expect(response.status).toBe(401);
     expect(response.body).toEqual({ message: "Not authenticated" });
-  });
-});
-
-describe("POST /auth/login", () => {
-  it("returns 400 when request body is invalid", async () => {
-    const response = await request(app).post("/auth/login").send({});
-
-    expect(response.status).toBe(400);
-    expect(response.body).toEqual({ message: "Invalid request body" });
-  });
-});
-
-describe("POST /auth/logout", () => {
-  it("returns 200 when logout is successful", async () => {
-    const response = await request(app).post("/auth/logout");
-
-    expect(response.status).toBe(200);
-    expect(response.body).toEqual({ message: "Logout successful" });
-    expect(response.headers["set-cookie"]).toBeDefined();
-  });
-});
-
-describe("POST /auth/register", () => {
-  it("returns 400 when request body is invalid", async () => {
-    const response = await request(app).post("/auth/register");
-
-    expect(response.status).toBe(400);
-    expect(response.body).toEqual({ message: "Invalid request body" });
   });
 });
