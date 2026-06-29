@@ -7,8 +7,13 @@ import { getProjects } from "@/features/projects/services/project.service.js";
 import { getAuthContext } from "@/features/auth/utils/getAuthContext.js";
 import { asyncHandler } from "@/utils/asyncHandler.js";
 import { AppError } from "@/utils/AppError.js";
-import { createTaskSchema } from "@/features/tasks/validators/task.validators.js";
+import {
+  createTaskSchema,
+  taskStatusSchema,
+} from "@/features/tasks/validators/task.validators.js";
 import { createTask } from "@/features/tasks/services/createTask.service.js";
+import { changeTaskStatus } from "../services/changeTaskStatus.service.js";
+import type { TaskStatusFields } from "@/features/tasks/validators/task.validators.js";
 
 const router = express.Router();
 
@@ -50,6 +55,35 @@ router.post(
       data: newTask,
     });
   }),
+
+  router.patch(
+    "/:taskId/status",
+    asyncHandler<{ taskId: string }>(
+      async (req, res) => {
+        const { taskId } = req.params;
+
+        if (!taskId) {
+          throw new AppError("Invalid taskId", 400);
+        }
+
+        const result = taskStatusSchema.safeParse(req.body);
+
+        if (!result.success) {
+          throw new AppError("Invalid body", 400);
+        }
+
+        const { workspaceId } = getAuthContext(req);
+
+        const updatedTask = await changeTaskStatus({
+          taskId,
+          taskStatus: result.data.taskStatus,
+          workspaceId,
+        });
+
+        res.status(200).json({ data: updatedTask });
+      },
+    ),
+  ),
 );
 
 export default router;
