@@ -1,5 +1,6 @@
 import z from "zod";
 import { PRIORITY } from "@shared/types/priority.js";
+import { STATUSBASE } from "@shared/types/StatusBase.js";
 
 export const createTaskSchema = z.object({
   projectId: z.string().min(1, "Project is required"),
@@ -18,3 +19,9 @@ export const createTaskSchema = z.object({
 });
 
 export type CreateTaskFields = z.infer<typeof createTaskSchema>;
+
+export const taskStatusSchema = z.object({
+  taskStatus: z.enum(STATUSBASE),
+});
+
+export type TaskStatusFields = z.infer<typeof taskStatusSchema>;

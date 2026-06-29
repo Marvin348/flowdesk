@@ -6,13 +6,24 @@ import TaskRow from "@/features/tasks/components/TaskRow";
 import { LIST_TABLE_OPTIONS } from "@/shared/constants/table-header";
 import { useProjectTasks } from "@/features/projects/hooks/details/useProjectTasks";
 import TaskListSkeleton from "@/features/projects/components/projectDetailsPage/tabs/list/TaskListSkeleton";
+import { useUpdateTaskStatus } from "@/features/tasks/hooks/useUpdateTaskStatus";
+import ErrorMessage from "@/shared/components/ErrorMessage";
 
 type TaskListViewProps = {
   projectId: string;
 };
 
 const TaskListView = ({ projectId }: TaskListViewProps) => {
+  const { data, isLoading, error } = useProjectTasks(projectId);
+  const { mutate, isPending, isError, variables } =
+    useUpdateTaskStatus(projectId);
   const [openStatus, setOpenStatus] = useState<StatusBase[]>(["pending"]);
+
+  const tasks = data?.tasks ?? [];
+  const taskStats = data?.taskStats;
+
+  if (isLoading && !data) return <TaskListSkeleton />;
+  if (error) return <div>Etwas ist schief gelaufen</div>;
 
   const toggleOpenStatus = (value: StatusBase) =>
     setOpenStatus((prev) =>
@@ -21,20 +32,16 @@ const TaskListView = ({ projectId }: TaskListViewProps) => {
         : [...prev, value],
     );
 
-  const { data, isLoading, error } = useProjectTasks(projectId);
-
-  const tasks = data?.tasks ?? [];
-  const taskStats = data?.taskStats;
-
-  if (isLoading && !data) return <TaskListSkeleton />;
-  if (error) return <div>Etwas ist schief gelaufen</div>;
+  const handleStatusChange = (taskId: string, taskStatus: StatusBase) => {
+    mutate({ taskId, taskStatus });
+  };
 
   return (
     <section>
-      <div className="grid grid-cols-4 p-2 bg-muted rounded-md">
+      <div className="grid grid-cols-6 p-2 bg-muted rounded-md">
         {LIST_TABLE_OPTIONS.map((opt) => (
           <button key={opt.value} className="w-fit flex items-center gap-1">
-            {opt.label}{" "}
+            {opt.label}
           </button>
         ))}
       </div>
@@ -82,7 +89,12 @@ const TaskListView = ({ projectId }: TaskListViewProps) => {
               {openStatus.includes(opt.value) && (
                 <div className="mt-2 p-4 rounded-md bg-muted">
                   {filteredByStatus.map((task) => (
-                    <TaskRow key={task.id} task={task} />
+                    <TaskRow
+                      key={task.id}
+                      task={task}
+                      handleStatusChange={handleStatusChange}
+                      isUpdating={isPending && variables?.taskId === task.id}
+                    />
                   ))}
                   {filteredByStatus.length === 0 && (
                     <div className="text-sm text-muted-foreground">
@@ -95,6 +107,13 @@ const TaskListView = ({ projectId }: TaskListViewProps) => {
           );
         })}
       </div>
+
+      {isError && (
+        <ErrorMessage
+          message="Status konnte nicht geändert werden. Bitte versuche es erneut."
+          className="mt-4"
+        />
+      )}
     </section>
   );
 };
