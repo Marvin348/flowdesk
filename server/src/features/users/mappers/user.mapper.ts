@@ -4,6 +4,7 @@ import {
   UserPreviewDto,
 } from "@shared/types/dto/common/userPreview.dto.js";
 import type { UserDocument } from "@/features/users/types/user.document.js";
+import { bulidPublicFileUrl } from "@/utils/bulidPublicFileUrl.js";
 
 export const toUserDto = (user: UserDocument): User => ({
   id: user._id.toString(),
@@ -38,4 +39,5 @@ export const toUserPreviewDto = (user: User): UserPreviewDto => ({
 export const toUserAvatarDto = (user: User): UserAvatarDto => ({
   id: user.id,
   avatarKey: user.avatarKey,
+  avatarUrl: bulidPublicFileUrl(user.avatarStorageKey),
 });

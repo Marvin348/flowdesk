@@ -10,4 +10,5 @@ export type UserPreviewDto = {
 export type UserAvatarDto = {
   id: string;
   avatarKey?: string;
+  avatarUrl?: string;
 };

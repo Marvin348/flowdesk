@@ -11,6 +11,7 @@ export type UserDocument = {
   passwordHash: string;
   isEmailVerified: boolean;
   emailVerifiedAt?: Date;
+  avatarStorageKey?: string;
   avatarKey: string;
   role: UserRole;
   jobTitle?: string;

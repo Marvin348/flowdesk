@@ -5,6 +5,7 @@ export type User = {
   name: string;
   email: string;
   avatarKey: string;
+  avatarStorageKey?: string;
   role: UserRole;
   jobTitle?: string;
 };
