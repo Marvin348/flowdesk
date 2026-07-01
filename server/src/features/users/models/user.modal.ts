@@ -33,6 +33,10 @@ const userSchema = new mongoose.Schema(
       default: "default",
     },
 
+    avatarStorageKey: {
+      type: String,
+    },
+
     role: {
       type: String,
       enum: ["member", "manager", "admin"],

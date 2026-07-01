@@ -68,7 +68,7 @@ router.get(
   "/:id/files",
   asyncHandler(
     async (
-      req: Request<{ id?: string }, {}, {}, ProjectAttachmentQuery>,
+      req: Request<{ id: string }, {}, {}, ProjectAttachmentQuery>,
       res,
     ) => {
       const projectId = req.params.id;
@@ -171,7 +171,7 @@ router.post(
   "/:id/files",
   upload.array("files"),
   asyncHandler(
-    async (req: Request<{ id?: string }, {}, { taskId?: string }>, res) => {
+    async (req: Request<{ id: string }, {}, { taskId: string }>, res) => {
       const projectId = req.params.id;
       const taskId = req.body.taskId?.trim() || null;
       const files = req.files as Express.Multer.File[] | undefined;

@@ -4,7 +4,7 @@ import {
 } from "@/features/projects/services/project.service.js";
 import { AppError } from "@/utils/AppError.js";
 import { AttachmentModel } from "@/features/attachments/models/attachment.model.js";
-import { deleteFileFromR2 } from "@/features/attachments/services/attachmentStorage.service.js";
+import { deleteFileFromR2 } from "@/lib/storage/r2Storage.js";
 import { createActivity } from "@/features/activity/services/createActivity.service.js";
 
 type DeleteAttachmentParams = {
@@ -39,7 +39,10 @@ export const deleteAttachment = async ({
     throw new AppError("Attachment not found", 404);
   }
 
-  await deleteFileFromR2(attachmentRecord.storageKey);
+  await deleteFileFromR2({
+    storageKey: attachmentRecord.storageKey,
+    bucket: "private",
+  });
 
   const deletedAttachment = await AttachmentModel.deleteOne({
     _id: attachmentId,
@@ -56,8 +59,8 @@ export const deleteAttachment = async ({
     entityType: "attachment",
     entityId: attachmentId,
     metadata: {
-        fileName: attachmentRecord.fileName
-    }
+      fileName: attachmentRecord.fileName,
+    },
   });
 
   return deletedAttachment;

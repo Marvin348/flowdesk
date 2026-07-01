@@ -2,7 +2,7 @@ import express from "express";
 import { AttachmentModel } from "@/features/attachments/models/attachment.model.js";
 import { toAttachmentDto } from "@/features/attachments/mappers/attachment.mapper.js";
 import { getAuthContext } from "@/features/auth/utils/getAuthContext.js";
-import { createSignedDownloadUrl } from "@/features/attachments/services/attachmentStorage.service.js";
+import { createSignedDownloadUrl } from "@/lib/storage/r2Storage.js";
 import { asyncHandler } from "@/utils/asyncHandler.js";
 import { AppError } from "@/utils/AppError.js";
 

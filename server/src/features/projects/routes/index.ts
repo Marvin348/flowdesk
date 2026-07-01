@@ -3,7 +3,7 @@ import projectDetailsRoutes from "@/features/projects/routes/projectDetails.rout
 import projectBaseRoutes from "@/features/projects/routes/projectBase.routes.js";
 import projectMembers from "@/features/projects/routes/projectMembers.routes.js";
 import projectOptions from "@/features/projects/routes/projectOptions.routes.js";
-import projectAttachments from "@/features/projects/routes/projectAttachments.routes.js";
+import projectAttachments from "@/features/attachments/routes/projectAttachments.routes.js";
 
 const router = Router();
 

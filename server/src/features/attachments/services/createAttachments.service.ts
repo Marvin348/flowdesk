@@ -4,7 +4,7 @@ import {
 } from "@/features/projects/services/project.service.js";
 import { AppError } from "@/utils/AppError.js";
 import { TaskModel } from "@/features/tasks/models/task.model.js";
-import { uploadFileToR2 } from "@/features/attachments/services/attachmentStorage.service.js";
+import { uploadFileToR2 } from "@/lib/storage/r2Storage.js";
 import { AttachmentModel } from "@/features/attachments/models/attachment.model.js";
 import { createActivity } from "@/features/activity/services/createActivity.service.js";
 
@@ -47,7 +47,10 @@ export const createAttachments = async ({
   const attachmentsToCreate = [];
 
   for (const file of files) {
-    const storageKey = await uploadFileToR2(file);
+    const storageKey = await uploadFileToR2(file, {
+      prefix: "attachments",
+      bucket: "private",
+    });
 
     attachmentsToCreate.push({
       workspaceId,
