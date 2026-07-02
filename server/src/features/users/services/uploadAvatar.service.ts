@@ -40,5 +40,5 @@ export const uploadAvatar = async ({
     });
   }
 
-  return toUserAvatarDto(user);
+  return toUserAvatarDto(toUserDto(user));
 };

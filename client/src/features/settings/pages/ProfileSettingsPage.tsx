@@ -14,17 +14,15 @@ const ProfileSettingsPage = () => {
   }
   if (!user) return null;
 
-  console.log(user);
-
   return (
     <div>
-      <div className="pb-4 border-b">
+      <section className="pb-4 border-b">
         <h3 className="text-lg font-semibold">Profil</h3>
         <p className="mt-1 text-sm text-muted-foreground">
           Verwalte deine persönlichen Informationen und deine Rolle im
           Workspace.
         </p>
-      </div>
+      </section>
 
       <div className="mt-6">
         <AvatarUploadCard user={user} />

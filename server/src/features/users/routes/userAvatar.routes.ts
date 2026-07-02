@@ -4,6 +4,7 @@ import { asyncHandler } from "@/utils/asyncHandler.js";
 import express from "express";
 import multer from "multer";
 import { uploadAvatar } from "@/features/users/services/uploadAvatar.service.js";
+import { deleteAvatar } from "../services/deleteAvatar.service.js";
 
 const router = express.Router();
 
@@ -24,9 +25,24 @@ router.patch(
 
     const { userId, workspaceId } = getAuthContext(req);
 
-    const uploadedAvatar = await uploadAvatar({ userId, workspaceId, avatarFile });
+    const uploadedAvatar = await uploadAvatar({
+      userId,
+      workspaceId,
+      avatarFile,
+    });
 
     return res.status(200).json({ uploadedAvatar });
+  }),
+);
+
+router.delete(
+  "/me/avatar",
+  asyncHandler(async (req, res) => {
+    const { userId, workspaceId } = getAuthContext(req);
+
+    await deleteAvatar({ userId, workspaceId });
+
+    return res.status(200).json({ message: "Avatar deleted successfully" });
   }),
 );
 
