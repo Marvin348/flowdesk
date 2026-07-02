@@ -8,6 +8,7 @@ import type {
 import type { TeamMembersInput } from "@shared/types/inputs/teamMemberInput";
 import type { UpdateUserProfileInput } from "@/features/users/types/updateUserProfile";
 import type { UpdateAppearanceSettingsInput } from "@/features/users/types/UpdateAppearanceSettings";
+import type { UserAvatarDto } from "@shared/types/dto/common/userPreview.dto";
 export const fetchUsers = async (): Promise<User[]> => {
   const res = await apiClient.get("/users");
   return res.data.data;
@@ -64,11 +65,16 @@ export const updateAppearanceSettings = async (
   return res.data.user;
 };
 
-export const uploadAvatar = async (avatar: File) => {
+export const uploadAvatar = async (avatar: File): Promise<UserAvatarDto> => {
   const formData = new FormData();
 
   formData.append("avatar", avatar);
 
   const res = await apiClient.patch("/users/me/avatar", formData);
   return res.data.uploadedAvatar;
+};
+
+export const deleteAvatar = async () => {
+  const res = await apiClient.delete("/users/me/avatar");
+  return res.data.message;
 };

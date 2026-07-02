@@ -30,6 +30,7 @@ const SidebarUserMenu = () => {
           <Link
             to="/settings/profile"
             className="flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm hover:bg-muted"
+            onClick={() => setIsOpen(false)}
           >
             <User className="h-4 w-4" />
             Account
@@ -38,6 +39,7 @@ const SidebarUserMenu = () => {
           <Link
             to="/settings/profile"
             className="flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm hover:bg-muted"
+            onClick={() => setIsOpen(false)}
           >
             <Settings className="h-4 w-4" />
             Einstellungen

@@ -83,8 +83,8 @@ describe("PATCH /users/me/avatar", () => {
     vi.mocked(deleteFileFromR2).mockResolvedValue(undefined);
 
     const user = await UserModel.create({
-      email: "marvin@example.com",
-      name: "Marvin",
+      email: "test@example.com",
+      name: "test",
       workspaceId: new mongoose.Types.ObjectId(),
       passwordHash: "hashed-password",
       role: "admin",

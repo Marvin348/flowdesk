@@ -1,8 +1,9 @@
 import { Button } from "@/shared/components/ui/button";
 import Avatar from "@/shared/components/ui/avatar/Avatar";
-import { Upload } from "lucide-react";
+import { Trash2, Upload } from "lucide-react";
 import type { AuthUser } from "@shared/types/user";
 import { useUploadAvatar } from "@/features/users/hooks/useUploadAvatar";
+import { useDeleteAvatar } from "@/features/users/hooks/useDeleteAvatar";
 import { useRef } from "react";
 import ErrorMessage from "@/shared/components/ErrorMessage";
 import { Spinner } from "@/shared/components/ui/spinner";
@@ -12,7 +13,17 @@ type AvatarUploadCardProps = {
 };
 
 const AvatarUploadCard = ({ user }: AvatarUploadCardProps) => {
-  const { mutate, isPending, isError } = useUploadAvatar();
+  const {
+    mutate: uploadAvatar,
+    isPending: isUploadingAvatar,
+    isError: isUploadAvatarError,
+  } = useUploadAvatar();
+
+  const {
+    mutate: deleteAvatar,
+    isPending: isDeletingAvatar,
+    isError: isDeleteAvatarError,
+  } = useDeleteAvatar();
 
   const inputRef = useRef<HTMLInputElement | null>(null);
 
@@ -21,8 +32,18 @@ const AvatarUploadCard = ({ user }: AvatarUploadCardProps) => {
 
     if (!file) return;
 
-    mutate(file);
+    uploadAvatar(file);
   };
+
+  const handleDeleteAvatar = () => {
+    deleteAvatar();
+  };
+
+  const avatarErrorMessage = isUploadAvatarError
+    ? "Avatar konnte nicht hochgeladen werden."
+    : isDeleteAvatarError
+      ? "Avatar konnte nicht gelöscht werden."
+      : null;
 
   return (
     <div>
@@ -33,20 +54,29 @@ const AvatarUploadCard = ({ user }: AvatarUploadCardProps) => {
         onChange={onSelectFile}
       />
 
-      {isError && (
-        <ErrorMessage
-          message="Datei konnte nicht hochgeladen werden."
-          className="mb-2"
-        />
+      {avatarErrorMessage && (
+        <ErrorMessage message={avatarErrorMessage} className="mb-2" />
       )}
 
       <div className="flex flex-col gap-4 rounded-md border bg-muted/35 p-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-4">
-          <Avatar
-            avatarKey={user.avatarKey}
-            avatarUrl={user.avatarUrl}
-            size="lg"
-          />
+          <div className="relative group">
+            <Avatar
+              avatarKey={user.avatarKey}
+              avatarUrl={user.avatarUrl}
+              size="lg"
+            />
+
+            {user.avatarUrl && (
+              <button
+                onClick={handleDeleteAvatar}
+                type="button"
+                className="absolute left-1/2 top-1/2 flex -translate-x-1/2 -translate-y-1/2 opacity-0 size-8 bg-muted fley items-center justify-center rounded-full transition-opacity duration-200 group-hover:opacity-100"
+              >
+                <Trash2 className="size-4" />
+              </button>
+            )}
+          </div>
 
           <div className="min-w-0">
             <p className="truncate text-sm font-medium">{user.name}</p>
@@ -61,9 +91,9 @@ const AvatarUploadCard = ({ user }: AvatarUploadCardProps) => {
           size="sm"
           type="button"
           onClick={() => inputRef.current?.click()}
-          disabled={isPending}
+          disabled={isUploadingAvatar || isDeletingAvatar}
         >
-          {isPending ? (
+          {isUploadingAvatar ? (
             <span className="flex items-center gap-2">
               <Spinner className="size-4" /> Wird hochgeladen
             </span>

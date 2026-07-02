@@ -21,14 +21,13 @@ export const seedUsers = async (
     email: "demo@flowdesk.dev",
     jobTitle: "Project Manager",
     role: "admin",
-    avatarKey: "default",
   } as const;
 
   const DEMO_PASSWORD = "Demo1234!";
 
   const demoPasswordHash = await hashPassword(DEMO_PASSWORD);
 
-  const usersToSeed = [DEMO_LOGIN_USER, ...users];
+  const usersToSeed: SeedUser[] = [DEMO_LOGIN_USER, ...users];
 
   for (const user of usersToSeed) {
     const mongoUserId =
@@ -42,7 +41,7 @@ export const seedUsers = async (
       role: user.role,
       isEmailVerified: true,
       emailVerifiedAt: new Date(),
-      avatarKey: user.avatarKey,
+      ...(user.avatarKey ? { avatarKey: user.avatarKey } : {}),
       passwordHash: demoPasswordHash,
       workspaceId,
     });
