@@ -1,7 +1,7 @@
 import type { Priority } from "../../priority.js";
 import type { StatusBase } from "../../StatusBase.js";
 import type { Progress } from "../common/progress.dto.js";
-import { UserAvatarDto } from "../common/userPreview.dto.js";
+import type { UserAvatarDto } from "../common/userPreview.dto.js";
 
 export type ProjectSummariesDto = {
   id: string;

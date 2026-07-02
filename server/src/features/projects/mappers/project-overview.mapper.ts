@@ -6,6 +6,7 @@ import { getProjectProgress } from "@/features/projects/utils/getProjectProgress
 import { toProjectUserWorkloadDto } from "@/features/projects/mappers/project-user-workload.mapper.js";
 import type { ProjectOverviewDto } from "@shared/types/dto/projects/projectOverview.dto.js";
 import { toUserPreviewDto } from "@/features/users/mappers/user.mapper.js";
+import { isDefined } from "@/shared/utils/isDefined.js";
 
 export const toProjectOverviewDto = ({
   project,
@@ -22,7 +23,7 @@ export const toProjectOverviewDto = ({
 
   const collaborators = project.invitedUserIds
     .map((userId) => usersById.get(userId))
-    .filter((user): user is User => Boolean(user))
+    .filter(isDefined)
     .map(toUserPreviewDto)
     .slice(0, 4);
 
@@ -37,7 +38,7 @@ export const toProjectOverviewDto = ({
       description: task.description,
       collaborators: task.collaboratorIds
         .map((userId) => usersById.get(userId))
-        .filter((user): user is User => Boolean(user))
+        .filter(isDefined)
         .map(toUserPreviewDto),
     }));
 

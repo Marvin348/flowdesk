@@ -22,6 +22,7 @@ export const toProjectCommentsDto = (
             id: user.id,
             name: user.name,
             avatarKey: user.avatarKey,
+            avatarUrl: user.avatarUrl,
           }
         : null,
       task: {

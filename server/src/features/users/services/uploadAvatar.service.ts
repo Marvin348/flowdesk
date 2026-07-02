@@ -1,7 +1,10 @@
 import { AppError } from "@/utils/AppError.js";
 import { UserModel } from "@/features/users/models/user.modal.js";
 import { deleteFileFromR2, uploadFileToR2 } from "@/lib/storage/r2Storage.js";
-import { toUserAvatarDto } from "@/features/users/mappers/user.mapper.js";
+import {
+  toUserAvatarDto,
+  toUserDto,
+} from "@/features/users/mappers/user.mapper.js";
 
 type UploadAvatarInput = {
   userId: string;

@@ -39,7 +39,7 @@ export type UserDetailsDto = {
 
 type UserSummaryDto = Pick<
   User,
-  "id" | "name" | "email" | "avatarKey" | "jobTitle" | "role"
+  "id" | "name" | "email" | "avatarKey" | "avatarUrl" | "jobTitle" | "role"
 >;
 
 export type NextDueTaskDto = {

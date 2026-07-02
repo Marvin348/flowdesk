@@ -8,7 +8,11 @@ const OverviewCommentItem = ({ comment }: { comment: OverviewCommentDto }) => {
   return (
     <div className="flex gap-2 border-b last:border-none py-2">
       <div className="shrink-0">
-        <Avatar avatarKey={user?.avatarKey} size="sm" />
+        <Avatar
+          avatarKey={user?.avatarKey}
+          avatarUrl={user?.avatarUrl}
+          size="sm"
+        />
       </div>
       <div>
         <p>{message}</p>

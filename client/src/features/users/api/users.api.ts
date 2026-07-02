@@ -63,3 +63,12 @@ export const updateAppearanceSettings = async (
   const res = await apiClient.patch("/users/appearance", input);
   return res.data.user;
 };
+
+export const uploadAvatar = async (avatar: File) => {
+  const formData = new FormData();
+
+  formData.append("avatar", avatar);
+
+  const res = await apiClient.patch("/users/me/avatar", formData);
+  return res.data.uploadedAvatar;
+};

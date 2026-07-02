@@ -4,6 +4,7 @@ export type UserPreviewDto = {
   id: string;
   name: string;
   avatarKey?: string;
+  avatarUrl?: string;
   jobTitle?: User["jobTitle"];
 };
 

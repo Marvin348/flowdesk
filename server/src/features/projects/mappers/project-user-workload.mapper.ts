@@ -1,10 +1,10 @@
-import { Task } from "@shared/types/task.js";
 import { calcPercent } from "@/shared/utils/calcPercent.js";
-import { User } from "@shared/types/user.js";
 import type {
   UserWorkload,
   UserWorkloadStats,
 } from "@shared/types/dto/workload/projectUserWorkload.js";
+import type { Task } from "@shared/types/task.js";
+import type { User } from "@shared/types/user.js";
 
 export const toProjectUserWorkloadDto = (
   tasks: Task[],
@@ -25,6 +25,7 @@ export const toProjectUserWorkloadDto = (
               id: user.id,
               name: user.name,
               avatarKey: user.avatarKey,
+              avatarUrl: user.avatarUrl,
               jobTitle: user.jobTitle,
             },
             byStatusCounts: {

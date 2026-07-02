@@ -7,10 +7,10 @@ type CollaboratorProps = {
 };
 
 const Collaborator = ({ user }: CollaboratorProps) => {
-  const { name, avatarKey, jobTitle } = user;
+  const { name, avatarKey, avatarUrl, jobTitle } = user;
   return (
     <>
-      <Avatar avatarKey={avatarKey} size="sm" />
+      <Avatar avatarKey={avatarKey} avatarUrl={avatarUrl} size="sm" />
       <div className="w-full flex items-center justify-between">
         <div>
           <p className="">{name}</p>

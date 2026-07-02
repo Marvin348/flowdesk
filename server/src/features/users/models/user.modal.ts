@@ -30,7 +30,6 @@ const userSchema = new mongoose.Schema(
 
     avatarKey: {
       type: String,
-      default: "default",
     },
 
     avatarStorageKey: {

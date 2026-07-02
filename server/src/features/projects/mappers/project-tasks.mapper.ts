@@ -3,6 +3,7 @@ import { toUserAvatarDto } from "@/features/users/mappers/user.mapper.js";
 import type { ProjectTasksResponseDto } from "@shared/types/dto/projects/projectTasks.dto.js";
 import { Task } from "@shared/types/task.js";
 import { toTaskStatsDto } from "@/features/tasks/mappers/task-status.mapper.js";
+import { isDefined } from "@/shared/utils/isDefined.js";
 
 export const toProjectTasksDto = (
   tasks: Task[],
@@ -13,7 +14,7 @@ export const toProjectTasksDto = (
   const projectTasks = tasks.map((t) => {
     const collaborators = t.collaboratorIds
       .map((ids) => usersById.get(ids))
-      .filter((user): user is User => Boolean(user))
+      .filter(isDefined)
       .map(toUserAvatarDto);
 
     return {

@@ -1,5 +1,5 @@
 import type { SettingTabs } from "@/features/settings/constants/settingsTabs";
-import ProfileSettingsForm from "@/features/settings/components/ProfileSettingsForm";
+import ProfileSettingsForm from "@/features/settings/components/profile/ProfileSettingsForm";
 import SecuritySettingsForm from "@/features/settings/components/SecuritySettingsForm";
 import AppearanceSettings from "@/features/settings/components/AppearanceSettings";
 import InviteMemberForm from "@/features/workspace-invites/components/InviteMemberForm";

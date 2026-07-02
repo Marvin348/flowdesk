@@ -2,35 +2,51 @@ import { AVATARS } from "@/shared/assets/avatars";
 import { User } from "lucide-react";
 
 type AvatarProps = {
+  avatarUrl?: string;
   avatarKey?: string;
-  size?: "sm" | "lg" | "xl";
+  size: "sm" | "lg" | "xl";
 };
 
-const Avatar = ({ avatarKey, size }: AvatarProps) => {
-  const sm = size === "sm" && "size-8";
-  const lg = size === "lg" && "size-12";
-  const xl = size === "xl" && "size-20";
+const Avatar = ({ avatarUrl, avatarKey, size }: AvatarProps) => {
+  const avatarSizeClass = {
+    sm: "size-8",
+    lg: "size-12",
+    xl: "size-20",
+  }[size];
 
-  const src = avatarKey ? AVATARS[avatarKey] : undefined;
+  const iconSizeClass = {
+    sm: "size-4",
+    lg: "size-6",
+    xl: "size-10",
+  }[size];
+
+  const presetAvatarSrc = avatarKey ? AVATARS[avatarKey] : undefined;
+
+  if (avatarUrl) {
+    return (
+      <img
+        src={avatarUrl}
+        alt="Avatar"
+        className={`${avatarSizeClass} rounded-full object-cover`}
+      />
+    );
+  }
+  if (avatarKey) {
+    return (
+      <img
+        src={presetAvatarSrc}
+        alt="Avatar"
+        className={`${avatarSizeClass} rounded-full object-cover`}
+      />
+    );
+  }
 
   return (
-    <>
-      {src ? (
-        <img
-          src={src}
-          alt="avatar"
-          className={`${sm} ${lg} ${xl} rounded-full`}
-        />
-      ) : (
-        <div
-          className={`${sm} ${lg} ${xl} rounded-full bg-muted-foreground/10 flex items-center justify-center`}
-        >
-          <User
-            className={`text-muted-foreground ${(sm && "size-4") || (lg && "size-6") || (xl && "size-10")}`}
-          />
-        </div>
-      )}
-    </>
+    <div
+      className={`${avatarSizeClass} rounded-full bg-muted-foreground/10 flex items-center justify-center`}
+    >
+      <User className={`${iconSizeClass} text-muted-foreground`} />
+    </div>
   );
 };
 export default Avatar;

@@ -58,7 +58,11 @@ const UserDetails = ({ selectedUser, onClose }: UserDetailsProps) => {
             <X />
           </button>
           <div className="flex flex-col items-center gap-2">
-            <Avatar avatarKey={user.avatarKey} size="xl" />
+            <Avatar
+              avatarKey={user.avatarKey}
+              avatarUrl={user.avatarUrl}
+              size="xl"
+            />
 
             <p className="text-xl font-medium">{user.name}</p>
             <p className="text-muted-foreground">{user.jobTitle}</p>

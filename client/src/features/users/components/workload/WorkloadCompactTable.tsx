@@ -34,7 +34,11 @@ const WorkloadCompactTable = ({ workload }: WorkloadCompactTableProps) => {
             <div key={sta.user.id}>
               <div className="sm:hidden border-b last:border-none py-3">
                 <div className="flex items-center gap-3">
-                  <Avatar avatarKey={sta.user.avatarKey} size="sm" />
+                  <Avatar
+                    avatarKey={sta.user.avatarKey}
+                    avatarUrl={sta.user.avatarUrl}
+                    size="sm"
+                  />
                   <div className="min-w-0">
                     <p className="truncate">{sta.user.name}</p>
                   </div>
@@ -69,7 +73,11 @@ const WorkloadCompactTable = ({ workload }: WorkloadCompactTableProps) => {
 
               <div className="hidden sm:grid grid-cols-[2fr_1fr_1fr_1fr] items-center py-2 border-b last:border-none">
                 <div className="flex items-center gap-2 min-w-0">
-                  <Avatar avatarKey={sta.user.avatarKey} size="sm" />
+                  <Avatar
+                    avatarKey={sta.user.avatarKey}
+                    avatarUrl={sta.user.avatarUrl}
+                    size="sm"
+                  />
                   <div className="min-w-0">
                     <p className="truncate">{sta.user.name}</p>
                   </div>

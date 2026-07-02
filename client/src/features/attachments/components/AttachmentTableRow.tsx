@@ -75,7 +75,10 @@ const AttachmentTableRow = ({
       <td className="hidden px-4 py-3 lg:table-cell">
         <div className="flex items-center gap-2">
           <div className="flex size-7 shrink-0 items-center justify-center rounded-full bg-muted text-xs font-medium">
-            <Avatar avatarKey={attachment.uploadedBy.avatarKey} />
+            <Avatar
+              avatarKey={attachment.uploadedBy.avatarKey}
+              avatarUrl={attachment.uploadedBy.avatarUrl}
+            />
           </div>
 
           <div className="min-w-0">

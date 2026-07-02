@@ -23,7 +23,7 @@ export const toProjectAttachmentsDto = (
       mimeType: a.mimeType,
       fileSize: a.fileSize,
       uploadedAt: a.createdAt,
-      
+
       task: task
         ? {
             id: task.id,
@@ -36,6 +36,7 @@ export const toProjectAttachmentsDto = (
         name: user.name,
         email: user.email,
         avatarKey: user.avatarKey,
+        avatarUrl: user.avatarUrl,
       },
     };
   });

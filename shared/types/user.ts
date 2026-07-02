@@ -4,8 +4,8 @@ export type User = {
   id: string;
   name: string;
   email: string;
-  avatarKey: string;
-  avatarStorageKey?: string;
+  avatarKey?: string;
+  avatarUrl?: string;
   role: UserRole;
   jobTitle?: string;
 };
