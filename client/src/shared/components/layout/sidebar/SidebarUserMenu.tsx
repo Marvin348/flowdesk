@@ -60,7 +60,11 @@ const SidebarUserMenu = () => {
           className="flex w-full items-center gap-3 rounded-md p-2 text-left hover:bg-muted"
           onClick={() => setIsOpen((prev) => !prev)}
         >
-          <Avatar avatarKey={user.avatarKey} size="sm" />
+          <Avatar
+            avatarKey={user.avatarKey}
+            avatarUrl={user.avatarUrl}
+            size="sm"
+          />
 
           <div className="min-w-0 flex-1">
             <p className="truncate text-sm font-medium leading-none">

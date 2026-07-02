@@ -13,6 +13,7 @@ export const toUserDto = (user: UserDocument): User => ({
   jobTitle: user.jobTitle,
   role: user.role,
   avatarKey: user.avatarKey,
+  avatarUrl: bulidPublicFileUrl(user.avatarStorageKey),
 });
 
 export const toAuthUserDto = (user: UserDocument): AuthUser => ({
@@ -22,6 +23,7 @@ export const toAuthUserDto = (user: UserDocument): AuthUser => ({
   jobTitle: user.jobTitle,
   role: user.role,
   avatarKey: user.avatarKey,
+  avatarUrl: bulidPublicFileUrl(user.avatarStorageKey),
   appearanceSettings: {
     theme: user.appearanceSettings?.theme ?? "system",
     density: user.appearanceSettings?.density ?? "default",
@@ -33,11 +35,12 @@ export const toUserPreviewDto = (user: User): UserPreviewDto => ({
   id: user.id,
   name: user.name,
   avatarKey: user.avatarKey,
+  avatarUrl: user.avatarUrl,
   jobTitle: user.jobTitle,
 });
 
 export const toUserAvatarDto = (user: User): UserAvatarDto => ({
   id: user.id,
   avatarKey: user.avatarKey,
-  avatarUrl: bulidPublicFileUrl(user.avatarStorageKey),
+  avatarUrl: user.avatarUrl,
 });

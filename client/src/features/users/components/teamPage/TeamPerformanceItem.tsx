@@ -15,7 +15,7 @@ const TeamPerformanceItem = ({
   item,
   onSelectUser,
 }: TeamPerformanceItemProps) => {
-  const { id, name, jobTitle, avatarKey, role, stats } = item;
+  const { id, name, jobTitle, avatarKey, avatarUrl, role, stats } = item;
 
   const minPercent =
     stats.progressPercent === 0 ? "5%" : `${stats.progressPercent}%`;
@@ -28,7 +28,7 @@ const TeamPerformanceItem = ({
     <>
       <div className="border p-4 rounded-md">
         <div className="flex items-center gap-4">
-          <Avatar avatarKey={avatarKey} size="lg" />
+          <Avatar avatarKey={avatarKey} avatarUrl={avatarUrl} size="lg" />
           <div>
             <div className="flex items-center gap-2">
               <UserRoleIcon className="size-4 text-muted-foreground" />

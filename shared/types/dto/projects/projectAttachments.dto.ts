@@ -15,7 +15,8 @@ export type ProjectAttachmentDto = {
     id: string;
     name: string;
     email: string;
-    avatarKey: string;
+    avatarKey?: string;
+    avatarUrl?: string;
   };
 
   task?: {

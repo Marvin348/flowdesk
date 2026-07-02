@@ -3,7 +3,8 @@ export type UserWorkloadStats = {
   user: {
     id: string;
     name: string;
-    avatarKey: string;
+    avatarKey?: string;
+    avatarUrl?: string;
     jobTitle?: string
   };
   byStatusCounts: { pending: number; in_progress: number; done: number };

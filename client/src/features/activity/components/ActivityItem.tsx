@@ -29,7 +29,11 @@ const ActivityItem = ({ activity, isLast }: ActivityItemProps) => {
 
       <div className="flex min-w-0 flex-1 items- gap-3 pb-6">
         <div className="shrink-0">
-          <Avatar avatarKey={actor.avatarKey} size="sm" />
+          <Avatar
+            avatarKey={actor.avatarKey}
+            avatarUrl={actor.avatarUrl}
+            size="sm"
+          />
         </div>
 
         <div className="min-w-0 flex-1 pt-1.5">

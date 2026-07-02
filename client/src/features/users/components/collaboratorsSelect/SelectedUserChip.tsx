@@ -13,7 +13,11 @@ const SelectedUserChip = ({ user, onRemove }: SelectedUserChipProps) => {
       className="flex items-center gap-1 text-xs text-foreground bg-muted rounded-full cursor-pointer"
       onClick={onRemove}
     >
-      <Avatar avatarKey={user.avatarKey} size="sm" />
+      <Avatar
+        avatarKey={user.avatarKey}
+        avatarUrl={user.avatarUrl}
+        size="sm"
+      />
       <div className="p-1 flex items-center gap-2">
         <p className="font-medium">{user.name}</p>
         <X className="size-4" />

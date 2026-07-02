@@ -14,8 +14,10 @@ export type UserPerformanceDto = {
   };
 };
 
-export const getUserPerformance = (users: User[], tasks: Task[]) => {
-
+export const getUserPerformance = (
+  users: User[],
+  tasks: Task[],
+) => {
   return users.map((u) => {
     const matchesTasks = tasks.filter((task) =>
       task.collaboratorIds.includes(u.id),

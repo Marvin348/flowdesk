@@ -85,7 +85,11 @@ const CollaboratorMultiSelect = ({
                     }`}
                     onClick={() => getSelectUserById(user.id)}
                   >
-                    <Avatar avatarKey={user.avatarKey} size="sm" />
+                    <Avatar
+                      avatarKey={user.avatarKey}
+                      avatarUrl={user.avatarUrl}
+                      size="sm"
+                    />
                     <p>{user.name}</p>
                     {isDisabled && (
                       <p className="text-xs error-text">Im Projekt</p>

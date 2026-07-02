@@ -12,7 +12,7 @@ export type UserDocument = {
   isEmailVerified: boolean;
   emailVerifiedAt?: Date;
   avatarStorageKey?: string;
-  avatarKey: string;
+  avatarKey?: string;
   role: UserRole;
   jobTitle?: string;
 

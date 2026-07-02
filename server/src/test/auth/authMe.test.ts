@@ -54,7 +54,6 @@ describe("GET /auth/me", () => {
       id: user._id.toString(),
       name: "Test User",
       email: "test@example.com",
-      avatarKey: "default",
       role: "admin",
       appearanceSettings: {
         theme: "system",

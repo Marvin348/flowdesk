@@ -11,7 +11,7 @@ const PerformanceHighlightsCard = ({
 }) => {
   const {
     type,
-    user: { avatarKey, name },
+    user: { avatarKey, avatarUrl, name },
     stats,
   } = highlight;
 
@@ -45,7 +45,7 @@ const PerformanceHighlightsCard = ({
     <div className="mt-2">
       <div className="flex items-center justify-between gap-2">
         <div className="flex items-center gap-2">
-          <Avatar avatarKey={avatarKey} size="sm" />
+          <Avatar avatarKey={avatarKey} avatarUrl={avatarUrl} size="sm" />
           <p className="truncate">{name}</p>
         </div>
         <p className="shrink-0">

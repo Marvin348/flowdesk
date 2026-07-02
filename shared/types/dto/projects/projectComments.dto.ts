@@ -12,7 +12,8 @@ export type ProjectCommentDto = {
   user: {
     id: string;
     name: string;
-    avatarKey: string;
+    avatarKey?: string;
+    avatarUrl?: string;
   } | null;
 };
 

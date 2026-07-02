@@ -1,12 +1,14 @@
 import { ActivityDocument } from "@/features/activity/types/activity.document.js";
 import type { ActivityDto } from "@shared/types/dto/activity/activity.dto.js";
 import { Types } from "mongoose";
+import { bulidPublicFileUrl } from "@/utils/bulidPublicFileUrl.js";
 
 export type PopulatedActivity = Omit<ActivityDocument, "actorId"> & {
   actorId: {
     _id: Types.ObjectId;
     name: string;
-    avatarKey: string;
+    avatarKey?: string;
+    avatarStorageKey?: string
   };
 };
 
@@ -28,6 +30,7 @@ export const toActivityDto = (activity: PopulatedActivity): ActivityDto => {
       id: activity.actorId._id.toString(),
       name: activity.actorId.name,
       avatarKey: activity.actorId.avatarKey,
+      avatarUrl: bulidPublicFileUrl(activity.actorId.avatarStorageKey),
     },
   };
 };

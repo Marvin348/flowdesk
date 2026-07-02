@@ -12,6 +12,7 @@ export type PerformanceHighlightDto = {
     id: string;
     name: string;
     avatarKey?: string;
+    avatarUrl?: string;
     jobTitle?: User["jobTitle"];
   };
   stats: {
