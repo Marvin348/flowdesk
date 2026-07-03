@@ -13,8 +13,10 @@ export type TeamMemberDto = User & {
 
 export type TeamMembersResponseDto = {
   items: TeamMemberDto[];
-  currentPage: number;
-  totalPages: number;
+  pagination: {
+    currentPage: number;
+    totalPages: number;
+  };
 };
 
 export type UserDetailsDto = {

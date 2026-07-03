@@ -1,6 +1,4 @@
 import express from "express";
-import { toUsersPerformanceDto } from "@/features/users/mappers/users-performance.js";
-import { pagination } from "@/shared/utils/pagination.js";
 import type { Request } from "express";
 import { toUserDetailsDto } from "@/features/users/mappers/user-details.mapper.js";
 import { UserRole } from "@shared/types/user.js";
@@ -9,18 +7,12 @@ import type {
   TeamProgress,
   TeamSort,
 } from "@shared/types/teamFilter/teamFilter.js";
-import { parseTeamFilter } from "@/shared/parsers/user-query-parsers.js";
-import { getFilteredTeamMembers } from "@/features/users/utils/getFilteredTeamMembers.js";
-import { sortTeamMembers } from "@/features/users/utils/sortTeamMembers.js";
 import { UserModel } from "@/features/users/models/user.modal.js";
 import { toUserDto } from "@/features/users/mappers/user.mapper.js";
 import { TaskModel } from "@/features/tasks/models/task.model.js";
 import { toTaskDto } from "@/features/tasks/mappers/task.mapper.js";
 import { ProjectModel } from "@/features/projects/models/project.model.js";
 import { toProjectDto } from "@/features/projects/mappers/project.mapper.js";
-import { buildUserQuery } from "@/features/users/queries/buildUserQuery.js";
-import { PAGE_LIMITS } from "@shared/constants/pagination.js";
-import { parsePagination } from "@/shared/parsers/parsePagination.js";
 import {
   updateCurrentUserSchema,
   appearanceSettingsSchema,
@@ -32,10 +24,13 @@ import {
 import { getAuthContext } from "@/features/auth/utils/getAuthContext.js";
 import { asyncHandler } from "@/utils/asyncHandler.js";
 import { AppError } from "@/utils/AppError.js";
+import { getTeamMembers } from "@/features/users/services/getTeamMembers.service.js";
+import { teamMembersQuerySchema } from "@/features/users/validators/teamMembersQuerySchema.validator.js";
 
 const router = express.Router();
 
 router.get(
+  // only testing
   "/",
   asyncHandler(async (req, res) => {
     const { workspaceId } = getAuthContext(req);
@@ -59,47 +54,23 @@ export type TeamMembersQuery = {
 router.get(
   "/team",
   asyncHandler(async (req: Request<{}, {}, {}, TeamMembersQuery>, res) => {
-    const search =
-      typeof req.query.search === "string" ? req.query.search.trim() : "";
+    const result = teamMembersQuerySchema.safeParse(req.query);
 
-    const parsedTeamFilter = parseTeamFilter(req.query);
+    if (!result.success) {
+      throw new AppError("Invalid query params", 400);
+    }
+
+    const query = result.data;
 
     const { workspaceId } = getAuthContext(req);
 
-    const userQuery = buildUserQuery({
-      search,
-      role: parsedTeamFilter.role,
+    const sortedTeamMembers = await getTeamMembers({
+      query,
       workspaceId,
     });
 
-    const userRecords = await UserModel.find(userQuery).lean();
-    const taskRecords = await TaskModel.find({ workspaceId }).lean();
-
-    const tasks = taskRecords.map(toTaskDto);
-    const users = userRecords.map(toUserDto);
-
-    const teamMembers = toUsersPerformanceDto(users, tasks);
-
-    const filteredTeamMembers = getFilteredTeamMembers(
-      teamMembers,
-      parsedTeamFilter,
-    );
-
-    const sortedTeamMembers = sortTeamMembers(
-      filteredTeamMembers,
-      parsedTeamFilter.sort,
-    );
-
-    const { page, limit } = parsePagination({
-      page: req.query.page,
-      limit: req.query.limit,
-      defaultLimit: PAGE_LIMITS.attachments,
-    });
-
-    const paginationItems = pagination(sortedTeamMembers, page, limit);
-
     return res.status(200).json({
-      data: paginationItems,
+      data: sortedTeamMembers,
     });
   }),
 );

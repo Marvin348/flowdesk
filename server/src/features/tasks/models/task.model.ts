@@ -9,7 +9,7 @@ const taskSchema = new mongoose.Schema(
     },
 
     projectId: {
-      type: String,
+      type: mongoose.Schema.Types.ObjectId,
       required: true,
     },
 
@@ -30,7 +30,8 @@ const taskSchema = new mongoose.Schema(
     },
 
     collaboratorIds: {
-      type: [String],
+      type: [mongoose.Schema.Types.ObjectId],
+      ref: "User",
       default: [],
     },
 
