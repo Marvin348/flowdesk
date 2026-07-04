@@ -1,6 +1,6 @@
 import type { UserPerformance } from "@/features/users/utils/getUserPerformance";
 import UserPerformanceItem from "./TeamPerformanceItem";
-import type { SelectedUser } from "@/pages/TeamPage";
+import type { SelectedUser } from "@/features/users/pages/TeamPage";
 
 type TeamPerformanceListProps = {
   teamPerformance: UserPerformance[];
@@ -19,11 +19,7 @@ const TeamPerformanceList = ({
       className={`grid grid-cols-1 gap-6 ${isDetailsOpen ? "xl:grid-cols-2 2xl:grid-cols-3" : "sm:grid-cols-2 xl:grid-cols-3"}`}
     >
       {teamPerformance.map((u) => (
-        <UserPerformanceItem
-          key={u.id}
-          item={u}
-          onSelectUser={onSelectUser}
-        />
+        <UserPerformanceItem key={u.id} item={u} onSelectUser={onSelectUser} />
       ))}
     </div>
   );

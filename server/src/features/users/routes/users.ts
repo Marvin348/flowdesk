@@ -23,11 +23,15 @@ import { getTeamMembers } from "@/features/users/services/getTeamMembers.service
 import { teamMembersQuerySchema } from "@/features/users/validators/teamMembersQuerySchema.validator.js";
 import { userDetailsParamsSchema } from "@/features/users/validators/userDetailsParamsSchema.validator.js";
 import { getUserDetails } from "@/features/users/services/getUserDetails.service.js";
+import {
+  updateUserRoleBodySchema,
+  updateUserRoleParamsSchema,
+} from "@/features/users/validators/updateUserRoleSchema.validator.js";
+import { updateUserRole } from "@/features/users//services/updateUserRole.service.js";
 
 const router = express.Router();
 
 router.get(
-  // only testing
   "/",
   asyncHandler(async (req, res) => {
     const { workspaceId } = getAuthContext(req);
@@ -137,60 +141,38 @@ router.get(
 router.patch(
   "/:id",
   asyncHandler(
-    async (req: Request<{ id?: string }, {}, { role?: UserRole }>, res) => {
+    async (req: Request<{ id: string }, {}, { role: UserRole }>, res) => {
       const {
         userId: currentUserId,
         workspaceId,
         role: currentUserRole,
       } = getAuthContext(req);
-      const targetUserId = req.params.id;
 
-      if (!targetUserId) {
-        throw new AppError("Invalid userId", 404);
+      const paramsResult = updateUserRoleParamsSchema.safeParse(req.params);
+
+      if (!paramsResult.success) {
+        throw new AppError("Invalid userId", 400);
+      }
+
+      const bodyResult = updateUserRoleBodySchema.safeParse(req.body);
+
+      if (!bodyResult.success) {
+        throw new AppError("Invalid input", 400);
       }
 
       if (currentUserRole !== "admin") {
         throw new AppError("Only admins can change user roles", 403);
       }
 
-      const { role } = req.body;
-
-      const isValidRole =
-        role === "admin" || role === "member" || role === "manager";
-
-      if (!isValidRole) {
-        throw new AppError("Invalid role", 400);
-      }
-
-      if (targetUserId === currentUserId && role !== "admin") {
-        throw new AppError("Admins cannot demote themselves", 403);
-      }
-
-      const user = await UserModel.findOne({
-        _id: targetUserId,
+      const updatedUser = await updateUserRole({
         workspaceId,
-      }).lean();
-
-      if (!user) {
-        throw new AppError("User not found", 404);
-      }
-
-      if (user.role === role) {
-        throw new AppError("User already has this role", 400);
-      }
-
-      const updatedUser = await UserModel.findOneAndUpdate(
-        { _id: targetUserId, workspaceId },
-        { role },
-        { returnDocument: "after" },
-      ).lean();
-
-      if (!updatedUser) {
-        throw new AppError("User not found", 404);
-      }
+        targetUserId: paramsResult.data.id,
+        role: bodyResult.data.role,
+        currentUserId,
+      });
 
       return res.status(200).json({
-        data: toUserDto(updatedUser),
+        data: updatedUser,
       });
     },
   ),

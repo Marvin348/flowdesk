@@ -7,10 +7,10 @@ import { STATUS_OPTIONS } from "@/shared/constants/status-options";
 import { formatDate } from "@/shared/utils/formatDate";
 import AssignProjectModal from "./AssignProjectModal";
 import { useState } from "react";
-import type { SelectedUser } from "@/pages/TeamPage";
+import type { SelectedUser } from "@/features/users/pages/TeamPage";
 import { PRIORITY_OPTIONS } from "@/shared/constants/priority-options";
-import ChangeUserRoleDialog from "../ChangeUserRoleDialog";
-import UserDetailsSkeleton from "./skeleton/UserDetailsSkeleton";
+import ChangeUserRoleDialog from "@/features/users/components/ChangeUserRoleDialog";
+import UserDetailsSkeleton from "@/features/users/components/teamPage/skeleton/UserDetailsSkeleton";
 
 type UserDetailsProps = {
   selectedUser: SelectedUser;

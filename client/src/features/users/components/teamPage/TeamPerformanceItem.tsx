@@ -3,7 +3,7 @@ import { getStatusFromProgress } from "@shared/utils/getStatusFromProgress";
 import { PROGRESS_STATUS } from "@/shared/constants/progress-status";
 import Avatar from "@/shared/components/ui/avatar/Avatar";
 import { USER_ROLE_OPTIONS } from "@/features/users/constants/user-role-options";
-import type { SelectedUser } from "@/pages/TeamPage";
+import type { SelectedUser } from "@/features/users/pages/TeamPage";
 import { Button } from "@/shared/components/ui/button";
 
 type TeamPerformanceItemProps = {
@@ -98,7 +98,7 @@ const TeamPerformanceItem = ({
             variant="link"
             size="sm"
             className="px-0 font-normal"
-            onClick={() => onSelectUser({ id, name})}
+            onClick={() => onSelectUser({ id, name })}
           >
             Mehr Infos
           </Button>

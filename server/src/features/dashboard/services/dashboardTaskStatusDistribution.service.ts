@@ -15,7 +15,7 @@ export const getTaskStatusDistribution = async ({
   workspaceId: string;
 }) => {
   const projects = await getProjects({ workspaceId });
-  const projectIds = projects.map((project) => project.id);
+  const projectIds = projects.map((project) => new Types.ObjectId(project.id));
 
   const statusCounts = await TaskModel.aggregate<TaskStatusCount>([
     {
