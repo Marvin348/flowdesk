@@ -4,9 +4,10 @@ import { UserPen } from "lucide-react";
 import { useState } from "react";
 import { useChangeUserRole } from "@/features/users/hooks/useChangeUserRole";
 import { Spinner } from "@/shared/components/ui/spinner";
-import type { SelectedUser } from "@/pages/TeamPage";
+import type { SelectedUser } from "@/features/users/pages/TeamPage";
 import { USER_ROLE_OPTIONS } from "@/features/users/constants/user-role-options";
 import type { UserRole } from "@shared/types/user";
+import ErrorMessage from "@/shared/components/ErrorMessage";
 
 type ChangeUserRoleDialogProps = {
   onClose: () => void;
@@ -43,7 +44,7 @@ const ChangeUserRoleDialog = ({
 
   return (
     <div className="overlay flex items-center justify-center px-8">
-      <div className="w-[380px] bg-background border rounded-md">
+      <div className="w-95 bg-background border rounded-md">
         {/**header */}
         <div className="flex items-center gap-4 border-b p-4">
           <div className="bg-muted p-3 rounded-md">
@@ -88,7 +89,10 @@ const ChangeUserRoleDialog = ({
           </div>
 
           {error && (
-            <p className="error-text">Es konnte keine Rolle geändert werden</p>
+            <ErrorMessage
+              message="Es konnte keine Rolle geändert werden."
+              className="text-center"
+            />
           )}
 
           <div className="mt-6 flex items-center justify-end gap-3 border-t p-4">

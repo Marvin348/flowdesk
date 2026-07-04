@@ -1,4 +1,4 @@
-import type { SelectedUser } from "@/pages/TeamPage";
+import type { SelectedUser } from "@/features/users/pages/TeamPage";
 import { Button } from "@/shared/components/ui/button";
 import { UserX } from "lucide-react";
 import { useDeleteProjectMember } from "@/features/projects/hooks/mutations/useDeleteProjectMember";

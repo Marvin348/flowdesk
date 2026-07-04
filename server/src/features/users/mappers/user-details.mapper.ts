@@ -1,78 +1,110 @@
-import { Project } from "@shared/types/project.js";
-import { Task } from "@shared/types/task.js";
-import { User } from "@shared/types/user.js";
-import { byStatusCounts } from "@/features/users/utils/byStatusCounts.js";
 import type {
   NextDueTaskDto,
   UserDetailsDto,
 } from "@shared/types/dto/users/user.js";
 import type { RecentCompletedTaskDto } from "@shared/types/dto/users/user.js";
+import { bulidPublicFileUrl } from "@/utils/bulidPublicFileUrl.js";
+import type { Types } from "mongoose";
+import type { UserRole } from "@shared/types/user.js";
+import type { StatusBase } from "@shared/types/StatusBase.js";
+import type { Priority } from "@shared/types/priority.js";
 
-export const toUserDetailsDto = (
-  user: User,
-  projects: Project[],
-  tasks: Task[],
-): UserDetailsDto => {
-  const invitedProjects = projects
-    .filter((p) => p.invitedUserIds.includes(user.id))
-    .map((p) => ({
-      id: p.id,
-      title: p.title,
-      priority: p.priority,
-      projectStatus: p.projectStatus,
-    }));
+export type UserDetailsAggregationResult = {
+  _id: Types.ObjectId;
+  name: string;
+  email: string;
+  avatarKey?: string;
+  avatarStorageKey?: string;
+  jobTitle?: string;
+  role: UserRole;
 
-  const matchedTasks = tasks.filter((t) => t.collaboratorIds.includes(user.id));
+  invitedProjects: {
+    _id: Types.ObjectId;
+    title: string;
+    priority: Priority;
+    projectStatus: StatusBase;
+  }[];
 
-  const statusCounts = byStatusCounts(matchedTasks);
+  pendingCount: number;
+  inProgressCount: number;
+  completedCount: number;
 
-  const isCompletedTask = (
-    task: Task,
-  ): task is Task & { completedAt: string } =>
-    task.taskStatus === "done" && typeof task.completedAt === "string";
+  recentCompletedTask?: {
+    _id: Types.ObjectId;
+    title: string;
+    completedAt?: Date | string | null;
+  } | null;
 
-  const recentCompletedTask = matchedTasks
-    .filter(isCompletedTask)
-    .reduce<(Task & { completedAt: string }) | null>((latest, task) => {
-      if (!latest) return task;
-      return new Date(task.completedAt) > new Date(latest.completedAt)
-        ? task
-        : latest;
-    }, null);
+  nextDueTask?: {
+    _id: Types.ObjectId;
+    title: string;
+    dueDate?: Date | string | null;
+  } | null;
+};
 
-  const nextDueTask = matchedTasks.reduce<Task | null>((acc, next) => {
-    if (!acc) return next;
-    return new Date(next.dueDate) > new Date(acc.dueDate) ? next : acc;
-  }, null);
+const toIsoString = (value: string | Date | undefined): string => {
+  if (!value) return "";
 
-  const nextDueTaskDto: NextDueTaskDto | null = nextDueTask
-    ? {
-        id: nextDueTask.id,
-        title: nextDueTask.title,
-        dueDate: nextDueTask.dueDate,
-      }
-    : null;
+  return value instanceof Date ? value.toISOString() : value;
+};
 
-  const recentCompletedTaskDto: RecentCompletedTaskDto | null =
-    recentCompletedTask
-      ? {
-          id: recentCompletedTask.id,
-          title: recentCompletedTask.title,
-          completedAt: recentCompletedTask.completedAt,
-        }
-      : null;
-
-  const stats = {
-    pendingCount: statusCounts.byStatusCounts.pending,
-    inProgressCount: statusCounts.byStatusCounts.in_progress,
-    completedCount: statusCounts.byStatusCounts.done,
-  };
-
+const toInvitedProjectDto = (
+  project: UserDetailsAggregationResult["invitedProjects"][number],
+) => {
   return {
-    user,
-    stats,
-    invitedProjects,
-    recentCompletedTask: recentCompletedTaskDto,
-    nextDueTask: nextDueTaskDto,
+    id: project._id.toString(),
+    title: project.title,
+    priority: project.priority,
+    projectStatus: project.projectStatus,
   };
 };
+
+const toRecentCompletedTaskDto = (
+  task: NonNullable<UserDetailsAggregationResult["recentCompletedTask"]>,
+): RecentCompletedTaskDto => {
+  return {
+    id: task._id.toString(),
+    title: task.title,
+    completedAt: task.completedAt ? toIsoString(task.completedAt) : "",
+  };
+};
+
+const toNextDueTaskDto = (
+  task: NonNullable<UserDetailsAggregationResult["nextDueTask"]>,
+): NextDueTaskDto => {
+  return {
+    id: task._id.toString(),
+    title: task.title,
+    dueDate: task.dueDate ? toIsoString(task.dueDate) : "",
+  };
+};
+
+export const toUserDetailsDto = (
+  userDetails: UserDetailsAggregationResult,
+): UserDetailsDto => ({
+  user: {
+    id: userDetails._id.toString(),
+    name: userDetails.name,
+    email: userDetails.email,
+    role: userDetails.role,
+    jobTitle: userDetails.jobTitle,
+    avatarKey: userDetails.avatarKey,
+    avatarUrl: bulidPublicFileUrl(userDetails.avatarStorageKey),
+  },
+
+  invitedProjects: userDetails.invitedProjects.map(toInvitedProjectDto),
+
+  stats: {
+    pendingCount: userDetails.pendingCount,
+    inProgressCount: userDetails.inProgressCount,
+    completedCount: userDetails.completedCount,
+  },
+
+  recentCompletedTask: userDetails.recentCompletedTask
+    ? toRecentCompletedTaskDto(userDetails.recentCompletedTask)
+    : null,
+
+  nextDueTask: userDetails.nextDueTask
+    ? toNextDueTaskDto(userDetails.nextDueTask)
+    : null,
+});

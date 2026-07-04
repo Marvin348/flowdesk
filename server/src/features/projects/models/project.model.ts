@@ -40,7 +40,8 @@ const projectSchema = new mongoose.Schema(
     },
 
     invitedUserIds: {
-      type: [String],
+      type: [mongoose.Schema.Types.ObjectId],
+      ref: "User",
       default: [],
     },
   },

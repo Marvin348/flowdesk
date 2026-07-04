@@ -16,7 +16,7 @@ export const toProjectDto = (project: ProjectDocument): Project => {
     priority: project.priority,
     projectStatus: project.projectStatus,
     dueDate: toIsoString(project.dueDate),
-    invitedUserIds: project.invitedUserIds,
+    invitedUserIds: project.invitedUserIds.map((id) => id.toString()),
     createdAt: toIsoString(project.createdAt),
     updatedAt: project.updatedAt ? toIsoString(project.updatedAt) : undefined,
   };

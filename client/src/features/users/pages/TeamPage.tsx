@@ -8,7 +8,7 @@ import UserDetails from "@/features/users/components/teamPage/UserDetails";
 import TeamPageHeader from "@/features/users/components/teamPage/header/TeamPageHeader";
 import TeamFilterDrawer from "@/features/users/components/teamPage/TeamFilterDrawer";
 import TeamPerformanceListSkeleton from "@/features/users/components/teamPage/skeleton/TeamPerformanceListSkeleton";
-import {PAGE_LIMITS, DEFAULT_PAGE} from "@shared/constants/pagination";
+import { PAGE_LIMITS, DEFAULT_PAGE } from "@shared/constants/pagination";
 
 export type SelectedUser = { id: string; name: string };
 
@@ -41,8 +41,8 @@ const TeamPage = () => {
   const { data, isLoading, error } = useTeamMembers(teamMembersInput);
 
   const teamMembers = data?.items ?? [];
-  const currentPage = data?.currentPage ?? DEFAULT_PAGE;
-  const totalPages = data?.totalPages ?? 1;
+  const currentPage = data?.pagination.currentPage ?? DEFAULT_PAGE;
+  const totalPages = data?.pagination.totalPages ?? 1;
 
   if (isLoading && !teamMembers.length) return <TeamPerformanceListSkeleton />;
 
@@ -83,7 +83,7 @@ const TeamPage = () => {
         </section>
 
         {selectedUser && (
-          <aside className="w-[360px] mb-6">
+          <aside className="w-90 mb-6">
             <UserDetails
               selectedUser={selectedUser}
               onClose={() => setSelectedUser(null)}

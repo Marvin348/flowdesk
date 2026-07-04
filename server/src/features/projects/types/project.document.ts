@@ -8,7 +8,7 @@ export type ProjectDocument = {
   ownerId: string;
   priority: Priority;
   projectStatus: StatusBase;
-  invitedUserIds: string[];
+  invitedUserIds: Types.ObjectId[];
   dueDate: Date;
   createdAt: Date;
   updatedAt?: Date;

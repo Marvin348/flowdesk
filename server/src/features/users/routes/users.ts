@@ -1,26 +1,13 @@
 import express from "express";
-import { toUsersPerformanceDto } from "@/features/users/mappers/users-performance.js";
-import { pagination } from "@/shared/utils/pagination.js";
 import type { Request } from "express";
-import { toUserDetailsDto } from "@/features/users/mappers/user-details.mapper.js";
 import { UserRole } from "@shared/types/user.js";
 import type {
   TeamActivity,
   TeamProgress,
   TeamSort,
 } from "@shared/types/teamFilter/teamFilter.js";
-import { parseTeamFilter } from "@/shared/parsers/user-query-parsers.js";
-import { getFilteredTeamMembers } from "@/features/users/utils/getFilteredTeamMembers.js";
-import { sortTeamMembers } from "@/features/users/utils/sortTeamMembers.js";
 import { UserModel } from "@/features/users/models/user.modal.js";
 import { toUserDto } from "@/features/users/mappers/user.mapper.js";
-import { TaskModel } from "@/features/tasks/models/task.model.js";
-import { toTaskDto } from "@/features/tasks/mappers/task.mapper.js";
-import { ProjectModel } from "@/features/projects/models/project.model.js";
-import { toProjectDto } from "@/features/projects/mappers/project.mapper.js";
-import { buildUserQuery } from "@/features/users/queries/buildUserQuery.js";
-import { PAGE_LIMITS } from "@shared/constants/pagination.js";
-import { parsePagination } from "@/shared/parsers/parsePagination.js";
 import {
   updateCurrentUserSchema,
   appearanceSettingsSchema,
@@ -32,6 +19,15 @@ import {
 import { getAuthContext } from "@/features/auth/utils/getAuthContext.js";
 import { asyncHandler } from "@/utils/asyncHandler.js";
 import { AppError } from "@/utils/AppError.js";
+import { getTeamMembers } from "@/features/users/services/getTeamMembers.service.js";
+import { teamMembersQuerySchema } from "@/features/users/validators/teamMembersQuerySchema.validator.js";
+import { userDetailsParamsSchema } from "@/features/users/validators/userDetailsParamsSchema.validator.js";
+import { getUserDetails } from "@/features/users/services/getUserDetails.service.js";
+import {
+  updateUserRoleBodySchema,
+  updateUserRoleParamsSchema,
+} from "@/features/users/validators/updateUserRoleSchema.validator.js";
+import { updateUserRole } from "@/features/users//services/updateUserRole.service.js";
 
 const router = express.Router();
 
@@ -59,47 +55,23 @@ export type TeamMembersQuery = {
 router.get(
   "/team",
   asyncHandler(async (req: Request<{}, {}, {}, TeamMembersQuery>, res) => {
-    const search =
-      typeof req.query.search === "string" ? req.query.search.trim() : "";
+    const result = teamMembersQuerySchema.safeParse(req.query);
 
-    const parsedTeamFilter = parseTeamFilter(req.query);
+    if (!result.success) {
+      throw new AppError("Invalid query params", 400);
+    }
+
+    const query = result.data;
 
     const { workspaceId } = getAuthContext(req);
 
-    const userQuery = buildUserQuery({
-      search,
-      role: parsedTeamFilter.role,
+    const sortedTeamMembers = await getTeamMembers({
+      query,
       workspaceId,
     });
 
-    const userRecords = await UserModel.find(userQuery).lean();
-    const taskRecords = await TaskModel.find({ workspaceId }).lean();
-
-    const tasks = taskRecords.map(toTaskDto);
-    const users = userRecords.map(toUserDto);
-
-    const teamMembers = toUsersPerformanceDto(users, tasks);
-
-    const filteredTeamMembers = getFilteredTeamMembers(
-      teamMembers,
-      parsedTeamFilter,
-    );
-
-    const sortedTeamMembers = sortTeamMembers(
-      filteredTeamMembers,
-      parsedTeamFilter.sort,
-    );
-
-    const { page, limit } = parsePagination({
-      page: req.query.page,
-      limit: req.query.limit,
-      defaultLimit: PAGE_LIMITS.attachments,
-    });
-
-    const paginationItems = pagination(sortedTeamMembers, page, limit);
-
     return res.status(200).json({
-      data: paginationItems,
+      data: sortedTeamMembers,
     });
   }),
 );
@@ -150,29 +122,17 @@ router.get(
   "/:id/details",
   asyncHandler(async (req, res) => {
     const { workspaceId } = getAuthContext(req);
-    const targetUserId = req.params.id;
 
-    if (!targetUserId) {
-      throw new AppError("Invalid userId", 404);
+    const result = userDetailsParamsSchema.safeParse(req.params);
+
+    if (!result.success) {
+      throw new AppError("Invalid userId", 400);
     }
 
-    const userRecord = await UserModel.findOne({
-      _id: targetUserId,
+    const userDetails = await getUserDetails({
       workspaceId,
-    }).lean();
-
-    if (!userRecord) {
-      throw new AppError("User not found", 404);
-    }
-
-    const projectRecords = await ProjectModel.find({ workspaceId }).lean();
-    const taskRecords = await TaskModel.find({ workspaceId }).lean();
-
-    const user = toUserDto(userRecord);
-    const projects = projectRecords.map(toProjectDto);
-    const tasks = taskRecords.map(toTaskDto);
-
-    const userDetails = toUserDetailsDto(user, projects, tasks);
+      userId: result.data.id,
+    });
 
     return res.status(200).json({ data: userDetails });
   }),
@@ -181,60 +141,38 @@ router.get(
 router.patch(
   "/:id",
   asyncHandler(
-    async (req: Request<{ id?: string }, {}, { role?: UserRole }>, res) => {
+    async (req: Request<{ id: string }, {}, { role: UserRole }>, res) => {
       const {
         userId: currentUserId,
         workspaceId,
         role: currentUserRole,
       } = getAuthContext(req);
-      const targetUserId = req.params.id;
 
-      if (!targetUserId) {
-        throw new AppError("Invalid userId", 404);
+      const paramsResult = updateUserRoleParamsSchema.safeParse(req.params);
+
+      if (!paramsResult.success) {
+        throw new AppError("Invalid userId", 400);
+      }
+
+      const bodyResult = updateUserRoleBodySchema.safeParse(req.body);
+
+      if (!bodyResult.success) {
+        throw new AppError("Invalid input", 400);
       }
 
       if (currentUserRole !== "admin") {
         throw new AppError("Only admins can change user roles", 403);
       }
 
-      const { role } = req.body;
-
-      const isValidRole =
-        role === "admin" || role === "member" || role === "manager";
-
-      if (!isValidRole) {
-        throw new AppError("Invalid role", 400);
-      }
-
-      if (targetUserId === currentUserId && role !== "admin") {
-        throw new AppError("Admins cannot demote themselves", 403);
-      }
-
-      const user = await UserModel.findOne({
-        _id: targetUserId,
+      const updatedUser = await updateUserRole({
         workspaceId,
-      }).lean();
-
-      if (!user) {
-        throw new AppError("User not found", 404);
-      }
-
-      if (user.role === role) {
-        throw new AppError("User already has this role", 400);
-      }
-
-      const updatedUser = await UserModel.findOneAndUpdate(
-        { _id: targetUserId, workspaceId },
-        { role },
-        { returnDocument: "after" },
-      ).lean();
-
-      if (!updatedUser) {
-        throw new AppError("User not found", 404);
-      }
+        targetUserId: paramsResult.data.id,
+        role: bodyResult.data.role,
+        currentUserId,
+      });
 
       return res.status(200).json({
-        data: toUserDto(updatedUser),
+        data: updatedUser,
       });
     },
   ),

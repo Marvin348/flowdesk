@@ -3,11 +3,11 @@ import type { Types } from "mongoose";
 export type TaskDocument = {
   _id: Types.ObjectId;
   workspaceId: Types.ObjectId;
-  projectId: string;
+  projectId: Types.ObjectId;
   title: string;
 
   taskStatus: StatusBase;
-  collaboratorIds: string[];
+  collaboratorIds: Types.ObjectId[];
   taskPriority: Priority;
   description?: string;
   tags?: string[];

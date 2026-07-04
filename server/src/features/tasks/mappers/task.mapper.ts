@@ -10,11 +10,11 @@ const toIsoString = (value: string | Date | undefined | null): string => {
 export const toTaskDto = (task: TaskDocument): Task => {
   return {
     id: task._id.toString(),
-    projectId: task.projectId,
+    projectId: task.projectId.toString(),
     title: task.title,
     dueDate: toIsoString(task.dueDate),
     taskStatus: task.taskStatus,
-    collaboratorIds: task.collaboratorIds,
+    collaboratorIds: task.collaboratorIds.map((id) => id.toString()),
     taskPriority: task.taskPriority,
     description: task.description,
     tags: task.tags,

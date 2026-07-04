@@ -1,4 +1,4 @@
-export type UserRole = "admin" | "member" | "manager";
+export type UserRole = (typeof USER_ROLE)[number];
 
 export type User = {
   id: string;
@@ -27,6 +27,8 @@ export const APPEARANCE_START_VIEWS = [
   "projects",
   "team",
 ] as const;
+
+export const USER_ROLE = ["admin", "member", "manager"] as const;
 
 export type AppearanceTheme = (typeof APPEARANCE_THEMES)[number];
 export type AppearanceDensity = (typeof APPEARANCE_DENSITIES)[number];
