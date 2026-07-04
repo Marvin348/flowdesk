@@ -1,6 +1,5 @@
 import express from "express";
 import type { Request } from "express";
-import { toUserDetailsDto } from "@/features/users/mappers/user-details.mapper.js";
 import { UserRole } from "@shared/types/user.js";
 import type {
   TeamActivity,
@@ -9,10 +8,6 @@ import type {
 } from "@shared/types/teamFilter/teamFilter.js";
 import { UserModel } from "@/features/users/models/user.modal.js";
 import { toUserDto } from "@/features/users/mappers/user.mapper.js";
-import { TaskModel } from "@/features/tasks/models/task.model.js";
-import { toTaskDto } from "@/features/tasks/mappers/task.mapper.js";
-import { ProjectModel } from "@/features/projects/models/project.model.js";
-import { toProjectDto } from "@/features/projects/mappers/project.mapper.js";
 import {
   updateCurrentUserSchema,
   appearanceSettingsSchema,
@@ -26,6 +21,8 @@ import { asyncHandler } from "@/utils/asyncHandler.js";
 import { AppError } from "@/utils/AppError.js";
 import { getTeamMembers } from "@/features/users/services/getTeamMembers.service.js";
 import { teamMembersQuerySchema } from "@/features/users/validators/teamMembersQuerySchema.validator.js";
+import { userDetailsParamsSchema } from "@/features/users/validators/userDetailsParamsSchema.validator.js";
+import { getUserDetails } from "@/features/users/services/getUserDetails.service.js";
 
 const router = express.Router();
 
@@ -121,29 +118,17 @@ router.get(
   "/:id/details",
   asyncHandler(async (req, res) => {
     const { workspaceId } = getAuthContext(req);
-    const targetUserId = req.params.id;
 
-    if (!targetUserId) {
-      throw new AppError("Invalid userId", 404);
+    const result = userDetailsParamsSchema.safeParse(req.params);
+
+    if (!result.success) {
+      throw new AppError("Invalid userId", 400);
     }
 
-    const userRecord = await UserModel.findOne({
-      _id: targetUserId,
+    const userDetails = await getUserDetails({
       workspaceId,
-    }).lean();
-
-    if (!userRecord) {
-      throw new AppError("User not found", 404);
-    }
-
-    const projectRecords = await ProjectModel.find({ workspaceId }).lean();
-    const taskRecords = await TaskModel.find({ workspaceId }).lean();
-
-    const user = toUserDto(userRecord);
-    const projects = projectRecords.map(toProjectDto);
-    const tasks = taskRecords.map(toTaskDto);
-
-    const userDetails = toUserDetailsDto(user, projects, tasks);
+      userId: result.data.id,
+    });
 
     return res.status(200).json({ data: userDetails });
   }),

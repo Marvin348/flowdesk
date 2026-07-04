@@ -120,7 +120,7 @@ describe("POST /tasks", () => {
     }
 
     expect(createdTask.workspaceId.toString()).toBe(workspaceId.toString());
-    expect(createdTask.projectId).toBe(project._id.toString());
+    expect(createdTask.projectId.toString()).toBe(project._id.toString());
     expect(createdTask.taskStatus).toBe("pending");
   });
 

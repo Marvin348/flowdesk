@@ -83,7 +83,7 @@ const TeamPage = () => {
         </section>
 
         {selectedUser && (
-          <aside className="w-[360px] mb-6">
+          <aside className="w-90 mb-6">
             <UserDetails
               selectedUser={selectedUser}
               onClose={() => setSelectedUser(null)}
