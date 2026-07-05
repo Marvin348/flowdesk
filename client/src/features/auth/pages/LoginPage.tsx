@@ -1,7 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowRight, KeyRound, Mail } from "lucide-react";
 import { useForm } from "react-hook-form";
-import { Link } from "react-router";
+import { Link, useSearchParams } from "react-router";
 import { Button } from "@/shared/components/ui/button";
 import { useLogin } from "@/features/auth/hooks/useLogin";
 import { useNavigate } from "react-router";
@@ -15,6 +15,9 @@ import { FormInput } from "@/shared/components/ui/FormInput";
 import { PasswordInput } from "@/shared/components/ui/PasswordInput";
 
 const LoginPage = () => {
+  const [searchParams] = useSearchParams();
+  const redirect = searchParams.get("redirect");
+
   const navigate = useNavigate();
 
   const {
@@ -35,8 +38,13 @@ const LoginPage = () => {
   const onSubmit = (data: LoginFields) => {
     mutate(data, {
       onSuccess: (user) => {
+        if (redirect) {
+          navigate(redirect, { replace: true });
+          return;
+        }
+
         const path = getStartViewPath(user.appearanceSettings.startView);
-        navigate(path);
+        navigate(path, { replace: true });
       },
     });
   };

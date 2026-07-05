@@ -23,6 +23,10 @@ const verificationTokenSchema = new mongoose.Schema(
       required: true,
     },
 
+    newEmail: {
+      type: String,
+    },
+
     expiresAt: {
       type: Date,
       required: true,

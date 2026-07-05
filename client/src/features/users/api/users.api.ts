@@ -9,6 +9,8 @@ import type { TeamMembersInput } from "@shared/types/inputs/teamMemberInput";
 import type { UpdateUserProfileInput } from "@/features/users/types/updateUserProfile";
 import type { UpdateAppearanceSettingsInput } from "@/features/users/types/UpdateAppearanceSettings";
 import type { UserAvatarDto } from "@shared/types/dto/common/userPreview.dto";
+import type { ChangeEmailSettingsFields } from "@/features/settings/schemas/profileSettingsSchema";
+
 export const fetchUsers = async (): Promise<User[]> => {
   const res = await apiClient.get("/users");
   return res.data.data;
@@ -76,5 +78,15 @@ export const uploadAvatar = async (avatar: File): Promise<UserAvatarDto> => {
 
 export const deleteAvatar = async () => {
   const res = await apiClient.delete("/users/me/avatar");
+  return res.data.message;
+};
+
+export const changeEmail = async (email: ChangeEmailSettingsFields) => {
+  const res = await apiClient.patch("/users/me/change-email", email);
+  return res.data.message;
+};
+
+export const verifyChangedEmail = async (token: string) => {
+  const res = await apiClient.post("/users/me/change-email/verify", {token});
   return res.data.message;
 };

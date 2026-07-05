@@ -3,13 +3,7 @@ import { useForm } from "react-hook-form";
 import { useEffect } from "react";
 import { Button } from "@/shared/components/ui/button";
 import ErrorMessage from "@/shared/components/ErrorMessage";
-import {
-  BriefcaseBusiness,
-  Mail,
-  ShieldCheck,
-  UserRound,
-  CheckCircle2,
-} from "lucide-react";
+import { BriefcaseBusiness, UserRound, CheckCircle2 } from "lucide-react";
 import { FormInput } from "@/shared/components/ui/FormInput";
 import { useUpdateUserProfile } from "@/features/users/hooks/useUpdateUserProfile";
 import { Spinner } from "@/shared/components/ui/spinner";
@@ -17,7 +11,12 @@ import type { ProfileSettingsFields } from "@/features/settings/schemas/profileS
 import { profileSettingsSchema } from "@/features/settings/schemas/profileSettingsSchema";
 import type { AuthUser } from "@shared/types/user";
 
-const ProfileSettingsForm = ({ user }: { user: AuthUser }) => {
+type ProfileSettingsFormInput = {
+  user: AuthUser;
+  onClose: () => void;
+};
+
+const ProfileSettingsForm = ({ user, onClose }: ProfileSettingsFormInput) => {
   const {
     mutate,
     isPending,
@@ -34,7 +33,6 @@ const ProfileSettingsForm = ({ user }: { user: AuthUser }) => {
     resolver: zodResolver(profileSettingsSchema),
     defaultValues: {
       name: "",
-      email: "",
       jobTitle: "",
     },
   });
@@ -42,7 +40,6 @@ const ProfileSettingsForm = ({ user }: { user: AuthUser }) => {
   useEffect(() => {
     reset({
       name: user.name,
-      email: user.email,
       jobTitle: user?.jobTitle ?? "",
     });
   }, [user, reset]);
@@ -52,10 +49,6 @@ const ProfileSettingsForm = ({ user }: { user: AuthUser }) => {
 
     if (dirtyFields.name) {
       payload.name = data.name;
-    }
-
-    if (dirtyFields.email) {
-      payload.email = data.email;
     }
 
     if (dirtyFields.jobTitle) {
@@ -70,7 +63,6 @@ const ProfileSettingsForm = ({ user }: { user: AuthUser }) => {
       onSuccess: (updatedUser) => {
         reset({
           name: updatedUser.name,
-          email: updatedUser.email,
           jobTitle: updatedUser?.jobTitle,
         });
       },
@@ -96,24 +88,8 @@ const ProfileSettingsForm = ({ user }: { user: AuthUser }) => {
 
         <div>
           <FormInput
-            id="email"
-            label="Email"
-            type="email"
-            autoComplete="email"
-            icon={<Mail className="size-4" />}
-            {...register("email")}
-          />
-          {errors.email && (
-            <ErrorMessage message={errors.email.message} className="mt-1" />
-          )}
-        </div>
-      </div>
-
-      <div className="mt-5 grid grid-cols-1 gap-5 md:grid-cols-2">
-        <div>
-          <FormInput
-            id="jobTitle"
-            label="JobTitel"
+            id="jobtitle"
+            label="Jobtitel"
             type="text"
             icon={<BriefcaseBusiness className="size-4" />}
             {...register("jobTitle")}
@@ -121,15 +97,6 @@ const ProfileSettingsForm = ({ user }: { user: AuthUser }) => {
           {errors.jobTitle && (
             <ErrorMessage message={errors.jobTitle.message} className="mt-1" />
           )}
-        </div>
-
-        <div className="space-y-2">
-          <p className="mb-1.5 block text-sm">Rolle</p>
-
-          <div className="flex items-center gap-3 rounded-md border bg-muted/40 px-3 py-2 text-sm text-muted-foreground">
-            <ShieldCheck className="size-4" />
-            <span className="capitalize">{user?.role}</span>
-          </div>
         </div>
       </div>
 
@@ -147,11 +114,12 @@ const ProfileSettingsForm = ({ user }: { user: AuthUser }) => {
         </div>
       )}
 
-      <div className="mt-8 flex items-center justify-end gap-3">
+      <div className="mt-4 flex items-center justify-end gap-3">
         <Button
           variant="outline"
           type="button"
-          disabled={!isDirty || isPending}
+          disabled={isPending}
+          onClick={onClose}
         >
           Abbrechen
         </Button>

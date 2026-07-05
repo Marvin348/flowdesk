@@ -13,8 +13,8 @@ import { toAuthUserDto } from "@/features/users/mappers/user.mapper.js";
 import { WorkspaceModel } from "@/features/workspace/models/workspace.model.js";
 import { Types } from "mongoose";
 import { AppError } from "@/utils/AppError.js";
-import { createEmailVerificationToken } from "@/features/verification-tokens/services/createEmailVerificationToken.service.js";
-import { sendVerificationEmail } from "@/features/email/services/email.service.js";
+import { createVerificationToken } from "@/features/verification-tokens/services/createVerificationToken.service.js";
+import { sendAccountVerificationEmail } from "@/features/email/services/sendAccountVerificationEmail.service.js";
 
 export const registerUser = async (input: RegisterInput) => {
   const { email, name, password } = input;
@@ -46,11 +46,14 @@ export const registerUser = async (input: RegisterInput) => {
     passwordHash,
   });
 
-  const emailVerificationToken = await createEmailVerificationToken(userId);
+  const emailVerificationToken = await createVerificationToken({
+    userId,
+    type: "email_verification",
+  });
 
   const verificationUrl = `${process.env.CLIENT_URL}/verify-email/${emailVerificationToken}`;
 
-  await sendVerificationEmail({
+  await sendAccountVerificationEmail({
     to: newUser.email,
     verificationUrl,
   });

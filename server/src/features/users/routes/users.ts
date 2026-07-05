@@ -11,6 +11,7 @@ import { toUserDto } from "@/features/users/mappers/user.mapper.js";
 import {
   updateCurrentUserSchema,
   appearanceSettingsSchema,
+  changeEmailSchema,
 } from "@/features/users/validators/user.validator.js";
 import {
   updateCurrentUser,
@@ -27,7 +28,10 @@ import {
   updateUserRoleBodySchema,
   updateUserRoleParamsSchema,
 } from "@/features/users/validators/updateUserRoleSchema.validator.js";
-import { updateUserRole } from "@/features/users//services/updateUserRole.service.js";
+import { updateUserRole } from "@/features/users/services/updateUserRole.service.js";
+import { changeEmail } from "@/features/users/services/changeEmail.service.js";
+import { verificationTokenSchema } from "@/features/verification-tokens/validators/verifyEmailSchema.js";
+import { verifyChangeEmail } from "@/features/users/services/verifyChangeEmail.service.js";
 
 const router = express.Router();
 
@@ -92,6 +96,42 @@ router.patch(
     const updatedUser = await updateCurrentUser({ input, userId, workspaceId });
 
     return res.status(201).json({ user: updatedUser });
+  }),
+);
+
+router.patch(
+  "/me/change-email",
+  asyncHandler(async (req, res) => {
+    const email = changeEmailSchema.safeParse(req.body);
+
+    if (!email.success) {
+      throw new AppError("Invalid email", 400);
+    }
+
+    const { userId, workspaceId } = getAuthContext(req);
+
+    await changeEmail({ userId, workspaceId, newEmail: email.data.email });
+
+    return res
+      .status(200)
+      .json({ message: "Email verification has been send" });
+  }),
+);
+
+router.post(
+  "/me/change-email/verify",
+  asyncHandler(async (req, res) => {
+    const result = verificationTokenSchema.safeParse(req.body);
+
+    if (!result.success) {
+      throw new AppError("Invalid token", 400);
+    }
+
+    const { userId, workspaceId } = getAuthContext(req);
+
+    await verifyChangeEmail({ workspaceId, token: result.data.token, userId });
+
+    return res.status(200).json({ message: "Email successfully changed" });
   }),
 );
 
