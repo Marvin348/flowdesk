@@ -17,7 +17,7 @@ import { AppError } from "@/utils/AppError.js";
 import { getAuthContext } from "@/features/auth/utils/getAuthContext.js";
 import {
   resendEmailVerificationSchema,
-  verifyEmailSchema,
+  verificationTokenSchema,
 } from "@/features/verification-tokens/validators/verifyEmailSchema.js";
 import { verifyEmail } from "@/features/verification-tokens/services/verifyEmail.service.js";
 import { resendVerificationEmail } from "@/features/verification-tokens/services/resendVerificationEmail.service.js";
@@ -96,7 +96,7 @@ router.post(
 router.post(
   "/verify-email",
   asyncHandler(async (req, res) => {
-    const result = verifyEmailSchema.safeParse(req.body);
+    const result = verificationTokenSchema.safeParse(req.body);
 
     if (!result.success) {
       throw new AppError("Invalid request body", 400);

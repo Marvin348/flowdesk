@@ -23,6 +23,7 @@ import InvitePage from "@/features/workspace-invites/pages/InvitePage";
 import ActivityPage from "@/features/activity/page/ActivityPage";
 import CheckEmailPage from "@/features/auth/pages/CheckEmailPage";
 import EmailVerificationPage from "@/features/auth/pages/EmailVerificationPage";
+import ConfirmEmailChangePage from "./features/auth/pages/ConfirmEmailChangePage";
 
 const queryClient = new QueryClient();
 
@@ -37,6 +38,10 @@ const rounter = createBrowserRouter([
       { path: "check-email", element: <CheckEmailPage /> },
       { path: "verify-email/:token", element: <EmailVerificationPage /> },
       { path: "invite/:token", element: <InvitePage /> },
+      {
+        path: "/confirm-email-change/:token",
+        element: <ConfirmEmailChangePage />,
+      },
     ],
   },
   {

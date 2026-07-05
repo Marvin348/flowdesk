@@ -8,7 +8,6 @@ import { z } from "zod";
 export const updateCurrentUserSchema = z
   .object({
     name: z.string().trim().min(2).max(20).optional(),
-    email: z.string().trim().email().optional(),
     jobTitle: z.string().trim().max(30).optional().optional(),
   })
   .refine((data) => Object.keys(data).length > 0, {
@@ -28,3 +27,9 @@ export const appearanceSettingsSchema = z
   });
 
 export type AppearanceSettingsInput = z.infer<typeof appearanceSettingsSchema>;
+
+export const changeEmailSchema = z.object({
+  email: z.string().trim().email(),
+});
+
+export type ChangeEmailParams = z.infer<typeof changeEmailSchema>;

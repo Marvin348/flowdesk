@@ -1,7 +1,6 @@
-import ProfileSettingsForm from "@/features/settings/components/profile/ProfileSettingsForm";
-import AvatarUploadCard from "@/features/settings/components/profile/AvatarUploadCard";
 import { useCurrentUser } from "@/features/auth/hooks/useCurrentUser";
 import ProfileSettingsSkeleton from "@/features/settings/components/sketeton/ProfileSettingsSkeleton";
+import ProfileOverview from "@/features/settings/components/profile/ProfileOverview";
 
 const ProfileSettingsPage = () => {
   const { data: user, isLoading, error } = useCurrentUser();
@@ -24,12 +23,8 @@ const ProfileSettingsPage = () => {
         </p>
       </section>
 
-      <div className="mt-6">
-        <AvatarUploadCard user={user} />
-      </div>
-
       <div>
-        <ProfileSettingsForm user={user} />
+        <ProfileOverview currentUser={user} />
       </div>
     </div>
   );
