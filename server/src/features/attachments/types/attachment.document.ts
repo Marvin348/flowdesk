@@ -3,9 +3,9 @@ import type { Types } from "mongoose";
 export type AttachmentDocument = {
   _id: Types.ObjectId;
   workspaceId: Types.ObjectId;
-  projectId: string;
-  taskId?: string | null;
-  userId: string;
+  projectId: Types.ObjectId;
+  taskId?: Types.ObjectId | null;
+  userId: Types.ObjectId;
 
   fileName: string;
   storageKey: string;
