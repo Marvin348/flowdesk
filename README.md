@@ -1,67 +1,100 @@
 # FlowDesk
 
-FlowDesk is a fullstack project operations dashboard for managing projects, team workload, tasks, comments, and file attachments in one structured workspace.
+FlowDesk is a modern full-stack project management and workflow app focused on task management, team organization, and structured workflows.
 
-The app focuses on real-world admin workflows: project overviews, detailed project pages, team assignment, task status tracking, workload insights, attachment handling, and backend-driven DTOs for clean frontend data consumption.
+The project focuses on real-world admin workflows such as project overview management, detailed project pages, task assignment, task status tracking, workload insights, attachment handling, workspace invitations, and backend-driven DTOs for clean frontend data consumption.
 
-⚠️ This project is still a work in progress. Many parts are not fully refactored yet, and the overall direction and features may still evolve.
+FlowDesk is actively being developed as a fullstack portfolio project with a focus on backend architecture, authentication, authorization, data modeling, file storage, testing, and clean API design.
 
-## 🚀 Current Setup
+## Tech Stack
 
-- Fullstack setup with **React (Vite)** frontend and a **custom Node.js / Express** backend
-- Backend uses **MongoDB with Mongoose** as persistent database
-- Authentication with **JWT stored in an HttpOnly cookie**
-- Project-level authorization based on `ownerId` and project membership
-- File uploads are stored in **Cloudflare R2** object storage using S3-compatible APIs
-- Demo data can be seeded from the previous mock data file
-- Workspace invite flow: admins can create invite links for new members. Invites are token-based, expire after a defined time, can only be used once, and register the invited user into the existing workspace as a member.
-- Backend handles **search, filtering, pagination, and data shaping**
-- Data is fetched via structured endpoints and optimized with React Query
+### Backend
 
-## 🧠 Architecture Notes
+- **Node + Express**
+- **MongoDB with Mongoose**
+- **JWT authentication with HttpOnly cookies**
+- **Cloudflare R2 for private file storage**
+- **Resend (E-Mail Provider)**
+- **Vitest and Supertest for backend testing**
 
-- API routes are protected on the backend with a reusable `requireAuth` middleware
-- The middleware verifies the JWT from the HttpOnly cookie and attaches the authenticated user to `req.user`
-- Project data is scoped by the authenticated user:
-  - users can access projects they own
-  - users can access projects where they are included as members/collaborators
-- Filtering, search, and pagination are handled **server-side via query parameters**
-- A seed script is used to load demo/development data into MongoDB
-- API responses are shaped with DTO/mapper functions to avoid exposing database internals like `_id` and `__v`
+### Frontend
 
-### Authentication & Email Verification
+- **React with Vite**
+- **TypeScript**
+- **React Router**
+- **TanStack Query**
+- **Axios**
+- **Zustand**
+- **react-hook-form + zod**
+- **Tailwind CSS**
+- **Recharts**
+- **shadcn/ui**
 
-FlowDesk uses cookie-based JWT authentication with protected backend routes. New accounts are not activated immediately after registration. Instead, the backend creates a one-time email verification token, stores only its hashed value, and sends a verification link via email.
+## Features
 
-After the user confirms the link, the backend validates the token, checks expiration and usage state, marks the account as verified, and only then allows login. This keeps authentication separate from account activation and follows a real-world verification flow.
+- User registration and login
+- Email verification with hashed one-time tokens
+- Cookie-based authentication using HttpOnly JWTs
+- Protected backend routes with reusable authentication middleware
+- Workspace-based user context
+- Project overview and project detail pages
+- Task management with status tracking
+- Comments and project-related activity data
+- File attachment upload, download, and deletion
+- Private file storage using Cloudflare R2 and signed download URLs
+- Workspace invite flow with token-based invitation links
+- Server-side search, filtering, pagination, and DTO mapping
+- Demo/development seed data for local testing
 
-## ⚠️ Current Limitations
+## Architecture Notes
 
-- Project authorization is currently implemented on a project level only
-- More advanced permissions such as workspace roles, fine-grained project permissions, or invitation flows are not implemented yet
-- Newly registered users start with no project data
-- Demo data is currently tied to a dedicated demo user
-- The demo user is used for showcasing seeded project data and is not meant to represent a real production user model
+FlowDesk uses a custom Express backend instead of a BaaS solution. The backend is responsible for authentication, authorization, validation, database access, file handling, and response shaping.
 
-### Current upload limitation
+Authentication is handled through JWTs stored in HttpOnly cookies. Protected routes use a reusable requireAuth middleware that verifies the access token and attaches the authenticated user context to the request.
 
-- File uploads are now associated with the authenticated user
-- Task selection during upload is still limited and will be improved in a later branch
-- User cannot select a task right now. (gets fixed in next branch)
+Most API responses are shaped through DTO and mapper functions. This keeps frontend data predictable and avoids exposing database-specific fields such as \_id, \_\_v, or internal storage keys unless needed.
 
-## ⏳ Planned Improvements
+Data-heavy endpoints handle filtering, search, pagination, and aggregation on the backend. The frontend consumes already structured response data and uses React Query for caching and request state management.
 
-- Add workspace or organization-based ownership model
-- Improve dashboard empty states for newly registered users
-- Avatar handling currently uses an `avatarKey`. A full profile image upload flow is planned for a later iteration.
-- Add centralized error handling middleware
-- Replace route-level error checks with typed application errors
-- Improve API error responses for auth and profile update flows
-- Add invitation flow for project members
-- Refactor shared types and API contracts
-- Improve caching strategy with React Query
-- Implement Framer Motion for animations
-- Finalize layout/theme
+## Authentication & Email Verification
+
+New users are not activated immediately after registration. During registration, the backend creates a one-time email verification token, stores only its hashed value, and sends a verification link via email.
+
+When the user opens the verification link, the backend validates the token, checks its expiration and usage state, marks the account as verified, and only then allows the user to log in.
+
+This separates account creation from account activation and follows a more realistic authentication flow.
+
+## File Uploads & Downloads
+
+FlowDesk stores uploaded files in Cloudflare R2 using S3-compatible APIs. The database stores file metadata such as filename, MIME type, file size, storage key, project reference, task reference, workspace reference, and uploader reference.
+
+Downloads are handled through signed URLs. The backend first verifies that the authenticated user has access to the requested attachment and then redirects the user to a temporary signed download URL.
+
+This keeps private files protected while avoiding unnecessary file streaming through the backend.
+
+## Workspace Invites
+
+Admins can create invite links for new workspace members. Invites are token-based, expire after a defined time, and can only be used once.
+
+When an invited user registers through a valid invite link, they are added to the existing workspace instead of creating a new isolated workspace.
+
+## Current Status
+
+FlowDesk is still in active development. Core backend features such as authentication, project data, task data, file attachments, workspace context, email verification, and invite handling are already implemented or being actively refined.
+
+The current focus is on improving route structure, service separation, backend tests, authorization checks, and production-readiness before deployment.
+
+## Planned Improvements
+
+- Improve workspace and role-based authorization
+- Expand backend test coverage for all major routes
+- Continue refactoring older routes into service-based architecture
+- Improve frontend empty states and loading states
+- Add more polished task and attachment interactions
+- Improve profile and avatar upload handling
+- Finalize production deployment setup
+- Improve UI animations and layout polish
+- Add more complete project activity and audit log features
 
 ## Installation
 
@@ -114,25 +147,6 @@ npm run dev
 cd client
 npm run dev
 ```
-
-## 🛠 Tech Stack
-
-### Backend
-
-- **Node + Express**
-
-### Frontend
-
-- **TypeScript**
-- **React**
-- **Axios**
-- **Zustand**
-- **react-hook-form + zod**
-- **TanStack Query**
-- **Tailwind CSS**
-- **Recharts**
-- **React Router**
-- **shadcn/ui**
 
 ## Screenshots
 
