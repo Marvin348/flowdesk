@@ -1,11 +1,11 @@
 import { vi } from "vitest";
 
-vi.mock("@/features/email/services/email.service", () => ({
-  sendVerificationEmail: vi.fn(),
+vi.mock("@/features/email/services/sendAccountVerificationEmail.service.js", () => ({
+  sendAccountVerificationEmail: vi.fn(),
 }));
 
 import app from "@/app.js";
-import { sendVerificationEmail } from "@/features/email/services/email.service.js";
+import { sendAccountVerificationEmail } from "@/features/email/services/sendAccountVerificationEmail.service.js";
 import request from "supertest";
 import { beforeAll, beforeEach, afterAll, describe, expect, it } from "vitest";
 import {
@@ -17,7 +17,6 @@ import { UserModel } from "@/features/users/models/user.modal.js";
 import { WorkspaceModel } from "@/features/workspace/models/workspace.model.js";
 import { VerificationTokenModel } from "@/features/verification-tokens/models/verificationToken.model.js";
 import mongoose from "mongoose";
-import { email } from "zod";
 
 beforeAll(async () => {
   await connectTestDb();
@@ -77,9 +76,9 @@ describe("POST /auth/resend-verification-email", () => {
 
     expect(verificationToken).not.toBeNull();
 
-    expect(sendVerificationEmail).toHaveBeenCalledTimes(1);
+    expect(sendAccountVerificationEmail).toHaveBeenCalledTimes(1);
 
-    expect(sendVerificationEmail).toHaveBeenCalledWith({
+    expect(sendAccountVerificationEmail).toHaveBeenCalledWith({
       to: "test@example.com",
       verificationUrl: expect.stringContaining("/verify-email/"),
     });
@@ -94,7 +93,7 @@ describe("POST /auth/resend-verification-email", () => {
     expect(response.body).toEqual({
       message: "If an account exists, a new verification email has been sent.",
     });
-    expect(sendVerificationEmail).not.toHaveBeenCalled();
+    expect(sendAccountVerificationEmail).not.toHaveBeenCalled();
   });
 
   it("returns 200 when user is already verified", async () => {
@@ -128,7 +127,7 @@ describe("POST /auth/resend-verification-email", () => {
       message: "If an account exists, a new verification email has been sent.",
     });
 
-    expect(sendVerificationEmail).not.toHaveBeenCalled();
+    expect(sendAccountVerificationEmail).not.toHaveBeenCalled();
 
     const verificationToken = await VerificationTokenModel.findOne({
       userId: existingUserId,

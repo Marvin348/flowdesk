@@ -9,17 +9,17 @@ const attachmentSchema = new mongoose.Schema(
     },
 
     projectId: {
-      type: String,
+      type: mongoose.Schema.Types.ObjectId,
       required: true,
     },
 
     taskId: {
-      type: String,
+      type: mongoose.Schema.Types.ObjectId,
       default: null,
     },
 
     userId: {
-      type: String,
+      type: mongoose.Schema.Types.ObjectId,
       required: true,
     },
 

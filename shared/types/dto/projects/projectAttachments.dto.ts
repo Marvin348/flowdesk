@@ -27,6 +27,8 @@ export type ProjectAttachmentDto = {
 
 export type ProjectAttachmentResponseDto = {
   items: ProjectAttachmentDto[];
-  totalPages: number;
-  currentPage: number;
+  pagination: {
+    totalPages: number;
+    currentPage: number;
+  };
 };

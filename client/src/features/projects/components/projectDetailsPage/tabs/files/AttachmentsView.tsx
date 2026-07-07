@@ -33,8 +33,8 @@ const AttachmentsView = ({ projectId }: AttachmentsViewProps) => {
   const { data, isLoading, error } = useProjectAttachments(query);
 
   const attachments = data?.items ?? [];
-  const currentPage = data?.currentPage || DEFAULT_PAGE;
-  const totalPages = data?.totalPages ?? 1;
+  const currentPage = data?.pagination.currentPage || DEFAULT_PAGE;
+  const totalPages = data?.pagination.totalPages ?? 1;
 
   const {
     selectedFiles,

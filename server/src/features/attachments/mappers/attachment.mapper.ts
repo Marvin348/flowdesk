@@ -10,9 +10,9 @@ const toIsoString = (value: string | Date | undefined): string => {
 export const toAttachmentDto = (attachment: AttachmentDocument): Attachment => {
   return {
     id: attachment._id.toString(),
-    projectId: attachment.projectId,
-    taskId: attachment.taskId,
-    userId: attachment.userId,
+    projectId: attachment.projectId.toString(),
+    taskId: attachment.taskId ? attachment.taskId.toString() : undefined,
+    userId: attachment.userId.toString(),
     fileName: attachment.fileName,
     fileUrl: `/attachments/${attachment._id}/download`,
     mimeType: attachment.mimeType,

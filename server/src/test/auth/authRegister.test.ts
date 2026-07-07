@@ -1,11 +1,11 @@
 import { vi } from "vitest";
 
-vi.mock("@/features/email/services/email.service", () => ({
-  sendVerificationEmail: vi.fn(),
+vi.mock("@/features/email/services/sendAccountVerificationEmail.service.js", () => ({
+  sendAccountVerificationEmail: vi.fn(),
 }));
 
 import app from "@/app.js";
-import { sendVerificationEmail } from "@/features/email/services/email.service.js";
+import { sendAccountVerificationEmail } from "@/features/email/services/sendAccountVerificationEmail.service.js";
 import request from "supertest";
 import { beforeAll, beforeEach, afterAll, describe, expect, it } from "vitest";
 import {
@@ -70,7 +70,7 @@ describe("POST /auth/register", () => {
 
     expect(verificationToken).not.toBeNull();
 
-    expect(sendVerificationEmail).toHaveBeenCalledWith({
+    expect(sendAccountVerificationEmail).toHaveBeenCalledWith({
       to: "test@example.com",
       verificationUrl: expect.stringContaining(
         "http://localhost:5173/verify-email/",
