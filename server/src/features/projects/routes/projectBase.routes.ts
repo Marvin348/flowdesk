@@ -14,19 +14,9 @@ import { createProject } from "@/features/projects/services/createProject.servic
 import { deleteProject } from "@/features/projects/services/deleteProject.service.js";
 import { projectSummaryQuerySchema } from "@/features/projects/validation/projectSummary.validator.js";
 import { getProjectSummary } from "@/features/projects/services/getProjectSummary.service.js";
+import mongoose from "mongoose";
 
 const router = express.Router();
-
-router.get(
-  "/",
-  asyncHandler(async (req, res) => {
-    const { workspaceId } = getAuthContext(req);
-
-    const projects = await getProjects({ workspaceId });
-
-    return res.status(200).json({ data: projects });
-  }),
-);
 
 router.get(
   "/summaries",
@@ -75,11 +65,11 @@ router.post(
 
 router.get(
   "/:id",
-  asyncHandler(async (req: Request<{ id?: string }>, res) => {
+  asyncHandler(async (req: Request<{ id: string }>, res) => {
     const projectId = req.params.id;
 
-    if (!projectId) {
-      throw new AppError("Invalid id", 400);
+    if (!mongoose.Types.ObjectId.isValid(projectId)) {
+      throw new AppError("Invalid projectId", 400);
     }
 
     const { workspaceId } = getAuthContext(req);
@@ -99,11 +89,11 @@ router.get(
 
 router.delete(
   "/:id",
-  asyncHandler(async (req: Request<{ id?: string }>, res) => {
+  asyncHandler(async (req: Request<{ id: string }>, res) => {
     const projectId = req.params.id;
 
-    if (!projectId) {
-      throw new AppError("projectId invalid input", 400);
+    if (!mongoose.Types.ObjectId.isValid(projectId)) {
+      throw new AppError("Invalid projectId", 400);
     }
 
     const { userId, role, workspaceId } = getAuthContext(req);

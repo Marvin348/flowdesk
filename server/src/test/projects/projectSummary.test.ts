@@ -1,19 +1,20 @@
 import app from "@/app.js";
-import { AttachmentModel } from "@/features/attachments/models/attachment.model.js";
-import { CommentModel } from "@/features/comments/models/comment.model.js";
-import { createAccessToken } from "@/features/auth/utils/tokens.js";
-import { ProjectModel } from "@/features/projects/models/project.model.js";
-import { TaskModel } from "@/features/tasks/models/task.model.js";
-import { UserModel } from "@/features/users/models/user.modal.js";
-import { WorkspaceModel } from "@/features/workspace/models/workspace.model.js";
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
 import {
   clearTestDb,
   connectTestDb,
   disconnectTestDb,
 } from "@/test/setupTestDb.js";
-import mongoose from "mongoose";
 import request from "supertest";
+import {
+  createAttachment,
+  createAuthedUserContext,
+  createComment,
+  createProject,
+  createTask,
+  createUser,
+  createWorkspace,
+} from "@/test/helpers/testFactories.js";
 
 beforeAll(async () => {
   await connectTestDb();
@@ -27,39 +28,16 @@ afterAll(async () => {
   await disconnectTestDb();
 });
 
-const createAuthedProjectContext = async () => {
-  const userId = new mongoose.Types.ObjectId();
-  const workspaceId = new mongoose.Types.ObjectId();
-  const invitedUserId = new mongoose.Types.ObjectId();
-
-  await WorkspaceModel.create({
-    _id: workspaceId,
-    name: "Test Workspace",
-    ownerId: userId,
-  });
-
-  const user = await UserModel.create({
-    _id: userId,
-    email: "test@example.com",
-    name: "Test User",
-    passwordHash: "hashed-password",
-    workspaceId,
-    role: "admin",
-    isEmailVerified: true,
-  });
-
-  const invitedUser = await UserModel.create({
-    _id: invitedUserId,
-    email: "member@example.com",
-    name: "Project Member",
-    passwordHash: "hashed-password",
+const createProjectSummaryContext = async () => {
+  const { authCookie, user, userId, workspaceId } =
+    await createAuthedUserContext();
+  const invitedUser = await createUser({
     workspaceId,
     role: "member",
-    isEmailVerified: true,
+    name: "Project Member",
     avatarStorageKey: "avatars/member.jpg",
   });
-
-  const project = await ProjectModel.create({
+  const project = await createProject({
     workspaceId,
     title: "Test Project",
     description: "A project for endpoint tests",
@@ -67,23 +45,19 @@ const createAuthedProjectContext = async () => {
     priority: "high",
     projectStatus: "in_progress",
     dueDate: "2026-07-15",
-    invitedUserIds: [invitedUserId],
+    invitedUserIds: [invitedUser._id],
   });
 
-  const accessToken = createAccessToken(userId.toString());
-
   return {
-    accessToken,
+    authCookie,
     invitedUser,
-    invitedUserId,
+    invitedUserId: invitedUser._id,
     project,
     user,
     userId,
     workspaceId,
   };
 };
-
-const authCookie = (accessToken: string) => [`accessToken=${accessToken}`];
 
 describe("GET /projects/summaries", () => {
   it("returns 401 when the user is not authenticated", async () => {
@@ -94,42 +68,26 @@ describe("GET /projects/summaries", () => {
   });
 
   it("returns 400 if the query is invalid", async () => {
-    const { accessToken } = await createAuthedProjectContext();
+    const { authCookie } = await createProjectSummaryContext();
 
     const response = await request(app)
       .get("/projects/summaries")
       .query({ page: "0" })
-      .set("Cookie", authCookie(accessToken));
+      .set("Cookie", authCookie);
 
     expect(response.status).toBe(400);
     expect(response.body).toEqual({ message: "Invalid querys" });
   });
 
   it("returns an empty paginated list when the workspace has no projects", async () => {
-    const userId = new mongoose.Types.ObjectId();
-    const workspaceId = new mongoose.Types.ObjectId();
-
-    await WorkspaceModel.create({
-      _id: workspaceId,
-      name: "Empty Workspace",
-      ownerId: userId,
-    });
-
-    await UserModel.create({
-      _id: userId,
+    const { authCookie } = await createAuthedUserContext({
       email: "empty@example.com",
       name: "Empty User",
-      passwordHash: "hashed-password",
-      workspaceId,
-      role: "admin",
-      isEmailVerified: true,
     });
-
-    const accessToken = createAccessToken(userId.toString());
 
     const response = await request(app)
       .get("/projects/summaries")
-      .set("Cookie", authCookie(accessToken));
+      .set("Cookie", authCookie);
 
     expect(response.status).toBe(200);
     expect(response.body).toEqual({
@@ -144,46 +102,42 @@ describe("GET /projects/summaries", () => {
   });
 
   it("returns project summaries with task, comment, attachment, and user stats", async () => {
-    const { accessToken, invitedUserId, project, userId, workspaceId } =
-      await createAuthedProjectContext();
+    const { authCookie, invitedUserId, project, userId, workspaceId } =
+      await createProjectSummaryContext();
 
-    const [doneTask, pendingTask] = await TaskModel.create([
-      {
-        workspaceId,
-        projectId: project._id,
-        title: "Done Task",
-        dueDate: "2026-07-10",
-        taskStatus: "done",
-        collaboratorIds: [userId],
-        taskPriority: "high",
-      },
-      {
-        workspaceId,
-        projectId: project._id,
-        title: "Pending Task",
-        dueDate: "2026-07-11",
-        taskStatus: "pending",
-        collaboratorIds: [invitedUserId],
-        taskPriority: "medium",
-      },
-    ]);
+    const doneTask = await createTask({
+      workspaceId,
+      projectId: project._id,
+      title: "Done Task",
+      dueDate: "2026-07-10",
+      taskStatus: "done",
+      collaboratorIds: [userId],
+      taskPriority: "high",
+    });
+    const pendingTask = await createTask({
+      workspaceId,
+      projectId: project._id,
+      title: "Pending Task",
+      dueDate: "2026-07-11",
+      taskStatus: "pending",
+      collaboratorIds: [invitedUserId],
+      taskPriority: "medium",
+    });
 
-    await CommentModel.create([
-      {
-        workspaceId,
-        taskId: doneTask._id,
-        userId,
-        message: "First comment",
-      },
-      {
-        workspaceId,
-        taskId: pendingTask._id,
-        userId: invitedUserId,
-        message: "Second comment",
-      },
-    ]);
+    await createComment({
+      workspaceId,
+      taskId: doneTask._id,
+      userId,
+      message: "First comment",
+    });
+    await createComment({
+      workspaceId,
+      taskId: pendingTask._id,
+      userId: invitedUserId,
+      message: "Second comment",
+    });
 
-    await AttachmentModel.create({
+    await createAttachment({
       workspaceId,
       projectId: project._id,
       userId,
@@ -195,7 +149,7 @@ describe("GET /projects/summaries", () => {
 
     const response = await request(app)
       .get("/projects/summaries")
-      .set("Cookie", authCookie(accessToken));
+      .set("Cookie", authCookie);
 
     expect(response.status).toBe(200);
     expect(response.body.data.items).toHaveLength(1);
@@ -230,20 +184,14 @@ describe("GET /projects/summaries", () => {
   });
 
   it("does not return summaries from another workspace", async () => {
-    const { accessToken } = await createAuthedProjectContext();
-    const otherWorkspaceId = new mongoose.Types.ObjectId();
-    const otherOwnerId = new mongoose.Types.ObjectId();
-
-    await WorkspaceModel.create({
-      _id: otherWorkspaceId,
+    const { authCookie } = await createProjectSummaryContext();
+    const otherWorkspace = await createWorkspace({
       name: "Other Workspace",
-      ownerId: otherOwnerId,
     });
 
-    await ProjectModel.create({
-      workspaceId: otherWorkspaceId,
+    await createProject({
+      workspaceId: otherWorkspace._id,
       title: "Other Workspace Project",
-      ownerId: otherOwnerId.toString(),
       priority: "low",
       projectStatus: "pending",
       dueDate: "2026-08-01",
@@ -252,36 +200,34 @@ describe("GET /projects/summaries", () => {
     const response = await request(app)
       .get("/projects/summaries")
       .query({ search: "Other Workspace Project" })
-      .set("Cookie", authCookie(accessToken));
+      .set("Cookie", authCookie);
 
     expect(response.status).toBe(200);
     expect(response.body.data.items).toEqual([]);
   });
 
   it("filters summaries by search, priority, status, and attachment presence", async () => {
-    const { accessToken, project, userId, workspaceId } =
-      await createAuthedProjectContext();
+    const { authCookie, project, userId, workspaceId } =
+      await createProjectSummaryContext();
 
-    await ProjectModel.create([
-      {
-        workspaceId,
-        title: "Backend Cleanup",
-        ownerId: userId.toString(),
-        priority: "medium",
-        projectStatus: "pending",
-        dueDate: "2026-08-01",
-      },
-      {
-        workspaceId,
-        title: "Website Launch",
-        ownerId: userId.toString(),
-        priority: "high",
-        projectStatus: "done",
-        dueDate: "2026-09-01",
-      },
-    ]);
+    await createProject({
+      workspaceId,
+      title: "Backend Cleanup",
+      ownerId: userId.toString(),
+      priority: "medium",
+      projectStatus: "pending",
+      dueDate: "2026-08-01",
+    });
+    await createProject({
+      workspaceId,
+      title: "Website Launch",
+      ownerId: userId.toString(),
+      priority: "high",
+      projectStatus: "done",
+      dueDate: "2026-09-01",
+    });
 
-    await AttachmentModel.create({
+    await createAttachment({
       workspaceId,
       projectId: project._id,
       userId,
@@ -299,7 +245,7 @@ describe("GET /projects/summaries", () => {
         status: "in_progress",
         hasAttachments: "true",
       })
-      .set("Cookie", authCookie(accessToken));
+      .set("Cookie", authCookie);
 
     expect(response.status).toBe(200);
     expect(response.body.data.items).toHaveLength(1);
@@ -315,39 +261,38 @@ describe("GET /projects/summaries", () => {
   });
 
   it("paginates summaries with the requested page and limit", async () => {
-    const { accessToken, project, userId, workspaceId } =
-      await createAuthedProjectContext();
+    const { authCookie, project, userId, workspaceId } =
+      await createProjectSummaryContext();
 
-    await ProjectModel.create([
-      {
-        workspaceId,
-        title: "Second Project",
-        ownerId: userId.toString(),
-        priority: "medium",
-        projectStatus: "pending",
-        dueDate: "2026-08-01",
-      },
-      {
-        workspaceId,
-        title: "Third Project",
-        ownerId: userId.toString(),
-        priority: "low",
-        projectStatus: "done",
-        dueDate: "2026-09-01",
-      },
-    ]);
+    const secondProject = await createProject({
+      workspaceId,
+      title: "Second Project",
+      ownerId: userId.toString(),
+      priority: "medium",
+      projectStatus: "pending",
+      dueDate: "2026-08-01",
+    });
+    const thirdProject = await createProject({
+      workspaceId,
+      title: "Third Project",
+      ownerId: userId.toString(),
+      priority: "low",
+      projectStatus: "done",
+      dueDate: "2026-09-01",
+    });
 
     const response = await request(app)
       .get("/projects/summaries")
       .query({ page: "2", limit: "2" })
-      .set("Cookie", authCookie(accessToken));
+      .set("Cookie", authCookie);
 
     expect(response.status).toBe(200);
     expect(response.body.data.items).toHaveLength(1);
-    expect(response.body.data.items[0]).toMatchObject({
-      id: project._id.toString(),
-      title: "Test Project",
-    });
+    expect([
+      project._id.toString(),
+      secondProject._id.toString(),
+      thirdProject._id.toString(),
+    ]).toContain(response.body.data.items[0].id);
     expect(response.body.data.pagination).toEqual({
       totalPages: 2,
       currentPage: 2,

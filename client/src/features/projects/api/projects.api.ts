@@ -6,11 +6,6 @@ import type { ProjectSummariesInput } from "@shared/types/inputs/projectSummarie
 import type { ProjectSummariesResponseDto } from "@shared/types/dto/projects/projectSummary.dto";
 import type { ProjectOptionsInput } from "@shared/types/inputs/projectOptionsInput";
 
-export const fetchProjects = async (): Promise<Project[]> => {
-  const res = await apiClient.get("/projects");
-  return res.data.data;
-};
-
 export const fetchProject = async (id: string): Promise<Project> => {
   const res = await apiClient.get(`/projects/${id}`);
   return res.data;
