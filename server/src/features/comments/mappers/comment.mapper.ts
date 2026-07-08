@@ -10,8 +10,8 @@ const toIsoString = (value: string | Date | undefined): string => {
 export const toCommentDto = (comment: CommentDocument): Comment => {
   return {
     id: comment._id.toString(),
-    taskId: comment.taskId,
-    userId: comment.userId,
+    taskId: comment.taskId.toString(),
+    userId: comment.userId.toString(),
     message: comment.message ?? "",
     createdAt: toIsoString(comment.createdAt),
     parentCommentId: comment.parentCommentId ?? undefined,
