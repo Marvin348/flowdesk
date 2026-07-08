@@ -28,8 +28,8 @@ const ProjectsPage = () => {
   const { data, isLoading, error } = useProjectSummaries(summariesInput);
 
   const projects = data?.items ?? [];
-  const currentPage = data?.currentPage ?? DEFAULT_PAGE;
-  const totalPages = data?.totalPages ?? 1;
+  const currentPage = data?.pagination.currentPage ?? DEFAULT_PAGE;
+  const totalPages = data?.pagination.totalPages ?? 1;
 
   const projectsListVM = useProjectsListVM(projects);
   const projectSummary = useProjectsSummary(projectsListVM);
@@ -38,7 +38,10 @@ const ProjectsPage = () => {
 
   if (error)
     return (
-      <ErrorMessage message="Etwas ist schief gelaufen" className="flex-center text-muted-foreground"/>
+      <ErrorMessage
+        message="Etwas ist schief gelaufen"
+        className="flex-center text-muted-foreground"
+      />
     );
 
   return (
@@ -70,15 +73,13 @@ const ProjectsPage = () => {
         <ProjectList projects={projectsListVM} />
       </section>
 
-      {projects.length > 0 && totalPages > 1 && (
-        <div className="mt-auto flex justify-end">
-          <Pagination
-            currentPage={currentPage}
-            totalPages={totalPages}
-            setPage={actions.setPage}
-          />
-        </div>
-      )}
+      <div className="mt-auto flex justify-end">
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          setPage={actions.setPage}
+        />
+      </div>
 
       {isCreateProjectOpen && (
         <CreateProjectModal

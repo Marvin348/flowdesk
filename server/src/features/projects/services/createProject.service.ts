@@ -1,4 +1,4 @@
-import { CreateProjectFields } from "@/features/projects/validation/project.validator.js";
+import { CreateProjectParams } from "@/features/projects/validation/project.validator.js";
 import { ProjectModel } from "@/features/projects/models/project.model.js";
 import { toProjectDto } from "@/features/projects/mappers/project.mapper.js";
 import { createActivity } from "@/features/activity/services/createActivity.service.js";
@@ -6,7 +6,7 @@ import { AppError } from "@/utils/AppError.js";
 import { UserModel } from "@/features/users/models/user.modal.js";
 
 type CreateProjectInput = {
-  input: CreateProjectFields;
+  input: CreateProjectParams;
   workspaceId: string;
   userId: string;
 };

@@ -9,11 +9,11 @@ const commentSchema = new mongoose.Schema(
     },
 
     taskId: {
-      type: String,
+      type: mongoose.Schema.Types.ObjectId,
       required: true,
     },
     userId: {
-      type: String,
+      type: mongoose.Schema.Types.ObjectId,
       required: true,
     },
     message: {

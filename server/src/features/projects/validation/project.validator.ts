@@ -11,4 +11,4 @@ export const createProjectSchema = z.object({
   description: z.string().optional(),
 });
 
-export type CreateProjectFields = z.infer<typeof createProjectSchema>;
+export type CreateProjectParams = z.infer<typeof createProjectSchema>;

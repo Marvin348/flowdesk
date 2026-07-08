@@ -1,97 +1,70 @@
-import { Attachment } from "@shared/types/attachment.js";
-import { Comment } from "@shared/types/comment.js";
 import type { ProjectSummariesDto } from "@shared/types/dto/projects/projectSummary.dto.js";
-import { Project } from "@shared/types/project.js";
-import { Task } from "@shared/types/task.js";
 import { calcPercent } from "@/shared/utils/calcPercent.js";
-import { toUserAvatarDto } from "@/features/users/mappers/user.mapper.js";
-import { User } from "@shared/types/user.js";
-import { isDefined } from "@/shared/utils/isDefined.js";
+import { Types } from "mongoose";
+import type { Priority } from "@shared/types/priority.js";
+import type { StatusBase } from "@shared/types/StatusBase.js";
+import { toIsoString } from "@/utils/toIsoString.js";
+import { bulidPublicFileUrl } from "@/utils/bulidPublicFileUrl.js";
 
-export const toProjectsSummaryDto = (
-  projects: Project[],
-  tasks: Task[],
-  comments: Comment[],
-  attachments: Attachment[],
-  usersById: Map<string, User>,
-): ProjectSummariesDto[] => {
-  // refactor later
-  const tasksByProjectId = new Map<string, typeof tasks>();
-  for (const task of tasks) {
-    const existing = tasksByProjectId.get(task.projectId) ?? [];
-    existing.push(task);
-    tasksByProjectId.set(task.projectId, existing);
-  }
+type ProjectSummaryAggregationResult = {
+  _id: Types.ObjectId;
+  workspaceId: Types.ObjectId;
 
-  const commentsByTaskId = new Map<string, typeof comments>();
-  for (const comment of comments) {
-    const existing = commentsByTaskId.get(comment.taskId) ?? [];
-    existing.push(comment);
-    commentsByTaskId.set(comment.taskId, existing);
-  }
+  title: string;
+  description?: string;
+  ownerId: Types.ObjectId;
 
-  const attachmentsByTaskId = new Map<string, typeof attachments>();
-  for (const attachment of attachments) {
-    const existing = attachmentsByTaskId.get(attachment.taskId) ?? [];
-    existing.push(attachment);
-    attachmentsByTaskId.set(attachment.taskId, existing);
-  }
+  priority: Priority;
+  projectStatus: StatusBase;
 
-  const projectListItems = projects.map((p): ProjectSummariesDto => {
-    const projectTasks = tasksByProjectId.get(p.id) ?? [];
+  dueDate: Date;
+  invitedUserIds: Types.ObjectId[];
+  createdAt: Date;
 
-    const counts = projectTasks.reduce(
-      (acc, task) => {
-        acc.commentCount += (commentsByTaskId.get(task.id) ?? []).length;
-        acc.attachmentCount += (attachmentsByTaskId.get(task.id) ?? []).length;
+  invitedUsers: {
+    _id: Types.ObjectId;
+    name: string;
+    avatarKey?: string;
+    avatarStorageKey?: string;
+  }[];
 
-        if (task.taskStatus === "done") {
-          acc.completedTaskCount += 1;
-        }
+  totalTasks: number;
+  doneTasks: number;
 
-        return acc;
-      },
-      {
-        commentCount: 0,
-        attachmentCount: 0,
-        completedTaskCount: 0,
-      },
-    );
-
-    const total = projectTasks.length;
-    const completed = counts.completedTaskCount;
-
-    const progress = {
-      total,
-      completed,
-      progressPercent: calcPercent(completed, total),
-    };
-
-    const invitedUserIds = Array.from(new Set(p.invitedUserIds));
-    const invitedUsers = invitedUserIds
-      .map((id) => usersById.get(id))
-      .filter(isDefined)
-      .map(toUserAvatarDto);
-
-    return {
-      id: p.id,
-      title: p.title,
-      priority: p.priority,
-      projectStatus: p.projectStatus,
-      dueDate: p.dueDate,
-      invitedUserIds,
-      invitedUsers,
-      createdAt: p.createdAt,
-
-      progress,
-
-      stats: {
-        commentCount: counts.commentCount,
-        attachmentCount: counts.attachmentCount,
-        userCount: invitedUserIds.length,
-      },
-    };
-  });
-
-  return projectListItems;
+  commentCount: number;
+  attachmentCount: number;
+  userCount: number;
 };
+
+export const toProjectSummaryDto = (
+  project: ProjectSummaryAggregationResult,
+): ProjectSummariesDto => ({
+  id: project._id.toString(),
+  title: project.title,
+  priority: project.priority,
+  projectStatus: project.projectStatus,
+  dueDate: toIsoString(project.dueDate),
+  createdAt: toIsoString(project.createdAt),
+  invitedUserIds: project.invitedUserIds.map((id) => id.toString()),
+
+  invitedUsers: project.invitedUsers.map((user) => {
+    return {
+      id: user._id.toString(),
+      name: user.name,
+      avatarKey: user.avatarKey,
+      avatarUrl: bulidPublicFileUrl(user.avatarStorageKey),
+    };
+  }),
+
+  progress: {
+    total: project.totalTasks,
+    progressPercent: calcPercent(project.doneTasks, project.totalTasks),
+    completed: project.doneTasks,
+  },
+
+  stats: {
+    commentCount: project.commentCount,
+    attachmentCount: project.attachmentCount,
+    userCount: project.userCount,
+  },
+});

@@ -12,9 +12,9 @@ export type ProjectSummariesDto = {
   createdAt: string;
 
   invitedUserIds: string[];
-  invitedUsers: UserAvatarDto[]
+  invitedUsers: UserAvatarDto[];
 
-  progress: Progress
+  progress: Progress;
 
   stats: {
     commentCount: number;
@@ -25,6 +25,8 @@ export type ProjectSummariesDto = {
 
 export type ProjectSummariesResponseDto = {
   items: ProjectSummariesDto[];
-  currentPage: number;
-  totalPages: number;
+  pagination: {
+    currentPage: number;
+    totalPages: number;
+  };
 };
