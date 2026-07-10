@@ -9,8 +9,6 @@ const InviteContent = ({ token }: { token: string }) => {
   if (isLoading) return <InviteLoadingState />;
   if (error || !invite) return <InviteErrorState/>
 
-  console.log("invite", invite);
-
   return <AcceptInviteForm invite={invite} token={token} />;
 };
 export default InviteContent;

@@ -38,7 +38,12 @@ export const resendVerificationEmail = async (
   return res.data.message;
 };
 
-export const updatePassword = async (input: PasswordFields) => {
-  const res = await apiClient.patch("/auth/password", input);
-  return res.data;
+export const requestUpdatePassword = async (input: PasswordFields) => {
+  const res = await apiClient.post("/auth/password/change-request", input);
+  return res.data.message;
+};
+
+export const verifyChangePassword = async (token: string) => {
+  const res = await apiClient.post("/auth/password/change/verify", { token });
+  return res.data.message;
 };

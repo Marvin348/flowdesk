@@ -27,6 +27,10 @@ const verificationTokenSchema = new mongoose.Schema(
       type: String,
     },
 
+    newPasswordHash: {
+      type: String,
+    },
+
     expiresAt: {
       type: Date,
       required: true,

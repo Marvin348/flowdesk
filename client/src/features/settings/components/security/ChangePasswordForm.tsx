@@ -1,16 +1,16 @@
-import { FormInput } from "@/shared/components/ui/FormInput";
-import { LockKeyhole, CheckCircle2 } from "lucide-react";
+import { CheckCircle2 } from "lucide-react";
 import { Button } from "@/shared/components/ui/button";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { passwordSchema } from "@/features/auth/schemas/securitySchema";
 import type { PasswordFields } from "@/features/auth/schemas/securitySchema";
-import { useUpdatePassword } from "@/features/auth/hooks/useUpdatePassword";
+import { useRequestUpdatePassword } from "@/features/auth/hooks/useRequestUpdatePassword";
 import { Spinner } from "@/shared/components/ui/spinner";
 import ErrorMessage from "@/shared/components/ErrorMessage";
+import { PasswordInput } from "@/shared/components/ui/PasswordInput";
 
-const SecuritySettingsForm = () => {
-  const { mutate, isPending, error, isSuccess } = useUpdatePassword();
+const ChangePasswordForm = ({ onClose }: { onClose: () => void }) => {
+  const { mutate, isPending, error, isSuccess } = useRequestUpdatePassword();
 
   const {
     register,
@@ -38,24 +38,25 @@ const SecuritySettingsForm = () => {
     });
   };
 
+  const onCancel = () => {
+    reset({
+      currentPassword: "",
+      newPassword: "",
+      confirmPassword: "",
+    });
+
+    onClose();
+  };
+
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="p-4">
-      <div className="pb-4 border-b">
-        <h3 className="text-lg font-semibold">Sicherheit</h3>
-        <p className="mt-1 text-sm text-muted-foreground">
-          Verwalte deine persönliche Sicherheit und Passwörter
-        </p>
-      </div>
-
       <div className="mt-6 grid grid-cols-1 gap-5 md:grid-cols-2">
         <div>
-          <FormInput
+          <PasswordInput
             id="current-password"
             label="Aktives Password"
-            type="password"
             autoComplete="current-password"
             placeholder="••••••••"
-            icon={<LockKeyhole className="size-4" />}
             {...register("currentPassword")}
           />
           {errors.currentPassword && (
@@ -67,13 +68,11 @@ const SecuritySettingsForm = () => {
         </div>
 
         <div>
-          <FormInput
+          <PasswordInput
             id="new-password"
             label="Neues Password"
-            type="password"
             autoComplete="new-password"
             placeholder="••••••••"
-            icon={<LockKeyhole className="size-4" />}
             {...register("newPassword")}
           />
           {errors.newPassword && (
@@ -85,13 +84,11 @@ const SecuritySettingsForm = () => {
         </div>
 
         <div className="md:col-start-2">
-          <FormInput
+          <PasswordInput
             id="confirmPassword"
             label="Neues Password bestätigen"
-            type="password"
             autoComplete="new-password"
             placeholder="••••••••"
-            icon={<LockKeyhole className="size-4" />}
             {...register("confirmPassword")}
           />
           {errors.confirmPassword && (
@@ -113,30 +110,31 @@ const SecuritySettingsForm = () => {
       {isSuccess && (
         <div className="mt-6 flex items-center gap-2 border bg-muted rounded-md px-4 py-3 text-sm">
           <CheckCircle2 className="size-4 text-emerald-500" />
-          <span>Dein Passwort wurde erfolgreich geändert.</span>
+          <span>
+            Wir haben dir eine E-Mail zur Bestätigung deiner Passwortänderung
+            gesendet.
+          </span>
         </div>
       )}
 
-      <div className="mt-8 flex items-center justify-end gap-3">
+      <div className="mt-4 flex items-center justify-end gap-3">
         <Button
           variant="outline"
           type="button"
-          disabled={!isDirty || isPending}
-          onClick={() => {
-            reset({
-              currentPassword: "",
-              newPassword: "",
-              confirmPassword: "",
-            });
-          }}
+          disabled={isPending}
+          onClick={onCancel}
         >
           Abbrechen
         </Button>
-        <Button type="submit" disabled={!isDirty || !isValid || isPending}>
+        <Button
+          type="submit"
+          disabled={!isDirty || !isValid || isPending}
+          className="w-42"
+        >
           {isPending ? <Spinner /> : "Änderungen speichern"}
         </Button>
       </div>
     </form>
   );
 };
-export default SecuritySettingsForm;
+export default ChangePasswordForm;
