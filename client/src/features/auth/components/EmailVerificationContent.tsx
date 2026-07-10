@@ -1,73 +1,73 @@
 import { useVerifyEmail } from "@/features/auth/hooks/useVerifyEmail";
-import ErrorMessage from "@/shared/components/ErrorMessage";
-import { Button } from "@/shared/components/ui/button";
-import { Spinner } from "@/shared/components/ui/spinner";
-import { CheckCircle2, LogIn } from "lucide-react";
 import { useEffect } from "react";
-import { Link } from "react-router";
+import VerificationPending from "@/features/auth/components/verification/VerificationPending";
+import VerificationCard from "@/features/auth/components/verification/VerificationCard";
+import { VerificationError } from "@/features/auth/components/verification/VerificationError";
+import VerificationSuccess from "@/features/auth/components/verification/VerificationSuccess";
+import { getApiErrorStatus } from "@/shared/api/getApiError";
 
 const EmailVerificationContent = ({ token }: { token: string }) => {
-  const { mutate, isPending, isError, isSuccess } = useVerifyEmail();
+  const { mutate, isPending, isError, error, isSuccess } = useVerifyEmail();
 
   useEffect(() => {
     mutate(token);
   }, [mutate, token]);
 
-  let content = (
-    <div className="flex items-center justify-center gap-4">
-      <Spinner className="size-8 text-accent" />
-      <p className="text-sm text-muted-foreground">
-        Deine E-Mail wird verifiziert.
-      </p>
-    </div>
-  );
+  const status = getApiErrorStatus(error);
 
-  if (isPending) {
-    content = (
-      <div className="flex items-center justify-center gap-4">
-        <Spinner className="size-8 text-accent" />
-        <p className="text-sm text-muted-foreground">
-          Deine E-Mail wird verifiziert.
-        </p>
-      </div>
+  if (isPending)
+    return (
+      <VerificationCard>
+        <VerificationPending message="Deine E-Mail wird bestätigt." />
+      </VerificationCard>
     );
-  }
 
-  if (isSuccess) {
-    content = (
-      <div className="text-center">
-        <div className="mx-auto flex size-12 items-center justify-center rounded-md bg-accent/10 text-accent">
-          <CheckCircle2 className="size-6" />
-        </div>
-        <h1 className="mt-6 text-2xl font-semibold">E-Mail bestätigt</h1>
-        <p className="mt-3 text-sm leading-6 text-muted-foreground">
-          Dein Account ist jetzt aktiviert. Du kannst dich nun einloggen.
-        </p>
-        <Button asChild size="lg" className="mt-6 w-full">
-          <Link to="/login">
-            <LogIn className="size-4" />
-            Zum Login
-          </Link>
-        </Button>
-      </div>
+  if (isSuccess)
+    return (
+      <VerificationCard>
+        <VerificationSuccess
+          title="E-Mail bestätigt"
+          message="Dein Account ist jetzt aktiviert. Du kannst dich nun einloggen."
+        />
+      </VerificationCard>
     );
-  }
 
   if (isError) {
-    content = (
-      <ErrorMessage
-        message="Der Link ist abgelaufen. Bitte versuche es erneut."
-        className="text-center"
-      />
+    if (status === 409) {
+      return (
+        <VerificationCard>
+          <VerificationError
+            title="Link wurde bereits verwendet"
+            message="Dieser Bestätigungslink wurde schon benutzt. Starte die Emailverifizierung bitte erneut."
+          />
+        </VerificationCard>
+      );
+    }
+
+    if (status === 410) {
+      return (
+        <VerificationCard>
+          <VerificationError
+            title="Link abgelaufen"
+            message="Dieser Bestätigungslink ist abgelaufen. Starte die Emailverifizierung bitte erneut."
+          />
+        </VerificationCard>
+      );
+    }
+
+    return (
+      <VerificationCard>
+        <VerificationError
+          message={"Deine E-Mail konnte nicht verifiziert werden."}
+        />
+      </VerificationCard>
     );
   }
 
   return (
-    <section className="flex min-h-screen items-center justify-center px-5 py-6 text-foreground">
-      <div className="w-full max-w-sm rounded-md border bg-card p-6 shadow-sm sm:p-8">
-        {content}
-      </div>
-    </section>
+    <VerificationCard>
+      <VerificationPending message="Bestätigung wird vorbereitet." />
+    </VerificationCard>
   );
 };
 export default EmailVerificationContent;

@@ -5,10 +5,10 @@ import {
   registerSchema,
 } from "@/features/auth/validators/auth.validators.js";
 import {
-  changePassword,
   loginUser,
   registerUser,
 } from "@/features/auth/services/auth.service.js";
+import { requestPasswordChange } from "@/features/auth/services/requestPasswordChange.service.js";
 import { UserModel } from "@/features/users/models/user.modal.js";
 import { toAuthUserDto } from "@/features/users/mappers/user.mapper.js";
 import { requireAuth } from "@/features/auth/middleware/requireAuth.js";
@@ -21,6 +21,7 @@ import {
 } from "@/features/verification-tokens/validators/verifyEmailSchema.js";
 import { verifyEmail } from "@/features/verification-tokens/services/verifyEmail.service.js";
 import { resendVerificationEmail } from "@/features/verification-tokens/services/resendVerificationEmail.service.js";
+import { verifyPasswordChange } from "@/features/auth/services/verifyPasswordChange.service.js";
 
 const router = express.Router();
 
@@ -119,14 +120,14 @@ router.post(
 
     await resendVerificationEmail({ email: result.data.email });
 
-    return res
-      .status(200)
-      .json({ message: "If an account exists, a new verification email has been sent." });
+    return res.status(200).json({
+      message: "If an account exists, a new verification email has been sent.",
+    });
   }),
 );
 
-router.patch(
-  "/password",
+router.post(
+  "/password/change-request",
   requireAuth,
   asyncHandler(async (req, res) => {
     const result = passwordSchema.safeParse(req.body);
@@ -136,15 +137,36 @@ router.patch(
     }
 
     const input = result.data;
-    const userId = req.user?.id;
 
-    if (!userId) {
-      throw new AppError("Not authenticated", 401);
+    const { userId, workspaceId } = getAuthContext(req);
+
+    await requestPasswordChange({ input, userId, workspaceId });
+
+    return res
+      .status(200)
+      .json({ message: "Password change verification email sent" });
+  }),
+);
+
+router.post(
+  "/password/change/verify",
+  requireAuth,
+  asyncHandler(async (req, res) => {
+    const result = verificationTokenSchema.safeParse(req.body);
+
+    if (!result.success) {
+      throw new AppError("Invalid token", 400);
     }
 
-    await changePassword(input, userId);
+    const { userId, workspaceId } = getAuthContext(req);
 
-    return res.status(200).json({ message: "Password updated successfully" });
+    await verifyPasswordChange({
+      userId,
+      workspaceId,
+      token: result.data.token,
+    });
+
+    return res.status(200).json({ message: "Password successfully changed" });
   }),
 );
 

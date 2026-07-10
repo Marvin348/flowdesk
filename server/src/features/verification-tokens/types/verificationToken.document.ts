@@ -6,6 +6,7 @@ export type VerificationTokenDocument = {
   tokenHash: string;
   type: VerificationTokenType;
   newEmail?: string;
+  newPasswordHash?: string;
   expiresAt: Date;
   usedAt?: Date;
   createdAt: Date;
@@ -13,7 +14,9 @@ export type VerificationTokenDocument = {
 };
 
 export type VerificationTokenType = (typeof VERIFICATION_TOKEN_TYPE)[number];
+
 export const VERIFICATION_TOKEN_TYPE = [
   "email_verification",
   "email_change",
+  "password_change",
 ] as const;

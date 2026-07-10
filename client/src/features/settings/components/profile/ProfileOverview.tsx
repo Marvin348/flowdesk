@@ -1,7 +1,6 @@
 import { Button } from "@/shared/components/ui/button";
 import Avatar from "@/shared/components/ui/avatar/Avatar";
 import type { AuthUser } from "@shared/types/user";
-import { Pencil } from "lucide-react";
 import { useState } from "react";
 import ChangeEmailForm from "@/features/settings/components/profile/ChangeEmailForm";
 import ProfileSettingsForm from "@/features/settings/components/profile/ProfileSettingsForm";
@@ -66,7 +65,6 @@ const ProfileOverview = ({ currentUser }: { currentUser: AuthUser }) => {
               type="button"
               onClick={() => setIsEditingProfile(true)}
             >
-              <Pencil className="size-3.5" />
               Profil bearbeiten
             </Button>
           </div>

@@ -99,6 +99,10 @@ router.patch(
   }),
 );
 
+router.get("/me/security", asyncHandler(async(req, res) => {
+  
+}))
+
 router.patch(
   "/me/change-email",
   asyncHandler(async (req, res) => {

@@ -26,7 +26,7 @@ export const verifyChangeEmail = async ({
   }
 
   if (verificationToken.usedAt) {
-    throw new AppError("Token was already used", 400);
+    throw new AppError("Token was already used", 409);
   }
 
   const now = new Date();

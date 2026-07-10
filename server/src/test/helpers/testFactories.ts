@@ -171,6 +171,7 @@ export const createAuthedUserContext = async (
     role: UserRole;
     email: string;
     name: string;
+    passwordHash: string;
   }>,
 ) => {
   const userId = overrides?.userId ?? new mongoose.Types.ObjectId();
@@ -187,6 +188,7 @@ export const createAuthedUserContext = async (
     role: overrides?.role,
     email: overrides?.email,
     name: overrides?.name,
+    passwordHash: overrides?.passwordHash,
   });
 
   const accessToken = createAccessToken(user._id.toString());

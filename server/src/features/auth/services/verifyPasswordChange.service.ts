@@ -1,14 +1,24 @@
-import { hashToken } from "@/utils/hashToken.js";
+import { UserModel } from "@/features/users/models/user.modal.js";
 import { VerificationTokenModel } from "@/features/verification-tokens/models/verificationToken.model.js";
 import { AppError } from "@/utils/AppError.js";
-import { UserModel } from "@/features/users/models/user.modal.js";
+import { hashToken } from "@/utils/hashToken.js";
 
-export const verifyEmail = async ({ token }: { token: string }) => {
+type VerifyPasswordChangeInput = {
+  userId: string;
+  workspaceId: string;
+  token: string;
+};
+
+export const verifyPasswordChange = async ({
+  userId,
+  workspaceId,
+  token,
+}: VerifyPasswordChangeInput) => {
   const hashedToken = hashToken(token);
 
   const verificationToken = await VerificationTokenModel.findOne({
     tokenHash: hashedToken,
-    type: "email_verification",
+    type: "password_change",
   });
 
   if (!verificationToken) {
@@ -25,17 +35,23 @@ export const verifyEmail = async ({ token }: { token: string }) => {
     throw new AppError("Token has expired", 410);
   }
 
-  const user = await UserModel.findById(verificationToken.userId);
+  if (!verificationToken.userId.equals(userId)) {
+    throw new AppError("Token does not belong to this user", 403);
+  }
+
+  if (!verificationToken.newPasswordHash) {
+    throw new AppError("New password is missing", 400);
+  }
+
+  const user = await UserModel.findOne({ _id: userId, workspaceId });
 
   if (!user) {
     throw new AppError("User not found", 404);
   }
 
-  user.isEmailVerified = true;
-  user.emailVerifiedAt = now;
-
+  user.passwordHash = verificationToken.newPasswordHash;
   verificationToken.usedAt = now;
-  
+
   await user.save();
   await verificationToken.save();
 };
