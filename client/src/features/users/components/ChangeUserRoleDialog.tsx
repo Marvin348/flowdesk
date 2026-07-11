@@ -2,7 +2,7 @@ import { Button } from "@/shared/components/ui/button";
 import SelectedUserRole from "@/shared/components/ui/select/SelectedUserRole";
 import { UserPen } from "lucide-react";
 import { useState } from "react";
-import { useChangeUserRole } from "@/features/users/hooks/useChangeUserRole";
+import { useChangeUserRole } from "@/features/users/hooks/team/useChangeUserRole";
 import { Spinner } from "@/shared/components/ui/spinner";
 import type { SelectedUser } from "@/features/users/pages/TeamPage";
 import { USER_ROLE_OPTIONS } from "@/features/users/constants/user-role-options";

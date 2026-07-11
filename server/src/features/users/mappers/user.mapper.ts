@@ -1,10 +1,15 @@
-import { User, AuthUser } from "@shared/types/user.js";
+import type {
+  User,
+  AuthUser,
+  UserSecurityOverviewDto,
+} from "@shared/types/user.js";
 import {
   UserAvatarDto,
   UserPreviewDto,
 } from "@shared/types/dto/common/userPreview.dto.js";
 import type { UserDocument } from "@/features/users/types/user.document.js";
 import { bulidPublicFileUrl } from "@/utils/bulidPublicFileUrl.js";
+import { toIsoString } from "@/utils/toIsoString.js";
 
 export const toUserDto = (user: UserDocument): User => ({
   id: user._id.toString(),
@@ -29,6 +34,17 @@ export const toAuthUserDto = (user: UserDocument): AuthUser => ({
     density: user.appearanceSettings?.density ?? "default",
     startView: user.appearanceSettings?.startView ?? "dashboard",
   },
+});
+
+export const toUserSecurityOverviewDto = (
+  user: UserDocument,
+): UserSecurityOverviewDto => ({
+  email: user.email,
+  isEmailVerified: user.isEmailVerified,
+  passwordChangedAt: user.passwordChangedAt
+    ? toIsoString(user.passwordChangedAt)
+    : null,
+  twoFactorEnabled: user.twoFactorEnabled,
 });
 
 export const toUserPreviewDto = (user: User): UserPreviewDto => ({

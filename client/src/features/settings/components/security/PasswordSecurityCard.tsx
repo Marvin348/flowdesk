@@ -1,9 +1,18 @@
 import ChangePasswordForm from "@/features/settings/components/security/ChangePasswordForm";
 import { Button } from "@/shared/components/ui/button";
+import { formatDate } from "@/shared/utils/formatDate";
 import { LockKeyhole, ShieldCheck } from "lucide-react";
 import { useState } from "react";
 
-const PasswordSecurityCard = () => {
+type PasswordSecurityCardProps = {
+  passwordChangedAt: string | null;
+  isLoadingSecurityData: boolean;
+};
+
+const PasswordSecurityCard = ({
+  passwordChangedAt,
+  isLoadingSecurityData,
+}: PasswordSecurityCardProps) => {
   const [isChangingPassword, setIsChangingPassword] = useState(false);
 
   return (
@@ -21,12 +30,18 @@ const PasswordSecurityCard = () => {
                 Aktualisiere dein Passwort, um deinen Account zu schützen.
               </p>
 
-              <div className="mt-4 grid gap-4 sm:grid-cols-2">
+              <div className="mt-4 grid gap-4 sm:grid-cols-[200px_1fr]">
                 <div>
                   <p className="text-sm text-muted-foreground">
                     Zuletzt geändert
                   </p>
-                  <p className="mt-1 text-sm font-medium">-</p>
+                  <p className="mt-1 text-sm font-medium">
+                    {isLoadingSecurityData
+                      ? "Wird geladen..."
+                      : passwordChangedAt
+                        ? formatDate(passwordChangedAt)
+                        : "-"}
+                  </p>
                 </div>
 
                 <div>
@@ -56,7 +71,7 @@ const PasswordSecurityCard = () => {
 
       {isChangingPassword && (
         <div className="border-t bg-muted/20">
-          <ChangePasswordForm onClose={() => setIsChangingPassword(false)}/>
+          <ChangePasswordForm onClose={() => setIsChangingPassword(false)} />
         </div>
       )}
     </div>

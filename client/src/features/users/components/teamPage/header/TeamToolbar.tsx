@@ -1,6 +1,6 @@
 import { Button } from "@/shared/components/ui/button";
 import { Search, Funnel } from "lucide-react";
-import { useTeamQueryState } from "@/features/users/hooks/useTeamQueryState";
+import { useTeamQueryState } from "@/features/users/hooks/team/useTeamQueryState";
 import { USER_ROLE_FILTER_OPTIONS } from "@/features/users/constants/teamFilters";
 
 type TeamToolbarProps = {

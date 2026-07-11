@@ -87,6 +87,11 @@ export const changeEmail = async (email: ChangeEmailSettingsFields) => {
 };
 
 export const verifyChangedEmail = async (token: string) => {
-  const res = await apiClient.post("/users/me/change-email/verify", {token});
+  const res = await apiClient.post("/users/me/change-email/verify", { token });
   return res.data.message;
+};
+
+export const getMySecurityOverview = async () => {
+  const res = await apiClient.get("/users/me/security");
+  return res.data.user;
 };

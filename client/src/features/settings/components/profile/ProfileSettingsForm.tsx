@@ -5,7 +5,7 @@ import { Button } from "@/shared/components/ui/button";
 import ErrorMessage from "@/shared/components/ErrorMessage";
 import { BriefcaseBusiness, UserRound, CheckCircle2 } from "lucide-react";
 import { FormInput } from "@/shared/components/ui/FormInput";
-import { useUpdateUserProfile } from "@/features/users/hooks/useUpdateUserProfile";
+import { useUpdateUserProfile } from "@/features/users/hooks/profile/useUpdateUserProfile";
 import { Spinner } from "@/shared/components/ui/spinner";
 import type { ProfileSettingsFields } from "@/features/settings/schemas/profileSettingsSchema";
 import { profileSettingsSchema } from "@/features/settings/schemas/profileSettingsSchema";

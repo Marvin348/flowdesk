@@ -3,8 +3,8 @@ import { AppError } from "@/utils/AppError.js";
 import { asyncHandler } from "@/utils/asyncHandler.js";
 import express from "express";
 import multer from "multer";
-import { uploadAvatar } from "@/features/users/services/uploadAvatar.service.js";
-import { deleteAvatar } from "../services/deleteAvatar.service.js";
+import { uploadAvatar } from "@/features/users/services/profile/uploadAvatar.service.js";
+import { deleteAvatar } from "../services/profile/deleteAvatar.service.js";
 
 const router = express.Router();
 
