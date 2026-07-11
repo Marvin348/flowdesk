@@ -1,7 +1,7 @@
 import { X } from "lucide-react";
 import { Button } from "@/shared/components/ui/button";
 import { useScrollLock } from "@/shared/hooks/useScrollLock";
-import { useTeamQueryState } from "@/features/users/hooks/useTeamQueryState";
+import { useTeamQueryState } from "@/features/users/hooks/team/useTeamQueryState";
 import {
   TEAM_SORT_OPTIONS,
   TEAM_ACTIVITY_OPTIONS,
@@ -37,7 +37,10 @@ const TeamFilterDrawer = ({ onClose }: TeamFilterDrawerProps) => {
     >
       <div className="flex items-center justify-between p-4 border-b">
         <h3 className="text-xl font-bold">Filter</h3>
-        <button className="text-muted-foreground hover:text-foreground" onClick={onClose}>
+        <button
+          className="text-muted-foreground hover:text-foreground"
+          onClick={onClose}
+        >
           <X className="size-5" />
         </button>
       </div>

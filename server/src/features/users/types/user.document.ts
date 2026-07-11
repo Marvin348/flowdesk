@@ -9,8 +9,12 @@ export type UserDocument = {
   name: string;
   email: string;
   passwordHash: string;
+
   isEmailVerified: boolean;
+  passwordChangedAt: Date;
+  twoFactorEnabled: boolean;
   emailVerifiedAt?: Date;
+  
   avatarStorageKey?: string;
   avatarKey?: string;
   role: UserRole;

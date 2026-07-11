@@ -1,8 +1,8 @@
 import TeamPerformanceList from "@/features/users/components/teamPage/TeamPerformanceList";
 import Pagination from "@/shared/components/ui/Pagination";
 import { useState, useEffect } from "react";
-import { useTeamMembers } from "@/features/users/hooks/useTeamMembers";
-import { useTeamQueryState } from "@/features/users/hooks/useTeamQueryState";
+import { useTeamMembers } from "@/features/users/hooks/team/useTeamMembers";
+import { useTeamQueryState } from "@/features/users/hooks/team/useTeamQueryState";
 import { useDebounce } from "@/shared/hooks/useDebounce";
 import UserDetails from "@/features/users/components/teamPage/UserDetails";
 import TeamPageHeader from "@/features/users/components/teamPage/header/TeamPageHeader";

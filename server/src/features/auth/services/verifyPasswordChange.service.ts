@@ -50,6 +50,8 @@ export const verifyPasswordChange = async ({
   }
 
   user.passwordHash = verificationToken.newPasswordHash;
+  user.passwordChangedAt = now;
+
   verificationToken.usedAt = now;
 
   await user.save();

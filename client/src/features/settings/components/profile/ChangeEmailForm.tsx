@@ -8,7 +8,7 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/shared/components/ui/button";
 import ErrorMessage from "@/shared/components/ErrorMessage";
-import { useChangeEmail } from "@/features/users/hooks/useChangeEmail";
+import { useChangeEmail } from "@/features/users/hooks/email/useChangeEmail";
 import { Spinner } from "@/shared/components/ui/spinner";
 import { useState } from "react";
 

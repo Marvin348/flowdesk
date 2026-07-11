@@ -1,6 +1,6 @@
 import { Button } from "@/shared/components/ui/button";
 import Avatar from "@/shared/components/ui/avatar/Avatar";
-import { useUserDetails } from "@/features/users/hooks/useUserDetails";
+import { useUserDetails } from "@/features/users/hooks/team/useUserDetails";
 import { UserPen, Mail, BriefcaseBusiness, X, FolderPen } from "lucide-react";
 import { USER_ROLE_OPTIONS } from "@/features/users/constants/user-role-options";
 import { STATUS_OPTIONS } from "@/shared/constants/status-options";

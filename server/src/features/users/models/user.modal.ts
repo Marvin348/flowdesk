@@ -53,6 +53,16 @@ const userSchema = new mongoose.Schema(
       default: false,
     },
 
+    passwordChangedAt: {
+      type: Date,
+      default: null,
+    },
+
+    twoFactorEnabled: {
+      type: Boolean,
+      default: false,
+    },
+
     emailVerifiedAt: {
       type: Date,
     },

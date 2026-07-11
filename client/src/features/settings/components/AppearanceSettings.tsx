@@ -4,7 +4,7 @@ import {
   DENSITY_SETTINGS,
   START_VIEW_SETTINGS,
 } from "@/features/settings/constants/appearanceSettings";
-import { useUpdateAppearanceSettings } from "@/features/users/hooks/useUpdateAppearanceSettings";
+import { useUpdateAppearanceSettings } from "@/features/users/hooks/profile/useUpdateAppearanceSettings";
 import { useCurrentUser } from "@/features/auth/hooks/useCurrentUser";
 import type { AppearanceSettingsType } from "@shared/types/user";
 import ErrorMessage from "@/shared/components/ErrorMessage";

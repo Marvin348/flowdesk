@@ -7,7 +7,10 @@ import type {
   TeamSort,
 } from "@shared/types/teamFilter/teamFilter.js";
 import { UserModel } from "@/features/users/models/user.modal.js";
-import { toUserDto } from "@/features/users/mappers/user.mapper.js";
+import {
+  toUserDto,
+  toUserSecurityOverviewDto,
+} from "@/features/users/mappers/user.mapper.js";
 import {
   updateCurrentUserSchema,
   appearanceSettingsSchema,
@@ -20,18 +23,19 @@ import {
 import { getAuthContext } from "@/features/auth/utils/getAuthContext.js";
 import { asyncHandler } from "@/utils/asyncHandler.js";
 import { AppError } from "@/utils/AppError.js";
-import { getTeamMembers } from "@/features/users/services/getTeamMembers.service.js";
+import { getTeamMembers } from "@/features/users/services/team/getTeamMembers.service.js";
 import { teamMembersQuerySchema } from "@/features/users/validators/teamMembersQuerySchema.validator.js";
 import { userDetailsParamsSchema } from "@/features/users/validators/userDetailsParamsSchema.validator.js";
-import { getUserDetails } from "@/features/users/services/getUserDetails.service.js";
+import { getUserDetails } from "@/features/users/services/team/getUserDetails.service.js";
 import {
   updateUserRoleBodySchema,
   updateUserRoleParamsSchema,
 } from "@/features/users/validators/updateUserRoleSchema.validator.js";
-import { updateUserRole } from "@/features/users/services/updateUserRole.service.js";
-import { changeEmail } from "@/features/users/services/changeEmail.service.js";
+import { updateUserRole } from "@/features/users/services/team/updateUserRole.service.js";
+import { changeEmail } from "@/features/users/services/email/changeEmail.service.js";
 import { verificationTokenSchema } from "@/features/verification-tokens/validators/verifyEmailSchema.js";
-import { verifyChangeEmail } from "@/features/users/services/verifyChangeEmail.service.js";
+import { verifyChangeEmail } from "@/features/users/services/email/verifyChangeEmail.service.js";
+import { getMySecurityOverview } from "../services/security/getMySecurityOverview.service.js";
 
 const router = express.Router();
 
@@ -99,9 +103,16 @@ router.patch(
   }),
 );
 
-router.get("/me/security", asyncHandler(async(req, res) => {
-  
-}))
+router.get(
+  "/me/security",
+  asyncHandler(async (req, res) => {
+    const { userId, workspaceId } = getAuthContext(req);
+
+    const securityOverview = await getMySecurityOverview({ userId, workspaceId });
+
+    return res.status(200).json({ user: securityOverview });
+  }),
+);
 
 router.patch(
   "/me/change-email",

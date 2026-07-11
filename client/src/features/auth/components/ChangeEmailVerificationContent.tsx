@@ -1,4 +1,4 @@
-import { useVerifyChangedEmail } from "@/features/users/hooks/useVerifyChangedEmail";
+import { useVerifyChangedEmail } from "@/features/users/hooks/email/useVerifyChangedEmail";
 import { useEffect } from "react";
 import { useNavigate } from "react-router";
 import VerificationPending from "@/features/auth/components/verification/VerificationPending";

@@ -1,7 +1,13 @@
 import { Button } from "@/shared/components/ui/button";
-import { ShieldAlert, Smartphone } from "lucide-react";
+import { ShieldAlert, Smartphone, ShieldCheck } from "lucide-react";
 
-const TwoFactorSecurityCard = () => {
+type TwoFactorSecurityCardProps = {
+  isTwoFactorEnabled: boolean;
+};
+
+const TwoFactorSecurityCard = ({
+  isTwoFactorEnabled,
+}: TwoFactorSecurityCardProps) => {
   return (
     <div className="border-t bg-muted/20 p-5">
       <div className="grid gap-5 sm:grid-cols-[1fr_auto] sm:items-center">
@@ -15,11 +21,11 @@ const TwoFactorSecurityCard = () => {
               Zwei-Faktor-Authentifizierung
             </h4>
             <p className="mt-1 text-sm text-muted-foreground">
-              Schütze deinen Account mit einem zusätzlichen
-              Bestätigungsschritt beim Login.
+              Schütze deinen Account mit einem zusätzlichen Bestätigungsschritt
+              beim Login.
             </p>
 
-            <div className="mt-4 grid gap-4 sm:grid-cols-2">
+            <div className="mt-4 grid gap-4 sm:grid-cols-[200px_1fr]">
               <div>
                 <p className="text-sm text-muted-foreground">Methode</p>
                 <p className="mt-1 text-sm font-medium">Authenticator App</p>
@@ -28,8 +34,17 @@ const TwoFactorSecurityCard = () => {
               <div>
                 <p className="text-sm text-muted-foreground">Status</p>
                 <p className="mt-1 flex items-center gap-2 text-sm font-medium">
-                  <ShieldAlert className="size-4 text-amber-500" />
-                  Nicht aktiviert
+                  {isTwoFactorEnabled ? (
+                    <>
+                      <ShieldCheck className="size-4 text-emerald-500" />
+                      Aktiv
+                    </>
+                  ) : (
+                    <>
+                      <ShieldAlert className="size-4 text-amber-500" />
+                      Nicht aktiviert
+                    </>
+                  )}
                 </p>
               </div>
             </div>

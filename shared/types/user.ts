@@ -14,6 +14,13 @@ export type AuthUser = User & {
   appearanceSettings: AppearanceSettingsType;
 };
 
+export type UserSecurityOverviewDto = {
+  email: string;
+  isEmailVerified: boolean;
+  passwordChangedAt: string | null;
+  twoFactorEnabled: boolean;
+};
+
 export type AppearanceSettingsType = {
   theme: AppearanceTheme;
   density: AppearanceDensity;
