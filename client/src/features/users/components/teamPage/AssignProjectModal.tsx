@@ -1,12 +1,12 @@
 import { Search, FolderPen } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import { useProjectOptions } from "@/features/projects/hooks/useProjectOptions";
 import { useDebounce } from "@/shared/hooks/useDebounce";
 import { Button } from "@/shared/components/ui/button";
 import AssignProjectItem from "./AssignProjectItem";
 import { useAssignUserToProjects } from "@/features/projects/hooks/mutations/useAssignUserToProjects";
 import { Spinner } from "@/shared/components/ui/spinner";
 import { useScrollLock } from "@/shared/hooks/useScrollLock";
+import { useUserProjectOptions } from "@/features/users/hooks/team/useUserProjectOptions";
 
 type AssignProjectModal = {
   onClose: () => void;
@@ -21,10 +21,12 @@ const AssignProjectModal = ({ onClose, selectedUser }: AssignProjectModal) => {
 
   const debounceInput = useDebounce(input, 300);
 
-  const { data, isLoading, error } = useProjectOptions({
+  const { data, isLoading, error } = useUserProjectOptions({
     userId: selectedUser.id,
     search: debounceInput,
   });
+
+  console.log(data)
 
   const results = data?.results ?? [];
   const recent = data?.recent ?? [];

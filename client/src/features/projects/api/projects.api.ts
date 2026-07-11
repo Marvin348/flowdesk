@@ -1,10 +1,8 @@
 import { apiClient } from "@/shared/api/client";
 import type { Project } from "@shared/types/project";
 import type { CreateProjectInput } from "@shared/types/inputs/createProjectInput";
-import type { ProjectOptionsDto } from "@shared/types/dto/projects/projectOptions.dto";
 import type { ProjectSummariesInput } from "@shared/types/inputs/projectSummariesInput";
 import type { ProjectSummariesResponseDto } from "@shared/types/dto/projects/projectSummary.dto";
-import type { ProjectOptionsInput } from "@shared/types/inputs/projectOptionsInput";
 
 export const fetchProject = async (id: string): Promise<Project> => {
   const res = await apiClient.get(`/projects/${id}`);
@@ -27,19 +25,6 @@ export const fetchProjectSummaries = async (
   }
 
   const res = await apiClient.get(`/projects/summaries?${params.toString()}`);
-  return res.data.data;
-};
-
-export const fetchProjectsOptions = async (
-  input: ProjectOptionsInput,
-): Promise<ProjectOptionsDto> => {
-  const res = await apiClient.get(`/projects/options`, {
-    params: {
-      userId: input.userId,
-      search: input.search,
-    },
-  });
-
   return res.data.data;
 };
 

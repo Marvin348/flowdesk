@@ -55,8 +55,8 @@ export const toUserPreviewDto = (user: User): UserPreviewDto => ({
   jobTitle: user.jobTitle,
 });
 
-export const toUserAvatarDto = (user: User): UserAvatarDto => ({
-  id: user.id,
+export const toUserAvatarDto = (user: UserDocument): UserAvatarDto => ({
+  id: user._id.toString(),
   avatarKey: user.avatarKey,
-  avatarUrl: user.avatarUrl,
+  avatarUrl: bulidPublicFileUrl(user.avatarStorageKey),
 });
