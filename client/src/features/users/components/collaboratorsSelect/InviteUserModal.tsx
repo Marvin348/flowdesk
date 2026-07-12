@@ -4,6 +4,7 @@ import { Button } from "@/shared/components/ui/button";
 import { useScrollLock } from "@/shared/hooks/useScrollLock";
 import { useUpdateProjectMembers } from "@/features/projects/hooks/mutations/useUpdateProjectMembers";
 import { Spinner } from "@/shared/components/ui/spinner";
+import ErrorMessage from "@/shared/components/ErrorMessage";
 
 type InviteUserModalProps = {
   onClose: () => void;
@@ -23,18 +24,21 @@ const InviteUserModal = ({
   const [selectedUserIds, setSelectedIds] = useState<string[]>([]);
   useScrollLock(onInviteOpen);
 
-  const { mutate, isPending, error } = useUpdateProjectMembers(projectId);
+  const { mutate, isPending, isError } = useUpdateProjectMembers(projectId);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    mutate(
-      { projectId, userIdsToAdd: selectedUserIds },
-      {
-        onSuccess: () => {
-          onClose();
-        },
+
+    const input = {
+      projectId,
+      userIdsToAdd: selectedUserIds,
+    };
+
+    mutate(input, {
+      onSuccess: () => {
+        onClose();
       },
-    );
+    });
   };
 
   return (
@@ -51,6 +55,13 @@ const InviteUserModal = ({
                 disabledUserIds={teamUserIds}
               />
             </div>
+
+            {isError && (
+              <ErrorMessage
+                message="User konnte nicht hinzugefügt werden"
+                className="mb-2 text-right"
+              />
+            )}
 
             <div className="flex items-center justify-end gap-8">
               <Button

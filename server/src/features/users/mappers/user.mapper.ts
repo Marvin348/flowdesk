@@ -10,6 +10,13 @@ import {
 import type { UserDocument } from "@/features/users/types/user.document.js";
 import { bulidPublicFileUrl } from "@/utils/bulidPublicFileUrl.js";
 import { toIsoString } from "@/utils/toIsoString.js";
+import { Types } from "mongoose";
+
+type UserAvatarSource = {
+  _id: Types.ObjectId;
+  avatarKey?: string;
+  avatarStorageKey?: string;
+};
 
 export const toUserDto = (user: UserDocument): User => ({
   id: user._id.toString(),
@@ -55,8 +62,8 @@ export const toUserPreviewDto = (user: User): UserPreviewDto => ({
   jobTitle: user.jobTitle,
 });
 
-export const toUserAvatarDto = (user: User): UserAvatarDto => ({
-  id: user.id,
+export const toUserAvatarDto = (user: UserAvatarSource): UserAvatarDto => ({
+  id: user._id.toString(),
   avatarKey: user.avatarKey,
-  avatarUrl: user.avatarUrl,
+  avatarUrl: bulidPublicFileUrl(user.avatarStorageKey),
 });

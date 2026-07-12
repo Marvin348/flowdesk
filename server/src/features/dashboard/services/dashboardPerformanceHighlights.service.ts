@@ -5,11 +5,12 @@ import { toTaskDto } from "@/features/tasks/mappers/task.mapper.js";
 import { TaskModel } from "@/features/tasks/models/task.model.js";
 import { toUserDto } from "@/features/users/mappers/user.mapper.js";
 import { UserModel } from "@/features/users/models/user.modal.js";
+import { Types } from "mongoose";
 
 export const getPerformanceHighlights = async ({
   workspaceId,
 }: {
-  workspaceId: string;
+  workspaceId: Types.ObjectId;
 }) => {
   const projects = await getProjects({ workspaceId });
   const projectIds = projects.map((project) => project.id);

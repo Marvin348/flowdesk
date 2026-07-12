@@ -12,7 +12,7 @@ type TaskStatusCount = {
 export const getTaskStatusDistribution = async ({
   workspaceId,
 }: {
-  workspaceId: string;
+  workspaceId: Types.ObjectId;
 }) => {
   const projects = await getProjects({ workspaceId });
   const projectIds = projects.map((project) => new Types.ObjectId(project.id));
@@ -20,7 +20,7 @@ export const getTaskStatusDistribution = async ({
   const statusCounts = await TaskModel.aggregate<TaskStatusCount>([
     {
       $match: {
-        workspaceId: new Types.ObjectId(workspaceId),
+        workspaceId,
         projectId: { $in: projectIds },
       },
     },

@@ -4,11 +4,11 @@ import { UserModel } from "@/features/users/models/user.modal.js";
 import { comparePassword } from "../utils/password.js";
 import { hashPassword } from "../utils/password.js";
 import { createVerificationToken } from "@/features/verification-tokens/services/createVerificationToken.service.js";
-import mongoose from "mongoose";
+import mongoose, { Types } from "mongoose";
 import { sendPasswordChangeVerificationEmail } from "@/features/email/services/sendPasswordChangeVerificationEmail.service.js";
 
 type RequestPasswordChangeInput = {
-  workspaceId: string;
+  workspaceId: Types.ObjectId;
   userId: string;
   input: PasswordInput;
 };

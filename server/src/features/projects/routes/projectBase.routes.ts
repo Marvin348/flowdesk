@@ -72,10 +72,11 @@ router.get(
       throw new AppError("Invalid projectId", 400);
     }
 
+    const projectObjectId = new mongoose.Types.ObjectId(projectId);
     const { workspaceId } = getAuthContext(req);
 
     const project = await getProjectById({
-      projectId,
+      projectId: projectObjectId,
       workspaceId,
     });
 
@@ -96,10 +97,11 @@ router.delete(
       throw new AppError("Invalid projectId", 400);
     }
 
+    const projectObjectId = new mongoose.Types.ObjectId(projectId);
     const { userId, role, workspaceId } = getAuthContext(req);
 
     const deletedProject = await deleteProject({
-      projectId,
+      projectId: projectObjectId,
       userId,
       role,
       workspaceId,

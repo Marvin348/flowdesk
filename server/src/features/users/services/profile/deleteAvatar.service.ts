@@ -1,10 +1,11 @@
 import { UserModel } from "@/features/users/models/user.modal.js";
 import { deleteFileFromR2 } from "@/lib/storage/r2Storage.js";
 import { AppError } from "@/utils/AppError.js";
+import { Types } from "mongoose";
 
 type DeleteAvatarInput = {
   userId: string;
-  workspaceId: string;
+  workspaceId: Types.ObjectId;
 };
 
 export const deleteAvatar = async ({

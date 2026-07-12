@@ -4,9 +4,10 @@ import { toUserDetailsDto } from "@/features/users/mappers/user-details.mapper.j
 import { AppError } from "@/utils/AppError.js";
 import { buildUserDetailsPipeline } from "@/features/users/queries/userDetails.pipeline.js";
 import type { UserDetailsAggregationResult } from "@/features/users/mappers/user-details.mapper.js";
+import { Types } from "mongoose";
 
 type GetUserDetailsInput = {
-  workspaceId: string;
+  workspaceId: Types.ObjectId;
   userId: string;
 };
 
@@ -15,10 +16,9 @@ export const getUserDetails = async ({
   userId,
 }: GetUserDetailsInput) => {
   const userObjectId = new mongoose.Types.ObjectId(userId);
-  const workspaceObjectId = new mongoose.Types.ObjectId(workspaceId);
 
   const pipeline = buildUserDetailsPipeline({
-    workspaceId: workspaceObjectId,
+    workspaceId,
     userId: userObjectId,
   });
 

@@ -6,11 +6,13 @@ import { AppError } from "@/utils/AppError.js";
 import { AttachmentModel } from "@/features/attachments/models/attachment.model.js";
 import { deleteFileFromR2 } from "@/lib/storage/r2Storage.js";
 import { createActivity } from "@/features/activity/services/createActivity.service.js";
+import { Types } from "mongoose";
+import mongoose from "mongoose";
 
 type DeleteAttachmentParams = {
   projectId: string;
   userId: string;
-  workspaceId: string;
+  workspaceId: Types.ObjectId;
   attachmentId: string;
 };
 
@@ -20,8 +22,10 @@ export const deleteAttachment = async ({
   workspaceId,
   attachmentId,
 }: DeleteAttachmentParams) => {
+  const projectObjectId = new mongoose.Types.ObjectId(projectId);
+
   const project = await getProjectById({
-    projectId,
+    projectId: projectObjectId,
     workspaceId,
   });
 

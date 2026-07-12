@@ -8,17 +8,18 @@ import {
   toAuthUserDto,
 } from "@/features/users/mappers/user.mapper.js";
 import { AppError } from "@/utils/AppError.js";
+import { Types } from "mongoose";
 
 type UpdateUserInput = {
   input: UpdateCurrentUserInput;
   userId: string;
-  workspaceId: string;
+  workspaceId: Types.ObjectId;
 };
 
 type UpdateAppearanceSettingsInput = {
   input: AppearanceSettingsInput;
   userId: string;
-  workspaceId: string;
+  workspaceId: Types.ObjectId;
 };
 
 export const updateCurrentUser = async ({
@@ -76,7 +77,7 @@ export const findUserInWorkspace = async ({
   workspaceId,
 }: {
   userId: string;
-  workspaceId: string;
+  workspaceId: Types.ObjectId;
 }) => {
   return await UserModel.findOne({ _id: userId, workspaceId }).lean();
 };

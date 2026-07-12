@@ -30,22 +30,29 @@ import { getProjectById } from "@/features/projects/services/project.service.js"
 import { getAuthContext } from "@/features/auth/utils/getAuthContext.js";
 import { asyncHandler } from "@/utils/asyncHandler.js";
 import { AppError } from "@/utils/AppError.js";
+import mongoose from "mongoose";
 
 const router = express.Router();
+
+const parseProjectObjectId = (projectId?: string) => {
+  if (!projectId || !mongoose.Types.ObjectId.isValid(projectId)) {
+    throw new AppError("Invalid projectId", 400);
+  }
+
+  return new mongoose.Types.ObjectId(projectId);
+};
 
 router.get(
   "/:id/details",
   asyncHandler(async (req: Request<{ id?: string }>, res) => {
     const projectId = req.params.id;
 
-    if (!projectId) {
-      throw new AppError("Invalid projectId", 400);
-    }
+    const projectObjectId = parseProjectObjectId(projectId);
 
     const { workspaceId } = getAuthContext(req);
 
     const project = await getProjectById({
-      projectId,
+      projectId: projectObjectId,
       workspaceId,
     });
 
@@ -66,7 +73,7 @@ router.get(
       _id: { $in: invitedUserIdsSet },
     }).lean();
 
-    const invitedUsers = usersRecord.map(toUserDto).map(toUserAvatarDto);
+    const invitedUsers = usersRecord.map(toUserAvatarDto);
 
     return res.status(200).json({
       data: {
@@ -83,14 +90,12 @@ router.get(
   asyncHandler(async (req: Request<{ id?: string }>, res) => {
     const projectId = req.params.id;
 
-    if (!projectId) {
-      throw new AppError("Invalid projectId", 400);
-    }
+    const projectObjectId = parseProjectObjectId(projectId);
 
     const { workspaceId } = getAuthContext(req);
 
     const project = await getProjectById({
-      projectId,
+      projectId: projectObjectId,
       workspaceId,
     });
 
@@ -137,14 +142,12 @@ router.get(
   asyncHandler(async (req: Request<{ id?: string }>, res) => {
     const projectId = req.params.id;
 
-    if (!projectId) {
-      throw new AppError("Invalid projectId", 400);
-    }
+    const projectObjectId = parseProjectObjectId(projectId);
 
     const { workspaceId } = getAuthContext(req);
 
     const project = await getProjectById({
-      projectId,
+      projectId: projectObjectId,
       workspaceId,
     });
 
@@ -176,16 +179,14 @@ router.get(
       const projectId = req.params.id;
       const { collaboratorsSort } = req.query;
 
-      if (!projectId) {
-        throw new AppError("Invalid projectId", 400);
-      }
+      const projectObjectId = parseProjectObjectId(projectId);
 
       const parsedCollaboratorSort = parseCollaboratorSort(collaboratorsSort);
 
       const { workspaceId } = getAuthContext(req);
 
       const project = await getProjectById({
-        projectId,
+        projectId: projectObjectId,
         workspaceId,
       });
 
@@ -224,16 +225,14 @@ router.get(
       const projectId = req.params.id;
       const { commentsSort } = req.query;
 
-      if (!projectId) {
-        throw new AppError("Invalid projectId", 400);
-      }
+      const projectObjectId = parseProjectObjectId(projectId);
 
       const { workspaceId } = getAuthContext(req);
 
       const parsedCommentsSort = parseProjectCommentsSort(commentsSort);
 
       const project = await getProjectById({
-        projectId,
+        projectId: projectObjectId,
         workspaceId,
       });
 
@@ -298,9 +297,7 @@ router.get(
     ) => {
       const projectId = req.params.id;
 
-      if (!projectId) {
-        throw new AppError("Invalid projectId", 400);
-      }
+      const projectObjectId = parseProjectObjectId(projectId);
 
       const parsedWorkloadSort = parseProjectWorkloadSort(
         req.query.workloadSort,
@@ -309,7 +306,7 @@ router.get(
       const { workspaceId } = getAuthContext(req);
 
       const project = await getProjectById({
-        projectId,
+        projectId: projectObjectId,
         workspaceId,
       });
 

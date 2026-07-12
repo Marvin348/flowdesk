@@ -1,12 +1,12 @@
 import { Search, FolderPen } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import { useProjectOptions } from "@/features/projects/hooks/useProjectOptions";
 import { useDebounce } from "@/shared/hooks/useDebounce";
 import { Button } from "@/shared/components/ui/button";
 import AssignProjectItem from "./AssignProjectItem";
-import { useAssignUserToProjects } from "@/features/projects/hooks/mutations/useAssignUserToProjects";
+import { useAssignUserToProjects } from "@/features/users/hooks/team/useAssignUserToProjects";
 import { Spinner } from "@/shared/components/ui/spinner";
 import { useScrollLock } from "@/shared/hooks/useScrollLock";
+import { useUserProjectOptions } from "@/features/users/hooks/team/useUserProjectOptions";
 
 type AssignProjectModal = {
   onClose: () => void;
@@ -16,22 +16,20 @@ type AssignProjectModal = {
 const AssignProjectModal = ({ onClose, selectedUser }: AssignProjectModal) => {
   const [input, setInput] = useState("");
   const [selectedProjectIds, setSelectedProjectIds] = useState<string[]>([]);
+  const inputRef = useRef<HTMLInputElement | null>(null);
 
   useScrollLock(true);
 
   const debounceInput = useDebounce(input, 300);
 
-  const { data, isLoading, error } = useProjectOptions({
+  const { data, isLoading, error } = useUserProjectOptions({
     userId: selectedUser.id,
     search: debounceInput,
   });
+  const { mutate, isPending, error: mutateError } = useAssignUserToProjects();
 
   const results = data?.results ?? [];
   const recent = data?.recent ?? [];
-
-  const { mutate, isPending, error: mutateError } = useAssignUserToProjects();
-
-  const inputRef = useRef<HTMLInputElement | null>(null);
 
   const hasSearched = input.trim().length >= 2;
 

@@ -3,7 +3,6 @@ import { getProjects } from "@/features/projects/services/project.service.js";
 import { TaskModel } from "@/features/tasks/models/task.model.js";
 import { PRIORITY, type Priority } from "@shared/types/priority.js";
 import { Types } from "mongoose";
-import mongoose from "mongoose";
 
 type TaskPriorityCount = {
   _id: Priority;
@@ -13,17 +12,15 @@ type TaskPriorityCount = {
 export const getTaskPriorityDistribution = async ({
   workspaceId,
 }: {
-  workspaceId: string;
+  workspaceId: Types.ObjectId;
 }) => {
-  const workspaceObjectId = new mongoose.Types.ObjectId(workspaceId);
-
   const projects = await getProjects({ workspaceId });
   const projectIds = projects.map((project) => new Types.ObjectId(project.id));
 
   const priorityCounts = await TaskModel.aggregate<TaskPriorityCount>([
     {
       $match: {
-        workspaceId: workspaceObjectId,
+        workspaceId,
         projectId: { $in: projectIds },
       },
     },

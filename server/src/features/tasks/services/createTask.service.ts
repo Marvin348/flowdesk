@@ -8,11 +8,12 @@ import { TaskModel } from "@/features/tasks/models/task.model.js";
 import { toTaskDto } from "@/features/tasks/mappers/task.mapper.js";
 import { createActivity } from "@/features/activity/services/createActivity.service.js";
 import { UserModel } from "@/features/users/models/user.modal.js";
+import { Types } from "mongoose";
 
 type CreateTaskInput = {
   input: CreateTaskFields;
   userId: string;
-  workspaceId: string;
+  workspaceId: Types.ObjectId;
 };
 
 export const createTask = async ({
@@ -31,8 +32,10 @@ export const createTask = async ({
     description,
   } = input;
 
+  const projectObjectId = new Types.ObjectId(projectId);
+
   const project = await getProjectById({
-    projectId,
+    projectId: projectObjectId,
     workspaceId,
   });
 
@@ -52,7 +55,7 @@ export const createTask = async ({
   }
 
   const newTask = await TaskModel.create({
-    projectId,
+    projectId: projectObjectId,
     title,
     collaboratorIds,
     dueDate,
@@ -64,7 +67,7 @@ export const createTask = async ({
     workspaceId,
   });
 
-  await touchProject({ projectId, workspaceId });
+  await touchProject({ projectId: projectObjectId, workspaceId });
 
   await createActivity({
     workspaceId,

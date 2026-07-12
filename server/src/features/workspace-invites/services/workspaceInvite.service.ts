@@ -5,11 +5,12 @@ import { createRandomToken } from "@/utils/createRandomToken.js";
 import { WorkspaceInviteModel } from "../models/workspaceInvite.model.js";
 import { addDays } from "@/utils/date.js";
 import { createActivity } from "@/features/activity/services/createActivity.service.js";
+import { Types } from "mongoose";
 
 type CreateWorkspaceInviteInput = {
   email: string;
   userId: string;
-  workspaceId: string;
+  workspaceId: Types.ObjectId;
   role: UserRole;
 };
 

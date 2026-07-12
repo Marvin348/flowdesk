@@ -2,9 +2,10 @@ import { UserRole } from "@shared/types/user.js";
 import { AppError } from "@/utils/AppError.js";
 import { UserModel } from "@/features/users/models/user.modal.js";
 import { toUserDto } from "@/features/users/mappers/user.mapper.js";
+import { Types } from "mongoose";
 
 type UpdateUserRoleInput = {
-  workspaceId: string;
+  workspaceId: Types.ObjectId;
   targetUserId: string;
   role: UserRole;
   currentUserId: string;

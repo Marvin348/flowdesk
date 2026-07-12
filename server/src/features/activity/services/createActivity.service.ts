@@ -3,9 +3,10 @@ import type {
   ActivityType,
   EntityType,
 } from "@shared/types/dto/activity/activity.dto.js";
+import { Types } from "mongoose";
 
 type CreateActivityInput = {
-  workspaceId: string;
+  workspaceId: Types.ObjectId;
   actorId: string;
   type: ActivityType;
   entityType: EntityType;

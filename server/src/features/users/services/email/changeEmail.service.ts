@@ -2,10 +2,11 @@ import { AppError } from "@/utils/AppError.js";
 import { UserModel } from "@/features/users/models/user.modal.js";
 import { createVerificationToken } from "@/features/verification-tokens/services/createVerificationToken.service.js";
 import { sendEmailChangeVerificationEmail } from "@/features/email/services/sendEmailChangeVerificationEmail.service.js";
+import { Types } from "mongoose";
 
 type ChangeEmailInput = {
   userId: string;
-  workspaceId: string;
+  workspaceId: Types.ObjectId;
   newEmail: string;
 };
 

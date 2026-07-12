@@ -7,11 +7,13 @@ import { TaskModel } from "@/features/tasks/models/task.model.js";
 import { uploadFileToR2 } from "@/lib/storage/r2Storage.js";
 import { AttachmentModel } from "@/features/attachments/models/attachment.model.js";
 import { createActivity } from "@/features/activity/services/createActivity.service.js";
+import { Types } from "mongoose";
+import mongoose from "mongoose";
 
 type CreateAttachmentInput = {
   projectId: string;
   userId: string;
-  workspaceId: string;
+  workspaceId: Types.ObjectId;
   taskId: string | null;
   files: Express.Multer.File[];
 };
@@ -23,8 +25,10 @@ export const createAttachments = async ({
   taskId,
   files,
 }: CreateAttachmentInput) => {
+  const projectObjectId = new mongoose.Types.ObjectId(projectId);
+
   const project = await getProjectById({
-    projectId,
+    projectId: projectObjectId,
     workspaceId,
   });
 

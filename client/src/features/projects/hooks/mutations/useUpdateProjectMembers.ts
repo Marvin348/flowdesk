@@ -1,12 +1,11 @@
 import { updateProjectMembers } from "@/features/projects/api/projectMembers.api";
-import type { Project } from "@shared/types/project";
 import { useQueryClient, useMutation } from "@tanstack/react-query";
 import type { UpdateProjectMembersInput } from "@shared/types/inputs/updateProjectMembersInput";
 
 export const useUpdateProjectMembers = (projectId: string) => {
   const queryClient = useQueryClient();
 
-  return useMutation<Project, Error, UpdateProjectMembersInput>({
+  return useMutation<string, Error, UpdateProjectMembersInput>({
     mutationFn: updateProjectMembers,
 
     onSuccess: () => {
