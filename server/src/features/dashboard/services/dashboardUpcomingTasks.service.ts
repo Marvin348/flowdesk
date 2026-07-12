@@ -2,11 +2,12 @@ import { TaskModel } from "@/features/tasks/models/task.model.js";
 import { toTaskDto } from "@/features/tasks/mappers/task.mapper.js";
 import { mapUpcomingTasks } from "@/features/dashboard/mappers/mapUpcomingTasks.js";
 import { getProjects } from "@/features/projects/services/project.service.js";
+import { Types } from "mongoose";
 
 export const getUpcomingTasks = async ({
   workspaceId,
 }: {
-  workspaceId: string;
+  workspaceId: Types.ObjectId;
 }) => {
   const projects = await getProjects({ workspaceId });
   const projectIds = projects.map((project) => project.id);

@@ -6,12 +6,13 @@ import { AppError } from "@/utils/AppError.js";
 import { getProjectById } from "@/features/projects/services/project.service.js";
 import { createActivity } from "@/features/activity/services/createActivity.service.js";
 import { UserRole } from "@shared/types/user.js";
+import { Types } from "mongoose";
 
 type DeleteProjectInput = {
-  projectId: string;
+  projectId: Types.ObjectId;
   userId: string;
   role: UserRole;
-  workspaceId: string;
+  workspaceId: Types.ObjectId;
 };
 
 export const deleteProject = async ({

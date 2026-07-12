@@ -2,9 +2,10 @@ import { VerificationTokenModel } from "@/features/verification-tokens/models/ve
 import { AppError } from "@/utils/AppError.js";
 import { hashToken } from "@/utils/hashToken.js";
 import { UserModel } from "@/features/users/models/user.modal.js";
+import { Types } from "mongoose";
 
 type VerifyChangeEmailInput = {
-  workspaceId: string;
+  workspaceId: Types.ObjectId;
   token: string;
   userId: string;
 };

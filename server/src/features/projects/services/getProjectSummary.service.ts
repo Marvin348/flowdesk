@@ -3,10 +3,10 @@ import { toProjectSummaryDto } from "@/features/projects/mappers/project-summary
 import { ProjectModel } from "@/features/projects/models/project.model.js";
 import { buildProjectSummaryPipeline } from "@/features/projects/queries/projectSummary.pipeline.js";
 import { ProjectSummaryQueryParams } from "@/features/projects/validation/projectSummary.validator.js";
-import mongoose from "mongoose";
+import { Types } from "mongoose";
 
 type GetProjectSummaryInput = {
-  workspaceId: string;
+  workspaceId: Types.ObjectId;
   query: ProjectSummaryQueryParams;
 };
 
@@ -14,10 +14,8 @@ export const getProjectSummary = async ({
   workspaceId,
   query,
 }: GetProjectSummaryInput): Promise<ProjectSummariesResponseDto> => {
-  const workspaceObjectId = new mongoose.Types.ObjectId(workspaceId);
-
   const pipeline = buildProjectSummaryPipeline({
-    workspaceId: workspaceObjectId,
+    workspaceId,
     query,
   });
 

@@ -52,7 +52,7 @@ export const acceptWorkspaceInvite = async ({
   await invite.save();
 
   await createActivity({
-    workspaceId: invite.workspaceId.toString(),
+    workspaceId: invite.workspaceId,
     actorId: newUser._id.toString(),
     type: "workspace_invite.accepted",
     entityType: "workspace_invite",

@@ -1,15 +1,7 @@
 import { apiClient } from "@/shared/api/client";
 import type { Project } from "@shared/types/project";
-import type { AssignUserToProjectsInput } from "@shared/types/inputs/assignUserToProjectsInput";
 import type { UpdateProjectMembersInput } from "@shared/types/inputs/updateProjectMembersInput";
 import type { DeleteProjectMemberInput } from "@shared/types/inputs/deleteProjectMemberInput";
-
-export const assignUserToProjects = async (
-  input: AssignUserToProjectsInput,
-): Promise<Project[]> => {
-  const res = await apiClient.patch("/projects/assign-user", input);
-  return res.data.data;
-};
 
 export const updateProjectMembers = async (
   input: UpdateProjectMembersInput,

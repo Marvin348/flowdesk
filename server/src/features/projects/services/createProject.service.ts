@@ -4,10 +4,11 @@ import { toProjectDto } from "@/features/projects/mappers/project.mapper.js";
 import { createActivity } from "@/features/activity/services/createActivity.service.js";
 import { AppError } from "@/utils/AppError.js";
 import { UserModel } from "@/features/users/models/user.modal.js";
+import { Types } from "mongoose";
 
 type CreateProjectInput = {
   input: CreateProjectParams;
-  workspaceId: string;
+  workspaceId: Types.ObjectId;
   userId: string;
 };
 

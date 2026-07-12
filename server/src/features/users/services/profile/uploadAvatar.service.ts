@@ -2,13 +2,13 @@ import { AppError } from "@/utils/AppError.js";
 import { UserModel } from "@/features/users/models/user.modal.js";
 import { deleteFileFromR2, uploadFileToR2 } from "@/lib/storage/r2Storage.js";
 import {
-  toUserAvatarDto,
   toUserDto,
 } from "@/features/users/mappers/user.mapper.js";
+import { Types } from "mongoose";
 
 type UploadAvatarInput = {
   userId: string;
-  workspaceId: string;
+  workspaceId: Types.ObjectId;
   avatarFile: Express.Multer.File;
 };
 
@@ -40,5 +40,5 @@ export const uploadAvatar = async ({
     });
   }
 
-  return toUserAvatarDto(toUserDto(user));
+  return toUserDto(user);
 };

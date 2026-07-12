@@ -38,7 +38,7 @@ export const requireAuth = asyncHandler(
 
     req.user = {
       id: userId,
-      workspaceId: user.workspaceId.toString(),
+      workspaceId: user.workspaceId,
       role: user.role,
     };
 

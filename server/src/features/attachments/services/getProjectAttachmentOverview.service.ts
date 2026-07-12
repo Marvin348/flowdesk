@@ -1,13 +1,13 @@
 import { toProjectAttachmentsDto } from "@/features/attachments/mappers/projectAttachments.mapper.js";
 import { AttachmentModel } from "@/features/attachments/models/attachment.model.js";
 import { buildProjectAttachmentsPipeline } from "@/features/attachments/queries/projectAttachments.pipeline.js";
-import mongoose from "mongoose";
+import mongoose, { Types } from "mongoose";
 import type { ProjectAttachmentResponseDto } from "@shared/types/dto/projects/projectAttachments.dto.js";
 import { getProjectById } from "@/features/projects/services/project.service.js";
 import { AppError } from "@/utils/AppError.js";
 
 type GetProjectAttachmentOverviewInput = {
-  workspaceId: string;
+  workspaceId: Types.ObjectId;
   search: string;
   projectId: string;
   page: number;
@@ -21,11 +21,10 @@ export const getProjectAttachmentOverview = async ({
   page,
   limit,
 }: GetProjectAttachmentOverviewInput): Promise<ProjectAttachmentResponseDto> => {
-  const workspaceObjectId = new mongoose.Types.ObjectId(workspaceId);
   const projectObjectId = new mongoose.Types.ObjectId(projectId);
 
   const project = await getProjectById({
-    projectId,
+    projectId: projectObjectId,
     workspaceId,
   });
 
@@ -34,7 +33,7 @@ export const getProjectAttachmentOverview = async ({
   }
 
   const pipeline = buildProjectAttachmentsPipeline({
-    workspaceId: workspaceObjectId,
+    workspaceId,
     projectId: projectObjectId,
     search,
     page,

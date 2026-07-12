@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { useDebounce } from "@/shared/hooks/useDebounce";
 import { Button } from "@/shared/components/ui/button";
 import AssignProjectItem from "./AssignProjectItem";
-import { useAssignUserToProjects } from "@/features/projects/hooks/mutations/useAssignUserToProjects";
+import { useAssignUserToProjects } from "@/features/users/hooks/team/useAssignUserToProjects";
 import { Spinner } from "@/shared/components/ui/spinner";
 import { useScrollLock } from "@/shared/hooks/useScrollLock";
 import { useUserProjectOptions } from "@/features/users/hooks/team/useUserProjectOptions";
@@ -16,6 +16,7 @@ type AssignProjectModal = {
 const AssignProjectModal = ({ onClose, selectedUser }: AssignProjectModal) => {
   const [input, setInput] = useState("");
   const [selectedProjectIds, setSelectedProjectIds] = useState<string[]>([]);
+  const inputRef = useRef<HTMLInputElement | null>(null);
 
   useScrollLock(true);
 
@@ -25,15 +26,10 @@ const AssignProjectModal = ({ onClose, selectedUser }: AssignProjectModal) => {
     userId: selectedUser.id,
     search: debounceInput,
   });
-
-  console.log(data)
+  const { mutate, isPending, error: mutateError } = useAssignUserToProjects();
 
   const results = data?.results ?? [];
   const recent = data?.recent ?? [];
-
-  const { mutate, isPending, error: mutateError } = useAssignUserToProjects();
-
-  const inputRef = useRef<HTMLInputElement | null>(null);
 
   const hasSearched = input.trim().length >= 2;
 

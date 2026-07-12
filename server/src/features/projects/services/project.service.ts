@@ -3,13 +3,14 @@ import {
   toProjectDtos,
   toProjectDto,
 } from "@/features/projects/mappers/project.mapper.js";
+import { Types } from "mongoose";
 
 export const touchProject = async ({
   projectId,
   workspaceId,
 }: {
-  projectId: string;
-  workspaceId: string;
+  projectId: string | Types.ObjectId;
+  workspaceId: Types.ObjectId;
 }) => {
   await ProjectModel.findOneAndUpdate(
     { _id: projectId, workspaceId },
@@ -17,7 +18,11 @@ export const touchProject = async ({
   );
 };
 
-export const getProjects = async ({ workspaceId }: { workspaceId: string }) => {
+export const getProjects = async ({
+  workspaceId,
+}: {
+  workspaceId: Types.ObjectId;
+}) => {
   const projectRecords = await ProjectModel.find({
     workspaceId,
   }).lean();
@@ -29,8 +34,8 @@ export const getProjectById = async ({
   projectId,
   workspaceId,
 }: {
-  projectId: string;
-  workspaceId: string;
+  projectId: Types.ObjectId;
+  workspaceId: Types.ObjectId;
 }) => {
   const projectRecord = await ProjectModel.findOne({
     _id: projectId,

@@ -3,9 +3,10 @@ import { UserProjectOptionsQuery } from "@/features/users/validators/userProject
 import { UserModel } from "@/features/users/models/user.modal.js";
 import { AppError } from "@/utils/AppError.js";
 import { toProjectOptionDto } from "@/features/users/mappers/toProjectOption.mapper.js";
+import { Types } from "mongoose";
 
 type GetUserProjectOptionsInput = {
-  workspaceId: string;
+  workspaceId: Types.ObjectId;
   query: UserProjectOptionsQuery;
 };
 

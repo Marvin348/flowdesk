@@ -2,10 +2,11 @@ import { UserModel } from "@/features/users/models/user.modal.js";
 import { VerificationTokenModel } from "@/features/verification-tokens/models/verificationToken.model.js";
 import { AppError } from "@/utils/AppError.js";
 import { hashToken } from "@/utils/hashToken.js";
+import { Types } from "mongoose";
 
 type VerifyPasswordChangeInput = {
   userId: string;
-  workspaceId: string;
+  workspaceId: Types.ObjectId;
   token: string;
 };
 

@@ -1,11 +1,12 @@
 import { mapDashboardOverviewStats } from "@/features/dashboard/mappers/mapDashboardOverviewStats.js";
 import { getProjects } from "@/features/projects/services/project.service.js";
 import { TaskModel } from "@/features/tasks/models/task.model.js";
+import { Types } from "mongoose";
 
 export const getOverviewStats = async ({
   workspaceId,
 }: {
-  workspaceId: string;
+  workspaceId: Types.ObjectId;
 }) => {
   const projects = await getProjects({ workspaceId });
 

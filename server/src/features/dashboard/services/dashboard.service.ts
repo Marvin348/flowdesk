@@ -3,8 +3,9 @@ import { getPerformanceHighlights } from "@/features/dashboard/services/dashboar
 import { getTaskPriorityDistribution } from "@/features/dashboard/services/dashboardTaskPriorityDistribution.service.js";
 import { getTaskStatusDistribution } from "@/features/dashboard/services/dashboardTaskStatusDistribution.service.js";
 import { getUpcomingTasks } from "@/features/dashboard/services/dashboardUpcomingTasks.service.js";
+import { Types } from "mongoose";
 
-export const getDashboardOverview = async (workspaceId: string) => {
+export const getDashboardOverview = async (workspaceId: Types.ObjectId) => {
   const [
     overviewStats,
     taskStatusDistribution,

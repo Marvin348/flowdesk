@@ -3,11 +3,12 @@ import { TaskModel } from "@/features/tasks/models/task.model.js";
 import { AppError } from "@/utils/AppError.js";
 import { toTaskDto } from "@/features/tasks/mappers/task.mapper.js";
 import { touchProject } from "@/features/projects/services/project.service.js";
+import { Types } from "mongoose";
 
 type ChangeTaskStatusInput = {
   taskId: string;
   taskStatus: StatusBase;
-  workspaceId: string;
+  workspaceId: Types.ObjectId;
 };
 export const changeTaskStatus = async ({
   taskId,

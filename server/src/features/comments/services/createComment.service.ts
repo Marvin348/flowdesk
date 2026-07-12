@@ -6,9 +6,10 @@ import type { CreateCommentInput } from "@shared/types/inputs/createCommentInput
 import { touchProject } from "@/features/projects/services/project.service.js";
 import { toCommentDto } from "@/features/comments/mappers/comment.mapper.js";
 import { createActivity } from "@/features/activity/services/createActivity.service.js";
+import { Types } from "mongoose";
 
 type CreateCommentParams = {
-  workspaceId: string;
+  workspaceId: Types.ObjectId;
   userId: string;
   input: Pick<CreateCommentInput, "taskId" | "message" | "parentCommentId">;
 };
@@ -49,7 +50,7 @@ export const createComment = async ({
       throw new AppError("Parent comment not found", 404);
     }
 
-    if (parentComment.taskId !== taskId) {
+    if (parentComment.taskId.toString() !== taskId) {
       throw new AppError("Parent comment does not belong to this task", 400);
     }
   }
@@ -62,7 +63,7 @@ export const createComment = async ({
     parentCommentId,
   });
 
-  await touchProject({ projectId: task.projectId, workspaceId });
+  await touchProject({ projectId: task.projectId.toString(), workspaceId });
 
   await createActivity({
     workspaceId,

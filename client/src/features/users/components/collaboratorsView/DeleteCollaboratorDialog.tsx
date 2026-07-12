@@ -31,7 +31,7 @@ const DeleteCollaboratorDialog = ({
 
   return (
     <div className="overlay px-8 flex items-center justify-center">
-      <div className="bg-white max-w-[400px] text-center p-4 rounded-md z-100">
+      <div className="bg-background border max-w-[400px] text-center p-4 rounded-md z-100">
         <span className="mx-auto flex items-center justify-center size-10 bg-error/10 rounded-full">
           <UserX className="text-error" />
         </span>

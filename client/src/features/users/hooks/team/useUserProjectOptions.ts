@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import type { ProjectOptionsDto } from "@shared/types/dto/projects/projectOptions.dto";
 import type { ProjectOptionsInput } from "@shared/types/inputs/projectOptionsInput";
-import { userProjectOptions } from "@/features/users/api/userOptions.api";
+import { userProjectOptions } from "@/features/users/api/userProjectOptions.api";
 
 export const useUserProjectOptions = (input: ProjectOptionsInput) => {
   const { data, isLoading, error } = useQuery<ProjectOptionsDto, Error>({
