@@ -2,7 +2,7 @@ import { Types } from "mongoose";
 
 export type WorkspaceInviteDocument = {
   email: string;
-  token: string;
+  tokenHash: string;
   workspaceId: Types.ObjectId;
   role: "member";
   createdBy: Types.ObjectId;

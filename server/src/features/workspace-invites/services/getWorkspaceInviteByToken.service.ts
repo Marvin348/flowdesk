@@ -1,9 +1,14 @@
 import { WorkspaceInviteModel } from "@/features/workspace-invites/models/workspaceInvite.model.js";
 import { WorkspaceModel } from "@/features/workspace/models/workspace.model.js";
 import { AppError } from "@/utils/AppError.js";
+import { hashToken } from "@/utils/hashToken.js";
 
 export const getWorkspaceInviteByToken = async (token: string) => {
-  const workspaceInvite = await WorkspaceInviteModel.findOne({ token }).lean();
+  const tokenHash = hashToken(token);
+
+  const workspaceInvite = await WorkspaceInviteModel.findOne({
+    tokenHash,
+  }).lean();
 
   if (!workspaceInvite) {
     throw new AppError("Token not found", 404);

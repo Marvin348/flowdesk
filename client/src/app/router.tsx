@@ -20,6 +20,7 @@ import CheckEmailPage from "@/features/auth/pages/CheckEmailPage";
 import EmailVerificationPage from "@/features/auth/pages/EmailVerificationPage";
 import ConfirmEmailChangePage from "@/features/auth/pages/ConfirmEmailChangePage";
 import ConfirmPasswordChangePage from "@/features/auth/pages/ConfirmPasswordChangePage";
+import InviteSuccessPage from "@/features/workspace-invites/pages/InviteSuccessPage";
 
 export const router = createBrowserRouter([
   {
@@ -32,6 +33,7 @@ export const router = createBrowserRouter([
       { path: "check-email", element: <CheckEmailPage /> },
       { path: "verify-email/:token", element: <EmailVerificationPage /> },
       { path: "invite/:token", element: <InvitePage /> },
+      { path: "invite/success", element: <InviteSuccessPage /> },
       {
         path: "/confirm-email-change/:token",
         element: <ConfirmEmailChangePage />,

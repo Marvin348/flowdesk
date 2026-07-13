@@ -11,7 +11,7 @@ const workspaceInviteSchema = new mongoose.Schema(
       trim: true,
     },
 
-    token: {
+    tokenHash: {
       type: String,
       required: true,
       unique: true,

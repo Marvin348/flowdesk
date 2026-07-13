@@ -1,7 +1,6 @@
 export type CreatedWorkspaceInviteDto = {
-  email: string;
-  inviteUrl: string;
-  expiresAt: string;
+    email: string;
+    expiresAt: string;
 };
 
 export type WorkspaceInvitePreviewDto = {

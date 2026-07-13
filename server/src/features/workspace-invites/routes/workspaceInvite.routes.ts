@@ -11,6 +11,7 @@ import { createWorkspaceInvite } from "@/features/workspace-invites/services/wor
 import { requireAuth } from "@/features/auth/middleware/requireAuth.js";
 import { getWorkspaceInviteByToken } from "@/features/workspace-invites/services/getWorkspaceInviteByToken.service.js";
 import { acceptWorkspaceInvite } from "@/features/workspace-invites/services/acceptWorkspaceInvite.service.js";
+import { verificationTokenSchema } from "@/features/verification-tokens/validators/verifyEmailSchema.js";
 
 const router = express.Router();
 
@@ -34,15 +35,11 @@ router.post(
       throw new AppError("User not found", 404);
     }
 
-    if (role !== "admin") {
-      throw new AppError("Only admins can create workspace-invites", 403);
-    }
-
     const invite = await createWorkspaceInvite({
       email,
       userId,
       workspaceId,
-      role: user.role,
+      role,
     });
 
     return res.status(201).json({ invite });
@@ -52,13 +49,13 @@ router.post(
 router.get<{ token: string }>(
   "/:token",
   asyncHandler(async (req, res) => {
-    const { token } = req.params;
+    const tokenParam = verificationTokenSchema.safeParse(req.params);
 
-    if (!token) {
-      throw new AppError("Token not found", 400);
+    if (!tokenParam.success) {
+      throw new AppError("Invalid token", 400);
     }
 
-    const invite = await getWorkspaceInviteByToken(token);
+    const invite = await getWorkspaceInviteByToken(tokenParam.data.token);
 
     return res.status(200).json({ invite });
   }),
@@ -67,7 +64,11 @@ router.get<{ token: string }>(
 router.post<{ token: string }>(
   "/:token/accept",
   asyncHandler(async (req, res) => {
-    const { token } = req.params;
+    const tokenParam = verificationTokenSchema.safeParse(req.params);
+
+    if (!tokenParam.success) {
+      throw new AppError("Invalid token", 400);
+    }
 
     const result = acceptWorkspaceInviteSchema.safeParse(req.body);
 
@@ -75,13 +76,13 @@ router.post<{ token: string }>(
       throw new AppError("Invalid Input", 400);
     }
 
-    const user = await acceptWorkspaceInvite({
-      token,
+    await acceptWorkspaceInvite({
+      token: tokenParam.data.token,
       name: result.data.name,
       password: result.data.password,
     });
 
-    return res.status(201).json({ user });
+    return res.status(201).json({ message: "Invite was successfully" });
   }),
 );
 

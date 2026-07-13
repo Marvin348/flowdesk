@@ -6,10 +6,11 @@ import {
   connectTestDb,
   disconnectTestDb,
 } from "@/test/setupTestDb.js";
-import { UserModel } from "@/features/users/models/user.modal.js";
 import mongoose from "mongoose";
 import { WorkspaceModel } from "@/features/workspace/models/workspace.model.js";
 import { WorkspaceInviteModel } from "@/features/workspace-invites/models/workspaceInvite.model.js";
+import { createAuthedUserContext } from "@/test/helpers/testFactories.js";
+import { hashToken } from "@/utils/hashToken.js";
 
 beforeAll(async () => {
   await connectTestDb();
@@ -25,27 +26,19 @@ afterAll(async () => {
 
 describe("GET /workspace-invites/:token", () => {
   it("returns the invite when token is valid", async () => {
-    const ownerId = new mongoose.Types.ObjectId();
-    const workspaceId = new mongoose.Types.ObjectId();
-
-    const workspace = await WorkspaceModel.create({
-      _id: workspaceId,
-      name: "Existing Workspace",
-      ownerId,
-    });
+    const { userId, workspaceId, workspace } = await createAuthedUserContext();
+    const token = "valid-invite-token";
 
     const invite = await WorkspaceInviteModel.create({
       email: "member@example.com",
-      token: "valid-invite-token",
+      tokenHash: hashToken(token),
       workspaceId,
       role: "member",
-      createdBy: ownerId,
+      createdBy: userId,
       expiresAt: new Date(Date.now() + 1000 * 60 * 60),
     });
 
-    const response = await request(app).get(
-      `/workspace-invites/${invite.token}`,
-    );
+    const response = await request(app).get(`/workspace-invites/${token}`);
 
     expect(response.status).toBe(200);
     expect(response.body.invite).toMatchObject({
@@ -62,21 +55,15 @@ describe("GET /workspace-invites/:token", () => {
   });
 
   it("returns 404 when token does not match any invite", async () => {
-    const ownerId = new mongoose.Types.ObjectId();
-    const workspaceId = new mongoose.Types.ObjectId();
-
-    await WorkspaceModel.create({
-      _id: workspaceId,
-      name: "Existing Workspace",
-      ownerId,
-    });
+    const { userId, workspaceId } = await createAuthedUserContext();
+    const token = "valid-invite-token";
 
     await WorkspaceInviteModel.create({
       email: "member@example.com",
-      token: "valid-invite-token",
+      tokenHash: hashToken(token),
       workspaceId,
       role: "member",
-      createdBy: ownerId,
+      createdBy: userId,
       expiresAt: new Date(Date.now() + 1000 * 60 * 60),
     });
 
@@ -86,28 +73,20 @@ describe("GET /workspace-invites/:token", () => {
   });
 
   it("returns 409 when invite was already used", async () => {
-    const ownerId = new mongoose.Types.ObjectId();
-    const workspaceId = new mongoose.Types.ObjectId();
+    const { userId, workspaceId } = await createAuthedUserContext();
+    const token = "valid-invite-token";
 
-    await WorkspaceModel.create({
-      _id: workspaceId,
-      name: "Existing Workspace",
-      ownerId,
-    });
-
-    const invite = await WorkspaceInviteModel.create({
+    await WorkspaceInviteModel.create({
       email: "member@example.com",
-      token: "valid-invite-token",
+      tokenHash: hashToken(token),
       workspaceId,
       role: "member",
-      createdBy: ownerId,
+      createdBy: userId,
       expiresAt: new Date(Date.now() + 1000 * 60 * 60),
       usedAt: new Date(),
     });
 
-    const response = await request(app).get(
-      `/workspace-invites/${invite.token}`,
-    );
+    const response = await request(app).get(`/workspace-invites/${token}`);
 
     expect(response.status).toBe(409);
     expect(response.body).toMatchObject({
@@ -116,27 +95,19 @@ describe("GET /workspace-invites/:token", () => {
   });
 
   it("returns 410 when invite is expired", async () => {
-    const ownerId = new mongoose.Types.ObjectId();
-    const workspaceId = new mongoose.Types.ObjectId();
+    const { userId, workspaceId } = await createAuthedUserContext();
+    const token = "valid-invite-token";
 
-    await WorkspaceModel.create({
-      _id: workspaceId,
-      name: "Existing Workspace",
-      ownerId,
-    });
-
-    const invite = await WorkspaceInviteModel.create({
+    await WorkspaceInviteModel.create({
       email: "member@example.com",
-      token: "valid-invite-token",
+      tokenHash: hashToken(token),
       workspaceId,
       role: "member",
-      createdBy: ownerId,
+      createdBy: userId,
       expiresAt: new Date(Date.now() - 1000 * 60),
     });
 
-    const response = await request(app).get(
-      `/workspace-invites/${invite.token}`,
-    );
+    const response = await request(app).get(`/workspace-invites/${token}`);
 
     expect(response.status).toBe(410);
     expect(response.body).toMatchObject({

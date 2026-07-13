@@ -1,3 +1,12 @@
+import { vi } from "vitest";
+
+vi.mock(
+  "@/features/email/services/sendWorkspaceInviteVerificationEmail.service",
+  () => ({
+    sendWorkspaceInviteVerificationEmail: vi.fn(),
+  }),
+);
+
 import app from "@/app.js";
 import request from "supertest";
 import { beforeAll, beforeEach, afterAll, describe, expect, it } from "vitest";
@@ -6,17 +15,16 @@ import {
   connectTestDb,
   disconnectTestDb,
 } from "@/test/setupTestDb.js";
-import { UserModel } from "@/features/users/models/user.modal.js";
-import mongoose from "mongoose";
-import { WorkspaceModel } from "@/features/workspace/models/workspace.model.js";
+import { sendWorkspaceInviteVerificationEmail } from "@/features/email/services/sendWorkspaceInviteVerificationEmail.service.js";
 import { WorkspaceInviteModel } from "@/features/workspace-invites/models/workspaceInvite.model.js";
-import { createAccessToken } from "@/features/auth/utils/tokens.js";
+import { createAuthedUserContext } from "@/test/helpers/testFactories.js";
 
 beforeAll(async () => {
   await connectTestDb();
 });
 
 beforeEach(async () => {
+  vi.clearAllMocks();
   await clearTestDb();
 });
 
@@ -26,33 +34,13 @@ afterAll(async () => {
 
 describe("POST /workspace-invites", () => {
   it("creates a workspace invite when authenticated admin sends a valid email", async () => {
-    const adminId = new mongoose.Types.ObjectId();
-    const workspaceId = new mongoose.Types.ObjectId();
-
-    await WorkspaceModel.create({
-      _id: workspaceId,
-      name: "Test Workspace",
-      ownerId: adminId,
-    });
-
-    const admin = await UserModel.create({
-      _id: adminId,
-      email: "admin@example.com",
-      name: "Admin User",
-      passwordHash: "hashed-password",
-      workspaceId,
-      role: "admin",
-      isEmailVerified: true,
-    });
-
-    const accessToken = createAccessToken(admin._id.toString());
-
+    const { authCookie, user, workspaceId } = await createAuthedUserContext();
+    
     const response = await request(app)
       .post("/workspace-invites")
-      .set("Cookie", [`accessToken=${accessToken}`])
+      .set("Cookie", authCookie)
       .send({
         email: "member@example.com",
-        role: "member",
       });
 
     expect(response.status).toBe(201);
@@ -69,36 +57,19 @@ describe("POST /workspace-invites", () => {
     }
 
     expect(invite.role).toBe("member");
-    expect(invite.createdBy.toString()).toBe(admin._id.toString());
-    expect(invite.token).toBeDefined();
+    expect(invite.createdBy.toString()).toBe(user._id.toString());
+    expect(invite.tokenHash).toBeDefined();
     expect(invite.expiresAt).toBeDefined();
+
+    expect(sendWorkspaceInviteVerificationEmail).toHaveBeenCalledOnce();
   });
 
   it("returns 400 if the body is invalid", async () => {
-    const adminId = new mongoose.Types.ObjectId();
-    const workspaceId = new mongoose.Types.ObjectId();
-
-    await WorkspaceModel.create({
-      _id: workspaceId,
-      name: "Test Workspace",
-      ownerId: adminId,
-    });
-
-    const admin = await UserModel.create({
-      _id: adminId,
-      email: "admin@example.com",
-      name: "Admin User",
-      passwordHash: "hashed-password",
-      workspaceId,
-      role: "admin",
-      isEmailVerified: true,
-    });
-
-    const accessToken = createAccessToken(admin._id.toString());
+    const { authCookie } = await createAuthedUserContext();
 
     const response = await request(app)
       .post("/workspace-invites")
-      .set("Cookie", [`accessToken=${accessToken}`])
+      .set("Cookie", authCookie)
       .send({ email: "not-an-email" });
 
     expect(response.status).toBe(400);
@@ -114,36 +85,36 @@ describe("POST /workspace-invites", () => {
   });
 
   it("returns 403 if the user is not a admin", async () => {
-    const ownerId = new mongoose.Types.ObjectId();
-    const userId = new mongoose.Types.ObjectId();
-    const workspaceId = new mongoose.Types.ObjectId();
-
-    await WorkspaceModel.create({
-      _id: workspaceId,
-      name: "Test Workspace",
-      ownerId,
-    });
-
-    const user = await UserModel.create({
-      _id: userId,
-      email: "member@example.com",
-      name: "member User",
-      passwordHash: "hashed-password",
-      workspaceId,
-      role: "member",
-      isEmailVerified: true,
-    });
-
-    const accessToken = createAccessToken(user._id.toString());
+    const { authCookie } = await createAuthedUserContext({ role: "member" });
 
     const response = await request(app)
       .post("/workspace-invites")
-      .set("Cookie", [`accessToken=${accessToken}`])
+      .set("Cookie", authCookie)
       .send({ email: "member@example.com" });
 
     expect(response.status).toBe(403);
     expect(response.body).toEqual({
       message: "Only admins can create workspace-invites",
     });
+
+    expect(sendWorkspaceInviteVerificationEmail).not.toHaveBeenCalled();
+  });
+
+  it("returns 409 if the email already exists", async () => {
+    const { authCookie } = await createAuthedUserContext({
+      email: "exists-email@test.de",
+    });
+
+    const response = await request(app)
+      .post("/workspace-invites")
+      .set("Cookie", authCookie)
+      .send({ email: "exists-email@test.de" });
+
+    expect(response.status).toBe(409);
+    expect(response.body).toEqual({
+      message: "Email already exists",
+    });
+
+    expect(sendWorkspaceInviteVerificationEmail).not.toHaveBeenCalled();
   });
 });
