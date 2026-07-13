@@ -1,6 +1,6 @@
-import type { Priority } from "../../priority";
-import type { StatusBase } from "../../StatusBase";
-import type { UserAvatarDto } from "../common/userPreview.dto";
+import type { Priority } from "../../priority.js";
+import type { StatusBase } from "../../StatusBase.js";
+import type { UserAvatarDto } from "../common/userPreview.dto.js";
 
 export type ProjectDetailsShellDto = {
     id: string;

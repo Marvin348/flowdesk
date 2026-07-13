@@ -53,7 +53,7 @@ describe("POST /projects", () => {
       .post("/projects")
       .send({
         title: "testTitle",
-        dueDate: "12-05",
+        dueDate: "2026-07-15",
         projectStatus: "pending",
         priority: "medium",
         invitedUserIds: [invitedUser._id.toString()],
@@ -78,7 +78,7 @@ describe("POST /projects", () => {
       .post("/projects")
       .send({
         title: "testTitle",
-        dueDate: "12-05",
+        dueDate: "2026-07-15",
         projectStatus: "pending",
         priority: "medium",
         invitedUserIds: [invalidUserId.toString()],
@@ -93,6 +93,7 @@ describe("POST /projects", () => {
 
   it("creates new Project", async () => {
     const { authCookie, workspaceId, userId } = await createAuthedUserContext();
+    const dueDate = "2026-07-15";
 
     const invitedUser = await createUser({
       workspaceId,
@@ -103,7 +104,7 @@ describe("POST /projects", () => {
       .post("/projects")
       .send({
         title: "testTitle",
-        dueDate: "12-05",
+        dueDate,
         projectStatus: "pending",
         priority: "medium",
         invitedUserIds: [invitedUser._id.toString()],
@@ -113,7 +114,7 @@ describe("POST /projects", () => {
     expect(response.status).toBe(201);
     expect(response.body.data).toMatchObject({
       title: "testTitle",
-      dueDate: "12-05",
+      dueDate: new Date(dueDate).toISOString(),
       projectStatus: "pending",
       priority: "medium",
       ownerId: userId.toString(),

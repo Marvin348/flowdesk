@@ -31,6 +31,8 @@ import { getAuthContext } from "@/features/auth/utils/getAuthContext.js";
 import { asyncHandler } from "@/utils/asyncHandler.js";
 import { AppError } from "@/utils/AppError.js";
 import mongoose from "mongoose";
+import { projectDetailsParamsSchema } from "../validation/project.validator.js";
+import { getProjectDetails } from "../services/getProjectDetails.service.js";
 
 const router = express.Router();
 
@@ -43,44 +45,23 @@ const parseProjectObjectId = (projectId?: string) => {
 };
 
 router.get(
-  "/:id/details",
-  asyncHandler(async (req: Request<{ id?: string }>, res) => {
-    const projectId = req.params.id;
+  "/:projectId/details",
+  asyncHandler(async (req: Request<{ projectId: string }>, res) => {
+    const param = projectDetailsParamsSchema.safeParse(req.params);
 
-    const projectObjectId = parseProjectObjectId(projectId);
+    if (!param.success) {
+      throw new AppError("Invalid projectId", 400);
+    }
 
     const { workspaceId } = getAuthContext(req);
 
-    const project = await getProjectById({
-      projectId: projectObjectId,
+    const projectDetails = await getProjectDetails({
       workspaceId,
+      projectId: param.data.projectId,
     });
 
-    if (!project) {
-      throw new AppError("Project not found", 404);
-    }
-
-    const taskRecords = await TaskModel.find({ projectId, workspaceId }).lean();
-
-    const tasks = taskRecords.map(toTaskDto);
-
-    const { progressPercent } = getProjectProgress(tasks);
-
-    const invitedUserIdsSet = Array.from(new Set(project.invitedUserIds));
-
-    const usersRecord = await UserModel.find({
-      workspaceId,
-      _id: { $in: invitedUserIdsSet },
-    }).lean();
-
-    const invitedUsers = usersRecord.map(toUserAvatarDto);
-
     return res.status(200).json({
-      data: {
-        ...project,
-        invitedUsers,
-        progressPercent,
-      },
+      data: projectDetails,
     });
   }),
 );
