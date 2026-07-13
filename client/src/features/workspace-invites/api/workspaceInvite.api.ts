@@ -3,7 +3,6 @@ import type { InviteMemberFields } from "@/features/workspace-invites/schemas/in
 import type { CreatedWorkspaceInviteDto } from "@shared/types/dto/workspace-invites/workspace-invites";
 import type { WorkspaceInvitePreviewDto } from "@shared/types/dto/workspace-invites/workspace-invites";
 import type { AcceptInviteFields } from "@/features/workspace-invites/schemas/acceptInviteSchema";
-import type { User } from "@shared/types/user";
 
 type AcceptWorkspaceInviteVariables = {
   token: string;
@@ -27,7 +26,7 @@ export const getWorkspaceInvitePreview = async (
 export const acceptWorkspaceInvite = async ({
   token,
   input,
-}: AcceptWorkspaceInviteVariables): Promise<User> => {
+}: AcceptWorkspaceInviteVariables) => {
   const res = await apiClient.post(`/workspace-invites/${token}/accept`, input);
-  return res.data.user;
+  return res.data.message;
 };

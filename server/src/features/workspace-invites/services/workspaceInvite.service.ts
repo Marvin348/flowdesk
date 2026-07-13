@@ -2,10 +2,13 @@ import { AppError } from "@/utils/AppError.js";
 import { UserRole } from "@shared/types/user.js";
 import { UserModel } from "@/features/users/models/user.modal.js";
 import { createRandomToken } from "@/utils/createRandomToken.js";
-import { WorkspaceInviteModel } from "../models/workspaceInvite.model.js";
+import { WorkspaceInviteModel } from "@/features/workspace-invites/models/workspaceInvite.model.js";
 import { addDays } from "@/utils/date.js";
 import { createActivity } from "@/features/activity/services/createActivity.service.js";
 import { Types } from "mongoose";
+import { hashToken } from "@/utils/hashToken.js";
+import { sendWorkspaceInviteVerificationEmail } from "@/features/email/services/sendWorkspaceInviteVerificationEmail.service.js";
+import { WorkspaceModel } from "@/features/workspace/models/workspace.model.js";
 
 type CreateWorkspaceInviteInput = {
   email: string;
@@ -21,16 +24,16 @@ export const createWorkspaceInvite = async ({
   role,
 }: CreateWorkspaceInviteInput) => {
   if (role !== "admin") {
-    throw new AppError("Not allowed", 403);
+    throw new AppError("Only admins can create workspace-invites", 403);
   }
 
-  const existingUser = await UserModel.findOne({ email });
+  const existingUser = await UserModel.exists({ email });
 
   if (existingUser) {
     throw new AppError("Email already exists", 409);
   }
 
-  const existingInvites = await WorkspaceInviteModel.findOne({
+  const existingInvites = await WorkspaceInviteModel.exists({
     email,
     workspaceId,
     usedAt: { $exists: false },
@@ -42,18 +45,32 @@ export const createWorkspaceInvite = async ({
   }
 
   const token = createRandomToken();
+  const tokenHash = hashToken(token);
+
   const expiresAt = addDays(7);
 
   const newInvite = await WorkspaceInviteModel.create({
     email,
     workspaceId,
-    token,
+    tokenHash,
     role: "member",
     createdBy: userId,
     expiresAt,
   });
 
-  const inviteUrl = `${process.env.CLIENT_URL}/invite/${newInvite.token}`;
+  const inviteUrl = `${process.env.CLIENT_URL}/invite/${token}`;
+
+  const workspace = await WorkspaceModel.findOne({ _id: workspaceId });
+
+  if (!workspace) {
+    throw new AppError("Workspace not found", 404);
+  }
+
+  await sendWorkspaceInviteVerificationEmail({
+    to: email,
+    inviteUrl,
+    workspaceName: workspace.name,
+  });
 
   await createActivity({
     workspaceId,
@@ -68,7 +85,6 @@ export const createWorkspaceInvite = async ({
   });
 
   return {
-    inviteUrl,
     email: newInvite.email,
     expiresAt: newInvite.expiresAt,
   };

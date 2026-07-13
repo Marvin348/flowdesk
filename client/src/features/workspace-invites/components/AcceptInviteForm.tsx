@@ -49,7 +49,7 @@ const AcceptInviteForm = ({ invite, token }: AcceptInviteFormProps) => {
 
     mutate(input, {
       onSuccess: () => {
-        navigate("/login");
+        navigate("/invite/success", { replace: true });
         reset();
       },
     });

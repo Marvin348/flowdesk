@@ -7,9 +7,10 @@ import {
   disconnectTestDb,
 } from "@/test/setupTestDb.js";
 import { UserModel } from "@/features/users/models/user.modal.js";
-import mongoose from "mongoose";
 import { WorkspaceModel } from "@/features/workspace/models/workspace.model.js";
 import { WorkspaceInviteModel } from "@/features/workspace-invites/models/workspaceInvite.model.js";
+import { createAuthedUserContext } from "@/test/helpers/testFactories.js";
+import { hashToken } from "@/utils/hashToken.js";
 
 beforeAll(async () => {
   await connectTestDb();
@@ -25,46 +26,28 @@ afterAll(async () => {
 
 describe("POST /workspace-invites/:token/accept", () => {
   it("creates a member user in an existing workspace when accepting a valid invite", async () => {
-    const ownerId = new mongoose.Types.ObjectId();
-    const workspaceId = new mongoose.Types.ObjectId();
-
-    await WorkspaceModel.create({
-      _id: workspaceId,
-      name: "Existing Workspace",
-      ownerId,
-    });
-
-    await UserModel.create({
-      _id: ownerId,
-      email: "owner@example.com",
-      name: "Workspace Owner",
-      passwordHash: "hashed-password",
-      workspaceId,
-      role: "admin",
-      isEmailVerified: true,
-    });
+    const { user: owner, workspaceId } = await createAuthedUserContext();
+    const token = "valid-invite-token";
 
     const invite = await WorkspaceInviteModel.create({
       email: "member@example.com",
-      token: "valid-invite-token",
+      tokenHash: hashToken(token),
       workspaceId,
       role: "member",
-      createdBy: ownerId,
+      createdBy: owner._id,
       expiresAt: new Date(Date.now() + 1000 * 60 * 60),
     });
 
     const response = await request(app)
-      .post(`/workspace-invites/${invite.token}/accept`)
+      .post(`/workspace-invites/${token}/accept`)
       .send({
         name: "Test Member",
         password: "Password123!",
       });
 
     expect(response.status).toBe(201);
-    expect(response.body.user).toMatchObject({
-      name: "Test Member",
-      email: "member@example.com",
-      role: "member",
+    expect(response.body).toEqual({
+      message: "Invite was successfully",
     });
 
     const member = await UserModel.findOne({ email: "member@example.com" });
@@ -110,21 +93,21 @@ describe("POST /workspace-invites/:token/accept", () => {
   });
 
   it("returns 409 when the invite token was already used", async () => {
-    const ownerId = new mongoose.Types.ObjectId();
-    const workspaceId = new mongoose.Types.ObjectId();
+    const { user: owner, workspaceId } = await createAuthedUserContext();
+    const token = "used-invite-token";
 
-    const invite = await WorkspaceInviteModel.create({
+    await WorkspaceInviteModel.create({
       email: "member@example.com",
-      token: "used-invite-token",
+      tokenHash: hashToken(token),
       workspaceId,
       role: "member",
-      createdBy: ownerId,
+      createdBy: owner._id,
       expiresAt: new Date(Date.now() + 1000 * 60 * 60),
       usedAt: new Date(),
     });
 
     const response = await request(app)
-      .post(`/workspace-invites/${invite.token}/accept`)
+      .post(`/workspace-invites/${token}/accept`)
       .send({
         name: "Test Member",
         password: "Password123!",

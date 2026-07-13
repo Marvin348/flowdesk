@@ -2,8 +2,8 @@ import { AppError } from "@/utils/AppError.js";
 import { UserModel } from "@/features/users/models/user.modal.js";
 import { WorkspaceInviteModel } from "@/features/workspace-invites/models/workspaceInvite.model.js";
 import { hashPassword } from "@/features/auth/utils/password.js";
-import { toUserDto } from "@/features/users/mappers/user.mapper.js";
 import { createActivity } from "@/features/activity/services/createActivity.service.js";
+import { hashToken } from "@/utils/hashToken.js";
 
 type AcceptWorkspaceInviteParams = {
   token: string;
@@ -16,7 +16,9 @@ export const acceptWorkspaceInvite = async ({
   name,
   password,
 }: AcceptWorkspaceInviteParams) => {
-  const invite = await WorkspaceInviteModel.findOne({ token });
+  const tokenHash = hashToken(token);
+
+  const invite = await WorkspaceInviteModel.findOne({ tokenHash });
 
   if (!invite) {
     throw new AppError("Token not found", 404);
@@ -44,11 +46,12 @@ export const acceptWorkspaceInvite = async ({
     name,
     passwordHash,
     email: invite.email,
+    isEmailVerified: true,
     workspaceId: invite.workspaceId,
     role: invite.role,
   });
 
-  invite.usedAt = new Date();
+  invite.usedAt = now;
   await invite.save();
 
   await createActivity({
@@ -63,6 +66,4 @@ export const acceptWorkspaceInvite = async ({
       role: newUser.role,
     },
   });
-
-  return toUserDto(newUser);
 };

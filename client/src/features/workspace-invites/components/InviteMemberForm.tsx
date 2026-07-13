@@ -10,13 +10,11 @@ import type { InviteMemberFields } from "@/features/workspace-invites/schemas/in
 type InviteMemberFormProps = {
   onInviteMember: (data: InviteMemberFields) => void;
   isInviting: boolean;
-  isError?: boolean;
 };
 
 const InviteMemberForm = ({
   onInviteMember,
   isInviting,
-  isError,
 }: InviteMemberFormProps) => {
   const {
     register,
@@ -68,13 +66,6 @@ const InviteMemberForm = ({
         </Button>
       </div>
       </div>
-
-      {isError && (
-        <ErrorMessage
-          message="Etwas ist schief gelaufen. Bitte versuche es erneut"
-          className="mt-4"
-        />
-      )}
     </form>
   );
 };
