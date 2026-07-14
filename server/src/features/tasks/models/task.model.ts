@@ -19,7 +19,7 @@ const taskSchema = new mongoose.Schema(
     },
 
     dueDate: {
-      type: String,
+      type: Date,
       required: true,
     },
 
@@ -55,7 +55,7 @@ const taskSchema = new mongoose.Schema(
     },
 
     completedAt: {
-      type: String,
+      type: Date,
     },
   },
   {

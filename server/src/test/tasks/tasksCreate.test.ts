@@ -106,7 +106,7 @@ describe("POST /tasks", () => {
       projectId: project._id.toString(),
       title: "Create task tests",
       collaboratorIds: [userId.toString()],
-      dueDate: "2026-07-10",
+      dueDate: new Date("2026-07-10").toISOString(),
       taskStatus: "pending",
       taskPriority: "high",
       description: "Cover the task creation route",
@@ -121,6 +121,7 @@ describe("POST /tasks", () => {
 
     expect(createdTask.workspaceId.toString()).toBe(workspaceId.toString());
     expect(createdTask.projectId.toString()).toBe(project._id.toString());
+    expect(createdTask.dueDate).toEqual(new Date("2026-07-10"));
     expect(createdTask.taskStatus).toBe("pending");
   });
 

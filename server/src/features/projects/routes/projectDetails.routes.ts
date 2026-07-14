@@ -2,7 +2,7 @@ import express from "express";
 import { toProjectOverviewDto } from "@/features/projects/mappers/projectOverview.mapper.js";
 import { toProjectCommentsDto } from "@/features/projects/mappers/project-comments.mapper.js";
 import { toProjectUserWorkloadDto } from "@/features/projects/mappers/project-user-workload.mapper.js";
-import { toProjectTasksDto } from "@/features/projects/mappers/project-tasks.mapper.js";
+import { toProjectTasksDto } from "@/features/projects/mappers/projectTasks.mapper.js";
 import { getProjectProgress } from "@/features/projects/utils/getProjectProgress.js";
 import { parseCollaboratorSort } from "@shared/parsers/parseCollaboratorSort.js";
 import type { ProjectCollaboratorsQuery } from "@/features/projects/types/querys/projectCollaboratorsQuery.js";
@@ -34,6 +34,7 @@ import mongoose from "mongoose";
 import { projectDetailsParamsSchema } from "../validation/project.validator.js";
 import { getProjectDetails } from "../services/details/getProjectDetails.service.js";
 import { getProjectOverview } from "../services/details/getProjectOverview.service.js";
+import { getProjectTasks } from "../services/details/getProjectTasks.service.js";
 
 const router = express.Router();
 
@@ -90,32 +91,20 @@ router.get(
 );
 
 router.get(
-  "/:id/tasks",
-  asyncHandler(async (req: Request<{ id?: string }>, res) => {
-    const projectId = req.params.id;
+  "/:projectId/tasks",
+  asyncHandler(async (req: Request<{ projectId: string }>, res) => {
+    const param = projectDetailsParamsSchema.safeParse(req.params);
 
-    const projectObjectId = parseProjectObjectId(projectId);
+    if (!param.success) {
+      throw new AppError("Invalid projectId", 400);
+    }
 
     const { workspaceId } = getAuthContext(req);
 
-    const project = await getProjectById({
-      projectId: projectObjectId,
+    const projectTasks = await getProjectTasks({
       workspaceId,
+      projectId: param.data.projectId,
     });
-
-    if (!project) {
-      throw new AppError("Project not found", 404);
-    }
-
-    const taskRecords = await TaskModel.find({ projectId, workspaceId }).lean();
-    const userRecords = await UserModel.find({ workspaceId }).lean();
-
-    const tasks = taskRecords.map(toTaskDto);
-    const users = userRecords.map(toUserDto);
-
-    const usersById = new Map(users.map((u) => [u.id, u]));
-
-    const projectTasks = toProjectTasksDto(tasks, usersById);
 
     return res.status(200).json({ data: projectTasks });
   }),

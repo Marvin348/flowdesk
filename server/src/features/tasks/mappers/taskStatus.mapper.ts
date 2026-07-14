@@ -1,8 +1,13 @@
 import { calcPercent } from "@/shared/utils/calcPercent.js";
-import { Task } from "@shared/types/task.js";
 import type { TaskStatsDto } from "@shared/types/dto/common/taskStats.dto.js";
+import type { StatusBase } from "@shared/types/StatusBase.js";
 
-export const toTaskStatsDto = (tasks: Task[]): TaskStatsDto => {
+type TaskStatsSource = {
+  taskStatus: StatusBase
+};
+
+
+export const toTaskStatsDto = (tasks: TaskStatsSource[]): TaskStatsDto => {
   const totalCount = tasks.length;
 
   const counts = tasks.reduce(

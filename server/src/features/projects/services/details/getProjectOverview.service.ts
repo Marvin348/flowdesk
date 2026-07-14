@@ -1,4 +1,4 @@
-import { Types, mongo } from "mongoose";
+import { Types } from "mongoose";
 import { buildProjectOverviewPipeline } from "@/features/projects/queries/projectOverview.pipeline.js";
 import { ProjectModel } from "@/features/projects/models/project.model.js";
 import { AppError } from "@/utils/AppError.js";
@@ -6,6 +6,7 @@ import {
   ProjectOverviewAggregationResult,
   toProjectOverviewDto,
 } from "@/features/projects/mappers/projectOverview.mapper.js";
+import mongoose from "mongoose";
 
 type GetProjectOverviewInput = {
   workspaceId: Types.ObjectId;
@@ -16,7 +17,7 @@ export const getProjectOverview = async ({
   workspaceId,
   projectId,
 }: GetProjectOverviewInput) => {
-  const projectObjectId = new mongo.ObjectId(projectId);
+  const projectObjectId = new mongoose.Types.ObjectId(projectId);
 
   const pipeline = buildProjectOverviewPipeline({
     workspaceId,
