@@ -1,5 +1,5 @@
 import express from "express";
-import { toProjectOverviewDto } from "@/features/projects/mappers/project-overview.mapper.js";
+import { toProjectOverviewDto } from "@/features/projects/mappers/projectOverview.mapper.js";
 import { toProjectCommentsDto } from "@/features/projects/mappers/project-comments.mapper.js";
 import { toProjectUserWorkloadDto } from "@/features/projects/mappers/project-user-workload.mapper.js";
 import { toProjectTasksDto } from "@/features/projects/mappers/project-tasks.mapper.js";
@@ -32,7 +32,8 @@ import { asyncHandler } from "@/utils/asyncHandler.js";
 import { AppError } from "@/utils/AppError.js";
 import mongoose from "mongoose";
 import { projectDetailsParamsSchema } from "../validation/project.validator.js";
-import { getProjectDetails } from "../services/getProjectDetails.service.js";
+import { getProjectDetails } from "../services/details/getProjectDetails.service.js";
+import { getProjectOverview } from "../services/details/getProjectOverview.service.js";
 
 const router = express.Router();
 
@@ -67,49 +68,19 @@ router.get(
 );
 
 router.get(
-  "/:id/overview",
-  asyncHandler(async (req: Request<{ id?: string }>, res) => {
-    const projectId = req.params.id;
+  "/:projectId/overview",
+  asyncHandler(async (req: Request<{ id: string }>, res) => {
+    const param = projectDetailsParamsSchema.safeParse(req.params);
 
-    const projectObjectId = parseProjectObjectId(projectId);
+    if (!param.success) {
+      throw new AppError("Invalid projectId", 400);
+    }
 
     const { workspaceId } = getAuthContext(req);
 
-    const project = await getProjectById({
-      projectId: projectObjectId,
+    const overview = await getProjectOverview({
       workspaceId,
-    });
-
-    if (!project) {
-      throw new AppError("Project not found", 404);
-    }
-
-    const taskRecords = await TaskModel.find({ projectId, workspaceId }).lean();
-
-    const tasks = taskRecords.map(toTaskDto);
-
-    const taskIds = tasks.map((task) => task.id);
-
-    const commentsRecords =
-      taskIds.length > 0
-        ? await CommentModel.find({
-            workspaceId,
-            taskId: { $in: taskIds },
-          }).lean()
-        : [];
-
-    const userRecords = await UserModel.find({ workspaceId }).lean();
-
-    const users = userRecords.map(toUserDto);
-    const comments = commentsRecords.map(toCommentDto);
-
-    const usersById = new Map(users.map((u) => [u.id, u]));
-
-    const overview = toProjectOverviewDto({
-      project,
-      comments,
-      tasks,
-      usersById,
+      projectId: param.data.projectId,
     });
 
     return res.status(200).json({
