@@ -6,6 +6,7 @@ import {
   ProjectDetailsAggregationResult,
   toProjectDetailsDto,
 } from "@/features/projects/mappers/project-details.mapper.js";
+import mongoose from "mongoose";
 
 type GetProjectDetailsInput = {
   workspaceId: Types.ObjectId;
@@ -16,7 +17,7 @@ export const getProjectDetails = async ({
   workspaceId,
   projectId,
 }: GetProjectDetailsInput) => {
-  const projectObjectId = new mongo.ObjectId(projectId);
+  const projectObjectId = new mongoose.Types.ObjectId(projectId);
 
   const pipeline = buildProjectDetailsPipeline({
     workspaceId,

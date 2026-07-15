@@ -54,8 +54,8 @@ const CollaboratorsView = ({
   const { data, isLoading, error } = useProjectCollaborators(input);
 
   const collaborators = data?.items ?? [];
-  const currentPage = data?.currentPage ?? DEFAULT_PAGE;
-  const totalPages = data?.totalPages ?? 1;
+  const currentPage = data?.pagination.currentPage ?? DEFAULT_PAGE;
+  const totalPages = data?.pagination.totalPages ?? 1;
 
   if (isLoading && !data) return <ProjectCollaboratorSkeleton />;
   if (error) return <div>Etwas ist schief gelaufen</div>;

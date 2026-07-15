@@ -35,6 +35,8 @@ import { projectDetailsParamsSchema } from "../validation/project.validator.js";
 import { getProjectDetails } from "../services/details/getProjectDetails.service.js";
 import { getProjectOverview } from "../services/details/getProjectOverview.service.js";
 import { getProjectTasks } from "../services/details/getProjectTasks.service.js";
+import { projectCollaboratorQuerySchema } from "../validation/projectCollaboratorSchema.validator.js";
+import { getProjectCollaborators } from "../services/details/getProjectCollaborators.service.js";
 
 const router = express.Router();
 
@@ -111,47 +113,33 @@ router.get(
 );
 
 router.get(
-  "/:id/collaborators",
+  "/:projectId/collaborators",
   asyncHandler(
     async (
-      req: Request<{ id?: string }, {}, {}, ProjectCollaboratorsQuery>,
+      req: Request<{ projectId: string }, {}, {}, ProjectCollaboratorsQuery>,
       res,
     ) => {
-      const projectId = req.params.id;
-      const { collaboratorsSort } = req.query;
+      const param = projectDetailsParamsSchema.safeParse(req.params);
 
-      const projectObjectId = parseProjectObjectId(projectId);
+      if (!param.success) {
+        throw new AppError("Invalid projectId", 400);
+      }
 
-      const parsedCollaboratorSort = parseCollaboratorSort(collaboratorsSort);
+      const query = projectCollaboratorQuerySchema.safeParse(req.query);
+
+      if (!query.success) {
+        throw new AppError("Invalid query", 400);
+      }
 
       const { workspaceId } = getAuthContext(req);
 
-      const project = await getProjectById({
-        projectId: projectObjectId,
+      const projectCollaborators = await getProjectCollaborators({
         workspaceId,
+        projectId: param.data.projectId,
+        query: query.data,
       });
 
-      if (!project) {
-        throw new AppError("Project not found", 404);
-      }
-
-      const userRecords = await UserModel.find({
-        workspaceId,
-        _id: { $in: project.invitedUserIds },
-      }).lean();
-
-      const collaborators = userRecords.map(toUserDto);
-      const sorted = sortedCollaborators(collaborators, parsedCollaboratorSort);
-
-      const { page, limit } = parsePagination({
-        page: req.query.page,
-        limit: req.query.limit,
-        defaultLimit: PAGE_LIMITS.workload,
-      });
-
-      const paginationItems = pagination(sorted, page, limit);
-
-      return res.status(200).json({ data: paginationItems });
+      return res.status(200).json({ data: projectCollaborators });
     },
   ),
 );
