@@ -1,4 +1,3 @@
-import { toUserPreviewDto } from "@/features/users/mappers/user.mapper.js";
 import type { Task } from "@shared/types/task.js";
 import type { User } from "@shared/types/user.js";
 import { calcPercent } from "@shared/utils/calcPercent.js";
@@ -59,7 +58,13 @@ export const getUserPerformance = (
     };
 
     return {
-      user: toUserPreviewDto(u),
+      user: {
+        id: u.id,
+        name: u.name,
+        avatarKey: u.avatarKey,
+        avatarUrl: u.avatarUrl,
+        jobTitle: u.jobTitle,
+      },
       stats,
     };
   });

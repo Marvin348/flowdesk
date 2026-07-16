@@ -91,7 +91,7 @@ describe("GET /projects/:id", () => {
       ownerId: userId.toString(),
       priority: "medium",
       projectStatus: "pending",
-      dueDate: "2026-08-01",
+      dueDate: project.dueDate.toISOString(),
       invitedUserIds: [],
     });
     expect(response.body.data.createdAt).toEqual(expect.any(String));

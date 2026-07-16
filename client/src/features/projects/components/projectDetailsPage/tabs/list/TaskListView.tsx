@@ -14,10 +14,11 @@ type TaskListViewProps = {
 };
 
 const TaskListView = ({ projectId }: TaskListViewProps) => {
+  const [openStatus, setOpenStatus] = useState<StatusBase[]>(["pending"]);
   const { data, isLoading, error } = useProjectTasks(projectId);
+
   const { mutate, isPending, isError, variables } =
     useUpdateTaskStatus(projectId);
-  const [openStatus, setOpenStatus] = useState<StatusBase[]>(["pending"]);
 
   const tasks = data?.tasks ?? [];
   const taskStats = data?.taskStats;

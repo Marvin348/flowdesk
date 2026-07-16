@@ -162,7 +162,7 @@ describe("GET /projects/summaries", () => {
       title: "Test Project",
       priority: "high",
       projectStatus: "in_progress",
-      dueDate: "2026-07-15",
+      dueDate: project.dueDate.toISOString(),
       invitedUserIds: [invitedUserId.toString()],
       invitedUsers: [
         {

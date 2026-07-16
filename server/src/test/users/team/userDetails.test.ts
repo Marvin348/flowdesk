@@ -161,7 +161,7 @@ describe("GET /users/:id/details", () => {
       nextDueTask: {
         id: pendingTaskId.toString(),
         title: "Next pending task",
-        dueDate: "2026-07-10",
+        dueDate: new Date("2026-07-10").toISOString(),
       },
     });
   });

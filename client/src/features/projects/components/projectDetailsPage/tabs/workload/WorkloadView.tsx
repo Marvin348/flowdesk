@@ -22,8 +22,8 @@ const WorkloadView = ({ projectId }: WorkloadViewProps) => {
   const { data, isLoading, error } = useProjectWorkload(input);
 
   const workload = data?.items ?? [];
-  const currentPage = data?.currentPage ?? DEFAULT_PAGE;
-  const totalPages = data?.totalPages ?? 1;
+  const currentPage = data?.pagination.currentPage ?? DEFAULT_PAGE;
+  const totalPages = data?.pagination.totalPages ?? 1;
 
   if (isLoading && !data) return <ProjectWorkloadSkeleton />;
   if (error) return <div>Etwas ist schief gelaufen</div>;

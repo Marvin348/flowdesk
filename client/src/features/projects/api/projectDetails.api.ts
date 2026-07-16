@@ -62,6 +62,7 @@ export const fetchProjectComments = async (
   const res = await apiClient.get(
     `/projects/${input.projectId}/comments?${params.toString()}`,
   );
+
   return res.data.data;
 };
 

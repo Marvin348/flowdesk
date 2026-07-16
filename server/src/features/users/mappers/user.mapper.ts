@@ -18,6 +18,14 @@ type UserAvatarSource = {
   avatarStorageKey?: string;
 };
 
+type UserPreviewSource = {
+  _id: Types.ObjectId;
+  name: string;
+  jobTitle?: string;
+  avatarKey?: string;
+  avatarStorageKey?: string;
+};
+
 export const toUserDto = (user: UserDocument): User => ({
   id: user._id.toString(),
   name: user.name,
@@ -54,11 +62,11 @@ export const toUserSecurityOverviewDto = (
   twoFactorEnabled: user.twoFactorEnabled,
 });
 
-export const toUserPreviewDto = (user: User): UserPreviewDto => ({
-  id: user.id,
+export const toUserPreviewDto = (user: UserPreviewSource): UserPreviewDto => ({
+  id: user._id.toString(),
   name: user.name,
   avatarKey: user.avatarKey,
-  avatarUrl: user.avatarUrl,
+  avatarUrl: bulidPublicFileUrl(user.avatarStorageKey),
   jobTitle: user.jobTitle,
 });
 

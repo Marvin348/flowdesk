@@ -35,7 +35,7 @@ const projectSchema = new mongoose.Schema(
     },
 
     dueDate: {
-      type: String,
+      type: Date,
       required: true,
     },
 

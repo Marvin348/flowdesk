@@ -66,7 +66,7 @@ export const createProject = async (
     ownerId: string;
     priority: Priority;
     projectStatus: StatusBase;
-    dueDate: string;
+    dueDate: string | Date;
     invitedUserIds: mongoose.Types.ObjectId[];
   }>,
 ) => {
@@ -89,7 +89,7 @@ export const createTask = async (
     workspaceId: mongoose.Types.ObjectId;
     projectId: mongoose.Types.ObjectId;
     title: string;
-    dueDate: string;
+    dueDate: string | Date;
     taskStatus: StatusBase;
     collaboratorIds: mongoose.Types.ObjectId[];
     taskPriority: Priority;

@@ -23,7 +23,7 @@ const commentSchema = new mongoose.Schema(
       type: String,
     },
     parentCommentId: {
-      type: String,
+      type: mongoose.Schema.Types.ObjectId,
     },
   },
   {

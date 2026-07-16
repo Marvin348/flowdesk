@@ -7,6 +7,8 @@ export type ProjectCollaboratorDto = Pick<
 
 export type ProjectCollaboratorResponseDto = {
   items: ProjectCollaboratorDto[];
-  currentPage: number;
-  totalPages: number;
+  pagination: {
+    currentPage: number;
+    totalPages: number;
+  };
 };
