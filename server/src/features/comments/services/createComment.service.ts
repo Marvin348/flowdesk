@@ -2,23 +2,23 @@ import { TaskModel } from "@/features/tasks/models/task.model.js";
 import { getProjectById } from "@/features/projects/services/project.service.js";
 import { AppError } from "@/utils/AppError.js";
 import { CommentModel } from "@/features/comments/models/comment.model.js";
-import type { CreateCommentInput } from "@shared/types/inputs/createCommentInput.js";
 import { touchProject } from "@/features/projects/services/project.service.js";
 import { toCommentDto } from "@/features/comments/mappers/comment.mapper.js";
 import { createActivity } from "@/features/activity/services/createActivity.service.js";
 import { Types } from "mongoose";
+import type { CreateCommentBody } from "@/features/comments/validation/comments.validator.js";
 
-type CreateCommentParams = {
+type CreateCommentInput = {
   workspaceId: Types.ObjectId;
   userId: string;
-  input: Pick<CreateCommentInput, "taskId" | "message" | "parentCommentId">;
+  input: CreateCommentBody;
 };
 
 export const createComment = async ({
   workspaceId,
   userId,
   input,
-}: CreateCommentParams) => {
+}: CreateCommentInput) => {
   const { taskId, message, parentCommentId } = input;
 
   const task = await TaskModel.findOne({

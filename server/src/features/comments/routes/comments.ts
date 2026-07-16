@@ -7,7 +7,8 @@ import { getProjects } from "@/features/projects/services/project.service.js";
 import { getAuthContext } from "@/features/auth/utils/getAuthContext.js";
 import { asyncHandler } from "@/utils/asyncHandler.js";
 import { AppError } from "@/utils/AppError.js";
-import { createComment } from "../services/createComment.service.js";
+import { createComment } from "@/features/comments/services/createComment.service.js";
+import { createCommentBodySchema } from "@/features/comments/validation/comments.validator.js";
 
 const router = express.Router();
 
@@ -35,22 +36,21 @@ router.get(
   }),
 );
 
-// new comment
 router.post(
   "/",
   asyncHandler(async (req: Request<{}, {}, CreateCommentInput>, res) => {
-    const { taskId, message, parentCommentId } = req.body;
+    const body = createCommentBodySchema.safeParse(req.body);
 
-    if (!taskId || !message) {
-      throw new AppError("Missing required fields", 400);
+    if (!body.success) {
+      throw new AppError("Invalid request body", 400);
     }
-
+    
     const { userId, workspaceId } = getAuthContext(req);
 
     const newComment = await createComment({
       workspaceId,
       userId,
-      input: req.body,
+      input: body.data,
     });
 
     return res.status(201).json({
