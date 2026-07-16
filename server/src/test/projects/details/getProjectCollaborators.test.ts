@@ -26,7 +26,7 @@ afterAll(async () => {
 });
 
 describe("GET /projects/:projectId/collaborators", () => {
-  it("returns 400 ig the projectId is invalid", async () => {
+  it("returns 400 if the projectId is invalid", async () => {
     const { authCookie } = await createAuthedUserContext();
 
     const response = await request(app)

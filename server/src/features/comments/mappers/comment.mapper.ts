@@ -14,7 +14,7 @@ export const toCommentDto = (comment: CommentDocument): Comment => {
     userId: comment.userId.toString(),
     message: comment.message ?? "",
     createdAt: toIsoString(comment.createdAt),
-    parentCommentId: comment.parentCommentId ?? undefined,
+    parentCommentId: comment.parentCommentId?.toString() ?? undefined,
   };
 };
 

@@ -1,17 +1,15 @@
 import express from "express";
 import { toProjectOverviewDto } from "@/features/projects/mappers/projectOverview.mapper.js";
-import { toProjectCommentsDto } from "@/features/projects/mappers/project-comments.mapper.js";
+import { toProjectCommentsDto } from "@/features/projects/mappers/projectComments.mapper.js";
 import { toProjectUserWorkloadDto } from "@/features/projects/mappers/project-user-workload.mapper.js";
 import { toProjectTasksDto } from "@/features/projects/mappers/projectTasks.mapper.js";
 import { getProjectProgress } from "@/features/projects/utils/getProjectProgress.js";
-import { parseCollaboratorSort } from "@shared/parsers/parseCollaboratorSort.js";
 import type { ProjectCollaboratorsQuery } from "@/features/projects/types/querys/projectCollaboratorsQuery.js";
 import { Request } from "express";
 import { sortedCollaborators } from "@/features/projects/utils/sortedCollaborators.js";
 import { pagination } from "@/shared/utils/pagination.js";
 import type { ProjectCommentsQuery } from "@/features/projects/types/querys/projectCommentsQuery.js";
 import { sortedComments } from "@/features/projects/utils/sortedComments.js";
-import { parseProjectCommentsSort } from "@shared/parsers/parseProjectCommentsSort.js";
 import { ProjectWorkloadQuery } from "@/features/projects/types/querys/projectWorkloadQuery.js";
 import { parseProjectWorkloadSort } from "@shared/parsers/parseProjectWorkloadSort.js";
 import { sortedWorkload } from "@/features/projects/utils/sortedWorkload.js";
@@ -37,6 +35,8 @@ import { getProjectOverview } from "../services/details/getProjectOverview.servi
 import { getProjectTasks } from "../services/details/getProjectTasks.service.js";
 import { projectCollaboratorQuerySchema } from "../validation/projectCollaboratorSchema.validator.js";
 import { getProjectCollaborators } from "../services/details/getProjectCollaborators.service.js";
+import { projectCommentsQuerySchema } from "../validation/projectCommentsSchema.validator.js";
+import { getProjectComments } from "../services/details/getProjectComments.service.js";
 
 const router = express.Router();
 
@@ -145,74 +145,33 @@ router.get(
 );
 
 router.get(
-  "/:id/comments",
+  "/:projectId/comments",
   asyncHandler(
     async (
-      req: Request<{ id?: string }, {}, {}, ProjectCommentsQuery>,
+      req: Request<{ projectId: string }, {}, {}, ProjectCommentsQuery>,
       res,
     ) => {
-      const projectId = req.params.id;
-      const { commentsSort } = req.query;
+      const param = projectDetailsParamsSchema.safeParse(req.params);
 
-      const projectObjectId = parseProjectObjectId(projectId);
+      if (!param.success) {
+        throw new AppError("Invalid projectId", 400);
+      }
+
+      const query = projectCommentsQuerySchema.safeParse(req.query);
+
+      if (!query.success) {
+        throw new AppError("Invalid query", 400);
+      }
 
       const { workspaceId } = getAuthContext(req);
 
-      const parsedCommentsSort = parseProjectCommentsSort(commentsSort);
-
-      const project = await getProjectById({
-        projectId: projectObjectId,
+      const projectComments = await getProjectComments({
         workspaceId,
+        projectId: param.data.projectId,
+        query: query.data,
       });
 
-      if (!project) {
-        throw new AppError("Project not found", 404);
-      }
-
-      const taskRecords = await TaskModel.find({
-        projectId,
-        workspaceId,
-      }).lean();
-      const tasks = taskRecords.map(toTaskDto);
-
-      const taskIds = tasks.map((task) => task.id);
-
-      const commentRecords = await CommentModel.find({
-        workspaceId,
-        taskId: { $in: taskIds },
-      }).lean();
-
-      const userRecords = await UserModel.find({ workspaceId }).lean();
-
-      const comments = commentRecords.map(toCommentDto);
-      const users = userRecords.map(toUserDto);
-
-      const usersById = new Map(users.map((u) => [u.id, u]));
-      const tasksById = new Map(tasks.map((task) => [task.id, task]));
-
-      const projectComments = toProjectCommentsDto(
-        comments,
-        tasksById,
-        usersById,
-      );
-
-      const limit = Number(req.query.limit) || 8;
-
-      const sorted = sortedComments(
-        projectComments.comments,
-        parsedCommentsSort,
-      );
-
-      const limited = sorted.slice(0, limit);
-
-      return res.status(200).json({
-        data: {
-          comments: limited,
-          taskOptions: projectComments.taskOptions,
-          totalItems: sorted.length,
-          hasMore: limited.length < sorted.length,
-        },
-      });
+      return res.status(200).json({ data: projectComments });
     },
   ),
 );

@@ -7,5 +7,5 @@ export type CommentDocument = {
   userId: Types.ObjectId;
   message: string;
   createdAt: Date;
-  parentCommentId?: string;
+  parentCommentId?: Types.ObjectId;
 };
