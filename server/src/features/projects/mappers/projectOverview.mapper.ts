@@ -1,9 +1,3 @@
-import type { Comment } from "@shared/types/comment.js";
-import type { Project } from "@shared/types/project.js";
-import type { Task } from "@shared/types/task.js";
-import type { User } from "@shared/types/user.js";
-import { getProjectProgress } from "@/features/projects/utils/getProjectProgress.js";
-import { toProjectUserWorkloadDto } from "@/features/projects/mappers/projectWorkload.mapper.js";
 import type { ProjectOverviewDto } from "@shared/types/dto/projects/projectOverview.dto.js";
 import { toUserPreviewDto } from "@/features/users/mappers/user.mapper.js";
 import { isDefined } from "@/shared/utils/isDefined.js";
@@ -11,6 +5,7 @@ import { Types } from "mongoose";
 import { StatusBase } from "@shared/types/StatusBase.js";
 import { calcPercent } from "@shared/utils/calcPercent.js";
 import { toIsoString } from "@/utils/toIsoString.js";
+import { UserWorkload } from "@shared/types/dto/workload/projectUserWorkload.js";
 
 export type ProjectOverviewAggregationResult = {
   _id: Types.ObjectId;
@@ -45,6 +40,7 @@ export type ProjectOverviewAggregationResult = {
 
 export const toProjectOverviewDto = (
   overview: ProjectOverviewAggregationResult,
+  workload: UserWorkload[],
 ): ProjectOverviewDto => {
   const usersById = new Map(
     overview.invitedUsers.map((user) => [user._id.toString(), user]),
@@ -89,13 +85,11 @@ export const toProjectOverviewDto = (
     progressPercent,
   };
 
-  // const workload = toProjectUserWorkloadDto(tasks, usersById).slice(0, 4);
-
   return {
     collaborators,
     openTasks,
     recentComments,
     progress,
-    // workload,
+    workload,
   };
 };

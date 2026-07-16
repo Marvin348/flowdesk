@@ -43,7 +43,7 @@ router.get(
 
 router.get(
   "/:projectId/overview",
-  asyncHandler(async (req: Request<{ id: string }>, res) => {
+  asyncHandler(async (req: Request<{ projectId: string }>, res) => {
     const param = projectDetailsParamsSchema.safeParse(req.params);
 
     if (!param.success) {

@@ -7,6 +7,7 @@ import {
   toProjectOverviewDto,
 } from "@/features/projects/mappers/projectOverview.mapper.js";
 import mongoose from "mongoose";
+import { getProjectWorkloadPreview } from "@/features/projects/services/workload/getProjectWorkloadPreview.service.js";
 
 type GetProjectOverviewInput = {
   workspaceId: Types.ObjectId;
@@ -31,5 +32,11 @@ export const getProjectOverview = async ({
     throw new AppError("Project not found", 404);
   }
 
-  return toProjectOverviewDto(projectOverview);
+  const workload = await getProjectWorkloadPreview({
+    workspaceId,
+    projectId: projectObjectId,
+    limit: 5,
+  });
+
+  return toProjectOverviewDto(projectOverview, workload);
 };

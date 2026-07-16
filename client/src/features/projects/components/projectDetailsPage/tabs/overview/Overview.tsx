@@ -29,7 +29,7 @@ const Overview = ({
     collaborators,
     openTasks,
     recentComments,
-    // workload,
+    workload,
   } = data;
 
   return (
@@ -60,11 +60,11 @@ const Overview = ({
       </div>
 
       <div className="h-full md:col-span-2 xl:row-span-2">
-        {/* <WorkloadCard
+        <WorkloadCard
           workload={workload}
           onCreateTask={onCreateTask}
           onMore={() => onNavigate("workload")}
-        /> */}
+        />
       </div>
     </div>
   );
