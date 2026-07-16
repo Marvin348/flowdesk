@@ -3,7 +3,7 @@ import type { Project } from "@shared/types/project.js";
 import type { Task } from "@shared/types/task.js";
 import type { User } from "@shared/types/user.js";
 import { getProjectProgress } from "@/features/projects/utils/getProjectProgress.js";
-import { toProjectUserWorkloadDto } from "@/features/projects/mappers/project-user-workload.mapper.js";
+import { toProjectUserWorkloadDto } from "@/features/projects/mappers/projectWorkload.mapper.js";
 import type { ProjectOverviewDto } from "@shared/types/dto/projects/projectOverview.dto.js";
 import { toUserPreviewDto } from "@/features/users/mappers/user.mapper.js";
 import { isDefined } from "@/shared/utils/isDefined.js";

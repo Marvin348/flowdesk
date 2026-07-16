@@ -5,7 +5,7 @@ export type UserWorkloadStats = {
     name: string;
     avatarKey?: string;
     avatarUrl?: string;
-    jobTitle?: string
+    jobTitle?: string;
   };
   byStatusCounts: { pending: number; in_progress: number; done: number };
 };
@@ -17,6 +17,8 @@ export type UserWorkload = UserWorkloadStats & {
 
 export type ProjectWorkloadDto = {
   items: UserWorkload[];
-  totalPages: number;
-  currentPage: number;
+  pagination: {
+    totalPages: number;
+    currentPage: number;
+  };
 };
