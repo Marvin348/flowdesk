@@ -1,10 +1,10 @@
-import { UserRole } from "@shared/types/user.js";
-import { ProjectModel } from "@/features/projects/models/project.model.js";
-import { AppError } from "@/utils/AppError.js";
+import { UserRole } from "@shared/types/user";
+import { ProjectModel } from "@/features/projects/models/project.model";
+import { AppError } from "@/utils/AppError";
 import mongoose from "mongoose";
-import { TaskModel } from "@/features/tasks/models/task.model.js";
-import { AttachmentModel } from "@/features/attachments/models/attachment.model.js";
-import { CommentModel } from "@/features/comments/models/comment.model.js";
+import { TaskModel } from "@/features/tasks/models/task.model";
+import { AttachmentModel } from "@/features/attachments/models/attachment.model";
+import { CommentModel } from "@/features/comments/models/comment.model";
 import { Types } from "mongoose";
 
 type RemoveProjectMemberInput = {

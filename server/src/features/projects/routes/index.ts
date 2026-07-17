@@ -1,8 +1,8 @@
 import { Router } from "express";
-import projectDetailsRoutes from "@/features/projects/routes/projectDetails.routes.js";
-import projectBaseRoutes from "@/features/projects/routes/projectBase.routes.js";
-import projectMembers from "@/features/projects/routes/projectMembers.routes.js";
-import projectAttachments from "@/features/attachments/routes/projectAttachments.routes.js";
+import projectDetailsRoutes from "@/features/projects/routes/projectDetails.routes";
+import projectBaseRoutes from "@/features/projects/routes/projectBase.routes";
+import projectMembers from "@/features/projects/routes/projectMembers.routes";
+import projectAttachments from "@/features/attachments/routes/projectAttachments.routes";
 
 const router = Router();
 

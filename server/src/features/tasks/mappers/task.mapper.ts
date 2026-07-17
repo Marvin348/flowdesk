@@ -1,5 +1,5 @@
-import type { Task } from "@shared/types/task.js";
-import type { TaskDocument } from "@/features/tasks/types/task.document.js";
+import type { Task } from "@shared/types/task";
+import type { TaskDocument } from "@/features/tasks/types/task.document";
 
 const toIsoString = (value: string | Date | undefined | null): string => {
   if (!value) return "";

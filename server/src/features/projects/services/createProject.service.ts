@@ -1,9 +1,9 @@
-import { CreateProjectParams } from "@/features/projects/validation/project.validator.js";
-import { ProjectModel } from "@/features/projects/models/project.model.js";
-import { toProjectDto } from "@/features/projects/mappers/project.mapper.js";
-import { createActivity } from "@/features/activity/services/createActivity.service.js";
-import { AppError } from "@/utils/AppError.js";
-import { UserModel } from "@/features/users/models/user.modal.js";
+import { CreateProjectParams } from "@/features/projects/validation/project.validator";
+import { ProjectModel } from "@/features/projects/models/project.model";
+import { toProjectDto } from "@/features/projects/mappers/project.mapper";
+import { createActivity } from "@/features/activity/services/createActivity.service";
+import { AppError } from "@/utils/AppError";
+import { UserModel } from "@/features/users/models/user.modal";
 import { Types } from "mongoose";
 
 type CreateProjectInput = {

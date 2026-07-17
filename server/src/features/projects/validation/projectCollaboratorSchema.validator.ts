@@ -2,8 +2,8 @@ import {
   DEFAULT_PAGE,
   MAX_PAGE_LIMIT,
   PAGE_LIMITS,
-} from "@shared/constants/pagination.js";
-import { PROJECT_COLLABORATOR_SORT } from "@shared/types/sort/projectCollaboratorSort.js";
+} from "@shared/constants/pagination";
+import { PROJECT_COLLABORATOR_SORT } from "@shared/types/sort/projectCollaboratorSort";
 import z from "zod";
 
 export const projectCollaboratorQuerySchema = z.object({

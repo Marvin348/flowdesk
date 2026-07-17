@@ -1,8 +1,8 @@
-import { ProjectModel } from "@/features/projects/models/project.model.js";
-import { UserProjectOptionsQuery } from "@/features/users/validators/userProjectOptionsSchema.validator.js";
-import { UserModel } from "@/features/users/models/user.modal.js";
-import { AppError } from "@/utils/AppError.js";
-import { toProjectOptionDto } from "@/features/users/mappers/toProjectOption.mapper.js";
+import { ProjectModel } from "@/features/projects/models/project.model";
+import { UserProjectOptionsQuery } from "@/features/users/validators/userProjectOptionsSchema.validator";
+import { UserModel } from "@/features/users/models/user.modal";
+import { AppError } from "@/utils/AppError";
+import { toProjectOptionDto } from "@/features/users/mappers/toProjectOption.mapper";
 import { Types } from "mongoose";
 
 type GetUserProjectOptionsInput = {

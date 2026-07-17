@@ -1,5 +1,5 @@
 import { Types, PipelineStage } from "mongoose";
-import { buildProjectWorkloadBaseStages } from "@/features/projects/queries/workload/buildProjectWorkloadBaseStages.js";
+import { buildProjectWorkloadBaseStages } from "@/features/projects/queries/workload/buildProjectWorkloadBaseStages";
 
 type BuildProjectWorkloadPreviewPipelineInput = {
   workspaceId: Types.ObjectId;

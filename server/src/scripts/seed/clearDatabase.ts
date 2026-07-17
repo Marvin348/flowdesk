@@ -1,9 +1,9 @@
-import { ProjectModel } from "@/features/projects/models/project.model.js";
-import { TaskModel } from "@/features/tasks/models/task.model.js";
-import { UserModel } from "@/features/users/models/user.modal.js";
-import { CommentModel } from "@/features/comments/models/comment.model.js";
-import { AttachmentModel } from "@/features/attachments/models/attachment.model.js";
-import { WorkspaceModel } from "@/features/workspace/models/workspace.model.js";
+import { ProjectModel } from "@/features/projects/models/project.model";
+import { TaskModel } from "@/features/tasks/models/task.model";
+import { UserModel } from "@/features/users/models/user.modal";
+import { CommentModel } from "@/features/comments/models/comment.model";
+import { AttachmentModel } from "@/features/attachments/models/attachment.model";
+import { WorkspaceModel } from "@/features/workspace/models/workspace.model";
 
 export const clearDatabase = async () => {
   await Promise.all([

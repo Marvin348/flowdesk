@@ -1,4 +1,4 @@
-import { ProjectSummaryQueryParams } from "@/features/projects/validation/projectSummary.validator.js";
+import { ProjectSummaryQueryParams } from "@/features/projects/validation/projectSummary.validator";
 import { Types } from "mongoose";
 
 type BuildProjectSummaryQueryInput = {

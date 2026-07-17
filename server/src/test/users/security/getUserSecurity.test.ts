@@ -1,12 +1,12 @@
-import app from "@/app.js";
+import app from "@/app";
 import request from "supertest";
 import { beforeAll, beforeEach, afterAll, describe, expect, it } from "vitest";
 import {
   clearTestDb,
   connectTestDb,
   disconnectTestDb,
-} from "@/test/setupTestDb.js";
-import { createAuthedUserContext } from "@/test/helpers/testFactories.js";
+} from "@/test/setupTestDb";
+import { createAuthedUserContext } from "@/test/helpers/testFactories";
 
 beforeAll(async () => {
   await connectTestDb();

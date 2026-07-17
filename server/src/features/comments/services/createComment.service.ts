@@ -1,12 +1,12 @@
-import { TaskModel } from "@/features/tasks/models/task.model.js";
-import { getProjectById } from "@/features/projects/services/project.service.js";
-import { AppError } from "@/utils/AppError.js";
-import { CommentModel } from "@/features/comments/models/comment.model.js";
-import { touchProject } from "@/features/projects/services/project.service.js";
-import { toCommentDto } from "@/features/comments/mappers/comment.mapper.js";
-import { createActivity } from "@/features/activity/services/createActivity.service.js";
+import { TaskModel } from "@/features/tasks/models/task.model";
+import { getProjectById } from "@/features/projects/services/project.service";
+import { AppError } from "@/utils/AppError";
+import { CommentModel } from "@/features/comments/models/comment.model";
+import { touchProject } from "@/features/projects/services/project.service";
+import { toCommentDto } from "@/features/comments/mappers/comment.mapper";
+import { createActivity } from "@/features/activity/services/createActivity.service";
 import { Types } from "mongoose";
-import type { CreateCommentBody } from "@/features/comments/validation/comments.validator.js";
+import type { CreateCommentBody } from "@/features/comments/validation/comments.validator";
 
 type CreateCommentInput = {
   workspaceId: Types.ObjectId;

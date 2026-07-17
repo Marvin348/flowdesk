@@ -1,9 +1,9 @@
 import express from "express";
-import { AttachmentModel } from "@/features/attachments/models/attachment.model.js";
-import { getAuthContext } from "@/features/auth/utils/getAuthContext.js";
-import { createSignedDownloadUrl } from "@/lib/storage/r2Storage.js";
-import { asyncHandler } from "@/utils/asyncHandler.js";
-import { AppError } from "@/utils/AppError.js";
+import { AttachmentModel } from "@/features/attachments/models/attachment.model";
+import { getAuthContext } from "@/features/auth/utils/getAuthContext";
+import { createSignedDownloadUrl } from "@/lib/storage/r2Storage";
+import { asyncHandler } from "@/utils/asyncHandler";
+import { AppError } from "@/utils/AppError";
 import mongoose from "mongoose";
 
 const router = express.Router();

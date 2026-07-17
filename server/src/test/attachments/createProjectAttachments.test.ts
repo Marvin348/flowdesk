@@ -1,12 +1,12 @@
-import app from "@/app.js";
-import { ActivityModel } from "@/features/activity/models/activity.model.js";
-import { AttachmentModel } from "@/features/attachments/models/attachment.model.js";
-import { createAccessToken } from "@/features/auth/utils/tokens.js";
-import { ProjectModel } from "@/features/projects/models/project.model.js";
-import { TaskModel } from "@/features/tasks/models/task.model.js";
-import { UserModel } from "@/features/users/models/user.modal.js";
-import { WorkspaceModel } from "@/features/workspace/models/workspace.model.js";
-import { uploadFileToR2 } from "@/lib/storage/r2Storage.js";
+import app from "@/app";
+import { ActivityModel } from "@/features/activity/models/activity.model";
+import { AttachmentModel } from "@/features/attachments/models/attachment.model";
+import { createAccessToken } from "@/features/auth/utils/tokens";
+import { ProjectModel } from "@/features/projects/models/project.model";
+import { TaskModel } from "@/features/tasks/models/task.model";
+import { UserModel } from "@/features/users/models/user.modal";
+import { WorkspaceModel } from "@/features/workspace/models/workspace.model";
+import { uploadFileToR2 } from "@/lib/storage/r2Storage";
 import {
   afterAll,
   beforeAll,
@@ -20,7 +20,7 @@ import {
   clearTestDb,
   connectTestDb,
   disconnectTestDb,
-} from "@/test/setupTestDb.js";
+} from "@/test/setupTestDb";
 import mongoose from "mongoose";
 import request from "supertest";
 

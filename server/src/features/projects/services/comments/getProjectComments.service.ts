@@ -1,12 +1,12 @@
 import { Types } from "mongoose";
-import type { ProjectCommentsQuery } from "@/features/projects/validation/projectCommentsSchema.validator.js";
+import type { ProjectCommentsQuery } from "@/features/projects/validation/projectCommentsSchema.validator";
 import mongoose from "mongoose";
-import { buildProjectCommentsPipeline } from "@/features/projects/queries/comments/projectComments.pipeline.js";
-import { ProjectModel } from "@/features/projects/models/project.model.js";
-import { ProjectCommentsAggregationResult } from "@/features/projects/mappers/projectComments.mapper.js";
-import { ProjectCommentsResponseDto } from "@shared/types/dto/projects/projectComments.dto.js";
-import { toProjectCommentsDto } from "@/features/projects/mappers/projectComments.mapper.js";
-import { AppError } from "@/utils/AppError.js";
+import { buildProjectCommentsPipeline } from "@/features/projects/queries/comments/projectComments.pipeline";
+import { ProjectModel } from "@/features/projects/models/project.model";
+import { ProjectCommentsAggregationResult } from "@/features/projects/mappers/projectComments.mapper";
+import { ProjectCommentsResponseDto } from "@shared/types/dto/projects/projectComments.dto";
+import { toProjectCommentsDto } from "@/features/projects/mappers/projectComments.mapper";
+import { AppError } from "@/utils/AppError";
 
 type GetProjectCommentsInput = {
   workspaceId: Types.ObjectId;

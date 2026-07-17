@@ -1,11 +1,11 @@
 import { mongo, Types } from "mongoose";
-import { ProjectModel } from "@/features/projects/models/project.model.js";
-import { AppError } from "@/utils/AppError.js";
-import { buildProjectDetailsPipeline } from "@/features/projects/queries/projectDetails.pipeline.js";
+import { ProjectModel } from "@/features/projects/models/project.model";
+import { AppError } from "@/utils/AppError";
+import { buildProjectDetailsPipeline } from "@/features/projects/queries/projectDetails.pipeline";
 import {
   ProjectDetailsAggregationResult,
   toProjectDetailsDto,
-} from "@/features/projects/mappers/project-details.mapper.js";
+} from "@/features/projects/mappers/project-details.mapper";
 import mongoose from "mongoose";
 
 type GetProjectDetailsInput = {

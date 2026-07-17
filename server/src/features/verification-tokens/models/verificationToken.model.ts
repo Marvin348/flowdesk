@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import {
   VERIFICATION_TOKEN_TYPE,
   VerificationTokenDocument,
-} from "@/features/verification-tokens/types/verificationToken.document.js";
+} from "@/features/verification-tokens/types/verificationToken.document";
 
 const verificationTokenSchema = new mongoose.Schema(
   {

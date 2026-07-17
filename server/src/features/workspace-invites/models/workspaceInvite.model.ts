@@ -1,4 +1,4 @@
-import { WorkspaceInviteDocument } from "@/features/workspace-invites/types/workspaceInvite.document.js";
+import { WorkspaceInviteDocument } from "@/features/workspace-invites/types/workspaceInvite.document";
 import mongoose from "mongoose";
 import { Types } from "mongoose";
 

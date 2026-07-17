@@ -1,7 +1,7 @@
-import type { ProjectAttachmentDto } from "@shared/types/dto/projects/projectAttachments.dto.js";
+import type { ProjectAttachmentDto } from "@shared/types/dto/projects/projectAttachments.dto";
 import { Types } from "mongoose";
-import { bulidPublicFileUrl } from "@/utils/bulidPublicFileUrl.js";
-import { toIsoString } from "@/utils/toIsoString.js";
+import { bulidPublicFileUrl } from "@/utils/bulidPublicFileUrl";
+import { toIsoString } from "@/utils/toIsoString";
 
 type ProjectAttachmentsAggregationResult = {
   _id: Types.ObjectId;

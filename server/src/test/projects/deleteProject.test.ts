@@ -1,14 +1,14 @@
-import app from "@/app.js";
-import { AttachmentModel } from "@/features/attachments/models/attachment.model.js";
-import { CommentModel } from "@/features/comments/models/comment.model.js";
-import { ProjectModel } from "@/features/projects/models/project.model.js";
-import { TaskModel } from "@/features/tasks/models/task.model.js";
+import app from "@/app";
+import { AttachmentModel } from "@/features/attachments/models/attachment.model";
+import { CommentModel } from "@/features/comments/models/comment.model";
+import { ProjectModel } from "@/features/projects/models/project.model";
+import { TaskModel } from "@/features/tasks/models/task.model";
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
 import {
   clearTestDb,
   connectTestDb,
   disconnectTestDb,
-} from "@/test/setupTestDb.js";
+} from "@/test/setupTestDb";
 import request from "supertest";
 import {
   createAttachment,
@@ -16,7 +16,7 @@ import {
   createComment,
   createProject,
   createTask,
-} from "@/test/helpers/testFactories.js";
+} from "@/test/helpers/testFactories";
 import mongoose from "mongoose";
 
 beforeAll(async () => {

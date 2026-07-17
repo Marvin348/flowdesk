@@ -1,15 +1,15 @@
 import express from "express";
 import { Request } from "express";
-import { getAuthContext } from "@/features/auth/utils/getAuthContext.js";
-import { asyncHandler } from "@/utils/asyncHandler.js";
-import { AppError } from "@/utils/AppError.js";
-import { removeProjectMember } from "@/features/projects/services/members/removeProjectMember.service.js";
-import { removeProjectMemberParamsSchema } from "@/features/projects/validation/removeProjectMemberSchema.validator.js";
+import { getAuthContext } from "@/features/auth/utils/getAuthContext";
+import { asyncHandler } from "@/utils/asyncHandler";
+import { AppError } from "@/utils/AppError";
+import { removeProjectMember } from "@/features/projects/services/members/removeProjectMember.service";
+import { removeProjectMemberParamsSchema } from "@/features/projects/validation/removeProjectMemberSchema.validator";
 import {
   updateProjectMembersBodySchema,
   updateProjectMembersParamsSchema,
-} from "@/features/projects/validation/updateProjectMemberSchema.validator.js";
-import { addProjectMembers } from "@/features/projects/services/members/addProjectMembers.service.js";
+} from "@/features/projects/validation/updateProjectMemberSchema.validator";
+import { addProjectMembers } from "@/features/projects/services/members/addProjectMembers.service";
 
 const router = express.Router();
 

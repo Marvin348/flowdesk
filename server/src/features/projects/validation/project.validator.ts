@@ -1,7 +1,7 @@
 import z from "zod";
-import { PRIORITY } from "@shared/types/priority.js";
-import { STATUSBASE } from "@shared/types/StatusBase.js";
-import { objectIdSchema } from "@/shared/validators/objectId.validator.js";
+import { PRIORITY } from "@shared/types/priority";
+import { STATUSBASE } from "@shared/types/StatusBase";
+import { objectIdSchema } from "@/shared/validators/objectId.validator";
 
 export const createProjectSchema = z.object({
   title: z.string().min(3, "Title is required"),

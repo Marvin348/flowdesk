@@ -1,7 +1,7 @@
-import { User } from "@shared/types/user.js";
-import { Project } from "@shared/types/project.js";
-import { Task } from "@shared/types/task.js";
-import { Comment } from "@shared/types/comment.js";
+import { User } from "@shared/types/user";
+import { Project } from "@shared/types/project";
+import { Task } from "@shared/types/task";
+import { Comment } from "@shared/types/comment";
 
 // Seed types describe the db.json source.
 // The id fields are seed aliases like "u1", "p1", "t1",

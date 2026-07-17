@@ -1,10 +1,10 @@
-import { toProjectAttachmentsDto } from "@/features/attachments/mappers/projectAttachments.mapper.js";
-import { AttachmentModel } from "@/features/attachments/models/attachment.model.js";
-import { buildProjectAttachmentsPipeline } from "@/features/attachments/queries/projectAttachments.pipeline.js";
+import { toProjectAttachmentsDto } from "@/features/attachments/mappers/projectAttachments.mapper";
+import { AttachmentModel } from "@/features/attachments/models/attachment.model";
+import { buildProjectAttachmentsPipeline } from "@/features/attachments/queries/projectAttachments.pipeline";
 import mongoose, { Types } from "mongoose";
-import type { ProjectAttachmentResponseDto } from "@shared/types/dto/projects/projectAttachments.dto.js";
-import { getProjectById } from "@/features/projects/services/project.service.js";
-import { AppError } from "@/utils/AppError.js";
+import type { ProjectAttachmentResponseDto } from "@shared/types/dto/projects/projectAttachments.dto";
+import { getProjectById } from "@/features/projects/services/project.service";
+import { AppError } from "@/utils/AppError";
 
 type GetProjectAttachmentOverviewInput = {
   workspaceId: Types.ObjectId;

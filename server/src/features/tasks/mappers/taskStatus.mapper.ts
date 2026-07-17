@@ -1,6 +1,6 @@
-import { calcPercent } from "@/shared/utils/calcPercent.js";
-import type { TaskStatsDto } from "@shared/types/dto/common/taskStats.dto.js";
-import type { StatusBase } from "@shared/types/StatusBase.js";
+import { calcPercent } from "@/shared/utils/calcPercent";
+import type { TaskStatsDto } from "@shared/types/dto/common/taskStats.dto";
+import type { StatusBase } from "@shared/types/StatusBase";
 
 type TaskStatsSource = {
   taskStatus: StatusBase

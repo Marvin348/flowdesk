@@ -1,6 +1,6 @@
-import { TaskModel } from "@/features/tasks/models/task.model.js";
-import { requireMappedId } from "@/scripts/seed/seedUtils.js";
-import type { SeedTask } from "@/scripts/seed/types.js";
+import { TaskModel } from "@/features/tasks/models/task.model";
+import { requireMappedId } from "@/scripts/seed/seedUtils";
+import type { SeedTask } from "@/scripts/seed/types";
 import { Types } from "mongoose";
 
 type SeedTaskInput = {

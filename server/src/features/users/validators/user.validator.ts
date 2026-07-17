@@ -2,7 +2,7 @@ import {
   APPEARANCE_THEMES,
   APPEARANCE_DENSITIES,
   APPEARANCE_START_VIEWS,
-} from "@shared/types/user.js";
+} from "@shared/types/user";
 import { z } from "zod";
 
 export const updateCurrentUserSchema = z

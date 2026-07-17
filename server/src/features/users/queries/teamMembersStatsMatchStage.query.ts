@@ -1,7 +1,7 @@
 import {
   TeamActivity,
   TeamProgress,
-} from "@shared/types/teamFilter/teamFilter.js";
+} from "@shared/types/teamFilter/teamFilter";
 
 type BuildTeamMembersStatsMatchStageInput = {
   activity?: TeamActivity;

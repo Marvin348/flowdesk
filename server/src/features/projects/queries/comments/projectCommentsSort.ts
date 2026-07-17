@@ -1,4 +1,4 @@
-import { ProjectCommentsQuery } from "@/features/projects/validation/projectCommentsSchema.validator.js";
+import { ProjectCommentsQuery } from "@/features/projects/validation/projectCommentsSchema.validator";
 import { PipelineStage } from "mongoose";
 
 export const buildProjectCommentsSort = (

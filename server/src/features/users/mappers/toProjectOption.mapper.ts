@@ -1,8 +1,8 @@
-import type { ProjectOptionDto } from "@shared/types/dto/projects/projectOptions.dto.js";
-import { isDefined } from "@/shared/utils/isDefined.js";
-import { toIsoString } from "@/utils/toIsoString.js";
+import type { ProjectOptionDto } from "@shared/types/dto/projects/projectOptions.dto";
+import { isDefined } from "@/shared/utils/isDefined";
+import { toIsoString } from "@/utils/toIsoString";
 import { Types } from "mongoose";
-import { bulidPublicFileUrl } from "@/utils/bulidPublicFileUrl.js";
+import { bulidPublicFileUrl } from "@/utils/bulidPublicFileUrl";
 
 type ProjectOptionProject = {
   _id: Types.ObjectId;

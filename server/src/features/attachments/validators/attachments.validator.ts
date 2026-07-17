@@ -4,7 +4,7 @@ import {
   DEFAULT_PAGE,
   MAX_PAGE_LIMIT,
   PAGE_LIMITS,
-} from "@shared/constants/pagination.js";
+} from "@shared/constants/pagination";
 
 export const attachmentsQuerySchema = z.object({
   search: z.string().trim().optional().default(""),

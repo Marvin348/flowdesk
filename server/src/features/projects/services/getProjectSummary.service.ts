@@ -1,8 +1,8 @@
-import { ProjectSummariesResponseDto } from "@shared/types/dto/projects/projectSummary.dto.js";
-import { toProjectSummaryDto } from "@/features/projects/mappers/project-summary.mapper.js";
-import { ProjectModel } from "@/features/projects/models/project.model.js";
-import { buildProjectSummaryPipeline } from "@/features/projects/queries/projectSummary.pipeline.js";
-import { ProjectSummaryQueryParams } from "@/features/projects/validation/projectSummary.validator.js";
+import { ProjectSummariesResponseDto } from "@shared/types/dto/projects/projectSummary.dto";
+import { toProjectSummaryDto } from "@/features/projects/mappers/project-summary.mapper";
+import { ProjectModel } from "@/features/projects/models/project.model";
+import { buildProjectSummaryPipeline } from "@/features/projects/queries/projectSummary.pipeline";
+import { ProjectSummaryQueryParams } from "@/features/projects/validation/projectSummary.validator";
 import { Types } from "mongoose";
 
 type GetProjectSummaryInput = {

@@ -1,10 +1,10 @@
-import app from "@/app.js";
+import app from "@/app";
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
 import {
   clearTestDb,
   connectTestDb,
   disconnectTestDb,
-} from "@/test/setupTestDb.js";
+} from "@/test/setupTestDb";
 import request from "supertest";
 import {
   createAttachment,
@@ -14,7 +14,7 @@ import {
   createTask,
   createUser,
   createWorkspace,
-} from "@/test/helpers/testFactories.js";
+} from "@/test/helpers/testFactories";
 
 beforeAll(async () => {
   await connectTestDb();

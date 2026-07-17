@@ -1,12 +1,12 @@
 import express from "express";
 import { Request } from "express";
-import { getAuthContext } from "@/features/auth/utils/getAuthContext.js";
-import { asyncHandler } from "@/utils/asyncHandler.js";
-import { AppError } from "@/utils/AppError.js";
-import { userProjectOptionsQuery } from "@/features/users/validators/userProjectOptionsSchema.validator.js";
-import { getUserProjectOptions } from "@/features/users/services/team/getUserProjectOptions.service.js";
-import { assignProjectsToUserSchema } from "@/features/users/validators/assignProjectsToUserSchema.validator.js";
-import { assignProjectsToUser } from "@/features/users/services/team/assignProjectsToUser.service.js";
+import { getAuthContext } from "@/features/auth/utils/getAuthContext";
+import { asyncHandler } from "@/utils/asyncHandler";
+import { AppError } from "@/utils/AppError";
+import { userProjectOptionsQuery } from "@/features/users/validators/userProjectOptionsSchema.validator";
+import { getUserProjectOptions } from "@/features/users/services/team/getUserProjectOptions.service";
+import { assignProjectsToUserSchema } from "@/features/users/validators/assignProjectsToUserSchema.validator";
+import { assignProjectsToUser } from "@/features/users/services/team/assignProjectsToUser.service";
 
 const router = express.Router();
 

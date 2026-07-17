@@ -1,5 +1,5 @@
-import { sendEmail } from "@/providers/emailProvider.js";
-import { workspaceInviteTemplate } from "../templates/workspaceInviteVerificationEmail.js";
+import { sendEmail } from "@/providers/emailProvider";
+import { workspaceInviteTemplate } from "../templates/workspaceInviteVerificationEmail";
 
 type SendWorkspaceInviteVerificationEmailInput = {
   to: string;

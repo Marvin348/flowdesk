@@ -1,13 +1,13 @@
-import { CreateTaskFields } from "@/features/tasks/validators/task.validators.js";
+import { CreateTaskFields } from "@/features/tasks/validators/task.validators";
 import {
   getProjectById,
   touchProject,
-} from "@/features/projects/services/project.service.js";
-import { AppError } from "@/utils/AppError.js";
-import { TaskModel } from "@/features/tasks/models/task.model.js";
-import { toTaskDto } from "@/features/tasks/mappers/task.mapper.js";
-import { createActivity } from "@/features/activity/services/createActivity.service.js";
-import { UserModel } from "@/features/users/models/user.modal.js";
+} from "@/features/projects/services/project.service";
+import { AppError } from "@/utils/AppError";
+import { TaskModel } from "@/features/tasks/models/task.model";
+import { toTaskDto } from "@/features/tasks/mappers/task.mapper";
+import { createActivity } from "@/features/activity/services/createActivity.service";
+import { UserModel } from "@/features/users/models/user.modal";
 import { Types } from "mongoose";
 
 type CreateTaskInput = {

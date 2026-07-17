@@ -1,10 +1,10 @@
 import mongoose from "mongoose";
-import type { UserDocument } from "@/features/users/types/user.document.js";
+import type { UserDocument } from "@/features/users/types/user.document";
 import {
   APPEARANCE_DENSITIES,
   APPEARANCE_START_VIEWS,
   APPEARANCE_THEMES,
-} from "@shared/types/user.js";
+} from "@shared/types/user";
 
 const userSchema = new mongoose.Schema(
   {

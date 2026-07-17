@@ -1,18 +1,18 @@
-import app from "@/app.js";
+import app from "@/app";
 import request from "supertest";
 import { beforeAll, beforeEach, afterAll, describe, expect, it } from "vitest";
 import {
   clearTestDb,
   connectTestDb,
   disconnectTestDb,
-} from "@/test/setupTestDb.js";
+} from "@/test/setupTestDb";
 import mongoose from "mongoose";
 import {
   createAuthedUserContext,
   createProject,
   createUser,
-} from "@/test/helpers/testFactories.js";
-import { ProjectModel } from "@/features/projects/models/project.model.js";
+} from "@/test/helpers/testFactories";
+import { ProjectModel } from "@/features/projects/models/project.model";
 
 beforeAll(async () => {
   await connectTestDb();

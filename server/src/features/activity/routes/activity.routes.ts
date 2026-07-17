@@ -1,7 +1,7 @@
-import { getAuthContext } from "@/features/auth/utils/getAuthContext.js";
-import { asyncHandler } from "@/utils/asyncHandler.js";
+import { getAuthContext } from "@/features/auth/utils/getAuthContext";
+import { asyncHandler } from "@/utils/asyncHandler";
 import express from "express";
-import { getWorkspaceActivities } from "@/features/activity/services/getWorkspaceActivities.service.js";
+import { getWorkspaceActivities } from "@/features/activity/services/getWorkspaceActivities.service";
 
 const router = express.Router();
 

@@ -1,14 +1,14 @@
-import { mapDashboardOverviewStats } from "@/features/dashboard/mappers/mapDashboardOverviewStats.js";
-import { mapTaskPriorityItems } from "@/features/dashboard/mappers/mapTaskPriorityDistribution.js";
-import { mapTaskStatusDistribution } from "@/features/dashboard/mappers/mapTaskStatusDistribution.js";
-import { mapUpcomingTasks } from "@/features/dashboard/mappers/mapUpcomingTasks.js";
-import { mapPerformanceHighlights } from "@/features/dashboard/mappers/mapPerformanceHighlights.js";
-import { getUserPerformance } from "@/features/dashboard/utils/getUserPerformance.js";
-import { Project } from "@shared/types/project.js";
-import { Task } from "@shared/types/task.js";
-import { User } from "@shared/types/user.js";
-import { PRIORITY, type Priority } from "@shared/types/priority.js";
-import { STATUSBASE, type StatusBase } from "@shared/types/StatusBase.js";
+import { mapDashboardOverviewStats } from "@/features/dashboard/mappers/mapDashboardOverviewStats";
+import { mapTaskPriorityItems } from "@/features/dashboard/mappers/mapTaskPriorityDistribution";
+import { mapTaskStatusDistribution } from "@/features/dashboard/mappers/mapTaskStatusDistribution";
+import { mapUpcomingTasks } from "@/features/dashboard/mappers/mapUpcomingTasks";
+import { mapPerformanceHighlights } from "@/features/dashboard/mappers/mapPerformanceHighlights";
+import { getUserPerformance } from "@/features/dashboard/utils/getUserPerformance";
+import { Project } from "@shared/types/project";
+import { Task } from "@shared/types/task";
+import { User } from "@shared/types/user";
+import { PRIORITY, type Priority } from "@shared/types/priority";
+import { STATUSBASE, type StatusBase } from "@shared/types/StatusBase";
 
 type ToDashboardOverviewDtoParams = {
   projects: Project[];

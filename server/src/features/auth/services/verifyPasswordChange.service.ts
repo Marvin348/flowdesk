@@ -1,7 +1,7 @@
-import { UserModel } from "@/features/users/models/user.modal.js";
-import { VerificationTokenModel } from "@/features/verification-tokens/models/verificationToken.model.js";
-import { AppError } from "@/utils/AppError.js";
-import { hashToken } from "@/utils/hashToken.js";
+import { UserModel } from "@/features/users/models/user.modal";
+import { VerificationTokenModel } from "@/features/verification-tokens/models/verificationToken.model";
+import { AppError } from "@/utils/AppError";
+import { hashToken } from "@/utils/hashToken";
 import { Types } from "mongoose";
 
 type VerifyPasswordChangeInput = {

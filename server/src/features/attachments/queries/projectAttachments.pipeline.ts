@@ -1,4 +1,4 @@
-import { buildAttachmentQuery } from "@/features/attachments/queries/buildAttachmentQuery.js";
+import { buildAttachmentQuery } from "@/features/attachments/queries/buildAttachmentQuery";
 import { Types, PipelineStage } from "mongoose";
 
 type BuildProjectAttachmentsPipelineInput = {

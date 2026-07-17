@@ -1,5 +1,5 @@
-import { toUserPreviewDto } from "@/features/users/mappers/user.mapper.js";
-import type { UserWorkload } from "@shared/types/dto/workload/projectUserWorkload.js";
+import { toUserPreviewDto } from "@/features/users/mappers/user.mapper";
+import type { UserWorkload } from "@shared/types/dto/workload/projectUserWorkload";
 import { Types } from "mongoose";
 
 export type ProjectWorkloadAggregationUser = {

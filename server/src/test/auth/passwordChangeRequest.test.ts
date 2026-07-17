@@ -7,18 +7,18 @@ vi.mock(
   }),
 );
 
-import app from "@/app.js";
-import { hashPassword } from "@/features/auth/utils/password.js";
-import { sendPasswordChangeVerificationEmail } from "@/features/email/services/sendPasswordChangeVerificationEmail.service.js";
-import { VerificationTokenModel } from "@/features/verification-tokens/models/verificationToken.model.js";
+import app from "@/app";
+import { hashPassword } from "@/features/auth/utils/password";
+import { sendPasswordChangeVerificationEmail } from "@/features/email/services/sendPasswordChangeVerificationEmail.service";
+import { VerificationTokenModel } from "@/features/verification-tokens/models/verificationToken.model";
 import request from "supertest";
 import { beforeAll, beforeEach, afterAll, describe, expect, it } from "vitest";
 import {
   clearTestDb,
   connectTestDb,
   disconnectTestDb,
-} from "@/test/setupTestDb.js";
-import { createAuthedUserContext } from "@/test/helpers/testFactories.js";
+} from "@/test/setupTestDb";
+import { createAuthedUserContext } from "@/test/helpers/testFactories";
 
 beforeAll(async () => {
   await connectTestDb();

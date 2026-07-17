@@ -1,6 +1,6 @@
-import type { SeedAttachment } from "@/scripts/seed/types.js";
-import { requireMappedId } from "@/scripts/seed/seedUtils.js";
-import { AttachmentModel } from "@/features/attachments/models/attachment.model.js";
+import type { SeedAttachment } from "@/scripts/seed/types";
+import { requireMappedId } from "@/scripts/seed/seedUtils";
+import { AttachmentModel } from "@/features/attachments/models/attachment.model";
 import { Types } from "mongoose";
 
 type SeedAttachmentInput = {

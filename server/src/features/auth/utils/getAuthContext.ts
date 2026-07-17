@@ -1,4 +1,4 @@
-import { AppError } from "@/utils/AppError.js";
+import { AppError } from "@/utils/AppError";
 import { Request } from "express";
 
 export const getAuthContext = (req: Request) => {

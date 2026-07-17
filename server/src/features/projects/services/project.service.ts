@@ -1,8 +1,8 @@
-import { ProjectModel } from "@/features/projects/models/project.model.js";
+import { ProjectModel } from "@/features/projects/models/project.model";
 import {
   toProjectDtos,
   toProjectDto,
-} from "@/features/projects/mappers/project.mapper.js";
+} from "@/features/projects/mappers/project.mapper";
 import { Types } from "mongoose";
 
 export const touchProject = async ({

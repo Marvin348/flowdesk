@@ -1,17 +1,17 @@
 import express from "express";
 import { Request } from "express";
-import type { ProjectAttachmentQuery } from "@/features/projects/types/querys/projectAttachmentsQuery.js";
+import type { ProjectAttachmentQuery } from "@/features/projects/types/querys/projectAttachmentsQuery";
 import multer from "multer";
-import { getAuthContext } from "@/features/auth/utils/getAuthContext.js";
-import { asyncHandler } from "@/utils/asyncHandler.js";
-import { AppError } from "@/utils/AppError.js";
-import { createAttachments } from "@/features/attachments/services/createAttachments.service.js";
-import { deleteAttachment } from "@/features/attachments/services/deleteAttachment.service.js";
+import { getAuthContext } from "@/features/auth/utils/getAuthContext";
+import { asyncHandler } from "@/utils/asyncHandler";
+import { AppError } from "@/utils/AppError";
+import { createAttachments } from "@/features/attachments/services/createAttachments.service";
+import { deleteAttachment } from "@/features/attachments/services/deleteAttachment.service";
 import {
   attachmentsProjectIdSchema,
   attachmentsQuerySchema,
-} from "@/features/attachments/validators/attachments.validator.js";
-import { getProjectAttachmentOverview } from "@/features/attachments/services/getProjectAttachmentOverview.service.js";
+} from "@/features/attachments/validators/attachments.validator";
+import { getProjectAttachmentOverview } from "@/features/attachments/services/getProjectAttachmentOverview.service";
 import mongoose from "mongoose";
 
 const router = express.Router();

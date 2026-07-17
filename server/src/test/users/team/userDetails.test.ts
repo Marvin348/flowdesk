@@ -1,17 +1,17 @@
-import app from "@/app.js";
+import app from "@/app";
 import request from "supertest";
 import { beforeAll, beforeEach, afterAll, describe, expect, it } from "vitest";
 import {
   clearTestDb,
   connectTestDb,
   disconnectTestDb,
-} from "@/test/setupTestDb.js";
-import { UserModel } from "@/features/users/models/user.modal.js";
+} from "@/test/setupTestDb";
+import { UserModel } from "@/features/users/models/user.modal";
 import mongoose from "mongoose";
-import { WorkspaceModel } from "@/features/workspace/models/workspace.model.js";
-import { createAccessToken } from "@/features/auth/utils/tokens.js";
-import { TaskModel } from "@/features/tasks/models/task.model.js";
-import { ProjectModel } from "@/features/projects/models/project.model.js";
+import { WorkspaceModel } from "@/features/workspace/models/workspace.model";
+import { createAccessToken } from "@/features/auth/utils/tokens";
+import { TaskModel } from "@/features/tasks/models/task.model";
+import { ProjectModel } from "@/features/projects/models/project.model";
 
 beforeAll(async () => {
   await connectTestDb();

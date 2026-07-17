@@ -1,8 +1,8 @@
-import { Task } from "@shared/types/task.js";
-import { User } from "@shared/types/user.js";
-import { calcPercent } from "@/shared/utils/calcPercent.js";
-import { TeamMemberDto } from "@shared/types/dto/users/user.js";
-import { byStatusCounts } from "@/features/users/utils/byStatusCounts.js";
+import { Task } from "@shared/types/task";
+import { User } from "@shared/types/user";
+import { calcPercent } from "@/shared/utils/calcPercent";
+import { TeamMemberDto } from "@shared/types/dto/users/user";
+import { byStatusCounts } from "@/features/users/utils/byStatusCounts";
 
 export const toUserPerformanceDto = (
   user: User,

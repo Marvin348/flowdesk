@@ -1,12 +1,12 @@
-import app from "@/app.js";
-import { createAccessToken } from "@/features/auth/utils/tokens.js";
-import { UserModel } from "@/features/users/models/user.modal.js";
-import { WorkspaceModel } from "@/features/workspace/models/workspace.model.js";
+import app from "@/app";
+import { createAccessToken } from "@/features/auth/utils/tokens";
+import { UserModel } from "@/features/users/models/user.modal";
+import { WorkspaceModel } from "@/features/workspace/models/workspace.model";
 import {
   clearTestDb,
   connectTestDb,
   disconnectTestDb,
-} from "@/test/setupTestDb.js";
+} from "@/test/setupTestDb";
 import mongoose from "mongoose";
 import request from "supertest";
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";

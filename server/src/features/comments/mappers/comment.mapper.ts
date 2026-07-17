@@ -1,5 +1,5 @@
-import type { Comment } from "@shared/types/comment.js";
-import type { CommentDocument } from "@/features/comments/types/comment.document.js";
+import type { Comment } from "@shared/types/comment";
+import type { CommentDocument } from "@/features/comments/types/comment.document";
 
 const toIsoString = (value: string | Date | undefined): string => {
   if (!value) return "";

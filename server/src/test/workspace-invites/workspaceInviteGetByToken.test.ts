@@ -1,16 +1,16 @@
-import app from "@/app.js";
+import app from "@/app";
 import request from "supertest";
 import { beforeAll, beforeEach, afterAll, describe, expect, it } from "vitest";
 import {
   clearTestDb,
   connectTestDb,
   disconnectTestDb,
-} from "@/test/setupTestDb.js";
+} from "@/test/setupTestDb";
 import mongoose from "mongoose";
-import { WorkspaceModel } from "@/features/workspace/models/workspace.model.js";
-import { WorkspaceInviteModel } from "@/features/workspace-invites/models/workspaceInvite.model.js";
-import { createAuthedUserContext } from "@/test/helpers/testFactories.js";
-import { hashToken } from "@/utils/hashToken.js";
+import { WorkspaceModel } from "@/features/workspace/models/workspace.model";
+import { WorkspaceInviteModel } from "@/features/workspace-invites/models/workspaceInvite.model";
+import { createAuthedUserContext } from "@/test/helpers/testFactories";
+import { hashToken } from "@/utils/hashToken";
 
 beforeAll(async () => {
   await connectTestDb();

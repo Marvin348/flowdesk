@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { WorkspaceDocument } from "@/features/workspace/types/workspace.document.js";
+import { WorkspaceDocument } from "@/features/workspace/types/workspace.document";
 
 const workspaceSchema = new mongoose.Schema(
   {

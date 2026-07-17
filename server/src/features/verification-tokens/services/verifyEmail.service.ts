@@ -1,7 +1,7 @@
-import { hashToken } from "@/utils/hashToken.js";
-import { VerificationTokenModel } from "@/features/verification-tokens/models/verificationToken.model.js";
-import { AppError } from "@/utils/AppError.js";
-import { UserModel } from "@/features/users/models/user.modal.js";
+import { hashToken } from "@/utils/hashToken";
+import { VerificationTokenModel } from "@/features/verification-tokens/models/verificationToken.model";
+import { AppError } from "@/utils/AppError";
+import { UserModel } from "@/features/users/models/user.modal";
 
 export const verifyEmail = async ({ token }: { token: string }) => {
   const hashedToken = hashToken(token);

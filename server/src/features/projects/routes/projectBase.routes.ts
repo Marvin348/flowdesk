@@ -1,19 +1,19 @@
 import express from "express";
 import { Request } from "express";
-import type { ProjectSummaryQuery } from "@/features/projects/types/querys/projectSummaryQuery.js";
-import type { CreateProjectInput } from "@shared/types/inputs/createProjectInput.js";
+import type { ProjectSummaryQuery } from "@/features/projects/types/querys/projectSummaryQuery";
+import type { CreateProjectInput } from "@shared/types/inputs/createProjectInput";
 import {
   getProjectById,
   getProjects,
-} from "@/features/projects/services/project.service.js";
-import { getAuthContext } from "@/features/auth/utils/getAuthContext.js";
-import { asyncHandler } from "@/utils/asyncHandler.js";
-import { AppError } from "@/utils/AppError.js";
-import { createProjectSchema } from "@/features/projects/validation/project.validator.js";
-import { createProject } from "@/features/projects/services/createProject.service.js";
-import { deleteProject } from "@/features/projects/services/deleteProject.service.js";
-import { projectSummaryQuerySchema } from "@/features/projects/validation/projectSummary.validator.js";
-import { getProjectSummary } from "@/features/projects/services/getProjectSummary.service.js";
+} from "@/features/projects/services/project.service";
+import { getAuthContext } from "@/features/auth/utils/getAuthContext";
+import { asyncHandler } from "@/utils/asyncHandler";
+import { AppError } from "@/utils/AppError";
+import { createProjectSchema } from "@/features/projects/validation/project.validator";
+import { createProject } from "@/features/projects/services/createProject.service";
+import { deleteProject } from "@/features/projects/services/deleteProject.service";
+import { projectSummaryQuerySchema } from "@/features/projects/validation/projectSummary.validator";
+import { getProjectSummary } from "@/features/projects/services/getProjectSummary.service";
 import mongoose from "mongoose";
 
 const router = express.Router();

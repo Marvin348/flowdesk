@@ -1,19 +1,19 @@
 import express from "express";
 import type { Request } from "express";
-import type { CreateTaskInput } from "@shared/types/inputs/createTaskInput.js";
-import { TaskModel } from "@/features/tasks/models/task.model.js";
-import { toTaskDto } from "@/features/tasks/mappers/task.mapper.js";
-import { getProjects } from "@/features/projects/services/project.service.js";
-import { getAuthContext } from "@/features/auth/utils/getAuthContext.js";
-import { asyncHandler } from "@/utils/asyncHandler.js";
-import { AppError } from "@/utils/AppError.js";
+import type { CreateTaskInput } from "@shared/types/inputs/createTaskInput";
+import { TaskModel } from "@/features/tasks/models/task.model";
+import { toTaskDto } from "@/features/tasks/mappers/task.mapper";
+import { getProjects } from "@/features/projects/services/project.service";
+import { getAuthContext } from "@/features/auth/utils/getAuthContext";
+import { asyncHandler } from "@/utils/asyncHandler";
+import { AppError } from "@/utils/AppError";
 import {
   createTaskSchema,
   taskStatusSchema,
-} from "@/features/tasks/validators/task.validators.js";
-import { createTask } from "@/features/tasks/services/createTask.service.js";
-import { changeTaskStatus } from "../services/changeTaskStatus.service.js";
-import type { TaskStatusFields } from "@/features/tasks/validators/task.validators.js";
+} from "@/features/tasks/validators/task.validators";
+import { createTask } from "@/features/tasks/services/createTask.service";
+import { changeTaskStatus } from "../services/changeTaskStatus.service";
+import type { TaskStatusFields } from "@/features/tasks/validators/task.validators";
 
 const router = express.Router();
 

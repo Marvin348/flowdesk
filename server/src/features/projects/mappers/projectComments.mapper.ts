@@ -1,9 +1,9 @@
-import { bulidPublicFileUrl } from "@/utils/bulidPublicFileUrl.js";
-import { toIsoString } from "@/utils/toIsoString.js";
+import { bulidPublicFileUrl } from "@/utils/bulidPublicFileUrl";
+import { toIsoString } from "@/utils/toIsoString";
 import type {
   ProjectCommentDto,
   ProjectCommentsDto,
-} from "@shared/types/dto/projects/projectComments.dto.js";
+} from "@shared/types/dto/projects/projectComments.dto";
 import { Types } from "mongoose";
 
 export type ProjectCommentsAggregationTask = {

@@ -1,14 +1,14 @@
-import { AttachmentModel } from "@/features/attachments/models/attachment.model.js";
-import { createAccessToken } from "@/features/auth/utils/tokens.js";
-import { CommentModel } from "@/features/comments/models/comment.model.js";
-import { ProjectModel } from "@/features/projects/models/project.model.js";
-import { TaskModel } from "@/features/tasks/models/task.model.js";
-import { UserModel } from "@/features/users/models/user.modal.js";
-import { WorkspaceModel } from "@/features/workspace/models/workspace.model.js";
+import { AttachmentModel } from "@/features/attachments/models/attachment.model";
+import { createAccessToken } from "@/features/auth/utils/tokens";
+import { CommentModel } from "@/features/comments/models/comment.model";
+import { ProjectModel } from "@/features/projects/models/project.model";
+import { TaskModel } from "@/features/tasks/models/task.model";
+import { UserModel } from "@/features/users/models/user.modal";
+import { WorkspaceModel } from "@/features/workspace/models/workspace.model";
 import mongoose from "mongoose";
-import type { StatusBase } from "@shared/types/StatusBase.js";
-import type { UserRole } from "@shared/types/user.js";
-import type { Priority } from "@shared/types/priority.js";
+import type { StatusBase } from "@shared/types/StatusBase";
+import type { UserRole } from "@shared/types/user";
+import type { Priority } from "@shared/types/priority";
 
 
 let testEmailCounter = 0;

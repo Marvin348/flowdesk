@@ -1,5 +1,5 @@
-import { sendEmail } from "@/providers/emailProvider.js";
-import { passwordChangeVerificationTemplate } from "@/features/email/templates/passwordChangeVerificationEmail.js";
+import { sendEmail } from "@/providers/emailProvider";
+import { passwordChangeVerificationTemplate } from "@/features/email/templates/passwordChangeVerificationEmail";
 
 type SendPasswordChangeVerificationEmailInput = {
   to: string;

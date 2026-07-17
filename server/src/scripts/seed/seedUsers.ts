@@ -1,6 +1,6 @@
-import { UserModel } from "@/features/users/models/user.modal.js";
-import type { SeedUser } from "@/scripts/seed/types.js";
-import { hashPassword } from "@/features/auth/utils/password.js";
+import { UserModel } from "@/features/users/models/user.modal";
+import type { SeedUser } from "@/scripts/seed/types";
+import { hashPassword } from "@/features/auth/utils/password";
 import { Types } from "mongoose";
 
 export const seedUsers = async (

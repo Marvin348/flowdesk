@@ -1,5 +1,5 @@
 import { PipelineStage } from "mongoose";
-import { ProjectWorkloadQuery } from "../../validation/projectWorkloadSchema.validator.js";
+import { ProjectWorkloadQuery } from "../../validation/projectWorkloadSchema.validator";
 
 export const buildProjectWorkloadSort = (
   sort: ProjectWorkloadQuery["workloadSort"],

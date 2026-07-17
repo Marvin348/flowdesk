@@ -1,10 +1,10 @@
-import { mapPerformanceHighlights } from "@/features/dashboard/mappers/mapPerformanceHighlights.js";
-import { getUserPerformance } from "@/features/dashboard/utils/getUserPerformance.js";
-import { getProjects } from "@/features/projects/services/project.service.js";
-import { toTaskDto } from "@/features/tasks/mappers/task.mapper.js";
-import { TaskModel } from "@/features/tasks/models/task.model.js";
-import { toUserDto } from "@/features/users/mappers/user.mapper.js";
-import { UserModel } from "@/features/users/models/user.modal.js";
+import { mapPerformanceHighlights } from "@/features/dashboard/mappers/mapPerformanceHighlights";
+import { getUserPerformance } from "@/features/dashboard/utils/getUserPerformance";
+import { getProjects } from "@/features/projects/services/project.service";
+import { toTaskDto } from "@/features/tasks/mappers/task.mapper";
+import { TaskModel } from "@/features/tasks/models/task.model";
+import { toUserDto } from "@/features/users/mappers/user.mapper";
+import { UserModel } from "@/features/users/models/user.modal";
 import { Types } from "mongoose";
 
 export const getPerformanceHighlights = async ({

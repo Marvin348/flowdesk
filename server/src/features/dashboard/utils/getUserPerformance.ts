@@ -1,7 +1,7 @@
-import type { Task } from "@shared/types/task.js";
-import type { User } from "@shared/types/user.js";
-import { calcPercent } from "@shared/utils/calcPercent.js";
-import { UserPreviewDto } from "@shared/types/dto/common/userPreview.dto.js";
+import type { Task } from "@shared/types/task";
+import type { User } from "@shared/types/user";
+import { calcPercent } from "@shared/utils/calcPercent";
+import { UserPreviewDto } from "@shared/types/dto/common/userPreview.dto";
 
 export type UserPerformanceDto = {
   user: UserPreviewDto;

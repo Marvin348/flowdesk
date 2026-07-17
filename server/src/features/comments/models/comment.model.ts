@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { CommentDocument } from "../types/comment.document.js";
+import { CommentDocument } from "@/features/comments/types/comment.document";
 
 const commentSchema = new mongoose.Schema(
   {

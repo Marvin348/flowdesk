@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { TaskDocument } from "@/features/tasks/types/task.document.js";
+import { TaskDocument } from "@/features/tasks/types/task.document";
 
 const taskSchema = new mongoose.Schema(
   {

@@ -1,6 +1,6 @@
 import { Types, PipelineStage } from "mongoose";
-import type { ProjectCommentsQuery } from "@/features/projects/validation/projectCommentsSchema.validator.js";
-import { buildProjectCommentsSort } from "@/features/projects/queries/comments/projectCommentsSort.js";
+import type { ProjectCommentsQuery } from "@/features/projects/validation/projectCommentsSchema.validator";
+import { buildProjectCommentsSort } from "@/features/projects/queries/comments/projectCommentsSort";
 
 type BuildProjectCommentsPipelineInput = {
   workspaceId: Types.ObjectId;

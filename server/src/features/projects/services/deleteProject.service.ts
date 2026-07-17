@@ -1,11 +1,11 @@
-import { AttachmentModel } from "@/features/attachments/models/attachment.model.js";
-import { ProjectModel } from "@/features/projects/models/project.model.js";
-import { TaskModel } from "@/features/tasks/models/task.model.js";
-import { CommentModel } from "@/features/comments/models/comment.model.js";
-import { AppError } from "@/utils/AppError.js";
-import { getProjectById } from "@/features/projects/services/project.service.js";
-import { createActivity } from "@/features/activity/services/createActivity.service.js";
-import { UserRole } from "@shared/types/user.js";
+import { AttachmentModel } from "@/features/attachments/models/attachment.model";
+import { ProjectModel } from "@/features/projects/models/project.model";
+import { TaskModel } from "@/features/tasks/models/task.model";
+import { CommentModel } from "@/features/comments/models/comment.model";
+import { AppError } from "@/utils/AppError";
+import { getProjectById } from "@/features/projects/services/project.service";
+import { createActivity } from "@/features/activity/services/createActivity.service";
+import { UserRole } from "@shared/types/user";
 import { Types } from "mongoose";
 
 type DeleteProjectInput = {

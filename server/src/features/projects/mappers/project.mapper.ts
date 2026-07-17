@@ -1,5 +1,5 @@
-import type { Project } from "@shared/types/project.js";
-import type { ProjectDocument } from "@/features/projects/types/project.document.js";
+import type { Project } from "@shared/types/project";
+import type { ProjectDocument } from "@/features/projects/types/project.document";
 
 const toIsoString = (value: string | Date | undefined): string => {
   if (!value) return "";

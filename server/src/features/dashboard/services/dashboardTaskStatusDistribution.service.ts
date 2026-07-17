@@ -1,7 +1,7 @@
-import { mapTaskStatusDistribution } from "@/features/dashboard/mappers/mapTaskStatusDistribution.js";
-import { getProjects } from "@/features/projects/services/project.service.js";
-import { TaskModel } from "@/features/tasks/models/task.model.js";
-import { STATUSBASE, type StatusBase } from "@shared/types/StatusBase.js";
+import { mapTaskStatusDistribution } from "@/features/dashboard/mappers/mapTaskStatusDistribution";
+import { getProjects } from "@/features/projects/services/project.service";
+import { TaskModel } from "@/features/tasks/models/task.model";
+import { STATUSBASE, type StatusBase } from "@shared/types/StatusBase";
 import { Types } from "mongoose";
 
 type TaskStatusCount = {

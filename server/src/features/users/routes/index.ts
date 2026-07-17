@@ -1,7 +1,7 @@
 import { Router } from "express";
-import userRoutes from "@/features/users/routes/users.js";
-import userAvatarRoutes from "@/features/users/routes/userAvatar.routes.js";
-import userProjectOptionsRoutes from "@/features/users/routes/userProjectOptions.routes.js";
+import userRoutes from "@/features/users/routes/users";
+import userAvatarRoutes from "@/features/users/routes/userAvatar.routes";
+import userProjectOptionsRoutes from "@/features/users/routes/userProjectOptions.routes";
 
 const router = Router();
 

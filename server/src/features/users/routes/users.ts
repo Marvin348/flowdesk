@@ -1,41 +1,41 @@
 import express from "express";
 import type { Request } from "express";
-import { UserRole } from "@shared/types/user.js";
+import { UserRole } from "@shared/types/user";
 import type {
   TeamActivity,
   TeamProgress,
   TeamSort,
-} from "@shared/types/teamFilter/teamFilter.js";
-import { UserModel } from "@/features/users/models/user.modal.js";
+} from "@shared/types/teamFilter/teamFilter";
+import { UserModel } from "@/features/users/models/user.modal";
 import {
   toUserDto,
   toUserSecurityOverviewDto,
-} from "@/features/users/mappers/user.mapper.js";
+} from "@/features/users/mappers/user.mapper";
 import {
   updateCurrentUserSchema,
   appearanceSettingsSchema,
   changeEmailSchema,
-} from "@/features/users/validators/user.validator.js";
+} from "@/features/users/validators/user.validator";
 import {
   updateCurrentUser,
   updateAppearanceSettings,
-} from "@/features/users/services/user.service.js";
-import { getAuthContext } from "@/features/auth/utils/getAuthContext.js";
-import { asyncHandler } from "@/utils/asyncHandler.js";
-import { AppError } from "@/utils/AppError.js";
-import { getTeamMembers } from "@/features/users/services/team/getTeamMembers.service.js";
-import { teamMembersQuerySchema } from "@/features/users/validators/teamMembersQuerySchema.validator.js";
-import { userDetailsParamsSchema } from "@/features/users/validators/userDetailsParamsSchema.validator.js";
-import { getUserDetails } from "@/features/users/services/team/getUserDetails.service.js";
+} from "@/features/users/services/user.service";
+import { getAuthContext } from "@/features/auth/utils/getAuthContext";
+import { asyncHandler } from "@/utils/asyncHandler";
+import { AppError } from "@/utils/AppError";
+import { getTeamMembers } from "@/features/users/services/team/getTeamMembers.service";
+import { teamMembersQuerySchema } from "@/features/users/validators/teamMembersQuerySchema.validator";
+import { userDetailsParamsSchema } from "@/features/users/validators/userDetailsParamsSchema.validator";
+import { getUserDetails } from "@/features/users/services/team/getUserDetails.service";
 import {
   updateUserRoleBodySchema,
   updateUserRoleParamsSchema,
-} from "@/features/users/validators/updateUserRoleSchema.validator.js";
-import { updateUserRole } from "@/features/users/services/team/updateUserRole.service.js";
-import { changeEmail } from "@/features/users/services/email/changeEmail.service.js";
-import { verificationTokenSchema } from "@/features/verification-tokens/validators/verifyEmailSchema.js";
-import { verifyChangeEmail } from "@/features/users/services/email/verifyChangeEmail.service.js";
-import { getMySecurityOverview } from "../services/security/getMySecurityOverview.service.js";
+} from "@/features/users/validators/updateUserRoleSchema.validator";
+import { updateUserRole } from "@/features/users/services/team/updateUserRole.service";
+import { changeEmail } from "@/features/users/services/email/changeEmail.service";
+import { verificationTokenSchema } from "@/features/verification-tokens/validators/verifyEmailSchema";
+import { verifyChangeEmail } from "@/features/users/services/email/verifyChangeEmail.service";
+import { getMySecurityOverview } from "../services/security/getMySecurityOverview.service";
 
 const router = express.Router();
 

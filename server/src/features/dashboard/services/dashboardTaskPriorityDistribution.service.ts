@@ -1,7 +1,7 @@
-import { mapTaskPriorityItems } from "@/features/dashboard/mappers/mapTaskPriorityDistribution.js";
-import { getProjects } from "@/features/projects/services/project.service.js";
-import { TaskModel } from "@/features/tasks/models/task.model.js";
-import { PRIORITY, type Priority } from "@shared/types/priority.js";
+import { mapTaskPriorityItems } from "@/features/dashboard/mappers/mapTaskPriorityDistribution";
+import { getProjects } from "@/features/projects/services/project.service";
+import { TaskModel } from "@/features/tasks/models/task.model";
+import { PRIORITY, type Priority } from "@shared/types/priority";
 import { Types } from "mongoose";
 
 type TaskPriorityCount = {

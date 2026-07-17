@@ -1,12 +1,12 @@
 import {
   getProjectById,
   touchProject,
-} from "@/features/projects/services/project.service.js";
-import { AppError } from "@/utils/AppError.js";
-import { TaskModel } from "@/features/tasks/models/task.model.js";
-import { uploadFileToR2 } from "@/lib/storage/r2Storage.js";
-import { AttachmentModel } from "@/features/attachments/models/attachment.model.js";
-import { createActivity } from "@/features/activity/services/createActivity.service.js";
+} from "@/features/projects/services/project.service";
+import { AppError } from "@/utils/AppError";
+import { TaskModel } from "@/features/tasks/models/task.model";
+import { uploadFileToR2 } from "@/lib/storage/r2Storage";
+import { AttachmentModel } from "@/features/attachments/models/attachment.model";
+import { createActivity } from "@/features/activity/services/createActivity.service";
 import { Types } from "mongoose";
 import mongoose from "mongoose";
 

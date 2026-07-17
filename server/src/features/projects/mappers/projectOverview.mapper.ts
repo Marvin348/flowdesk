@@ -1,11 +1,11 @@
-import type { ProjectOverviewDto } from "@shared/types/dto/projects/projectOverview.dto.js";
-import { toUserPreviewDto } from "@/features/users/mappers/user.mapper.js";
-import { isDefined } from "@/shared/utils/isDefined.js";
+import type { ProjectOverviewDto } from "@shared/types/dto/projects/projectOverview.dto";
+import { toUserPreviewDto } from "@/features/users/mappers/user.mapper";
+import { isDefined } from "@/shared/utils/isDefined";
 import { Types } from "mongoose";
-import { StatusBase } from "@shared/types/StatusBase.js";
-import { calcPercent } from "@shared/utils/calcPercent.js";
-import { toIsoString } from "@/utils/toIsoString.js";
-import { UserWorkload } from "@shared/types/dto/workload/projectUserWorkload.js";
+import { StatusBase } from "@shared/types/StatusBase";
+import { calcPercent } from "@shared/utils/calcPercent";
+import { toIsoString } from "@/utils/toIsoString";
+import { UserWorkload } from "@shared/types/dto/workload/projectUserWorkload";
 
 export type ProjectOverviewAggregationResult = {
   _id: Types.ObjectId;

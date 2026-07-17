@@ -1,6 +1,6 @@
 import { Types, PipelineStage } from "mongoose";
-import { ProjectSummaryQueryParams } from "@/features/projects/validation/projectSummary.validator.js";
-import { buildProjectSummaryQuery } from "@/features/projects/queries/projectSummaryQuery.js";
+import { ProjectSummaryQueryParams } from "@/features/projects/validation/projectSummary.validator";
+import { buildProjectSummaryQuery } from "@/features/projects/queries/projectSummaryQuery";
 
 type BuildProjectSummaryPipelineInput = {
   workspaceId: Types.ObjectId;

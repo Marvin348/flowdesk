@@ -1,13 +1,13 @@
 import {
   UpdateCurrentUserInput,
   AppearanceSettingsInput,
-} from "@/features/users/validators/user.validator.js";
-import { UserModel } from "@/features/users/models/user.modal.js";
+} from "@/features/users/validators/user.validator";
+import { UserModel } from "@/features/users/models/user.modal";
 import {
   toUserDto,
   toAuthUserDto,
-} from "@/features/users/mappers/user.mapper.js";
-import { AppError } from "@/utils/AppError.js";
+} from "@/features/users/mappers/user.mapper";
+import { AppError } from "@/utils/AppError";
 import { Types } from "mongoose";
 
 type UpdateUserInput = {

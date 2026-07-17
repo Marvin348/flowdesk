@@ -1,10 +1,10 @@
 import { Types } from "mongoose";
 import mongoose from "mongoose";
-import { ProjectCollaboratorQuery } from "@/features/projects/validation/projectCollaboratorSchema.validator.js";
-import { buildProjectCollaboratorPipeline } from "@/features/projects/queries/collaborators/projectCollaborator.pipeline.js";
-import { ProjectModel } from "@/features/projects/models/project.model.js";
-import { AppError } from "@/utils/AppError.js";
-import { toUserDto } from "@/features/users/mappers/user.mapper.js";
+import { ProjectCollaboratorQuery } from "@/features/projects/validation/projectCollaboratorSchema.validator";
+import { buildProjectCollaboratorPipeline } from "@/features/projects/queries/collaborators/projectCollaborator.pipeline";
+import { ProjectModel } from "@/features/projects/models/project.model";
+import { AppError } from "@/utils/AppError";
+import { toUserDto } from "@/features/users/mappers/user.mapper";
 
 type ProjectCollaboratorsInput = {
   workspaceId: Types.ObjectId;

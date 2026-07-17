@@ -1,7 +1,7 @@
-import { ActivityDocument } from "@/features/activity/types/activity.document.js";
-import type { ActivityDto } from "@shared/types/dto/activity/activity.dto.js";
+import { ActivityDocument } from "@/features/activity/types/activity.document";
+import type { ActivityDto } from "@shared/types/dto/activity/activity.dto";
 import { Types } from "mongoose";
-import { bulidPublicFileUrl } from "@/utils/bulidPublicFileUrl.js";
+import { bulidPublicFileUrl } from "@/utils/bulidPublicFileUrl";
 
 export type PopulatedActivity = Omit<ActivityDocument, "actorId"> & {
   actorId: {

@@ -1,6 +1,6 @@
-import { ProjectModel } from "@/features/projects/models/project.model.js";
-import { requireMappedId } from "@/scripts/seed/seedUtils.js";
-import type { SeedProject } from "@/scripts/seed/types.js";
+import { ProjectModel } from "@/features/projects/models/project.model";
+import { requireMappedId } from "@/scripts/seed/seedUtils";
+import type { SeedProject } from "@/scripts/seed/types";
 import { Types } from "mongoose";
 
 type SeedProjectInput = {

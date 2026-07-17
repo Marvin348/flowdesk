@@ -1,4 +1,4 @@
-import app from "@/app.js";
+import app from "@/app";
 import request from "supertest";
 import {
   beforeAll,
@@ -13,11 +13,11 @@ import {
   clearTestDb,
   connectTestDb,
   disconnectTestDb,
-} from "@/test/setupTestDb.js";
-import { UserModel } from "@/features/users/models/user.modal.js";
+} from "@/test/setupTestDb";
+import { UserModel } from "@/features/users/models/user.modal";
 import mongoose from "mongoose";
-import { createAccessToken } from "@/features/auth/utils/tokens.js";
-import { deleteFileFromR2 } from "@/lib/storage/r2Storage.js";
+import { createAccessToken } from "@/features/auth/utils/tokens";
+import { deleteFileFromR2 } from "@/lib/storage/r2Storage";
 
 vi.mock("@/lib/storage/r2Storage.js", () => ({
   deleteFileFromR2: vi.fn(),

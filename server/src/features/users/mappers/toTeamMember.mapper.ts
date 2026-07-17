@@ -1,7 +1,7 @@
-import { TeamMemberDto } from "@shared/types/dto/users/user.js";
+import { TeamMemberDto } from "@shared/types/dto/users/user";
 import mongoose from "mongoose";
-import { UserRole } from "@shared/types/user.js";
-import { bulidPublicFileUrl } from "@/utils/bulidPublicFileUrl.js";
+import { UserRole } from "@shared/types/user";
+import { bulidPublicFileUrl } from "@/utils/bulidPublicFileUrl";
 
 type TeamMemberAggregationResult = {
   _id: mongoose.Types.ObjectId;
