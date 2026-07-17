@@ -2,7 +2,7 @@ import type { ProjectTasksResponseDto } from "@shared/types/dto/projects/project
 import { toTaskStatsDto } from "@/features/tasks/mappers/taskStatus.mapper";
 import { Types } from "mongoose";
 import type { StatusBase } from "@shared/types/StatusBase";
-import type { Priority } from "@shared/types/priority";
+import type { Priority } from "@shared/types/Priority";
 import { isDefined } from "@/shared/utils/isDefined";
 import { toUserAvatarDto } from "@/features/users/mappers/user.mapper";
 import { toIsoString } from "@/utils/toIsoString";

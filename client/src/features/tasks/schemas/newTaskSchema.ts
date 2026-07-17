@@ -1,5 +1,5 @@
 import z from "zod";
-import { PRIORITY } from "@shared/types/priority";
+import { PRIORITY } from "@shared/types/Priority";
 
 export const newTaskSchema = z.object({
   title: z.string().min(3, "Titel eingeben"),

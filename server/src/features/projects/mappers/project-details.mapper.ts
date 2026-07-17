@@ -1,5 +1,5 @@
 import { Types } from "mongoose";
-import { Priority } from "@shared/types/priority";
+import { Priority } from "@shared/types/Priority";
 import { StatusBase } from "@shared/types/StatusBase";
 import type { ProjectDetailsShellDto } from "@shared/types/dto/projects/projectDetailsShell.dto";
 import { toIsoString } from "@/utils/toIsoString";

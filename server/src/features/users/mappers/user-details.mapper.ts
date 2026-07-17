@@ -7,7 +7,7 @@ import { bulidPublicFileUrl } from "@/utils/bulidPublicFileUrl";
 import type { Types } from "mongoose";
 import type { UserRole } from "@shared/types/user";
 import type { StatusBase } from "@shared/types/StatusBase";
-import type { Priority } from "@shared/types/priority";
+import type { Priority } from "@shared/types/Priority";
 
 export type UserDetailsAggregationResult = {
   _id: Types.ObjectId;

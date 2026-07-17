@@ -1,5 +1,5 @@
 import type { User } from "../../user.js";
-import type { Priority } from "../../priority.js";
+import type { Priority } from "../../Priority.js";
 import type { StatusBase } from "../../StatusBase.js";
 
 export type TeamMemberDto = User & {

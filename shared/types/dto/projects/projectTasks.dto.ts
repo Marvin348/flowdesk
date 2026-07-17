@@ -1,4 +1,4 @@
-import type { Priority } from "../../priority.js";
+import type { Priority } from "../../Priority.js";
 import type { StatusBase } from "../../StatusBase.js";
 import type { UserAvatarDto } from "../../dto/common/userPreview.dto.js";
 import type { TaskStatsDto } from "../common/taskStats.dto.js";
