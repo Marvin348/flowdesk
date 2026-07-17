@@ -1,4 +1,4 @@
-import { User } from "@shared/types/user.js";
+import type { User } from "@shared/types/user.js";
 
 export type PerformanceType =
   | "overloaded"
