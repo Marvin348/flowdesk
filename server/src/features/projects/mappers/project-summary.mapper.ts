@@ -1,7 +1,7 @@
 import type { ProjectSummariesDto } from "@shared/types/dto/projects/projectSummary.dto";
 import { calcPercent } from "@/shared/utils/calcPercent";
 import { Types } from "mongoose";
-import type { Priority } from "@shared/types/priority";
+import type { Priority } from "@shared/types/Priority";
 import type { StatusBase } from "@shared/types/StatusBase";
 import { toIsoString } from "@/utils/toIsoString";
 import { bulidPublicFileUrl } from "@/utils/bulidPublicFileUrl";

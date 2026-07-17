@@ -8,8 +8,7 @@ import { WorkspaceModel } from "@/features/workspace/models/workspace.model";
 import mongoose from "mongoose";
 import type { StatusBase } from "@shared/types/StatusBase";
 import type { UserRole } from "@shared/types/user";
-import type { Priority } from "@shared/types/priority";
-
+import type { Priority } from "@shared/types/Priority";
 
 let testEmailCounter = 0;
 

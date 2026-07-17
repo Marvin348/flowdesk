@@ -7,8 +7,9 @@ import { getUserPerformance } from "@/features/dashboard/utils/getUserPerformanc
 import { Project } from "@shared/types/project";
 import { Task } from "@shared/types/task";
 import { User } from "@shared/types/user";
-import { PRIORITY, type Priority } from "@shared/types/priority";
+import { PRIORITY, type Priority } from "@shared/types/Priority";
 import { STATUSBASE, type StatusBase } from "@shared/types/StatusBase";
+
 
 type ToDashboardOverviewDtoParams = {
   projects: Project[];

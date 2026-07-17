@@ -1,4 +1,4 @@
-import { PRIORITY } from "@shared/types/priority";
+import { PRIORITY } from "@shared/types/Priority";
 import { STATUSBASE } from "@shared/types/StatusBase";
 import {
   DEFAULT_PAGE,

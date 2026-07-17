@@ -5,7 +5,7 @@ import SelectedStatus from "@/shared/components/ui/select/SelectedStatus";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useCreateProject } from "@/features/projects/hooks/mutations/useCreateProject";
-import { PRIORITY } from "@shared/types/priority";
+import { PRIORITY } from "@shared/types/Priority";
 import { STATUSBASE } from "@shared/types/StatusBase";
 import { Spinner } from "@/shared/components/ui/spinner";
 import z from "zod";

@@ -1,4 +1,4 @@
-import type { Priority } from "../../priority.js";
+import type { Priority } from "../../Priority.js";
 
 export type TaskPriorityItemDto = {
   priority: Priority;

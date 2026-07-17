@@ -1,6 +1,6 @@
 import type { CardView } from "@/features/projects/components/view-controls/ViewToggle";
 import type { ContentFilter } from "@shared/types/filter/contentFilter";
-import type { Priority } from "@shared/types/priority";
+import type { Priority } from "@shared/types/Priority";
 import type { StatusBase } from "@shared/types/StatusBase";
 import { useSearchParams } from "react-router";
 import {

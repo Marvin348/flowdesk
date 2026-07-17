@@ -1,4 +1,4 @@
-import { PRIORITY, type Priority } from "@shared/types/priority";
+import { PRIORITY, type Priority } from "@shared/types/Priority";
 import type { TaskPriorityItemDto } from "@shared/types/dto/dashboard/taskPriorityItem.dto";
 
 export const mapTaskPriorityItems = (

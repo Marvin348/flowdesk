@@ -1,6 +1,6 @@
 import { PRIORITY_OPTIONS } from "@/shared/constants/priority-options";
 import type { TaskPriorityItemDto } from "@shared/types/dto/dashboard/taskPriorityItem.dto";
-import type { Priority } from "@shared/types/priority";
+import type { Priority } from "@shared/types/Priority";
 
 export type TaskPriorityItem = {
   id: Priority;

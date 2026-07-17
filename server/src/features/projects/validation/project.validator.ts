@@ -1,5 +1,5 @@
 import z from "zod";
-import { PRIORITY } from "@shared/types/priority";
+import { PRIORITY } from "@shared/types/Priority";
 import { STATUSBASE } from "@shared/types/StatusBase";
 import { objectIdSchema } from "@/shared/validators/objectId.validator";
 
