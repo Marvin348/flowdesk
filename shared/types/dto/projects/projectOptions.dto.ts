@@ -1,4 +1,4 @@
-import { UserAvatarDto } from "@shared/types/dto/common/userPreview.dto.js";
+import type { UserAvatarDto } from "@shared/types/dto/common/userPreview.dto.js";
 
 export type ProjectOptionDto = {
   id: string;
