@@ -22,6 +22,7 @@ import {
 import { verifyEmail } from "@/features/verification-tokens/services/verifyEmail.service.js";
 import { resendVerificationEmail } from "@/features/verification-tokens/services/resendVerificationEmail.service.js";
 import { verifyPasswordChange } from "@/features/auth/services/verifyPasswordChange.service.js";
+import { authCookieOptions } from "@/shared/config/auth-cookie.js";
 
 const router = express.Router();
 
@@ -55,9 +56,7 @@ router.post(
     const { user, accessToken } = await loginUser(input);
 
     res.cookie("accessToken", accessToken, {
-      httpOnly: true,
-      sameSite: "lax",
-      secure: process.env.NODE_ENV === "production",
+      ...authCookieOptions,
       maxAge: 1000 * 60 * 60 * 24,
     });
 
@@ -66,11 +65,7 @@ router.post(
 );
 
 router.post("/logout", (req, res) => {
-  res.clearCookie("accessToken", {
-    httpOnly: true,
-    sameSite: "lax",
-    secure: process.env.NODE_ENV === "production",
-  });
+  res.clearCookie("accessToken", authCookieOptions);
 
   return res.status(200).json({ message: "Logout successful" });
 });
