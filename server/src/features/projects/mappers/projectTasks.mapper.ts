@@ -1,11 +1,11 @@
-import type { ProjectTasksResponseDto } from "@shared/types/dto/projects/projectTasks.dto.js";
-import { toTaskStatsDto } from "@/features/tasks/mappers/taskStatus.mapper.js";
+import type { ProjectTasksResponseDto } from "@shared/types/dto/projects/projectTasks.dto";
+import { toTaskStatsDto } from "@/features/tasks/mappers/taskStatus.mapper";
 import { Types } from "mongoose";
-import type { StatusBase } from "@shared/types/StatusBase.js";
-import type { Priority } from "@shared/types/priority.js";
-import { isDefined } from "@/shared/utils/isDefined.js";
-import { toUserAvatarDto } from "@/features/users/mappers/user.mapper.js";
-import { toIsoString } from "@/utils/toIsoString.js";
+import type { StatusBase } from "@shared/types/StatusBase";
+import type { Priority } from "@shared/types/priority";
+import { isDefined } from "@/shared/utils/isDefined";
+import { toUserAvatarDto } from "@/features/users/mappers/user.mapper";
+import { toIsoString } from "@/utils/toIsoString";
 
 export type ProjectTasksAggregationTask = {
   _id: Types.ObjectId;

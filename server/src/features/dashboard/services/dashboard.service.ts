@@ -1,8 +1,8 @@
-import { getOverviewStats } from "@/features/dashboard/services/dashboardOverviewStats.service.js";
-import { getPerformanceHighlights } from "@/features/dashboard/services/dashboardPerformanceHighlights.service.js";
-import { getTaskPriorityDistribution } from "@/features/dashboard/services/dashboardTaskPriorityDistribution.service.js";
-import { getTaskStatusDistribution } from "@/features/dashboard/services/dashboardTaskStatusDistribution.service.js";
-import { getUpcomingTasks } from "@/features/dashboard/services/dashboardUpcomingTasks.service.js";
+import { getOverviewStats } from "@/features/dashboard/services/dashboardOverviewStats.service";
+import { getPerformanceHighlights } from "@/features/dashboard/services/dashboardPerformanceHighlights.service";
+import { getTaskPriorityDistribution } from "@/features/dashboard/services/dashboardTaskPriorityDistribution.service";
+import { getTaskStatusDistribution } from "@/features/dashboard/services/dashboardTaskStatusDistribution.service";
+import { getUpcomingTasks } from "@/features/dashboard/services/dashboardUpcomingTasks.service";
 import { Types } from "mongoose";
 
 export const getDashboardOverview = async (workspaceId: Types.ObjectId) => {

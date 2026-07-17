@@ -1,9 +1,9 @@
-import { UserRole } from "@shared/types/user.js";
+import { UserRole } from "@shared/types/user";
 import { Types } from "mongoose";
 import mongoose from "mongoose";
-import { ProjectModel } from "@/features/projects/models/project.model.js";
-import { AppError } from "@/utils/AppError.js";
-import { UserModel } from "@/features/users/models/user.modal.js";
+import { ProjectModel } from "@/features/projects/models/project.model";
+import { AppError } from "@/utils/AppError";
+import { UserModel } from "@/features/users/models/user.modal";
 
 type AddProjectMembersInput = {
   workspaceId: Types.ObjectId;

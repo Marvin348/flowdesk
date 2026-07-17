@@ -1,11 +1,11 @@
 import {
   getProjectById,
   touchProject,
-} from "@/features/projects/services/project.service.js";
-import { AppError } from "@/utils/AppError.js";
-import { AttachmentModel } from "@/features/attachments/models/attachment.model.js";
-import { deleteFileFromR2 } from "@/lib/storage/r2Storage.js";
-import { createActivity } from "@/features/activity/services/createActivity.service.js";
+} from "@/features/projects/services/project.service";
+import { AppError } from "@/utils/AppError";
+import { AttachmentModel } from "@/features/attachments/models/attachment.model";
+import { deleteFileFromR2 } from "@/lib/storage/r2Storage";
+import { createActivity } from "@/features/activity/services/createActivity.service";
 import { Types } from "mongoose";
 import mongoose from "mongoose";
 

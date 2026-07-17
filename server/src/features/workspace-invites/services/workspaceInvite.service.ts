@@ -1,14 +1,14 @@
-import { AppError } from "@/utils/AppError.js";
-import { UserRole } from "@shared/types/user.js";
-import { UserModel } from "@/features/users/models/user.modal.js";
-import { createRandomToken } from "@/utils/createRandomToken.js";
-import { WorkspaceInviteModel } from "@/features/workspace-invites/models/workspaceInvite.model.js";
-import { addDays } from "@/utils/date.js";
-import { createActivity } from "@/features/activity/services/createActivity.service.js";
+import { AppError } from "@/utils/AppError";
+import { UserRole } from "@shared/types/user";
+import { UserModel } from "@/features/users/models/user.modal";
+import { createRandomToken } from "@/utils/createRandomToken";
+import { WorkspaceInviteModel } from "@/features/workspace-invites/models/workspaceInvite.model";
+import { addDays } from "@/utils/date";
+import { createActivity } from "@/features/activity/services/createActivity.service";
 import { Types } from "mongoose";
-import { hashToken } from "@/utils/hashToken.js";
-import { sendWorkspaceInviteVerificationEmail } from "@/features/email/services/sendWorkspaceInviteVerificationEmail.service.js";
-import { WorkspaceModel } from "@/features/workspace/models/workspace.model.js";
+import { hashToken } from "@/utils/hashToken";
+import { sendWorkspaceInviteVerificationEmail } from "@/features/email/services/sendWorkspaceInviteVerificationEmail.service";
+import { WorkspaceModel } from "@/features/workspace/models/workspace.model";
 
 type CreateWorkspaceInviteInput = {
   email: string;

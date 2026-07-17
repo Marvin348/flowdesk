@@ -1,7 +1,7 @@
-import { TaskModel } from "@/features/tasks/models/task.model.js";
-import { toTaskDto } from "@/features/tasks/mappers/task.mapper.js";
-import { mapUpcomingTasks } from "@/features/dashboard/mappers/mapUpcomingTasks.js";
-import { getProjects } from "@/features/projects/services/project.service.js";
+import { TaskModel } from "@/features/tasks/models/task.model";
+import { toTaskDto } from "@/features/tasks/mappers/task.mapper";
+import { mapUpcomingTasks } from "@/features/dashboard/mappers/mapUpcomingTasks";
+import { getProjects } from "@/features/projects/services/project.service";
 import { Types } from "mongoose";
 
 export const getUpcomingTasks = async ({

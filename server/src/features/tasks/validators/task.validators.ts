@@ -1,6 +1,6 @@
 import z from "zod";
-import { PRIORITY } from "@shared/types/priority.js";
-import { STATUSBASE } from "@shared/types/StatusBase.js";
+import { PRIORITY } from "@shared/types/priority";
+import { STATUSBASE } from "@shared/types/StatusBase";
 
 export const createTaskSchema = z.object({
   projectId: z.string().min(1, "Project is required"),

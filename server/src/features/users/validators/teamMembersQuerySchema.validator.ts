@@ -2,13 +2,13 @@ import {
   DEFAULT_PAGE,
   MAX_PAGE_LIMIT,
   PAGE_LIMITS,
-} from "@shared/constants/pagination.js";
+} from "@shared/constants/pagination";
 import {
   TEAM_SORT_VALUES,
   TEAM_PROGRESS_VALUES,
   TEAM_ACTIVITY_VALUES,
-} from "@shared/types/teamFilter/teamFilter.js";
-import { USER_ROLE } from "@shared/types/user.js";
+} from "@shared/types/teamFilter/teamFilter";
+import { USER_ROLE } from "@shared/types/user";
 import z from "zod";
 
 export const teamMembersQuerySchema = z.object({

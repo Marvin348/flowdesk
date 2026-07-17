@@ -1,10 +1,10 @@
-import { PRIORITY } from "@shared/types/priority.js";
-import { STATUSBASE } from "@shared/types/StatusBase.js";
+import { PRIORITY } from "@shared/types/priority";
+import { STATUSBASE } from "@shared/types/StatusBase";
 import {
   DEFAULT_PAGE,
   MAX_PAGE_LIMIT,
   PAGE_LIMITS,
-} from "@shared/constants/pagination.js";
+} from "@shared/constants/pagination";
 import z from "zod";
 
 export const projectSummaryQuerySchema = z.object({

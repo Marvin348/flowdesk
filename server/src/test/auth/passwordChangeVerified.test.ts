@@ -1,17 +1,17 @@
-import app from "@/app.js";
-import { hashPassword } from "@/features/auth/utils/password.js";
-import { VerificationTokenModel } from "@/features/verification-tokens/models/verificationToken.model.js";
+import app from "@/app";
+import { hashPassword } from "@/features/auth/utils/password";
+import { VerificationTokenModel } from "@/features/verification-tokens/models/verificationToken.model";
 import request from "supertest";
 import { beforeAll, beforeEach, afterAll, describe, expect, it } from "vitest";
 import {
   clearTestDb,
   connectTestDb,
   disconnectTestDb,
-} from "@/test/setupTestDb.js";
-import { createAuthedUserContext } from "@/test/helpers/testFactories.js";
-import { hashToken } from "@/utils/hashToken.js";
+} from "@/test/setupTestDb";
+import { createAuthedUserContext } from "@/test/helpers/testFactories";
+import { hashToken } from "@/utils/hashToken";
 import mongoose from "mongoose";
-import { UserModel } from "@/features/users/models/user.modal.js";
+import { UserModel } from "@/features/users/models/user.modal";
 
 beforeAll(async () => {
   await connectTestDb();

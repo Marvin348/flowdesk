@@ -1,10 +1,10 @@
-import { createRandomToken } from "@/utils/createRandomToken.js";
-import { addDays } from "@/utils/date.js";
-import { hashToken } from "@/utils/hashToken.js";
-import { VerificationTokenModel } from "@/features/verification-tokens/models/verificationToken.model.js";
+import { createRandomToken } from "@/utils/createRandomToken";
+import { addDays } from "@/utils/date";
+import { hashToken } from "@/utils/hashToken";
+import { VerificationTokenModel } from "@/features/verification-tokens/models/verificationToken.model";
 import { Types } from "mongoose";
-import { VerificationTokenType } from "@/features/verification-tokens/types/verificationToken.document.js";
-import { AppError } from "@/utils/AppError.js";
+import { VerificationTokenType } from "@/features/verification-tokens/types/verificationToken.document";
+import { AppError } from "@/utils/AppError";
 
 type CreateVerificationTokenInput = {
   userId: Types.ObjectId;

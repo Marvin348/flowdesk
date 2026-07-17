@@ -1,12 +1,12 @@
 import { Types } from "mongoose";
 import mongoose from "mongoose";
-import { buildProjectTasksPipeline } from "@/features/projects/queries/projectTasks.pipeline.js";
-import { TaskModel } from "@/features/tasks/models/task.model.js";
+import { buildProjectTasksPipeline } from "@/features/projects/queries/projectTasks.pipeline";
+import { TaskModel } from "@/features/tasks/models/task.model";
 import {
   toProjectTasksDto,
   type ProjectTasksAggregationResult,
-} from "@/features/projects/mappers/projectTasks.mapper.js";
-import { AppError } from "@/utils/AppError.js";
+} from "@/features/projects/mappers/projectTasks.mapper";
+import { AppError } from "@/utils/AppError";
 
 type GetProjectTasksInput = {
   workspaceId: Types.ObjectId;

@@ -1,8 +1,8 @@
-import { StatusBase } from "@shared/types/StatusBase.js";
-import { TaskModel } from "@/features/tasks/models/task.model.js";
-import { AppError } from "@/utils/AppError.js";
-import { toTaskDto } from "@/features/tasks/mappers/task.mapper.js";
-import { touchProject } from "@/features/projects/services/project.service.js";
+import { StatusBase } from "@shared/types/StatusBase";
+import { TaskModel } from "@/features/tasks/models/task.model";
+import { AppError } from "@/utils/AppError";
+import { toTaskDto } from "@/features/tasks/mappers/task.mapper";
+import { touchProject } from "@/features/projects/services/project.service";
 import { Types } from "mongoose";
 
 type ChangeTaskStatusInput = {

@@ -1,8 +1,8 @@
 import type { Request, Response, NextFunction } from "express";
-import { verifyAccessToken } from "@/features/auth/utils/tokens.js";
-import { UserModel } from "@/features/users/models/user.modal.js";
-import { AppError } from "@/utils/AppError.js";
-import { asyncHandler } from "@/utils/asyncHandler.js";
+import { verifyAccessToken } from "@/features/auth/utils/tokens";
+import { UserModel } from "@/features/users/models/user.modal";
+import { AppError } from "@/utils/AppError";
+import { asyncHandler } from "@/utils/asyncHandler";
 
 export const requireAuth = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {

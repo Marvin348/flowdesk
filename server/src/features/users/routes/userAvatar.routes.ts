@@ -1,10 +1,10 @@
-import { getAuthContext } from "@/features/auth/utils/getAuthContext.js";
-import { AppError } from "@/utils/AppError.js";
-import { asyncHandler } from "@/utils/asyncHandler.js";
+import { getAuthContext } from "@/features/auth/utils/getAuthContext";
+import { AppError } from "@/utils/AppError";
+import { asyncHandler } from "@/utils/asyncHandler";
 import express from "express";
 import multer from "multer";
-import { uploadAvatar } from "@/features/users/services/profile/uploadAvatar.service.js";
-import { deleteAvatar } from "../services/profile/deleteAvatar.service.js";
+import { uploadAvatar } from "@/features/users/services/profile/uploadAvatar.service";
+import { deleteAvatar } from "../services/profile/deleteAvatar.service";
 
 const router = express.Router();
 

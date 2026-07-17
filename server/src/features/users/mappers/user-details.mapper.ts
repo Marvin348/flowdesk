@@ -1,13 +1,13 @@
 import type {
   NextDueTaskDto,
   UserDetailsDto,
-} from "@shared/types/dto/users/user.js";
-import type { RecentCompletedTaskDto } from "@shared/types/dto/users/user.js";
-import { bulidPublicFileUrl } from "@/utils/bulidPublicFileUrl.js";
+} from "@shared/types/dto/users/user";
+import type { RecentCompletedTaskDto } from "@shared/types/dto/users/user";
+import { bulidPublicFileUrl } from "@/utils/bulidPublicFileUrl";
 import type { Types } from "mongoose";
-import type { UserRole } from "@shared/types/user.js";
-import type { StatusBase } from "@shared/types/StatusBase.js";
-import type { Priority } from "@shared/types/priority.js";
+import type { UserRole } from "@shared/types/user";
+import type { StatusBase } from "@shared/types/StatusBase";
+import type { Priority } from "@shared/types/priority";
 
 export type UserDetailsAggregationResult = {
   _id: Types.ObjectId;

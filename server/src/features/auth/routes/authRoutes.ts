@@ -3,26 +3,26 @@ import {
   loginSchema,
   passwordSchema,
   registerSchema,
-} from "@/features/auth/validators/auth.validators.js";
+} from "@/features/auth/validators/auth.validators";
 import {
   loginUser,
   registerUser,
-} from "@/features/auth/services/auth.service.js";
-import { requestPasswordChange } from "@/features/auth/services/requestPasswordChange.service.js";
-import { UserModel } from "@/features/users/models/user.modal.js";
-import { toAuthUserDto } from "@/features/users/mappers/user.mapper.js";
-import { requireAuth } from "@/features/auth/middleware/requireAuth.js";
-import { asyncHandler } from "@/utils/asyncHandler.js";
-import { AppError } from "@/utils/AppError.js";
-import { getAuthContext } from "@/features/auth/utils/getAuthContext.js";
+} from "@/features/auth/services/auth.service";
+import { requestPasswordChange } from "@/features/auth/services/requestPasswordChange.service";
+import { UserModel } from "@/features/users/models/user.modal";
+import { toAuthUserDto } from "@/features/users/mappers/user.mapper";
+import { requireAuth } from "@/features/auth/middleware/requireAuth";
+import { asyncHandler } from "@/utils/asyncHandler";
+import { AppError } from "@/utils/AppError";
+import { getAuthContext } from "@/features/auth/utils/getAuthContext";
 import {
   resendEmailVerificationSchema,
   verificationTokenSchema,
-} from "@/features/verification-tokens/validators/verifyEmailSchema.js";
-import { verifyEmail } from "@/features/verification-tokens/services/verifyEmail.service.js";
-import { resendVerificationEmail } from "@/features/verification-tokens/services/resendVerificationEmail.service.js";
-import { verifyPasswordChange } from "@/features/auth/services/verifyPasswordChange.service.js";
-import { authCookieOptions } from "@/shared/config/auth-cookie.js";
+} from "@/features/verification-tokens/validators/verifyEmailSchema";
+import { verifyEmail } from "@/features/verification-tokens/services/verifyEmail.service";
+import { resendVerificationEmail } from "@/features/verification-tokens/services/resendVerificationEmail.service";
+import { verifyPasswordChange } from "@/features/auth/services/verifyPasswordChange.service";
+import { authCookieOptions } from "@/shared/config/auth-cookie";
 
 const router = express.Router();
 

@@ -1,7 +1,7 @@
-import { WorkspaceInviteModel } from "@/features/workspace-invites/models/workspaceInvite.model.js";
-import { WorkspaceModel } from "@/features/workspace/models/workspace.model.js";
-import { AppError } from "@/utils/AppError.js";
-import { hashToken } from "@/utils/hashToken.js";
+import { WorkspaceInviteModel } from "@/features/workspace-invites/models/workspaceInvite.model";
+import { WorkspaceModel } from "@/features/workspace/models/workspace.model";
+import { AppError } from "@/utils/AppError";
+import { hashToken } from "@/utils/hashToken";
 
 export const getWorkspaceInviteByToken = async (token: string) => {
   const tokenHash = hashToken(token);

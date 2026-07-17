@@ -1,6 +1,6 @@
-import type { Project } from "@shared/types/project.js";
-import type { Task } from "@shared/types/task.js";
-import type { UpcomingTaskDto } from "@shared/types/dto/dashboard/upcomingTask.dto.js";
+import type { Project } from "@shared/types/project";
+import type { Task } from "@shared/types/task";
+import type { UpcomingTaskDto } from "@shared/types/dto/dashboard/upcomingTask.dto";
 
 export const mapUpcomingTasks = (
   projects: Project[],

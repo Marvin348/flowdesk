@@ -1,6 +1,6 @@
-import { UserModel } from "@/features/users/models/user.modal.js";
-import { createVerificationToken } from "@/features/verification-tokens/services/createVerificationToken.service.js";
-import { sendAccountVerificationEmail } from "@/features/email/services/sendAccountVerificationEmail.service.js";
+import { UserModel } from "@/features/users/models/user.modal";
+import { createVerificationToken } from "@/features/verification-tokens/services/createVerificationToken.service";
+import { sendAccountVerificationEmail } from "@/features/email/services/sendAccountVerificationEmail.service";
 
 export const resendVerificationEmail = async ({ email }: { email: string }) => {
   const user = await UserModel.findOne({ email });

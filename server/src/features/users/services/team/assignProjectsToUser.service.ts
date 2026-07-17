@@ -1,8 +1,8 @@
-import { AppError } from "@/utils/AppError.js";
-import { UserRole } from "@shared/types/user.js";
+import { AppError } from "@/utils/AppError";
+import { UserRole } from "@shared/types/user";
 import mongoose from "mongoose";
-import { UserModel } from "@/features/users/models/user.modal.js";
-import { ProjectModel } from "@/features/projects/models/project.model.js";
+import { UserModel } from "@/features/users/models/user.modal";
+import { ProjectModel } from "@/features/projects/models/project.model";
 import { Types } from "mongoose";
 
 type AssignProjectsToUserParams = {

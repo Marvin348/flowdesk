@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { AttachmentDocument } from "@/features/attachments/types/attachment.document.js";
+import { AttachmentDocument } from "@/features/attachments/types/attachment.document";
 
 const attachmentSchema = new mongoose.Schema(
   {

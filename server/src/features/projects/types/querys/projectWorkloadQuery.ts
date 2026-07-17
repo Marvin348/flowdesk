@@ -1,4 +1,4 @@
-import type { ProjectWorkloadSort } from "@shared/types/sort/projectWorkloadSort.js";
+import type { ProjectWorkloadSort } from "@shared/types/sort/projectWorkloadSort";
 
 export type ProjectWorkloadQuery = {
   page?: string;

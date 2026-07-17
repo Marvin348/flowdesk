@@ -1,5 +1,5 @@
-import type { Attachment } from "@shared/types/attachment.js";
-import type { AttachmentDocument } from "@/features/attachments/types/attachment.document.js";
+import type { Attachment } from "@shared/types/attachment";
+import type { AttachmentDocument } from "@/features/attachments/types/attachment.document";
 
 const toIsoString = (value: string | Date | undefined): string => {
   if (!value) return "";

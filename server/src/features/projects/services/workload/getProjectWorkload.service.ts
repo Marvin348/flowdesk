@@ -1,15 +1,15 @@
 import { Types } from "mongoose";
 import mongoose from "mongoose";
-import { buildProjectWorkloadPipeline } from "@/features/projects/queries/workload/projectWorkload.pipeline.js";
-import { ProjectWorkloadQuery } from "@/features/projects/validation/projectWorkloadSchema.validator.js";
-import { TaskModel } from "@/features/tasks/models/task.model.js";
-import { ProjectWorkloadDto } from "@shared/types/dto/workload/projectUserWorkload.js";
-import { ProjectModel } from "@/features/projects/models/project.model.js";
+import { buildProjectWorkloadPipeline } from "@/features/projects/queries/workload/projectWorkload.pipeline";
+import { ProjectWorkloadQuery } from "@/features/projects/validation/projectWorkloadSchema.validator";
+import { TaskModel } from "@/features/tasks/models/task.model";
+import { ProjectWorkloadDto } from "@shared/types/dto/workload/projectUserWorkload";
+import { ProjectModel } from "@/features/projects/models/project.model";
 import {
   ProjectWorkloadAggregationResult,
   toProjectUserWorkloadDto,
-} from "@/features/projects/mappers/projectWorkload.mapper.js";
-import { AppError } from "@/utils/AppError.js";
+} from "@/features/projects/mappers/projectWorkload.mapper";
+import { AppError } from "@/utils/AppError";
 
 type ProjectWorloadInput = {
   workspaceId: Types.ObjectId;

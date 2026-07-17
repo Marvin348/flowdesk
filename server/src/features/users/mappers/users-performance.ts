@@ -1,7 +1,7 @@
-import { Task } from "@shared/types/task.js";
-import { User } from "@shared/types/user.js";
-import type { TeamMemberDto } from "@shared/types/dto/users/user.js";
-import { toUserPerformanceDto } from "@/features/users/mappers/user-performance.mapper.js";
+import { Task } from "@shared/types/task";
+import { User } from "@shared/types/user";
+import type { TeamMemberDto } from "@shared/types/dto/users/user";
+import { toUserPerformanceDto } from "@/features/users/mappers/user-performance.mapper";
 
 
 export const toUsersPerformanceDto = (

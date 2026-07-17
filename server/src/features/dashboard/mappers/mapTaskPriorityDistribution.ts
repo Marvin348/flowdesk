@@ -1,5 +1,5 @@
-import { PRIORITY, type Priority } from "@shared/types/priority.js";
-import type { TaskPriorityItemDto } from "@shared/types/dto/dashboard/taskPriorityItem.dto.js";
+import { PRIORITY, type Priority } from "@shared/types/priority";
+import type { TaskPriorityItemDto } from "@shared/types/dto/dashboard/taskPriorityItem.dto";
 
 export const mapTaskPriorityItems = (
   priorityCounts: Partial<Record<Priority, number>>,

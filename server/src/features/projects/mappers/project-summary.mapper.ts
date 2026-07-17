@@ -1,10 +1,10 @@
-import type { ProjectSummariesDto } from "@shared/types/dto/projects/projectSummary.dto.js";
-import { calcPercent } from "@/shared/utils/calcPercent.js";
+import type { ProjectSummariesDto } from "@shared/types/dto/projects/projectSummary.dto";
+import { calcPercent } from "@/shared/utils/calcPercent";
 import { Types } from "mongoose";
-import type { Priority } from "@shared/types/priority.js";
-import type { StatusBase } from "@shared/types/StatusBase.js";
-import { toIsoString } from "@/utils/toIsoString.js";
-import { bulidPublicFileUrl } from "@/utils/bulidPublicFileUrl.js";
+import type { Priority } from "@shared/types/priority";
+import type { StatusBase } from "@shared/types/StatusBase";
+import { toIsoString } from "@/utils/toIsoString";
+import { bulidPublicFileUrl } from "@/utils/bulidPublicFileUrl";
 
 type ProjectSummaryAggregationResult = {
   _id: Types.ObjectId;

@@ -1,8 +1,8 @@
-import { buildTeamMembersSortStage } from "@/features/users/queries/teamMembersSort.query.js";
-import { buildTeamMembersMatchStage } from "@/features/users/queries/teamMembers.query.js";
-import { TeamMembersQueryParams } from "@/features/users/validators/teamMembersQuerySchema.validator.js";
+import { buildTeamMembersSortStage } from "@/features/users/queries/teamMembersSort.query";
+import { buildTeamMembersMatchStage } from "@/features/users/queries/teamMembers.query";
+import { TeamMembersQueryParams } from "@/features/users/validators/teamMembersQuerySchema.validator";
 import { Types } from "mongoose";
-import { buildTeamMembersStatsMatchStage } from "@/features/users/queries/teamMembersStatsMatchStage.query.js";
+import { buildTeamMembersStatsMatchStage } from "@/features/users/queries/teamMembersStatsMatchStage.query";
 
 type buildTeamMembersPipelineInput = {
   workspaceId: Types.ObjectId;

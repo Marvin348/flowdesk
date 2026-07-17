@@ -1,10 +1,10 @@
 import { Types } from "mongoose";
-import { Priority } from "@shared/types/priority.js";
-import { StatusBase } from "@shared/types/StatusBase.js";
-import type { ProjectDetailsShellDto } from "@shared/types/dto/projects/projectDetailsShell.dto.js";
-import { toIsoString } from "@/utils/toIsoString.js";
-import { toUserAvatarDto } from "@/features/users/mappers/user.mapper.js";
-import { calcPercent } from "@shared/utils/calcPercent.js";
+import { Priority } from "@shared/types/priority";
+import { StatusBase } from "@shared/types/StatusBase";
+import type { ProjectDetailsShellDto } from "@shared/types/dto/projects/projectDetailsShell.dto";
+import { toIsoString } from "@/utils/toIsoString";
+import { toUserAvatarDto } from "@/features/users/mappers/user.mapper";
+import { calcPercent } from "@shared/utils/calcPercent";
 
 export type ProjectDetailsAggregationResult = {
   _id: Types.ObjectId;

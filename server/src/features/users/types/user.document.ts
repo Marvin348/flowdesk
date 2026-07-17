@@ -1,5 +1,5 @@
 import type { Types } from "mongoose";
-import type { AppearanceSettingsType } from "@shared/types/user.js";
+import type { AppearanceSettingsType } from "@shared/types/user";
 
 export type UserRole = "admin" | "member" | "manager";
 

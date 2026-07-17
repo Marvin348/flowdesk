@@ -1,17 +1,17 @@
-import app from "@/app.js";
+import app from "@/app";
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
 import {
   clearTestDb,
   connectTestDb,
   disconnectTestDb,
-} from "@/test/setupTestDb.js";
+} from "@/test/setupTestDb";
 import request from "supertest";
 import {
   createAuthedUserContext,
   createComment,
   createProject,
   createTask,
-} from "@/test/helpers/testFactories.js";
+} from "@/test/helpers/testFactories";
 import mongoose from "mongoose";
 
 beforeAll(async () => {

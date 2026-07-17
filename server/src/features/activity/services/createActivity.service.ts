@@ -1,8 +1,8 @@
-import { ActivityModel } from "@/features/activity/models/activity.model.js";
+import { ActivityModel } from "@/features/activity/models/activity.model";
 import type {
   ActivityType,
   EntityType,
-} from "@shared/types/dto/activity/activity.dto.js";
+} from "@shared/types/dto/activity/activity.dto";
 import { Types } from "mongoose";
 
 type CreateActivityInput = {

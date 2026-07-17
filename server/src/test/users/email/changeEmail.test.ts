@@ -7,20 +7,20 @@ vi.mock(
   }),
 );
 
-import app from "@/app.js";
+import app from "@/app";
 import request from "supertest";
 import { beforeAll, beforeEach, afterAll, describe, expect, it } from "vitest";
 import {
   clearTestDb,
   connectTestDb,
   disconnectTestDb,
-} from "@/test/setupTestDb.js";
-import { UserModel } from "@/features/users/models/user.modal.js";
+} from "@/test/setupTestDb";
+import { UserModel } from "@/features/users/models/user.modal";
 import mongoose from "mongoose";
-import { WorkspaceModel } from "@/features/workspace/models/workspace.model.js";
-import { createAccessToken } from "@/features/auth/utils/tokens.js";
-import { VerificationTokenModel } from "@/features/verification-tokens/models/verificationToken.model.js";
-import { sendEmailChangeVerificationEmail } from "@/features/email/services/sendEmailChangeVerificationEmail.service.js";
+import { WorkspaceModel } from "@/features/workspace/models/workspace.model";
+import { createAccessToken } from "@/features/auth/utils/tokens";
+import { VerificationTokenModel } from "@/features/verification-tokens/models/verificationToken.model";
+import { sendEmailChangeVerificationEmail } from "@/features/email/services/sendEmailChangeVerificationEmail.service";
 
 beforeAll(async () => {
   await connectTestDb();

@@ -1,5 +1,5 @@
 import type { PipelineStage } from "mongoose";
-import { ProjectCollaboratorQuery } from "@/features/projects/validation/projectCollaboratorSchema.validator.js";
+import { ProjectCollaboratorQuery } from "@/features/projects/validation/projectCollaboratorSchema.validator";
 
 export const buildProjectCollaboratorSort = (
   collaboratorsSort: ProjectCollaboratorQuery["collaboratorsSort"],

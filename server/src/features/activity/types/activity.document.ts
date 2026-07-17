@@ -2,7 +2,7 @@ import { Types } from "mongoose";
 import type {
   ActivityType,
   EntityType,
-} from "@shared/types/dto/activity/activity.dto.js";
+} from "@shared/types/dto/activity/activity.dto";
 
 export type ActivityDocument = {
   _id: Types.ObjectId;

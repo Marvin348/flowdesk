@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { ProjectDocument } from "@/features/projects/types/project.document.js";
+import { ProjectDocument } from "@/features/projects/types/project.document";
 
 const projectSchema = new mongoose.Schema(
   {

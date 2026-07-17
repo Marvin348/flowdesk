@@ -4,18 +4,18 @@ vi.mock("@/features/email/services/sendAccountVerificationEmail.service.js", () 
   sendAccountVerificationEmail: vi.fn(),
 }));
 
-import app from "@/app.js";
-import { sendAccountVerificationEmail } from "@/features/email/services/sendAccountVerificationEmail.service.js";
+import app from "@/app";
+import { sendAccountVerificationEmail } from "@/features/email/services/sendAccountVerificationEmail.service";
 import request from "supertest";
 import { beforeAll, beforeEach, afterAll, describe, expect, it } from "vitest";
 import {
   clearTestDb,
   connectTestDb,
   disconnectTestDb,
-} from "@/test/setupTestDb.js";
-import { UserModel } from "@/features/users/models/user.modal.js";
-import { WorkspaceModel } from "@/features/workspace/models/workspace.model.js";
-import { VerificationTokenModel } from "@/features/verification-tokens/models/verificationToken.model.js";
+} from "@/test/setupTestDb";
+import { UserModel } from "@/features/users/models/user.modal";
+import { WorkspaceModel } from "@/features/workspace/models/workspace.model";
+import { VerificationTokenModel } from "@/features/verification-tokens/models/verificationToken.model";
 import mongoose from "mongoose";
 
 beforeAll(async () => {

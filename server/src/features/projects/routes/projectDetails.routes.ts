@@ -1,21 +1,21 @@
 import express from "express";
-import type { ProjectCollaboratorsQuery } from "@/features/projects/types/querys/projectCollaboratorsQuery.js";
+import type { ProjectCollaboratorsQuery } from "@/features/projects/types/querys/projectCollaboratorsQuery";
 import { Request } from "express";
-import type { ProjectCommentsQuery } from "@/features/projects/types/querys/projectCommentsQuery.js";
-import { ProjectWorkloadQuery } from "@/features/projects/types/querys/projectWorkloadQuery.js";
-import { getAuthContext } from "@/features/auth/utils/getAuthContext.js";
-import { asyncHandler } from "@/utils/asyncHandler.js";
-import { AppError } from "@/utils/AppError.js";
-import { projectDetailsParamsSchema } from "@/features/projects/validation/project.validator.js";
-import { getProjectDetails } from "@/features/projects/services/details/getProjectDetails.service.js";
-import { getProjectOverview } from "@/features/projects/services/details/getProjectOverview.service.js";
-import { getProjectTasks } from "@/features/projects/services/details/getProjectTasks.service.js";
-import { projectCollaboratorQuerySchema } from "@/features/projects/validation/projectCollaboratorSchema.validator.js";
-import { getProjectCollaborators } from "@/features/projects/services/collaborators/getProjectCollaborators.service.js";
-import { projectCommentsQuerySchema } from "@/features/projects/validation/projectCommentsSchema.validator.js";
-import { getProjectComments } from "@/features/projects/services/comments/getProjectComments.service.js";
-import { projectWorkloadQuerySchema } from "@/features/projects/validation/projectWorkloadSchema.validator.js";
-import { getProjectWorkload } from "@/features/projects/services/workload/getProjectWorkload.service.js";
+import type { ProjectCommentsQuery } from "@/features/projects/types/querys/projectCommentsQuery";
+import { ProjectWorkloadQuery } from "@/features/projects/types/querys/projectWorkloadQuery";
+import { getAuthContext } from "@/features/auth/utils/getAuthContext";
+import { asyncHandler } from "@/utils/asyncHandler";
+import { AppError } from "@/utils/AppError";
+import { projectDetailsParamsSchema } from "@/features/projects/validation/project.validator";
+import { getProjectDetails } from "@/features/projects/services/details/getProjectDetails.service";
+import { getProjectOverview } from "@/features/projects/services/details/getProjectOverview.service";
+import { getProjectTasks } from "@/features/projects/services/details/getProjectTasks.service";
+import { projectCollaboratorQuerySchema } from "@/features/projects/validation/projectCollaboratorSchema.validator";
+import { getProjectCollaborators } from "@/features/projects/services/collaborators/getProjectCollaborators.service";
+import { projectCommentsQuerySchema } from "@/features/projects/validation/projectCommentsSchema.validator";
+import { getProjectComments } from "@/features/projects/services/comments/getProjectComments.service";
+import { projectWorkloadQuerySchema } from "@/features/projects/validation/projectWorkloadSchema.validator";
+import { getProjectWorkload } from "@/features/projects/services/workload/getProjectWorkload.service";
 
 const router = express.Router();
 

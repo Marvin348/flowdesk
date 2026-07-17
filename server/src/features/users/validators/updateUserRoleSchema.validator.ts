@@ -1,6 +1,6 @@
 import z from "zod";
 import mongoose from "mongoose";
-import { USER_ROLE } from "@shared/types/user.js";
+import { USER_ROLE } from "@shared/types/user";
 
 export const updateUserRoleParamsSchema = z.object({
   id: z.string().refine((id) => mongoose.Types.ObjectId.isValid(id), {

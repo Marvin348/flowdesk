@@ -1,9 +1,9 @@
-import { AppError } from "@/utils/AppError.js";
-import { UserModel } from "@/features/users/models/user.modal.js";
-import { WorkspaceInviteModel } from "@/features/workspace-invites/models/workspaceInvite.model.js";
-import { hashPassword } from "@/features/auth/utils/password.js";
-import { createActivity } from "@/features/activity/services/createActivity.service.js";
-import { hashToken } from "@/utils/hashToken.js";
+import { AppError } from "@/utils/AppError";
+import { UserModel } from "@/features/users/models/user.modal";
+import { WorkspaceInviteModel } from "@/features/workspace-invites/models/workspaceInvite.model";
+import { hashPassword } from "@/features/auth/utils/password";
+import { createActivity } from "@/features/activity/services/createActivity.service";
+import { hashToken } from "@/utils/hashToken";
 
 type AcceptWorkspaceInviteParams = {
   token: string;

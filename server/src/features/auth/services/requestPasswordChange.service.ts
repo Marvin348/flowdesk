@@ -1,11 +1,11 @@
-import { PasswordInput } from "@/features/auth/validators/auth.validators.js";
-import { AppError } from "@/utils/AppError.js";
-import { UserModel } from "@/features/users/models/user.modal.js";
-import { comparePassword } from "../utils/password.js";
-import { hashPassword } from "../utils/password.js";
-import { createVerificationToken } from "@/features/verification-tokens/services/createVerificationToken.service.js";
+import { PasswordInput } from "@/features/auth/validators/auth.validators";
+import { AppError } from "@/utils/AppError";
+import { UserModel } from "@/features/users/models/user.modal";
+import { comparePassword } from "../utils/password";
+import { hashPassword } from "../utils/password";
+import { createVerificationToken } from "@/features/verification-tokens/services/createVerificationToken.service";
 import mongoose, { Types } from "mongoose";
-import { sendPasswordChangeVerificationEmail } from "@/features/email/services/sendPasswordChangeVerificationEmail.service.js";
+import { sendPasswordChangeVerificationEmail } from "@/features/email/services/sendPasswordChangeVerificationEmail.service";
 
 type RequestPasswordChangeInput = {
   workspaceId: Types.ObjectId;

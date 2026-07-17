@@ -1,6 +1,6 @@
 import { Types, PipelineStage } from "mongoose";
-import { ProjectCollaboratorQuery } from "@/features/projects/validation/projectCollaboratorSchema.validator.js";
-import { buildProjectCollaboratorSort } from "@/features/projects/queries/collaborators/projectCollaboratorsSort.js";
+import { ProjectCollaboratorQuery } from "@/features/projects/validation/projectCollaboratorSchema.validator";
+import { buildProjectCollaboratorSort } from "@/features/projects/queries/collaborators/projectCollaboratorsSort";
 
 type BuildProjectCollaboratorPipelineInput = {
   workspaceId: Types.ObjectId;

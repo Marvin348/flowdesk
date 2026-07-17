@@ -1,6 +1,6 @@
-import type { UserPerformance } from "@/features/dashboard/types/userPerformance.types.js";
-import type { PerformanceHighlightDto } from "@shared/types/dto/dashboard/performanceHighlights.dto.js";
-import { getMaxBy } from "@/features/dashboard/utils/getMaxBy.js";
+import type { UserPerformance } from "@/features/dashboard/types/userPerformance.types";
+import type { PerformanceHighlightDto } from "@shared/types/dto/dashboard/performanceHighlights.dto";
+import { getMaxBy } from "@/features/dashboard/utils/getMaxBy";
 
 export const mapPerformanceHighlights = (
   userPerformance: UserPerformance[],

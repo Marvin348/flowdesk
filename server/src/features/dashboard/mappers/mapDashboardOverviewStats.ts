@@ -1,5 +1,5 @@
-import { calcPercent } from "@/shared/utils/calcPercent.js";
-import type { DashboardOverviewStatsDto } from "@shared/types/dto/dashboard/dashboardOverviewStats.dto.js";
+import { calcPercent } from "@/shared/utils/calcPercent";
+import type { DashboardOverviewStatsDto } from "@shared/types/dto/dashboard/dashboardOverviewStats.dto";
 
 type MapDashboardOverviewStatsParams = {
   activeProjects: number;

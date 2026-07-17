@@ -3,8 +3,8 @@ import {
   DEFAULT_PAGE,
   MAX_PAGE_LIMIT,
   PAGE_LIMITS,
-} from "@shared/constants/pagination.js";
-import { PROJECT_WORKLOAD_SORT } from "@shared/types/sort/projectWorkloadSort.js";
+} from "@shared/constants/pagination";
+import { PROJECT_WORKLOAD_SORT } from "@shared/types/sort/projectWorkloadSort";
 
 export const projectWorkloadQuerySchema = z.object({
   page: z.coerce.number().int().positive().optional().default(DEFAULT_PAGE),

@@ -1,20 +1,20 @@
-import { UserModel } from "@/features/users/models/user.modal.js";
+import { UserModel } from "@/features/users/models/user.modal";
 import {
   comparePassword,
   hashPassword,
-} from "@/features/auth/utils/password.js";
-import { createAccessToken } from "@/features/auth/utils/tokens.js";
+} from "@/features/auth/utils/password";
+import { createAccessToken } from "@/features/auth/utils/tokens";
 import {
   LoginInput,
   PasswordInput,
   RegisterInput,
-} from "@/features/auth/validators/auth.validators.js";
-import { toAuthUserDto } from "@/features/users/mappers/user.mapper.js";
-import { WorkspaceModel } from "@/features/workspace/models/workspace.model.js";
+} from "@/features/auth/validators/auth.validators";
+import { toAuthUserDto } from "@/features/users/mappers/user.mapper";
+import { WorkspaceModel } from "@/features/workspace/models/workspace.model";
 import { Types } from "mongoose";
-import { AppError } from "@/utils/AppError.js";
-import { createVerificationToken } from "@/features/verification-tokens/services/createVerificationToken.service.js";
-import { sendAccountVerificationEmail } from "@/features/email/services/sendAccountVerificationEmail.service.js";
+import { AppError } from "@/utils/AppError";
+import { createVerificationToken } from "@/features/verification-tokens/services/createVerificationToken.service";
+import { sendAccountVerificationEmail } from "@/features/email/services/sendAccountVerificationEmail.service";
 
 export const registerUser = async (input: RegisterInput) => {
   const { email, name, password } = input;

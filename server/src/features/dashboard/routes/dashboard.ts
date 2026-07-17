@@ -1,7 +1,7 @@
 import express from "express";
-import { getDashboardOverview } from "@/features/dashboard/services/dashboard.service.js";
-import { getAuthContext } from "@/features/auth/utils/getAuthContext.js";
-import { asyncHandler } from "@/utils/asyncHandler.js";
+import { getDashboardOverview } from "@/features/dashboard/services/dashboard.service";
+import { getAuthContext } from "@/features/auth/utils/getAuthContext";
+import { asyncHandler } from "@/utils/asyncHandler";
 
 const router = express.Router();
 

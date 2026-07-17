@@ -1,6 +1,6 @@
-import { mapDashboardOverviewStats } from "@/features/dashboard/mappers/mapDashboardOverviewStats.js";
-import { getProjects } from "@/features/projects/services/project.service.js";
-import { TaskModel } from "@/features/tasks/models/task.model.js";
+import { mapDashboardOverviewStats } from "@/features/dashboard/mappers/mapDashboardOverviewStats";
+import { getProjects } from "@/features/projects/services/project.service";
+import { TaskModel } from "@/features/tasks/models/task.model";
 import { Types } from "mongoose";
 
 export const getOverviewStats = async ({

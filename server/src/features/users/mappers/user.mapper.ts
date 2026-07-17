@@ -2,14 +2,14 @@ import type {
   User,
   AuthUser,
   UserSecurityOverviewDto,
-} from "@shared/types/user.js";
+} from "@shared/types/user";
 import {
   UserAvatarDto,
   UserPreviewDto,
-} from "@shared/types/dto/common/userPreview.dto.js";
-import type { UserDocument } from "@/features/users/types/user.document.js";
-import { bulidPublicFileUrl } from "@/utils/bulidPublicFileUrl.js";
-import { toIsoString } from "@/utils/toIsoString.js";
+} from "@shared/types/dto/common/userPreview.dto";
+import type { UserDocument } from "@/features/users/types/user.document";
+import { bulidPublicFileUrl } from "@/utils/bulidPublicFileUrl";
+import { toIsoString } from "@/utils/toIsoString";
 import { Types } from "mongoose";
 
 type UserAvatarSource = {

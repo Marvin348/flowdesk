@@ -1,4 +1,4 @@
-import { WorkspaceModel } from "@/features/workspace/models/workspace.model.js";
+import { WorkspaceModel } from "@/features/workspace/models/workspace.model";
 import { Types } from "mongoose";
 
 export const seedWorkspace = async ({

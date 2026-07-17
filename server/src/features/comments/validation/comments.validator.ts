@@ -1,4 +1,4 @@
-import { objectIdSchema } from "@/shared/validators/objectId.validator.js";
+import { objectIdSchema } from "@/shared/validators/objectId.validator";
 import z from "zod";
 
 export const createCommentBodySchema = z.object({

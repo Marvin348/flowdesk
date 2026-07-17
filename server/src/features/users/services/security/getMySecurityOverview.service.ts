@@ -1,6 +1,6 @@
-import { UserModel } from "@/features/users/models/user.modal.js";
-import { AppError } from "@/utils/AppError.js";
-import { toUserSecurityOverviewDto } from "@/features/users/mappers/user.mapper.js";
+import { UserModel } from "@/features/users/models/user.modal";
+import { AppError } from "@/utils/AppError";
+import { toUserSecurityOverviewDto } from "@/features/users/mappers/user.mapper";
 import { Types } from "mongoose";
 
 type GetMySecurityOverviewInput = {

@@ -1,4 +1,4 @@
-import { UserPreviewDto } from "@shared/types/dto/common/userPreview.dto.js";
+import { UserPreviewDto } from "@shared/types/dto/common/userPreview.dto";
 
 export type UserPerformance = {
   user: UserPreviewDto;

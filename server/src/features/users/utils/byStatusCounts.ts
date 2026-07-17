@@ -1,4 +1,4 @@
-import { Task } from "@shared/types/task.js";
+import { Task } from "@shared/types/task";
 
 export const byStatusCounts = (tasks: Task[]) =>
   tasks.reduce(

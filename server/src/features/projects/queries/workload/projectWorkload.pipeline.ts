@@ -1,7 +1,7 @@
 import { Types, PipelineStage } from "mongoose";
-import { ProjectWorkloadQuery } from "@/features/projects/validation/projectWorkloadSchema.validator.js";
-import { buildProjectWorkloadSort } from "@/features/projects/queries/workload/projectWorkloadSort.js";
-import { buildProjectWorkloadBaseStages } from "@/features/projects/queries/workload/buildProjectWorkloadBaseStages.js";
+import { ProjectWorkloadQuery } from "@/features/projects/validation/projectWorkloadSchema.validator";
+import { buildProjectWorkloadSort } from "@/features/projects/queries/workload/projectWorkloadSort";
+import { buildProjectWorkloadBaseStages } from "@/features/projects/queries/workload/buildProjectWorkloadBaseStages";
 
 type BuildProjectCommentsPipelineInput = {
   workspaceId: Types.ObjectId;

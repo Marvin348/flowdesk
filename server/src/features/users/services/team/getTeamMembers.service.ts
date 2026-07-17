@@ -1,9 +1,9 @@
-import { UserModel } from "@/features/users/models/user.modal.js";
-import { TeamMembersQueryParams } from "@/features/users/validators/teamMembersQuerySchema.validator.js";
+import { UserModel } from "@/features/users/models/user.modal";
+import { TeamMembersQueryParams } from "@/features/users/validators/teamMembersQuerySchema.validator";
 import { Types } from "mongoose";
-import { toTeamMemberDto } from "@/features/users/mappers/toTeamMember.mapper.js";
-import { buildTeamMembersPipeline } from "@/features/users/queries/teamMembers.pipeline.js";
-import { TeamMembersResponseDto } from "@shared/types/dto/users/user.js";
+import { toTeamMemberDto } from "@/features/users/mappers/toTeamMember.mapper";
+import { buildTeamMembersPipeline } from "@/features/users/queries/teamMembers.pipeline";
+import { TeamMembersResponseDto } from "@shared/types/dto/users/user";
 
 type GetTeamMembersInput = {
   query: TeamMembersQueryParams;

@@ -1,4 +1,4 @@
-import type { TeamMembersQueryParams } from "@/features/users/validators/teamMembersQuerySchema.validator.js";
+import type { TeamMembersQueryParams } from "@/features/users/validators/teamMembersQuerySchema.validator";
 import type { PipelineStage } from "mongoose";
 
 export const buildTeamMembersSortStage = (

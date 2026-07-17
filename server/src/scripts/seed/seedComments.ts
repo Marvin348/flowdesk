@@ -1,6 +1,6 @@
-import type { SeedComment } from "@/scripts/seed/types.js";
-import { requireMappedId } from "@/scripts/seed/seedUtils.js";
-import { CommentModel } from "@/features/comments/models/comment.model.js";
+import type { SeedComment } from "@/scripts/seed/types";
+import { requireMappedId } from "@/scripts/seed/seedUtils";
+import { CommentModel } from "@/features/comments/models/comment.model";
 import { Types } from "mongoose";
 
 type SeedCommentsInput = {

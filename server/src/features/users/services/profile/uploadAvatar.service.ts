@@ -1,9 +1,9 @@
-import { AppError } from "@/utils/AppError.js";
-import { UserModel } from "@/features/users/models/user.modal.js";
-import { deleteFileFromR2, uploadFileToR2 } from "@/lib/storage/r2Storage.js";
+import { AppError } from "@/utils/AppError";
+import { UserModel } from "@/features/users/models/user.modal";
+import { deleteFileFromR2, uploadFileToR2 } from "@/lib/storage/r2Storage";
 import {
   toUserDto,
-} from "@/features/users/mappers/user.mapper.js";
+} from "@/features/users/mappers/user.mapper";
 import { Types } from "mongoose";
 
 type UploadAvatarInput = {

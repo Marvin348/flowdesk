@@ -1,13 +1,13 @@
 import { Types } from "mongoose";
-import { buildProjectOverviewPipeline } from "@/features/projects/queries/projectOverview.pipeline.js";
-import { ProjectModel } from "@/features/projects/models/project.model.js";
-import { AppError } from "@/utils/AppError.js";
+import { buildProjectOverviewPipeline } from "@/features/projects/queries/projectOverview.pipeline";
+import { ProjectModel } from "@/features/projects/models/project.model";
+import { AppError } from "@/utils/AppError";
 import {
   ProjectOverviewAggregationResult,
   toProjectOverviewDto,
-} from "@/features/projects/mappers/projectOverview.mapper.js";
+} from "@/features/projects/mappers/projectOverview.mapper";
 import mongoose from "mongoose";
-import { getProjectWorkloadPreview } from "@/features/projects/services/workload/getProjectWorkloadPreview.service.js";
+import { getProjectWorkloadPreview } from "@/features/projects/services/workload/getProjectWorkloadPreview.service";
 
 type GetProjectOverviewInput = {
   workspaceId: Types.ObjectId;

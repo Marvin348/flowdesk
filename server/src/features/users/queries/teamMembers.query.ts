@@ -1,4 +1,4 @@
-import { UserRole } from "@shared/types/user.js";
+import { UserRole } from "@shared/types/user";
 import { Types } from "mongoose";
 
 type BuildTeamMembersMatchStageInput = {

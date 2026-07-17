@@ -1,14 +1,14 @@
 import express from "express";
 import type { Request } from "express";
-import type { CreateCommentInput } from "@shared/types/inputs/createCommentInput.js";
-import { CommentModel } from "@/features/comments/models/comment.model.js";
-import { TaskModel } from "@/features/tasks/models/task.model.js";
-import { getProjects } from "@/features/projects/services/project.service.js";
-import { getAuthContext } from "@/features/auth/utils/getAuthContext.js";
-import { asyncHandler } from "@/utils/asyncHandler.js";
-import { AppError } from "@/utils/AppError.js";
-import { createComment } from "@/features/comments/services/createComment.service.js";
-import { createCommentBodySchema } from "@/features/comments/validation/comments.validator.js";
+import type { CreateCommentInput } from "@shared/types/inputs/createCommentInput";
+import { CommentModel } from "@/features/comments/models/comment.model";
+import { TaskModel } from "@/features/tasks/models/task.model";
+import { getProjects } from "@/features/projects/services/project.service";
+import { getAuthContext } from "@/features/auth/utils/getAuthContext";
+import { asyncHandler } from "@/utils/asyncHandler";
+import { AppError } from "@/utils/AppError";
+import { createComment } from "@/features/comments/services/createComment.service";
+import { createCommentBodySchema } from "@/features/comments/validation/comments.validator";
 
 const router = express.Router();
 

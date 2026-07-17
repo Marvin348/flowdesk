@@ -1,9 +1,9 @@
 import mongoose from "mongoose";
-import { ActivityDocument } from "@/features/activity/types/activity.document.js";
+import { ActivityDocument } from "@/features/activity/types/activity.document";
 import {
   ACTIVITY_TYPES,
   ENTITY_TYPES,
-} from "@shared/types/dto/activity/activity.dto.js";
+} from "@shared/types/dto/activity/activity.dto";
 
 const activitySchema = new mongoose.Schema(
   {

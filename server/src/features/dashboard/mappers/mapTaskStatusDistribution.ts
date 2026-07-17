@@ -1,5 +1,5 @@
-import { calcPercent } from "@shared/utils/calcPercent.js";
-import type { TaskStatusDistributionDto } from "@shared/types/dto/dashboard/taskStatusDistribution.dto.js";
+import { calcPercent } from "@shared/utils/calcPercent";
+import type { TaskStatusDistributionDto } from "@shared/types/dto/dashboard/taskStatusDistribution.dto";
 
 type MapTaskStatusDistributionParams = {
   pending: number;

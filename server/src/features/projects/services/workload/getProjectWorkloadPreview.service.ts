@@ -1,9 +1,9 @@
 import { Types } from "mongoose";
-import { buildProjectWorkloadPreviewPipeline } from "@/features/projects/queries/workload/projectWorkloadPreview.pipeline.js";
-import type { UserWorkload } from "@shared/types/dto/workload/projectUserWorkload.js";
-import { TaskModel } from "@/features/tasks/models/task.model.js";
-import { ProjectWorkloadAggregationItem } from "@/features/projects/mappers/projectWorkload.mapper.js";
-import { toProjectUserWorkloadDto } from "@/features/projects/mappers/projectWorkload.mapper.js";
+import { buildProjectWorkloadPreviewPipeline } from "@/features/projects/queries/workload/projectWorkloadPreview.pipeline";
+import type { UserWorkload } from "@shared/types/dto/workload/projectUserWorkload";
+import { TaskModel } from "@/features/tasks/models/task.model";
+import { ProjectWorkloadAggregationItem } from "@/features/projects/mappers/projectWorkload.mapper";
+import { toProjectUserWorkloadDto } from "@/features/projects/mappers/projectWorkload.mapper";
 
 type GetProjectWorkloadPreviewInput = {
   projectId: Types.ObjectId;
