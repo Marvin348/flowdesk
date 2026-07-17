@@ -15,15 +15,27 @@ import activityRouter from "@/features/activity/routes/activity.routes.js";
 
 const app = express();
 
+const CLIENT_URL = process.env.CLIENT_URL;
+
+if (!CLIENT_URL) {
+  throw new Error("CLIENT_URL is not defined");
+}
+
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: CLIENT_URL,
     credentials: true,
   }),
 );
 
 app.use(express.json());
 app.use(cookieParser());
+
+app.get("/health", (_req, res) => {
+  res.status(200).json({
+    status: "ok",
+  });
+});
 
 app.use("/auth", authRouter);
 app.use("/dashboard", requireAuth, dashboardRouter);
