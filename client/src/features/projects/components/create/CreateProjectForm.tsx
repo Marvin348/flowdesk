@@ -15,7 +15,7 @@ type CreateProjectFormProps = {
 };
 
 const CreateProjectForm = ({ onClose }: CreateProjectFormProps) => {
-  const { mutate, isPending, error } = useCreateProject();
+  const { mutate, isPending } = useCreateProject();
 
   const formSchema = z.object({
     title: z.string().min(3, "Titel eingeben"),

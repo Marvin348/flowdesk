@@ -2,6 +2,8 @@ import type { AppStore } from "@/store";
 import type { StateCreator } from "zustand";
 import type { ContentFilter } from "@shared/types/filter/contentFilter";
 
+export type { ProjectViewFilter } from "@shared/types/filter/contentFilter";
+
 export type FilterSlice = {
   filter: ContentFilter;
   setFilter: (filterOpt: Partial<ContentFilter>) => void;
