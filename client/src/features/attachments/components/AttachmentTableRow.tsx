@@ -76,6 +76,7 @@ const AttachmentTableRow = ({
         <div className="flex items-center gap-2">
           <div className="flex size-7 shrink-0 items-center justify-center rounded-full bg-muted text-xs font-medium">
             <Avatar
+              size="sm"
               avatarKey={attachment.uploadedBy.avatarKey}
               avatarUrl={attachment.uploadedBy.avatarUrl}
             />

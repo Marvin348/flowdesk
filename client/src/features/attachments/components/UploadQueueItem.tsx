@@ -1,7 +1,7 @@
 import { formatFileSize } from "@/shared/utils/formatFileSize";
 import { X } from "lucide-react";
 import { getFileIcon } from "@/shared/utils/getFileIcon";
-import type { SelectedUploadFile } from "@/features/projects/components/projectDetailsPage/tabs/files/AttachmentsView";
+import type { SelectedUploadFile } from "../hooks/useAttachmentUploadQueue";
 
 type UploadQueueItemProps = {
   item: SelectedUploadFile;

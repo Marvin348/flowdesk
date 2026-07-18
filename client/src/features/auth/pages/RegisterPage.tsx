@@ -11,7 +11,6 @@ import type { RegisterFields } from "@/features/auth/schemas/registerSchema";
 import { registerSchema } from "@/features/auth/schemas/registerSchema";
 import { FormInput } from "@/shared/components/ui/FormInput";
 import { PasswordInput } from "@/shared/components/ui/PasswordInput";
-import { email } from "zod";
 
 const RegisterPage = () => {
   const navigate = useNavigate();

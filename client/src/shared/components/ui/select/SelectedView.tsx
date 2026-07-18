@@ -8,11 +8,12 @@ import {
   SelectValue,
 } from "@/shared/components/ui/select";
 import { FILTER_VIEW_OPTIONS } from "@/features/projects/constants/view-options";
-import type { ContentFilter, ProjectViewFilter } from "@/store/slices/filter";
+import type { ContentFilter } from "@shared/types/filter/contentFilter";
+import type { ProjectViewFilter } from "@/store/slices/filter";
 
 type SelectedViewProps = {
   value?: ProjectViewFilter;
-  setFilter: (value: ContentFilter) => void;
+  setFilter: (value: Partial<ContentFilter>) => void;
 };
 
 const SelectedView = ({ value, setFilter }: SelectedViewProps) => {
@@ -31,7 +32,7 @@ const SelectedView = ({ value, setFilter }: SelectedViewProps) => {
       <SelectContent className="z-60">
         <SelectGroup>
           <SelectLabel>Eigenschaften</SelectLabel>
-          {Object.values(FILTER_VIEW_OPTIONS).map((opt) => (
+          {FILTER_VIEW_OPTIONS.map((opt) => (
             <SelectItem
               key={opt.value}
               value={opt.value}

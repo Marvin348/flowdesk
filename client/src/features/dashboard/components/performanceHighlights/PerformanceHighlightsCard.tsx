@@ -1,4 +1,4 @@
-import type { PerformanceType } from "@/features/dashboard/utils/getPerformanceHighlights";
+import type { PerformanceType } from "@shared/types/dto/dashboard/performanceHighlights.dto";
 import Avatar from "@/shared/components/ui/avatar/Avatar";
 import { PROGRESS_STATUS } from "@/shared/constants/progress-status";
 import { getStatusFromProgress } from "@shared/utils/getStatusFromProgress";

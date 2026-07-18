@@ -18,7 +18,6 @@ const InviteUserModal = ({
   onClose,
   onInviteOpen,
   teamUserIds,
-  invitedUserIds,
   projectId,
 }: InviteUserModalProps) => {
   const [selectedUserIds, setSelectedIds] = useState<string[]>([]);
