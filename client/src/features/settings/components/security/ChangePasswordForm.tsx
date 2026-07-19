@@ -8,6 +8,7 @@ import { useRequestUpdatePassword } from "@/features/auth/hooks/useRequestUpdate
 import { Spinner } from "@/shared/components/ui/spinner";
 import ErrorMessage from "@/shared/components/ErrorMessage";
 import { PasswordInput } from "@/shared/components/ui/PasswordInput";
+import { getApiErrorMessage } from "@/shared/api/getApiError";
 
 const ChangePasswordForm = ({ onClose }: { onClose: () => void }) => {
   const { mutate, isPending, error, isSuccess } = useRequestUpdatePassword();
@@ -47,6 +48,8 @@ const ChangePasswordForm = ({ onClose }: { onClose: () => void }) => {
 
     onClose();
   };
+
+  const errorMessage = getApiErrorMessage(error);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="p-4">
@@ -100,11 +103,8 @@ const ChangePasswordForm = ({ onClose }: { onClose: () => void }) => {
         </div>
       </div>
 
-      {error && (
-        <ErrorMessage
-          message="Aktuelles Passwort ist falsch"
-          className="mt-4 px-4 text-right"
-        />
+      {errorMessage && (
+        <ErrorMessage message={errorMessage} className="mt-4 px-4 text-right" />
       )}
 
       {isSuccess && (

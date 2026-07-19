@@ -159,7 +159,7 @@ export const buildUserDetailsPipeline = ({
         name: 1,
         email: 1,
         avatarKey: 1,
-        avatarUrl: 1,
+        avatarStorageKey: 1,
         jobTitle: 1,
         role: 1,
 

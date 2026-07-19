@@ -94,7 +94,7 @@ describe("GET /projects/summaries", () => {
       data: {
         items: [],
         pagination: {
-          totalPages: 0,
+          totalPages: 1,
           currentPage: 1,
         },
       },

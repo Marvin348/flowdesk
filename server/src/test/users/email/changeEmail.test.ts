@@ -128,6 +128,58 @@ describe("PATCH /users/me/change-email", () => {
     expect(response.body).toEqual({ message: "Email needs to be verifyt" });
   });
 
+  it("returns 403 if the email is from demo account", async () => {
+    const previousDemoAccountEmail = process.env.DEMO_ACCOUNT_EMAIL;
+    process.env.DEMO_ACCOUNT_EMAIL = "demo@example.com";
+
+    try {
+      const userId = new mongoose.Types.ObjectId();
+      const workspaceId = new mongoose.Types.ObjectId();
+
+      await WorkspaceModel.create({
+        _id: workspaceId,
+        name: "Test Workspace",
+        ownerId: userId,
+      });
+
+      await UserModel.create({
+        _id: userId,
+        email: process.env.DEMO_ACCOUNT_EMAIL,
+        name: "Test User",
+        passwordHash: "hashed-password",
+        workspaceId,
+        role: "admin",
+        isEmailVerified: true,
+      });
+
+      const accessToken = createAccessToken(userId.toString());
+
+      const response = await request(app)
+        .patch("/users/me/change-email")
+        .send({ email: "new@example.com" })
+        .set("Cookie", [`accessToken=${accessToken}`]);
+
+      expect(response.status).toBe(403);
+      expect(response.body).toEqual({
+        message: "The demo account email cannot be changed.",
+      });
+
+      const verificationToken = await VerificationTokenModel.findOne({
+        userId,
+        type: "email_change",
+      });
+
+      expect(verificationToken).toBeNull();
+      expect(sendEmailChangeVerificationEmail).not.toHaveBeenCalled();
+    } finally {
+      if (previousDemoAccountEmail === undefined) {
+        delete process.env.DEMO_ACCOUNT_EMAIL;
+      } else {
+        process.env.DEMO_ACCOUNT_EMAIL = previousDemoAccountEmail;
+      }
+    }
+  });
+
   it("returns 200 and creates an email_change token with the new email", async () => {
     const userId = new mongoose.Types.ObjectId();
     const workspaceId = new mongoose.Types.ObjectId();

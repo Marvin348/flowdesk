@@ -21,7 +21,7 @@ export const getProjectSummary = async ({
 
   const [result] = await ProjectModel.aggregate(pipeline);
   const totalItems = result.metaData[0]?.totalItems ?? 0;
-  const totalPages = Math.ceil(totalItems / query.limit);
+  const totalPages = Math.max(Math.ceil(totalItems / query.limit), 1);
 
   return {
     items: result.data.map(toProjectSummaryDto),
