@@ -21,6 +21,10 @@ export const changeEmail = async ({
     throw new AppError("Invalid User", 400);
   }
 
+  if (user.email === process.env.DEMO_ACCOUNT_EMAIL) {
+    throw new AppError("The demo account email cannot be changed.", 403);
+  }
+
   if (!user.isEmailVerified) {
     throw new AppError("Email needs to be verifyt", 401);
   }

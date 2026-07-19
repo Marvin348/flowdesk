@@ -81,6 +81,47 @@ describe("POST /auth/password/change-request", () => {
     expect(sendPasswordChangeVerificationEmail).not.toHaveBeenCalled();
   });
 
+  it("returns 403 if the password is from demo account", async () => {
+    const previousDemoAccountEmail = process.env.DEMO_ACCOUNT_EMAIL;
+    process.env.DEMO_ACCOUNT_EMAIL = "demo@example.com";
+
+    try {
+      const passwordHash = await hashPassword("Password123!");
+      const { authCookie, userId } = await createAuthedUserContext({
+        email: process.env.DEMO_ACCOUNT_EMAIL,
+        passwordHash,
+      });
+
+      const response = await request(app)
+        .post("/auth/password/change-request")
+        .send({
+          currentPassword: "Password123!",
+          newPassword: "NewPassword123!",
+          confirmPassword: "NewPassword123!",
+        })
+        .set("Cookie", authCookie);
+
+      expect(response.status).toBe(403);
+      expect(response.body).toEqual({
+        message: "The demo account password cannot be changed.",
+      });
+
+      const verificationToken = await VerificationTokenModel.findOne({
+        userId,
+        type: "password_change",
+      });
+
+      expect(verificationToken).toBeNull();
+      expect(sendPasswordChangeVerificationEmail).not.toHaveBeenCalled();
+    } finally {
+      if (previousDemoAccountEmail === undefined) {
+        delete process.env.DEMO_ACCOUNT_EMAIL;
+      } else {
+        process.env.DEMO_ACCOUNT_EMAIL = previousDemoAccountEmail;
+      }
+    }
+  });
+
   it("returns 409 if the new password matches the current password", async () => {
     const passwordHash = await hashPassword("Password123!");
     const { authCookie } = await createAuthedUserContext({

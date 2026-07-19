@@ -11,6 +11,9 @@ import ErrorMessage from "@/shared/components/ErrorMessage";
 import { useChangeEmail } from "@/features/users/hooks/email/useChangeEmail";
 import { Spinner } from "@/shared/components/ui/spinner";
 import { useState } from "react";
+import {
+  getApiErrorMessage,
+} from "@/shared/api/getApiError";
 
 type ChangeEmailFormInput = {
   onClose: () => void;
@@ -18,7 +21,9 @@ type ChangeEmailFormInput = {
 
 const ChangeEmailForm = ({ onClose }: ChangeEmailFormInput) => {
   const [submittedEmail, setSubmittedEmail] = useState<string | null>(null);
-  const { mutate, isPending, isError, isSuccess } = useChangeEmail();
+  const { mutate, isPending, error, isSuccess } = useChangeEmail();
+
+  const errorMessage = getApiErrorMessage(error);
 
   const {
     register,
@@ -81,16 +86,11 @@ const ChangeEmailForm = ({ onClose }: ChangeEmailFormInput) => {
         </div>
       )}
 
-      {isError && (
-        <ErrorMessage
-          message="Email konnte nicht gesendet werden."
-          className="mt-2 text-end"
-        />
-      )}
-
       {errors.email && touchedFields.email && (
         <ErrorMessage message={errors.email.message} className="mt-1" />
       )}
+
+      {errorMessage && <ErrorMessage message={errorMessage} className="mt-1" />}
     </form>
   );
 };

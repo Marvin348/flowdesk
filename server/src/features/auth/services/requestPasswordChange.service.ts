@@ -28,6 +28,10 @@ export const requestPasswordChange = async ({
     throw new AppError("Invalid user", 404);
   }
 
+  if (user.email === process.env.DEMO_ACCOUNT_EMAIL) {
+    throw new AppError("The demo account password cannot be changed.", 403);
+  }
+
   const isPasswordValid = await comparePassword(
     currentPassword,
     user.passwordHash,
