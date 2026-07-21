@@ -13,22 +13,23 @@ import ProjectDetailsSkeleton from "@/features/projects/components/projectDetail
 import { useProjectDetailsShell } from "@/features/projects/hooks/details/useProjectDetailsShell";
 import WorkloadView from "@/features/projects/components/projectDetailsPage/tabs/workload/WorkloadView";
 import type { ActiveTab } from "@/features/projects/types/activeTab";
+import { useAppStore } from "@/store";
 
 const ProjectDetailsPage = () => {
   const [searchParams, setSeatchParams] = useSearchParams();
   const { id } = useParams();
 
-  const [isAddTaskOpen, setIsAddTaskOpen] = useState(false);
   const [isInviteOpen, setIsInviteOpen] = useState(false);
   const [selectedCollaboratorIds, setSelectedCollaboratorIds] = useState<
-    string[]
+  string[]
   >([]);
-
+  
   const projectId = id ?? "";
   const activeTab = (searchParams.get("tab") as ActiveTab) ?? "overview";
-
+  
   const { data: project, isLoading, error } = useProjectDetailsShell(projectId);
-
+  const isTaskModalOpen = useAppStore((state) => state.isOpen);
+  
   if (isLoading) return <ProjectDetailsSkeleton />;
   if (error) return <div>Etwas ist schief gelaufen</div>;
   if (!project) return <div>Project not found</div>;
@@ -41,7 +42,6 @@ const ProjectDetailsPage = () => {
     );
 
   const handleClearSelection = () => setSelectedCollaboratorIds([]);
-  const handleCreateTask = () => setIsAddTaskOpen(true);
   const navigateTab = (tab: ActiveTab) => setSeatchParams({ tab });
 
   const TabViewResult = () => {
@@ -49,7 +49,6 @@ const ProjectDetailsPage = () => {
       case "overview":
         return (
           <Overview
-            onCreateTask={handleCreateTask}
             inviteOpen={() => setIsInviteOpen(true)}
             onNavigate={navigateTab}
             projectId={project.id}
@@ -66,7 +65,6 @@ const ProjectDetailsPage = () => {
         return (
           <CollaboratorsView
             projectId={project.id}
-            onCreateTask={handleCreateTask}
             toggleBulk={toggleCollaboratorSelection}
             selectedCollaboratorIds={selectedCollaboratorIds}
             onClearSelection={handleClearSelection}
@@ -99,8 +97,7 @@ const ProjectDetailsPage = () => {
       </div>
 
       <AddTaskPanel
-        isOpen={isAddTaskOpen}
-        onClose={() => setIsAddTaskOpen(false)}
+        isOpen={isTaskModalOpen}
         projectId={projectId}
         teamUserIds={project.invitedUserIds}
         initialCollaboratorIds={selectedCollaboratorIds}

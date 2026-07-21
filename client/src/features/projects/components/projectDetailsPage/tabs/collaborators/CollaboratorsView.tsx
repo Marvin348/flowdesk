@@ -13,10 +13,10 @@ import { useProjectCollaboratorSearchParams } from "@/features/projects/hooks/se
 import Pagination from "@/shared/components/ui/Pagination";
 import ProjectCollaboratorSkeleton from "@/features/projects/components/projectDetailsPage/tabs/collaborators/ProjectCollaboratorSkeleton";
 import { DEFAULT_PAGE, PAGE_LIMITS } from "@shared/constants/pagination";
+import { useAppStore } from "@/store";
 
 type CollaboratorsViewProps = {
   projectId: string;
-  onCreateTask: () => void;
   selectedCollaboratorIds: string[];
   toggleBulk: (value: string) => void;
   onClearSelection: () => void;
@@ -27,7 +27,6 @@ export type Actions = "change_role" | "reassign_tasks" | "delete";
 
 const CollaboratorsView = ({
   projectId,
-  onCreateTask,
   selectedCollaboratorIds,
   toggleBulk,
   onClearSelection,
@@ -37,6 +36,8 @@ const CollaboratorsView = ({
     string | null
   >(null);
   const [activeAction, setActiveAction] = useState<Actions | null>(null);
+
+  const openCreateTask = useAppStore((state) => state.openCreateTask);
 
   const { page, collaboratorsSort, actions } =
     useProjectCollaboratorSearchParams();
@@ -88,7 +89,7 @@ const CollaboratorsView = ({
         <BulkCollaboratorActions
           collaboratorCount={selectedCollaboratorIds.length}
           onClearSelection={onClearSelection}
-          onCreateTask={onCreateTask}
+          onCreateTask={() => openCreateTask(projectId)}
         />
       )}
 

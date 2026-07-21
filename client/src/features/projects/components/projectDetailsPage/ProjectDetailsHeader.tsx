@@ -34,7 +34,7 @@ const ProjectDetailsHeader = ({
         {statusOption ? (
           <span
             style={{ backgroundColor: STATUS_OPTIONS[projectStatus].color }}
-            className="hidden sm:inline-block px-2 rounded-full text-sm"
+            className="hidden sm:inline-block px-2 rounded-full text-sm text-surface-foreground"
           >
             {STATUS_OPTIONS[projectStatus].label}
           </span>

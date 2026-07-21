@@ -5,32 +5,22 @@ import CommentsCard from "@/features/comments/components/card/CommentsCard";
 import WorkloadCard from "@/features/users/components/workload/WorkloadCard";
 import type { ActiveTab } from "@/features/projects/types/activeTab";
 import { useProjectOverview } from "@/features/projects/hooks/details/useProjectOverview";
+import { useAppStore } from "@/store";
 
 type OverviewProps = {
-  onCreateTask: () => void;
   inviteOpen: () => void;
   onNavigate: (tab: ActiveTab) => void;
   projectId: string;
 };
 
-const Overview = ({
-  onCreateTask,
-  inviteOpen,
-  onNavigate,
-  projectId,
-}: OverviewProps) => {
+const Overview = ({ inviteOpen, onNavigate, projectId }: OverviewProps) => {
   const { data, error } = useProjectOverview(projectId);
+  const openCreateTask = useAppStore((state) => state.openCreateTask);
 
   if (error) return <div>Etwas ist schief gelaufen</div>;
   if (!data) return <div>Project not found</div>;
 
-  const {
-    progress,
-    collaborators,
-    openTasks,
-    recentComments,
-    workload,
-  } = data;
+  const { progress, collaborators, openTasks, recentComments, workload } = data;
 
   return (
     <div
@@ -62,7 +52,7 @@ const Overview = ({
       <div className="h-full md:col-span-2 xl:row-span-2">
         <WorkloadCard
           workload={workload}
-          onCreateTask={onCreateTask}
+          onCreateTask={() => openCreateTask(projectId)}
           onMore={() => onNavigate("workload")}
         />
       </div>

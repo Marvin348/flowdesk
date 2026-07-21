@@ -9,7 +9,9 @@ export const newTaskSchema = z.object({
     .array(z.string().min(2, "Tag min. 2 Zeichen"))
     .max(3, "Maximal 3 Tags")
     .optional(),
-  taskPriority: z.enum(PRIORITY),
+  taskPriority: z.enum(PRIORITY, {
+    error: "Bitte eine Priorität wählen.",
+  }),
   reminderAt: z.string().optional(),
   description: z.string().optional(),
 });
