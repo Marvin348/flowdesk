@@ -3,9 +3,8 @@ import { Button } from "@/shared/components/ui/button";
 import SelectedReminder from "@/shared/components/ui/select/SelectedReminder";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useCreateTask } from "@/features/tasks/hooks/useCreateTask";
-import type { CreateTaskInput } from "@shared/types/inputs/createTaskInput";
 import { Spinner } from "@/shared/components/ui/spinner";
 import SelectedPriority from "@/shared/components/ui/select/SelectedPriority";
 import {
@@ -18,25 +17,39 @@ import {
 import { newTaskSchema } from "@/features/tasks/schemas/newTaskSchema";
 import type { NewTaskFields } from "@/features/tasks/schemas/newTaskSchema";
 import ErrorMessage from "@/shared/components/ErrorMessage";
+import { useAppStore } from "@/store";
+import { useTask } from "@/features/tasks/hooks/useTask";
+import TaskFormSkeleton from "@/features/tasks/components/skeleton/TaskFormSkeleton";
+import { useUpdateTask } from "@/features/tasks/hooks/useUpdateTask";
+import { getApiErrorStatus } from "@/shared/api/getApiError";
+import { getCreateTaskDefaultValues } from "@/features/tasks/utils/getCreateTaskDefaultValues";
+import { mapTaskToFormValues } from "@/features/tasks/utils/mapTaskToFormValues";
+import { useTaskTags } from "@/features/tasks/hooks/useTaskTags";
+import { getTaskMutationErrorMessage } from "@/features/tasks/utils/getTaskMutationErrorMessage";
 
 type AddTaskFormProps = {
-  onClose: () => void;
-  isOpen: boolean;
   projectId: string;
   teamUserIds: string[];
   initialCollaboratorIds: string[];
 };
 
 const AddTaskForm = ({
-  onClose,
-  isOpen,
   projectId,
   teamUserIds,
   initialCollaboratorIds,
 }: AddTaskFormProps) => {
-  const [tagsInput, setTagsInput] = useState("");
+  const createTaskMutation = useCreateTask(projectId);
+  const updateTaskMutation = useUpdateTask();
 
-  const { mutate, isPending, isError } = useCreateTask(projectId);
+  const taskId = useAppStore((state) => state.taskId);
+  const mode = useAppStore((state) => state.mode);
+  const closeTaskModal = useAppStore((state) => state.closeTaskModal);
+
+  const {
+    data: task,
+    isLoading,
+    error,
+  } = useTask(mode === "edit" ? taskId : null);
 
   const {
     register,
@@ -59,67 +72,75 @@ const AddTaskForm = ({
     },
   });
 
+  const { tagsInput, setTagsInput, tags, submitTag, removeTag } = useTaskTags({
+    watch,
+    setValue,
+  });
+
   useEffect(() => {
-    if (isOpen) {
-      reset({
-        title: "",
-        tags: [],
-        reminderAt: "none",
-        collaboratorIds: initialCollaboratorIds,
-        description: "",
-        dueDate: "",
-        taskPriority: "low",
-      });
+    if (mode === "create") {
+      reset(getCreateTaskDefaultValues(initialCollaboratorIds));
+      return;
     }
-  }, [isOpen, initialCollaboratorIds]);
 
-  const onSubmit = (data: NewTaskFields) => {
-    const input: CreateTaskInput = {
-      projectId,
-      ...data,
-    };
+    if (!task) return;
 
-    mutate(input, {
-      onSuccess: () => {
-        reset();
-        onClose();
-      },
-    });
-  };
+    reset(mapTaskToFormValues(task));
+  }, [mode, initialCollaboratorIds, task, reset]);
+
+  if (mode === "edit" && isLoading) {
+    return <TaskFormSkeleton />;
+  }
+
+  if (mode === "edit" && error) {
+    return <div>Task konnte nicht geladen werden</div>;
+  }
 
   const handleClose = () => {
     reset();
-    onClose();
+    closeTaskModal();
   };
 
-  const tags = watch("tags") ?? [];
-
-  const submitTag = () => {
-    const next = tagsInput.trim();
-    if (!next) return;
-
-    if (tags.some((t) => t.toLowerCase() === next.toLowerCase())) return;
-
-    setValue("tags", [...tags, next], {
-      shouldValidate: true,
-      shouldDirty: true,
-    });
-
-    setTagsInput("");
-  };
-
-  const onRemove = (tagToRemove: string) => {
-    if (!tags.includes(tagToRemove)) return;
-
-    setValue(
-      "tags",
-      tags.filter((t) => t !== tagToRemove),
+  const handleCreate = (values: NewTaskFields) => {
+    createTaskMutation.mutate(
+      { projectId, ...values },
       {
-        shouldValidate: true,
-        shouldDirty: true,
+        onSuccess: () => {
+          handleClose();
+        },
       },
     );
   };
+
+  const handleUpdate = (values: NewTaskFields) => {
+    if (!taskId) return;
+
+    updateTaskMutation.mutate(
+      { taskId, values },
+      {
+        onSuccess: () => {
+          handleClose();
+        },
+      },
+    );
+  };
+
+  const onSubmit = (data: NewTaskFields) => {
+    mode === "create" ? handleCreate(data) : handleUpdate(data);
+  };
+
+  const isSubmitting =
+    mode === "edit"
+      ? updateTaskMutation.isPending
+      : createTaskMutation.isPending;
+
+  const mutationErrors =
+    mode === "edit" ? updateTaskMutation.error : createTaskMutation.error;
+
+  const errorStatusCode = getApiErrorStatus(mutationErrors);
+  const errorMessage = mutationErrors
+    ? getTaskMutationErrorMessage(errorStatusCode)
+    : null;
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="text-foreground">
@@ -183,7 +204,7 @@ const AddTaskForm = ({
                 type="button"
                 key={tag}
                 className="px-2 bg-chart-2/20 text-chart-2 rounded-full"
-                onClick={() => onRemove(tag)}
+                onClick={() => removeTag(tag)}
               >
                 {tag}
               </button>
@@ -253,26 +274,19 @@ const AddTaskForm = ({
         />
       </div>
 
-      {isError && (
-        <ErrorMessage message="Etwas ist schief gelaufen. Bitte probiere es erneut." />
-      )}
+      {errorMessage && <ErrorMessage message={errorMessage} />}
 
       <div className="mt-4 border-t pt-4 flex items-center justify-end gap-6">
-        <Button
-          size="sm"
-          variant="outline"
-          type="button"
-          className="hover:bg-surface/5"
-          onClick={handleClose}
-        >
+        <Button size="sm" variant="outline" type="button" onClick={handleClose}>
           Schließen
         </Button>
         <Button
           size="sm"
           className="bg-accent hover:bg-accent/95 w-30"
           type="submit"
+          disabled={isSubmitting}
         >
-          Sichern {isPending && <Spinner />}
+          {isSubmitting ? <Spinner /> : "Sichern"}
         </Button>
       </div>
     </form>

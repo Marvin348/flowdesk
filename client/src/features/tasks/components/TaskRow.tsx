@@ -4,7 +4,10 @@ import { formatDate } from "@/shared/utils/formatDate";
 import { PRIORITY_OPTIONS } from "@/shared/constants/priority-options";
 import type { ProjectTaskDto } from "@shared/types/dto/projects/projectTasks.dto";
 import type { StatusBase } from "@shared/types/StatusBase";
-import { TASK_STATUS_ACTIONS } from "@/features/tasks/constants/taskStatusActions";
+import { EllipsisVertical } from "lucide-react";
+import { useRef, useState } from "react";
+import TaskDropdownMenu from "./TaskDropdownMenu";
+import { useOnClickOutside } from "@/shared/hooks/useOnClickOutside";
 
 type TaskRowProps = {
   task: ProjectTaskDto;
@@ -13,43 +16,51 @@ type TaskRowProps = {
 };
 
 const TaskRow = ({ task, handleStatusChange, isUpdating }: TaskRowProps) => {
-  const { id, title, dueDate, taskStatus, collaborators, taskPriority } = task;
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const { title, dueDate, taskStatus, collaborators, taskPriority } = task;
 
-  const statusAction = TASK_STATUS_ACTIONS[taskStatus];
+  const useDropdownRef = useRef<HTMLDivElement | null>(null);
+  useOnClickOutside(useDropdownRef, () => setIsDropdownOpen(false));
 
   return (
-    <div className="py-4 grid grid-cols-1 md:grid-cols-6 items-center gap-4 border-b last:border-none">
+    <div className="p-3 grid grid-cols-1 md:grid-cols-[2fr_1fr_1fr_1fr_1fr_1fr] items-center  border-b last:border-none">
       <p className="truncate">{title}</p>
 
       <div>
         <AssigneeAvatars users={collaborators} />
       </div>
 
-      <div className="md:justify-self-start flex items-center gap-4 text-sm">
+      <div className="flex items-center gap-4 text-sm">
         <p>{formatDate(dueDate)}</p>
       </div>
 
       <p
         style={{ backgroundColor: STATUS_OPTIONS[taskStatus].color }}
-        className="w-fit px-2 rounded-full"
+        className="w-fit px-2 rounded-full text-surface-foreground text-sm"
       >
         {STATUS_OPTIONS[taskStatus].label}
       </p>
 
       <p
         style={{ backgroundColor: PRIORITY_OPTIONS[taskPriority].color }}
-        className="text-sm w-fit px-2 rounded-full"
+        className="text-sm w-fit px-2 rounded-full text-surface-foreground"
       >
         {PRIORITY_OPTIONS[taskPriority].label}
       </p>
 
-      <button
-        disabled={isUpdating}
-        onClick={() => handleStatusChange(id, statusAction.nextStatus)}
-        className="md:justify-self-start text-sm font-medium text-muted-foreground hover:text-foreground duration-200"
-      >
-        {isUpdating ? "Speichert..." : statusAction.label}
-      </button>
+      <div ref={useDropdownRef} className="relative">
+        <button onClick={() => setIsDropdownOpen((prev) => !prev)}>
+          <EllipsisVertical className="size-5" />
+        </button>
+
+        {isDropdownOpen && (
+          <TaskDropdownMenu
+            task={task}
+            handleStatusChange={handleStatusChange}
+            isUpdating={isUpdating}
+          />
+        )}
+      </div>
     </div>
   );
 };

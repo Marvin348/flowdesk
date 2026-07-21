@@ -1,6 +1,7 @@
 import z from "zod";
 import { PRIORITY } from "@shared/types/Priority";
 import { STATUSBASE } from "@shared/types/StatusBase";
+import { objectIdSchema } from "@/shared/validators/objectId.validator";
 
 export const createTaskSchema = z.object({
   projectId: z.string().min(1, "Project is required"),
@@ -25,3 +26,10 @@ export const taskStatusSchema = z.object({
 });
 
 export type TaskStatusFields = z.infer<typeof taskStatusSchema>;
+
+export const taskParamsSchema = z.object({
+  taskId: objectIdSchema,
+});
+
+export type TaskParamsField = z.infer<typeof taskParamsSchema>;
+ 

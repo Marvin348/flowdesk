@@ -9,11 +9,14 @@ import { asyncHandler } from "@/utils/asyncHandler";
 import { AppError } from "@/utils/AppError";
 import {
   createTaskSchema,
+  taskParamsSchema,
   taskStatusSchema,
 } from "@/features/tasks/validators/task.validators";
 import { createTask } from "@/features/tasks/services/createTask.service";
-import { changeTaskStatus } from "../services/changeTaskStatus.service";
-import type { TaskStatusFields } from "@/features/tasks/validators/task.validators";
+import { changeTaskStatus } from "@/features/tasks/services/changeTaskStatus.service";
+import { getTask } from "@/features/tasks/services/getTask.service";
+import { editTaskSchema } from "@/features/tasks/validators/editTask.validator";
+import { updateTask } from "@/features/tasks/services/updateTask.service";
 
 const router = express.Router();
 
@@ -57,32 +60,75 @@ router.post(
   }),
 
   router.patch(
+    "/:taskId",
+    asyncHandler(async (req, res) => {
+      const params = taskParamsSchema.safeParse(req.params);
+
+      if (!params.success) {
+        throw new AppError("Invalid taskId", 400);
+      }
+
+      const body = editTaskSchema.safeParse(req.body);
+
+      if (!body.success) {
+        throw new AppError("Invalid body", 400);
+      }
+
+      const { workspaceId, role } = getAuthContext(req);
+
+      const updatedTask = await updateTask({
+        workspaceId,
+        validatedBody: body.data,
+        role,
+        taskId: params.data.taskId,
+      });
+
+      return res.status(200).json({ updatedTask });
+    }),
+  ),
+
+  router.get(
+    "/:taskId",
+    asyncHandler(async (req, res) => {
+      const params = taskParamsSchema.safeParse(req.params);
+
+      if (!params.success) {
+        throw new AppError("Invalid taskId", 400);
+      }
+
+      const { workspaceId } = getAuthContext(req);
+
+      const task = await getTask({ workspaceId, taskId: params.data.taskId });
+
+      return res.status(200).json({ task });
+    }),
+  ),
+
+  router.patch(
     "/:taskId/status",
-    asyncHandler<{ taskId: string }>(
-      async (req, res) => {
-        const { taskId } = req.params;
+    asyncHandler<{ taskId: string }>(async (req, res) => {
+      const { taskId } = req.params;
 
-        if (!taskId) {
-          throw new AppError("Invalid taskId", 400);
-        }
+      if (!taskId) {
+        throw new AppError("Invalid taskId", 400);
+      }
 
-        const result = taskStatusSchema.safeParse(req.body);
+      const result = taskStatusSchema.safeParse(req.body);
 
-        if (!result.success) {
-          throw new AppError("Invalid body", 400);
-        }
+      if (!result.success) {
+        throw new AppError("Invalid body", 400);
+      }
 
-        const { workspaceId } = getAuthContext(req);
+      const { workspaceId } = getAuthContext(req);
 
-        const updatedTask = await changeTaskStatus({
-          taskId,
-          taskStatus: result.data.taskStatus,
-          workspaceId,
-        });
+      const updatedTask = await changeTaskStatus({
+        taskId,
+        taskStatus: result.data.taskStatus,
+        workspaceId,
+      });
 
-        res.status(200).json({ data: updatedTask });
-      },
-    ),
+      res.status(200).json({ data: updatedTask });
+    }),
   ),
 );
 
