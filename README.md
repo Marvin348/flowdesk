@@ -12,6 +12,7 @@ FlowDesk is actively being developed as a fullstack portfolio project with a foc
 
 - **Node + Express**
 - **MongoDB with Mongoose**
+- **Docker**
 - **JWT authentication with HttpOnly cookies**
 - **Cloudflare R2 for private file storage**
 - **Resend (E-Mail Provider)**
