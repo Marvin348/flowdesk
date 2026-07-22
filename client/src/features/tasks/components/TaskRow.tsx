@@ -35,17 +35,17 @@ const TaskRow = ({ task, handleStatusChange, isUpdating }: TaskRowProps) => {
       </div>
 
       <p
-        style={{ backgroundColor: STATUS_OPTIONS[taskStatus].color }}
-        className="w-fit px-2 rounded-full text-surface-foreground text-sm"
-      >
-        {STATUS_OPTIONS[taskStatus].label}
-      </p>
-
-      <p
         style={{ backgroundColor: PRIORITY_OPTIONS[taskPriority].color }}
         className="text-sm w-fit px-2 rounded-full text-surface-foreground"
       >
         {PRIORITY_OPTIONS[taskPriority].label}
+      </p>
+
+      <p
+        style={{ backgroundColor: STATUS_OPTIONS[taskStatus].color }}
+        className="w-fit px-2 rounded-full text-surface-foreground text-sm"
+      >
+        {STATUS_OPTIONS[taskStatus].label}
       </p>
 
       <div ref={useDropdownRef} className="relative">
