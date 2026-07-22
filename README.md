@@ -100,54 +100,55 @@ The current focus is on improving route structure, service separation, backend t
 
 ## Installation
 
-1. Clone the repository
+### Prerequisites
+
+Make sure the following tools are installed:
+
+- Git
+- Docker Desktop
+
+#### 1. Clone the repository
 
 ```bash
 git clone https://github.com/Marvin348/flowdesk.git
 cd flowdesk
 ```
 
-2. Install frontend dependencies
+#### 2. Create the backend environment file
+
+Create a server/.env file based on the provided example:
+
+cp server/.env.example server/.env
+
+Then replace the placeholder values in server/.env with your own configuration.
+
+#### 3. Build and start the application
+
+Run the following command from the project root:
 
 ```bash
-npm install
+docker compose up --build
 ```
 
-3. Install backend dependencies
+Docker Compose builds and starts the frontend and backend containers.
+
+The application will be available at:
+
+- Frontend: http://localhost:5173
+- Backend: http://localhost:3001
+
+After the initial build, you can usually start the application with:
 
 ```bash
-cd server
-npm install
+docker compose up
 ```
 
-4. Create backend environment file
+#### 4. Stop the application
 
-The backend requires a `.env` file inside the `server` directory.
-
-Create `server/.env`:
-
-```env
-PORT=3001
-MONGODB_URL=your_mongodb_connection_string
-```
-
-5. Seed demo data
+Press Ctrl + C and then run:
 
 ```bash
-npm run seed
-```
-
-6. Start backend
-
-```bash
-npm run dev
-```
-
-7. Start frontend in a second terminal
-
-```bash
-cd client
-npm run dev
+docker compose down
 ```
 
 ## Screenshots
