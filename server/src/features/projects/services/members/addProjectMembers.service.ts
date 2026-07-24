@@ -4,10 +4,13 @@ import mongoose from "mongoose";
 import { ProjectModel } from "@/features/projects/models/project.model";
 import { AppError } from "@/utils/AppError";
 import { UserModel } from "@/features/users/models/user.modal";
+import { eventBus } from "@/shared/events/eventBus";
+import { ProjectMembersAddedEvent } from "@/features/projects/events/projectEvent";
 
 type AddProjectMembersInput = {
   workspaceId: Types.ObjectId;
   role: UserRole;
+  userId: string;
   projectId: string;
   userIdsToAdd: string[];
 };
@@ -15,28 +18,37 @@ type AddProjectMembersInput = {
 export const addProjectMembers = async ({
   workspaceId,
   role,
+  userId,
   projectId,
   userIdsToAdd,
 }: AddProjectMembersInput) => {
+  const userObjectId = new mongoose.Types.ObjectId(userId);
   const projectObjectId = new mongoose.Types.ObjectId(projectId);
 
   if (role !== "admin") {
     throw new AppError("Only admins can update invitedUsers", 403);
   }
 
-  const project = await ProjectModel.exists({
-    workspaceId,
-    _id: projectObjectId,
-  });
-
-  if (!project) {
-    throw new AppError("Project not found", 404);
-  }
-
   const uniqueUserIds = [...new Set(userIdsToAdd)];
 
   const userObjectIds = uniqueUserIds.map(
     (id) => new mongoose.Types.ObjectId(id),
+  );
+
+  const existingProject = await ProjectModel.findOne({
+    workspaceId,
+    _id: projectObjectId,
+  }).select("invitedUserIds");
+
+  if (!existingProject) {
+    throw new AppError("Project not found", 404);
+  }
+
+  const addedUserIds = userObjectIds.filter(
+    (newId) =>
+      !existingProject.invitedUserIds.some((existingId) =>
+        existingId.equals(newId),
+      ),
   );
 
   const matchingUserCount = await UserModel.countDocuments({
@@ -57,4 +69,13 @@ export const addProjectMembers = async ({
     },
     { returnDocument: "after" },
   );
+
+  if (addedUserIds.length > 0) {
+    await eventBus.emit<ProjectMembersAddedEvent>("project.members_added", {
+      actorId: userObjectId,
+      workspaceId,
+      projectId: projectObjectId,
+      addedUserIds,
+    });
+  }
 };

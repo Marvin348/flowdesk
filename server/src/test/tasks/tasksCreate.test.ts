@@ -1,6 +1,15 @@
 import app from "@/app";
 import request from "supertest";
-import { beforeAll, beforeEach, afterAll, describe, expect, it } from "vitest";
+import {
+  beforeAll,
+  beforeEach,
+  afterAll,
+  afterEach,
+  describe,
+  expect,
+  it,
+  vi,
+} from "vitest";
 import {
   clearTestDb,
   connectTestDb,
@@ -12,6 +21,8 @@ import { WorkspaceModel } from "@/features/workspace/models/workspace.model";
 import { TaskModel } from "@/features/tasks/models/task.model";
 import { ProjectModel } from "@/features/projects/models/project.model";
 import { createAccessToken } from "@/features/auth/utils/tokens";
+import { eventBus } from "@/shared/events/eventBus";
+import type { TaskCreatedEvent } from "@/features/tasks/events/taskEvents";
 
 beforeAll(async () => {
   await connectTestDb();
@@ -19,6 +30,10 @@ beforeAll(async () => {
 
 beforeEach(async () => {
   await clearTestDb();
+});
+
+afterEach(() => {
+  vi.restoreAllMocks();
 });
 
 afterAll(async () => {
@@ -87,6 +102,7 @@ describe("POST /tasks", () => {
     });
 
     const accessToken = createAccessToken(userId.toString());
+    const emitSpy = vi.spyOn(eventBus, "emit").mockResolvedValue(undefined);
 
     const response = await request(app)
       .post("/tasks")
@@ -123,6 +139,24 @@ describe("POST /tasks", () => {
     expect(createdTask.projectId.toString()).toBe(project._id.toString());
     expect(createdTask.dueDate).toEqual(new Date("2026-07-10"));
     expect(createdTask.taskStatus).toBe("pending");
+
+    expect(emitSpy).toHaveBeenCalledOnce();
+
+    const [eventName, payload] = emitSpy.mock.calls[0];
+    const taskCreatedPayload = payload as TaskCreatedEvent;
+
+    expect(eventName).toBe("task.created");
+    expect(taskCreatedPayload.actorId.toString()).toBe(userId.toString());
+    expect(taskCreatedPayload.workspaceId.toString()).toBe(
+      workspaceId.toString(),
+    );
+    expect(taskCreatedPayload.task._id.toString()).toBe(response.body.data.id);
+    expect(taskCreatedPayload.task.projectId.toString()).toBe(
+      project._id.toString(),
+    );
+    expect(taskCreatedPayload.task.collaboratorIds.map(String)).toEqual([
+      userId.toString(),
+    ]);
   });
 
   it("returns 404 when the project belongs to another workspace", async () => {

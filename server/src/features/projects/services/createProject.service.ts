@@ -4,7 +4,9 @@ import { toProjectDto } from "@/features/projects/mappers/project.mapper";
 import { createActivity } from "@/features/activity/services/createActivity.service";
 import { AppError } from "@/utils/AppError";
 import { UserModel } from "@/features/users/models/user.modal";
-import { Types } from "mongoose";
+import mongoose, { Types } from "mongoose";
+import { eventBus } from "@/shared/events/eventBus";
+import { ProjectCreatedEvent } from "@/features/projects/events/projectEvent";
 
 type CreateProjectInput = {
   input: CreateProjectParams;
@@ -25,6 +27,8 @@ export const createProject = async ({
     invitedUserIds,
     description,
   } = input;
+
+  const userObjectId = new mongoose.Types.ObjectId(userId);
 
   const uniqueUserIds = [...new Set(invitedUserIds)];
 
@@ -59,6 +63,13 @@ export const createProject = async ({
       projectStatus: newProject.projectStatus,
       priority: newProject.priority,
     },
+  });
+
+  await eventBus.emit<ProjectCreatedEvent>("project.created", {
+    actorId: userObjectId,
+    workspaceId,
+    projectId: newProject._id,
+    invitedUserIds: newProject.invitedUserIds,
   });
 
   return toProjectDto(newProject.toObject());

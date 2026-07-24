@@ -53,11 +53,12 @@ router.patch(
         throw new AppError("Invalid body", 400);
       }
 
-      const { role, workspaceId } = getAuthContext(req);
+      const { role, workspaceId, userId } = getAuthContext(req);
 
       await addProjectMembers({
         workspaceId,
         role,
+        userId,
         projectId: params.data.projectId,
         userIdsToAdd: body.data.userIdsToAdd,
       });

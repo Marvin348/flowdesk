@@ -12,6 +12,9 @@ import cookieParser from "cookie-parser";
 import { requireAuth } from "@/features/auth/middleware/requireAuth";
 import { errorHandler } from "@/middleware/errorHandler";
 import activityRouter from "@/features/activity/routes/activity.routes";
+import { registerTaskNotificationHandlers } from "./features/notification/events/registerTaskNotificationHandlers";
+
+registerTaskNotificationHandlers();
 
 const app = express();
 
