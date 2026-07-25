@@ -10,14 +10,14 @@ export type NotificationDocument = {
   workspaceId: Types.ObjectId;
 
   actorId?: Types.ObjectId;
-  recipientId: Types.ObjectId; // me
+  recipientId: Types.ObjectId;
 
   type: NotificationType;
   entityType: EntityType;
 
-  entityId?: Types.ObjectId; // id from tasks, comments, etc
+  entityId?: Types.ObjectId;
 
-  projectId?: Types.ObjectId; // maybe useful
+  projectId?: Types.ObjectId;
 
   metadata: {
     previousRole: UserRole;
