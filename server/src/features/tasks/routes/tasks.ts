@@ -74,13 +74,14 @@ router.post(
         throw new AppError("Invalid body", 400);
       }
 
-      const { workspaceId, role } = getAuthContext(req);
+      const { workspaceId, role, userId } = getAuthContext(req);
 
       const updatedTask = await updateTask({
         workspaceId,
         validatedBody: body.data,
         role,
         taskId: params.data.taskId,
+        userId,
       });
 
       return res.status(200).json({ updatedTask });

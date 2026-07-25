@@ -8,7 +8,9 @@ import { TaskModel } from "@/features/tasks/models/task.model";
 import { toTaskDto } from "@/features/tasks/mappers/task.mapper";
 import { createActivity } from "@/features/activity/services/createActivity.service";
 import { UserModel } from "@/features/users/models/user.modal";
-import { Types } from "mongoose";
+import mongoose, { Types } from "mongoose";
+import { eventBus } from "@/shared/events/eventBus";
+import type { TaskCreatedEvent } from "@/features/tasks/events/taskEvents";
 
 type CreateTaskInput = {
   input: CreateTaskFields;
@@ -32,7 +34,8 @@ export const createTask = async ({
     description,
   } = input;
 
-  const projectObjectId = new Types.ObjectId(projectId);
+  const projectObjectId = new mongoose.Types.ObjectId(projectId);
+  const userObjectId = new mongoose.Types.ObjectId(userId);
 
   const project = await getProjectById({
     projectId: projectObjectId,
@@ -79,6 +82,12 @@ export const createTask = async ({
       taskTitle: newTask.title,
       taskPriority: newTask.taskPriority,
     },
+  });
+
+  await eventBus.emit<TaskCreatedEvent>("task.created", {
+    actorId: userObjectId,
+    workspaceId,
+    task: newTask,
   });
 
   return toTaskDto(newTask.toObject());

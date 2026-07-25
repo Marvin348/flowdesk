@@ -7,6 +7,7 @@ import attachmentsRouter from "@/features/attachments/routes/attachments";
 import commentsRouter from "@/features/comments/routes/comments";
 import dashboardRouter from "@/features/dashboard/routes/dashboard";
 import workspaceInvitesRouter from "@/features/workspace-invites/routes/workspaceInvite.routes";
+import notificationsRouter from "@/features/notification/routes/notification";
 import authRouter from "@/features/auth/routes/authRoutes";
 import cookieParser from "cookie-parser";
 import { requireAuth } from "@/features/auth/middleware/requireAuth";
@@ -44,6 +45,7 @@ app.use("/tasks", requireAuth, tasksRouter);
 app.use("/users", requireAuth, usersRouter);
 app.use("/attachments", requireAuth, attachmentsRouter);
 app.use("/comments", requireAuth, commentsRouter);
+app.use("/notifications", requireAuth, notificationsRouter);
 
 app.use("/workspace-invites", workspaceInvitesRouter);
 app.use("/activity", requireAuth, activityRouter);

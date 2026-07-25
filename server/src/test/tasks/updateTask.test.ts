@@ -1,5 +1,14 @@
 import app from "@/app";
-import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
+import {
+  afterAll,
+  afterEach,
+  beforeAll,
+  beforeEach,
+  describe,
+  expect,
+  it,
+  vi,
+} from "vitest";
 import {
   clearTestDb,
   connectTestDb,
@@ -9,9 +18,12 @@ import request from "supertest";
 import {
   createAuthedUserContext,
   createTask,
+  createUser,
 } from "@/test/helpers/testFactories";
 import mongoose from "mongoose";
 import { TaskModel } from "@/features/tasks/models/task.model";
+import { eventBus } from "@/shared/events/eventBus";
+import type { TaskUpdateEvent } from "@/features/tasks/events/taskEvents";
 
 beforeAll(async () => {
   await connectTestDb();
@@ -19,6 +31,10 @@ beforeAll(async () => {
 
 beforeEach(async () => {
   await clearTestDb();
+});
+
+afterEach(() => {
+  vi.restoreAllMocks();
 });
 
 afterAll(async () => {
@@ -67,6 +83,11 @@ describe("PATCH /tasks/:taskId", () => {
   it("updates the matching task", async () => {
     const { authCookie, userId, workspaceId } = await createAuthedUserContext();
     const projectId = new mongoose.Types.ObjectId();
+    const newCollaborator = await createUser({
+      workspaceId,
+      role: "member",
+    });
+
     const task = await createTask({
       workspaceId,
       projectId,
@@ -78,13 +99,15 @@ describe("PATCH /tasks/:taskId", () => {
       description: "Original description",
       tags: ["old"],
     });
+    
+    const emitSpy = vi.spyOn(eventBus, "emit").mockResolvedValue(undefined);
 
     const response = await request(app)
       .patch(`/tasks/${task._id.toString()}`)
       .send({
         title: "Updated task",
         dueDate: "2026-07-20",
-        collaboratorIds: [userId.toString()],
+        collaboratorIds: [newCollaborator._id.toString()],
         taskPriority: "high",
         description: "Updated description",
         tags: ["new", "api"],
@@ -98,7 +121,7 @@ describe("PATCH /tasks/:taskId", () => {
       title: "Updated task",
       dueDate: new Date("2026-07-20").toISOString(),
       taskStatus: "pending",
-      collaboratorIds: [userId.toString()],
+      collaboratorIds: [newCollaborator._id.toString()],
       taskPriority: "high",
       description: "Updated description",
       tags: ["new", "api"],
@@ -115,5 +138,24 @@ describe("PATCH /tasks/:taskId", () => {
     expect(updatedTask.taskPriority).toBe("high");
     expect(updatedTask.description).toBe("Updated description");
     expect(updatedTask.tags).toEqual(["new", "api"]);
+
+    expect(emitSpy).toHaveBeenCalledOnce();
+
+    const [eventName, payload] = emitSpy.mock.calls[0];
+    const taskUpdatedPayload = payload as TaskUpdateEvent;
+
+    expect(eventName).toBe("task.updated");
+    expect(taskUpdatedPayload.actorId.toString()).toBe(userId.toString());
+    expect(taskUpdatedPayload.workspaceId.toString()).toBe(
+      workspaceId.toString(),
+    );
+    expect(taskUpdatedPayload.taskId.toString()).toBe(task._id.toString());
+    expect(taskUpdatedPayload.projectId.toString()).toBe(projectId.toString());
+    expect(taskUpdatedPayload.previousCollaboratorIds.map(String)).toEqual([
+      userId.toString(),
+    ]);
+    expect(taskUpdatedPayload.currentCollaboratorIds.map(String)).toEqual([
+      newCollaborator._id.toString(),
+    ]);
   });
 });

@@ -4,7 +4,11 @@ import { MongoMemoryServer } from "mongodb-memory-server";
 let mongoServer: MongoMemoryServer;
 
 export const connectTestDb = async () => {
-  mongoServer = await MongoMemoryServer.create();
+  mongoServer = await MongoMemoryServer.create({
+    binary: {
+      version: "7.0.14",
+    },
+  });
   const uri = mongoServer.getUri();
 
   await mongoose.connect(uri);
@@ -20,5 +24,5 @@ export const clearTestDb = async () => {
 
 export const disconnectTestDb = async () => {
   await mongoose.disconnect();
-  await mongoServer.stop();
+  await mongoServer?.stop();
 };

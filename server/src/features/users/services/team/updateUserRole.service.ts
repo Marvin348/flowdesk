@@ -2,7 +2,9 @@ import { UserRole } from "@shared/types/user";
 import { AppError } from "@/utils/AppError";
 import { UserModel } from "@/features/users/models/user.modal";
 import { toUserDto } from "@/features/users/mappers/user.mapper";
-import { Types } from "mongoose";
+import mongoose, { Types } from "mongoose";
+import { eventBus } from "@/shared/events/eventBus";
+import type { ChangeUserRoleEvent } from "@/features/users/events/userEvents";
 
 type UpdateUserRoleInput = {
   workspaceId: Types.ObjectId;
@@ -17,6 +19,9 @@ export const updateUserRole = async ({
   role,
   currentUserId,
 }: UpdateUserRoleInput) => {
+  const currentUserObjectId = new mongoose.Types.ObjectId(currentUserId);
+  const targetUserObjectId = new mongoose.Types.ObjectId(targetUserId);
+
   if (targetUserId === currentUserId && role !== "admin") {
     throw new AppError("Admins cannot demote themselves", 403);
   }
@@ -43,6 +48,14 @@ export const updateUserRole = async ({
   if (!updatedUser) {
     throw new AppError("User not found", 404);
   }
+
+  await eventBus.emit<ChangeUserRoleEvent>("user.role_changed", {
+    actorId: currentUserObjectId,
+    workspaceId,
+    recipientId: targetUserObjectId,
+    previousRole: user.role,
+    currentRole: role,
+  });
 
   return toUserDto(updatedUser);
 };

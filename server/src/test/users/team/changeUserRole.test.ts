@@ -1,6 +1,15 @@
 import app from "@/app";
 import request from "supertest";
-import { beforeAll, beforeEach, afterAll, describe, expect, it } from "vitest";
+import {
+  beforeAll,
+  beforeEach,
+  afterAll,
+  afterEach,
+  describe,
+  expect,
+  it,
+  vi,
+} from "vitest";
 import {
   clearTestDb,
   connectTestDb,
@@ -10,6 +19,8 @@ import { UserModel } from "@/features/users/models/user.modal";
 import mongoose from "mongoose";
 import { WorkspaceModel } from "@/features/workspace/models/workspace.model";
 import { createAccessToken } from "@/features/auth/utils/tokens";
+import { eventBus } from "@/shared/events/eventBus";
+import type { ChangeUserRoleEvent } from "@/features/users/events/userEvents";
 
 beforeAll(async () => {
   await connectTestDb();
@@ -17,6 +28,10 @@ beforeAll(async () => {
 
 beforeEach(async () => {
   await clearTestDb();
+});
+
+afterEach(() => {
+  vi.restoreAllMocks();
 });
 
 afterAll(async () => {
@@ -119,6 +134,7 @@ describe("PATCH /users/id", () => {
     ]);
 
     const accessToken = createAccessToken(adminId.toString());
+    const emitSpy = vi.spyOn(eventBus, "emit").mockResolvedValue(undefined);
 
     const response = await request(app)
       .patch(`/users/${memberId}`)
@@ -136,6 +152,22 @@ describe("PATCH /users/id", () => {
 
     const updatedMember = await UserModel.findById(memberId).lean();
     expect(updatedMember?.role).toBe("manager");
+
+    expect(emitSpy).toHaveBeenCalledOnce();
+
+    const [eventName, payload] = emitSpy.mock.calls[0];
+    const roleChangedPayload = payload as ChangeUserRoleEvent;
+
+    expect(eventName).toBe("user.role_changed");
+    expect(roleChangedPayload.actorId.toString()).toBe(adminId.toString());
+    expect(roleChangedPayload.workspaceId.toString()).toBe(
+      workspaceId.toString(),
+    );
+    expect(roleChangedPayload.recipientId.toString()).toBe(
+      memberId.toString(),
+    );
+    expect(roleChangedPayload.previousRole).toBe("member");
+    expect(roleChangedPayload.currentRole).toBe("manager");
   });
 
   it("does not allow a non-admin to change another user's role", async () => {

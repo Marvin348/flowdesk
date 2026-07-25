@@ -1,6 +1,15 @@
 import app from "@/app";
 import { ProjectModel } from "@/features/projects/models/project.model";
-import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
+import {
+  afterAll,
+  afterEach,
+  beforeAll,
+  beforeEach,
+  describe,
+  expect,
+  it,
+  vi,
+} from "vitest";
 import {
   clearTestDb,
   connectTestDb,
@@ -13,6 +22,8 @@ import {
   createUser,
 } from "@/test/helpers/testFactories";
 import mongoose from "mongoose";
+import { eventBus } from "@/shared/events/eventBus";
+import type { ProjectMembersAddedEvent } from "@/features/projects/events/projectEvent";
 
 beforeAll(async () => {
   await connectTestDb();
@@ -20,6 +31,10 @@ beforeAll(async () => {
 
 beforeEach(async () => {
   await clearTestDb();
+});
+
+afterEach(() => {
+  vi.restoreAllMocks();
 });
 
 afterAll(async () => {
@@ -119,10 +134,11 @@ describe("PATCH /projects/:projectId/members", () => {
   });
 
   it("returns 200 and adds users to the project", async () => {
-    const { authCookie, workspaceId } = await createAuthedUserContext();
+    const { authCookie, workspaceId, userId } = await createAuthedUserContext();
     const firstUser = await createUser({ workspaceId });
     const secondUser = await createUser({ workspaceId });
     const project = await createProject({ workspaceId });
+    const emitSpy = vi.spyOn(eventBus, "emit").mockResolvedValue(undefined);
 
     const response = await request(app)
       .patch(`/projects/${project._id.toString()}/members`)
@@ -141,16 +157,34 @@ describe("PATCH /projects/:projectId/members", () => {
     expect(updatedProject?.invitedUserIds.map((id) => id.toString()).sort()).toEqual(
       [firstUser._id.toString(), secondUser._id.toString()].sort(),
     );
+
+    expect(emitSpy).toHaveBeenCalledOnce();
+
+    const [eventName, payload] = emitSpy.mock.calls[0];
+    const membersAddedPayload = payload as ProjectMembersAddedEvent;
+
+    expect(eventName).toBe("project.members_added");
+    expect(membersAddedPayload.actorId.toString()).toBe(userId.toString());
+    expect(membersAddedPayload.workspaceId.toString()).toBe(
+      workspaceId.toString(),
+    );
+    expect(membersAddedPayload.projectId.toString()).toBe(
+      project._id.toString(),
+    );
+    expect(membersAddedPayload.addedUserIds.map(String).sort()).toEqual(
+      [firstUser._id.toString(), secondUser._id.toString()].sort(),
+    );
   });
 
   it("returns 200 and does not duplicate users that are already in the project", async () => {
-    const { authCookie, workspaceId } = await createAuthedUserContext();
+    const { authCookie, workspaceId, userId } = await createAuthedUserContext();
     const existingUser = await createUser({ workspaceId });
     const newUser = await createUser({ workspaceId });
     const project = await createProject({
       workspaceId,
       invitedUserIds: [existingUser._id],
     });
+    const emitSpy = vi.spyOn(eventBus, "emit").mockResolvedValue(undefined);
 
     const response = await request(app)
       .patch(`/projects/${project._id.toString()}/members`)
@@ -176,5 +210,22 @@ describe("PATCH /projects/:projectId/members", () => {
     expect(
       invitedUserIds.filter((id) => id === existingUser._id.toString()),
     ).toHaveLength(1);
+
+    expect(emitSpy).toHaveBeenCalledOnce();
+
+    const [eventName, payload] = emitSpy.mock.calls[0];
+    const membersAddedPayload = payload as ProjectMembersAddedEvent;
+
+    expect(eventName).toBe("project.members_added");
+    expect(membersAddedPayload.actorId.toString()).toBe(userId.toString());
+    expect(membersAddedPayload.workspaceId.toString()).toBe(
+      workspaceId.toString(),
+    );
+    expect(membersAddedPayload.projectId.toString()).toBe(
+      project._id.toString(),
+    );
+    expect(membersAddedPayload.addedUserIds.map(String)).toEqual([
+      newUser._id.toString(),
+    ]);
   });
 });
