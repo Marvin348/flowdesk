@@ -6,7 +6,7 @@ export const PAGE_LIMITS = {
   attachments: 9,
   workload: 9,
   collaborators: 9,
-  notifications: 15,
+  notifications: 5,
 } as const;
 
 export const MAX_PAGE_LIMIT = 50;

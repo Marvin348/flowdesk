@@ -21,6 +21,7 @@ import EmailVerificationPage from "@/features/auth/pages/EmailVerificationPage";
 import ConfirmEmailChangePage from "@/features/auth/pages/ConfirmEmailChangePage";
 import ConfirmPasswordChangePage from "@/features/auth/pages/ConfirmPasswordChangePage";
 import InviteSuccessPage from "@/features/workspace-invites/pages/InviteSuccessPage";
+import NotificationPage from "@/features/notification/pages/NotificationPage";
 
 export const router = createBrowserRouter([
   {
@@ -65,6 +66,10 @@ export const router = createBrowserRouter([
           {
             path: "/team",
             element: <TeamPage />,
+          },
+          {
+            path: "/notification",
+            element: <NotificationPage />,
           },
           { path: "/activity", element: <ActivityPage /> },
           {

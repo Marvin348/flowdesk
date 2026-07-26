@@ -20,8 +20,11 @@ const buttonVariants = cva(
         secondary:
           "bg-muted text-foreground hover:bg-muted/80 border border-border font-normal",
         ghost:
-          "hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50",
+          "hover:bg-muted hover:text-accent-foreground dark:hover:bg-accent/50",
         link: "text-primary underline-offset-4 hover:underline",
+
+        segmented:
+          "rounded-lg px-5 py-2.5 font-normal text-muted-foreground shadow-none hover:bg-muted/50 hover:text-foreground data-[state=active]:bg-muted data-[state=active]:text-foreground data-[state=active]:shadow-sm",
 
         filter:
           "relative h-8 w-fit rounded-none px-2 text-sm font-normal gap-1 text-foreground" +
