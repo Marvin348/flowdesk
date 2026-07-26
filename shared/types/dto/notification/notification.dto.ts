@@ -1,4 +1,4 @@
-import { UserRole } from "@shared/types/user";
+import type { UserRole } from "@shared/types/user";
 
 export type NotificationType = (typeof NOTIFICATION_TYPES)[number];
 

@@ -159,6 +159,25 @@ body {
   --destructive: oklch(0.577 0.245 27.325);
   --border: oklch(0.92 0.004 250);
 
+
+  --notification-task-fg: #2563eb;
+  --notification-task-bg: #eaf3ff;
+
+  --notification-project-fg: #7c3aed;
+  --notification-project-bg: #f1edff;
+
+  --notification-comment-fg: #0891b2;
+  --notification-comment-bg: #e3fbff;
+
+  --notification-role-fg: #4f46e5;
+  --notification-role-bg: #e9eeff;
+
+  --notification-warning-fg: #d97706;
+  --notification-warning-bg: #fff7d6;
+
+  --notification-danger-fg: #dc2626;
+  --notification-danger-bg: #feecec;
+
   --input: oklch(0.922 0 0);
   --ring: oklch(0.708 0 0);
   --chart-1: oklch(0.646 0.222 41.116);
