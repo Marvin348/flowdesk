@@ -1,17 +1,20 @@
 import type { NotificationDto } from "@shared/types/dto/notification/notification.dto";
 import { notificationConfig } from "@/features/notification/utils/getNotificationConfig";
-import { Circle, MoreHorizontal } from "lucide-react";
+import { Circle, MoreHorizontal, Check } from "lucide-react";
 import NotificationMessage from "@/features/notification/components/inbox/NotificationMessage";
 import { Button } from "@/shared/components/ui/button";
 import { notificationColors } from "@/features/notification/utils/notificationColors";
 import { cn } from "@/shared/lib/utils";
-import {calcTimeAgo} from "@/shared/utils/calcTimeAgo"
+import { calcTimeAgo } from "@/shared/utils/calcTimeAgo";
+import { useMarkNotificationAsRead } from "@/features/notification/hooks/useMarkNotificationAsRead";
 
 type NotificationItemProps = {
   notification: NotificationDto;
 };
 
 const NotificationItem = ({ notification }: NotificationItemProps) => {
+  const { mutate, isPending, isError } = useMarkNotificationAsRead();
+
   const config = notificationConfig[notification.type];
   const colors = notificationColors[config.color];
 
@@ -21,13 +24,13 @@ const NotificationItem = ({ notification }: NotificationItemProps) => {
 
   return (
     <article
-      className={`grid gap-4 px-4 py-4 transition hover:bg-muted/30 sm:grid-cols-[auto_minmax(0,1fr)_auto] ${
+      className={`group grid gap-4 p-4 transition border-b last:border-none sm:grid-cols-[auto_minmax(0,1fr)_auto] hover:bg-muted/30 ${
         notification.isRead ? "bg-card" : "bg-accent/3"
       }`}
     >
       <div
         className={cn(
-          "flex size-10 items-center justify-center rounded-md border",
+          "flex shrink-0 size-10 items-center justify-center rounded-md border",
           colors.background,
         )}
       >
@@ -56,13 +59,29 @@ const NotificationItem = ({ notification }: NotificationItemProps) => {
         <span className="whitespace-nowrap text-xs text-muted-foreground">
           {calcTimeAgo(notification.createdAt)}
         </span>
-        <Button
-          variant="ghost"
-          size="sm"
-          aria-label="Open notification actions"
-        >
-          <MoreHorizontal className="size-4" />
-        </Button>
+        <div className="flex items-center gap-1">
+          {!notification.isRead && (
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              aria-label="Als gelesen markieren"
+              className="invisible opacity-0 group-hover:visible group-hover:opacity-100 group-hover:inline-flex group-focus-within:inline-flex"
+              disabled={isPending}
+              onClick={() => mutate(notification.id)}
+            >
+              <Check className="size-4" />
+            </Button>
+          )}
+
+          <Button
+            variant="ghost"
+            size="sm"
+            aria-label="Open notification actions"
+          >
+            <MoreHorizontal className="size-4" />
+          </Button>
+        </div>
       </div>
     </article>
   );
