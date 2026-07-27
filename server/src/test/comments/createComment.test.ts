@@ -1,5 +1,14 @@
 import app from "@/app";
-import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
+import {
+  afterAll,
+  afterEach,
+  beforeAll,
+  beforeEach,
+  describe,
+  expect,
+  it,
+  vi,
+} from "vitest";
 import {
   clearTestDb,
   connectTestDb,
@@ -11,10 +20,13 @@ import {
   createComment,
   createProject,
   createTask,
+  createUser,
 } from "@/test/helpers/testFactories";
 import { ActivityModel } from "@/features/activity/models/activity.model";
 import { CommentModel } from "@/features/comments/models/comment.model";
 import mongoose from "mongoose";
+import { eventBus } from "@/shared/events/eventBus";
+import type { CommentReplyEvent } from "@/features/comments/events/commentEvents";
 
 beforeAll(async () => {
   await connectTestDb();
@@ -22,6 +34,10 @@ beforeAll(async () => {
 
 beforeEach(async () => {
   await clearTestDb();
+});
+
+afterEach(() => {
+  vi.restoreAllMocks();
 });
 
 afterAll(async () => {
@@ -161,6 +177,7 @@ describe("POST /comments", () => {
 
   it("creates a reply comment", async () => {
     const { authCookie, workspaceId, userId } = await createAuthedUserContext();
+    const parentAuthor = await createUser({ workspaceId });
     const projectId = new mongoose.Types.ObjectId();
 
     await createProject({
@@ -178,9 +195,11 @@ describe("POST /comments", () => {
     const parentComment = await createComment({
       workspaceId,
       taskId: task._id,
-      userId,
+      userId: parentAuthor._id,
       message: "Parent comment",
     });
+
+    const emitSpy = vi.spyOn(eventBus, "emit").mockResolvedValue(undefined);
 
     const response = await request(app)
       .post("/comments")
@@ -200,5 +219,23 @@ describe("POST /comments", () => {
       createdAt: expect.any(String),
       parentCommentId: parentComment._id.toString(),
     });
+
+    expect(emitSpy).toHaveBeenCalledOnce();
+
+    const [eventName, payload] = emitSpy.mock.calls[0];
+    const commentReplyPayload = payload as CommentReplyEvent;
+
+    expect(eventName).toBe("comment.reply");
+    expect(commentReplyPayload.workspaceId.toString()).toBe(
+      workspaceId.toString(),
+    );
+    expect(commentReplyPayload.actorId.toString()).toBe(userId.toString());
+    expect(commentReplyPayload.recipientId.toString()).toBe(
+      parentAuthor._id.toString(),
+    );
+    expect(commentReplyPayload.commentId.toString()).toBe(
+      response.body.data.id,
+    );
+    expect(commentReplyPayload.projectId.toString()).toBe(projectId.toString());
   });
 });

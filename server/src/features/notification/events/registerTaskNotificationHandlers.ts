@@ -13,6 +13,8 @@ import { handleCreateProjectNotification } from "@/features/notification/handler
 import { handleProjectMembersAddedNotification } from "@/features/notification/handlers/handleProjectMembersAddedNotification";
 import { ChangeUserRoleEvent } from "@/features/users/events/userEvents";
 import { handleChangeUserRoleNotification } from "@/features/notification/handlers/handleChangeUserRoleNotification";
+import type { CommentReplyEvent } from "@/features/comments/events/commentEvents";
+import { handleCommentReply } from "../handlers/handleCommentReply";
 
 export const registerTaskNotificationHandlers = () => {
   eventBus.on<TaskCreatedEvent>("task.created", async ({ task, actorId }) => {
@@ -95,6 +97,19 @@ export const registerTaskNotificationHandlers = () => {
         recipientId,
         previousRole,
         currentRole,
+      });
+    },
+  );
+
+  eventBus.on<CommentReplyEvent>(
+    "comment.reply",
+    async ({ workspaceId, actorId, recipientId, commentId, projectId }) => {
+      await handleCommentReply({
+        workspaceId,
+        actorId,
+        recipientId,
+        commentId,
+        projectId,
       });
     },
   );
