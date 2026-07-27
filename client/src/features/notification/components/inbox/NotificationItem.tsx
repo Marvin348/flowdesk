@@ -7,6 +7,7 @@ import { notificationColors } from "@/features/notification/utils/notificationCo
 import { cn } from "@/shared/lib/utils";
 import { calcTimeAgo } from "@/shared/utils/calcTimeAgo";
 import { useMarkNotificationAsRead } from "@/features/notification/hooks/useMarkNotificationAsRead";
+import ErrorMessage from "@/shared/components/ErrorMessage";
 
 type NotificationItemProps = {
   notification: NotificationDto;
@@ -82,6 +83,8 @@ const NotificationItem = ({ notification }: NotificationItemProps) => {
             <MoreHorizontal className="size-4" />
           </Button>
         </div>
+
+        {isError && <ErrorMessage message="Derzeit nicht möglich" />}
       </div>
     </article>
   );
