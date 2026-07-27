@@ -5,8 +5,10 @@ import { CommentModel } from "@/features/comments/models/comment.model";
 import { touchProject } from "@/features/projects/services/project.service";
 import { toCommentDto } from "@/features/comments/mappers/comment.mapper";
 import { createActivity } from "@/features/activity/services/createActivity.service";
-import { Types } from "mongoose";
+import mongoose, { Types } from "mongoose";
 import type { CreateCommentBody } from "@/features/comments/validation/comments.validator";
+import { eventBus } from "@/shared/events/eventBus";
+import type { CommentReplyEvent } from "@/features/comments/events/commentEvents";
 
 type CreateCommentInput = {
   workspaceId: Types.ObjectId;
@@ -19,6 +21,8 @@ export const createComment = async ({
   userId,
   input,
 }: CreateCommentInput) => {
+  const userObjectId = new mongoose.Types.ObjectId(userId);
+
   const { taskId, message, parentCommentId } = input;
 
   const task = await TaskModel.findOne({
@@ -39,8 +43,10 @@ export const createComment = async ({
     throw new AppError("Project not found", 404);
   }
 
+  let parentComment = null;
+
   if (parentCommentId) {
-    const parentComment = await CommentModel.findOne({
+    parentComment = await CommentModel.findOne({
       _id: parentCommentId,
       workspaceId,
       taskId,
@@ -78,6 +84,16 @@ export const createComment = async ({
       commentMessage: newComment.message,
     },
   });
+
+  if (parentComment) {
+    await eventBus.emit<CommentReplyEvent>("comment.reply", {
+      workspaceId,
+      actorId: userObjectId,
+      recipientId: parentComment.userId,
+      commentId: newComment._id,
+      projectId: task.projectId,
+    });
+  }
 
   return toCommentDto(newComment);
 };
