@@ -5,6 +5,7 @@ import {
   PAGE_LIMITS,
 } from "@shared/constants/pagination";
 import { NOTIFICATION_STATUS } from "@shared/types/dto/notification/notification.dto";
+import { objectIdSchema } from "@/shared/validators/objectId.validator";
 
 export const NotificationQuerySchema = z.object({
   page: z.coerce.number().int().positive().default(DEFAULT_PAGE),
@@ -19,3 +20,7 @@ export const NotificationQuerySchema = z.object({
 });
 
 export type NotificationQuery = z.infer<typeof NotificationQuerySchema>;
+
+export const NotificationReadParamsSchema = z.object({
+  notificationId: objectIdSchema,
+});

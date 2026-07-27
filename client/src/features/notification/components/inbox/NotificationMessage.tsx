@@ -33,7 +33,7 @@ const NotificationMessage = ({
   switch (notification.type) {
     case "task_assigned":
       return (
-        <div>
+        <div className="truncate">
           <h4 className="truncate text-sm font-medium text-foreground">
             Du wurdest einer Aufgabe zugewiesen
           </h4>
@@ -47,7 +47,7 @@ const NotificationMessage = ({
 
     case "task_due_soon":
       return (
-        <div>
+        <div className="truncate">
           <h4 className="truncate text-sm font-medium text-foreground">
             Aufgabe bald fällig
           </h4>
@@ -61,7 +61,7 @@ const NotificationMessage = ({
 
     case "task_overdue":
       return (
-        <div>
+        <div className="truncate">
           <h4 className="truncate text-sm font-medium text-foreground">
             Aufgabe überfällig
           </h4>
@@ -75,7 +75,7 @@ const NotificationMessage = ({
 
     case "project_assigned":
       return (
-        <div>
+        <div className="truncate">
           <h4 className="truncate text-sm font-medium text-foreground">
             Du wurdest einem Projekt zugewiesen
           </h4>
@@ -89,7 +89,7 @@ const NotificationMessage = ({
 
     case "project_due_soon":
       return (
-        <div>
+        <div className="truncate">
           <h4 className="truncate text-sm font-medium text-foreground">
             Projekt bald fällig
           </h4>
@@ -103,7 +103,7 @@ const NotificationMessage = ({
 
     case "comment_mention":
       return (
-        <div>
+        <div className="truncate">
           <h4 className="truncate text-sm font-medium text-foreground">
             Neue Erwähnung
           </h4>
@@ -116,7 +116,7 @@ const NotificationMessage = ({
 
     case "comment_reply":
       return (
-        <div>
+        <div className="truncate">
           <h4 className="truncate text-sm font-medium text-foreground">
             Neue Antwort
           </h4>
@@ -129,7 +129,7 @@ const NotificationMessage = ({
 
     case "role_changed":
       return (
-        <div>
+        <div className="truncate">
           <h4 className="truncate text-sm font-medium text-foreground">
             Deine Rolle wurde geändert zu <span>{currentRole}</span>
           </h4>

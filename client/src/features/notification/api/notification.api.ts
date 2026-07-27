@@ -16,3 +16,15 @@ export const getNotifications = async ({
   });
   return res.data.data;
 };
+
+export const markNotificationAsRead = async (
+  notificationId: string,
+): Promise<string> => {
+  const res = await apiClient.patch(`/notifications/${notificationId}/read`);
+  return res.data.message;
+};
+
+export const markAllNotificationsAsRead = async (): Promise<string> => {
+  const res = await apiClient.patch("/notifications/read-all");
+  return res.data.message;
+};
