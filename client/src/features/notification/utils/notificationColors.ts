@@ -1,5 +1,3 @@
-import { icons } from "lucide-react";
-
 export const notificationColors = {
   task: {
     icon: "text-[var(--notification-task-fg)]",
