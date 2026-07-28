@@ -4,6 +4,7 @@ import { Button } from "@/shared/components/ui/button";
 import logo from "@/assets/logo.svg";
 import { useScrollLock } from "@/shared/hooks/useScrollLock";
 import SidebarUserMenu from "@/shared/components/layout/sidebar/SidebarUserMenu";
+import NotificationSidebarBadge from "@/features/notification/components/NotificationSidebarBadge";
 
 type SidebarProps = {
   onOpen: boolean;
@@ -61,7 +62,10 @@ const Sidebar = ({ onOpen, onClose }: SidebarProps) => {
                 {({ isActive }) => (
                   <>
                     <Icon className={sidebarIconClass(isActive)} />
+
                     <p>{label}</p>
+
+                    {to === "/notifications" && <NotificationSidebarBadge />}
                   </>
                 )}
               </NavLink>

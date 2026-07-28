@@ -9,6 +9,7 @@ import { getAuthContext } from "@/features/auth/utils/getAuthContext";
 import { getNotifications } from "@/features/notification/services/getNotifications.service";
 import { markNotificationAsRead } from "@/features/notification/services/markNotificationAsRead.service";
 import { markAllNotificationsAsRead } from "@/features/notification/services/markAllNotificationsAsRead.service";
+import { getUnreadNotificationCount } from "../services/getUnreadNotificationCount.service";
 
 const router = express.Router();
 
@@ -33,6 +34,33 @@ router.get(
   }),
 );
 
+router.get(
+  "/unread-count",
+  asyncHandler(async (req, res) => {
+    const { workspaceId, userId } = getAuthContext(req);
+
+    const unreadCount = await getUnreadNotificationCount({
+      workspaceId,
+      userId,
+    });
+
+    return res.status(200).json({ unreadCount });
+  }),
+);
+
+router.patch(
+  "/read-all",
+  asyncHandler(async (req, res) => {
+    const { workspaceId, userId } = getAuthContext(req);
+
+    await markAllNotificationsAsRead({ workspaceId, userId });
+
+    return res
+      .status(200)
+      .json({ message: "Notifications all marked as read" });
+  }),
+);
+
 router.patch(
   "/:notificationId/read",
   asyncHandler(async (req, res) => {
@@ -51,19 +79,6 @@ router.patch(
     });
 
     return res.status(200).json({ message: "Notification marked as read" });
-  }),
-);
-
-router.patch(
-  "/read-all",
-  asyncHandler(async (req, res) => {
-    const { workspaceId, userId } = getAuthContext(req);
-
-    await markAllNotificationsAsRead({ workspaceId, userId });
-
-    return res
-      .status(200)
-      .json({ message: "Notifications all marked as read" });
   }),
 );
 
