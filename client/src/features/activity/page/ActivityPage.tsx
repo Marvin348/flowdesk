@@ -2,6 +2,7 @@ import { useActivities } from "@/features/activity/hooks/useActivities";
 import ActivityList from "@/features/activity/components/ActivityList";
 import ActivityPageHeader from "@/features/activity/components/ActivityPageHeader";
 import ActivityPageSkeleton from "@/features/activity/components/ActivityPageSkeleton";
+import ActivityEmptyState from "@/features/activity/components/ActivityEmptyState";
 
 const ActivityPage = () => {
   const { data, isLoading, error } = useActivities();
@@ -24,7 +25,11 @@ const ActivityPage = () => {
       </div>
 
       <div>
-        <ActivityList activities={activities} />
+        {activities.length ? (
+          <ActivityList activities={activities} />
+        ) : (
+          <ActivityEmptyState />
+        )}
       </div>
     </div>
   );
