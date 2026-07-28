@@ -8,3 +8,8 @@ export type ChangeUserRoleEvent = {
   previousRole: UserRole;
   currentRole: UserRole;
 };
+
+export type EmailChangedEvent = {
+  workspaceId: Types.ObjectId;
+  recipientId: Types.ObjectId;
+};

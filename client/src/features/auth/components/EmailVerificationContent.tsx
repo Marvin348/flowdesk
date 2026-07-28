@@ -10,7 +10,13 @@ const EmailVerificationContent = ({ token }: { token: string }) => {
   const { mutate, isPending, isError, error, isSuccess } = useVerifyEmail();
 
   useEffect(() => {
-    mutate(token);
+    const timeoutId = window.setTimeout(() => {
+      mutate(token);
+    }, 0);
+
+    return () => {
+      window.clearTimeout(timeoutId);
+    };
   }, [mutate, token]);
 
   const status = getApiErrorStatus(error);

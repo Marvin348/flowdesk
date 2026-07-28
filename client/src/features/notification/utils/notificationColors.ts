@@ -23,6 +23,10 @@ export const notificationColors = {
     icon: "text-[var(--notification-danger-fg)]",
     background: "bg-[var(--notification-danger-bg)]",
   },
+  security: {
+    icon: "text-[var(--notification-security-fg)]",
+    background: "bg-[var(--notification-security-bg)]",
+  },
 } as const;
 
 export type NotificationColor = keyof typeof notificationColors;

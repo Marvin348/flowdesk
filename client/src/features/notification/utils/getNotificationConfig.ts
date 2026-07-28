@@ -6,6 +6,8 @@ import {
   TimerOff,
   ClipboardList,
   CalendarClock,
+  LockKeyhole,
+  Mail,
 } from "lucide-react";
 import type { NotificationType } from "@shared/types/dto/notification/notification.dto";
 import type { LucideIcon } from "lucide-react";
@@ -67,6 +69,20 @@ export const notificationConfig = {
     entityLabel: "Rolle",
     color: "role",
   },
+
+  password_changed: {
+    icon: LockKeyhole,
+    label: "Passwort geändert",
+    entityLabel: "Passwort",
+    color: "security",
+  },
+
+  email_changed: {
+    icon: Mail,
+    label: "Email geändert",
+    entityLabel: "Email",
+    color: "security",
+  }
 } satisfies Record<
   NotificationType,
   {

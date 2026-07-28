@@ -41,7 +41,7 @@ body {
   border-radius: 9999px;
 }
 .public-auth-bg {
- background:
+  background:
     linear-gradient(
       120deg,
       transparent 0%,
@@ -159,7 +159,6 @@ body {
   --destructive: oklch(0.577 0.245 27.325);
   --border: oklch(0.92 0.004 250);
 
-
   --notification-task-fg: #2563eb;
   --notification-task-bg: #eaf3ff;
 
@@ -177,6 +176,9 @@ body {
 
   --notification-danger-fg: #dc2626;
   --notification-danger-bg: #feecec;
+
+  --notification-security-fg: oklch(0.45 0.015 260);
+  --notification-security-bg: oklch(0.95 0.008 260);
 
   --input: oklch(0.922 0 0);
   --ring: oklch(0.708 0 0);
@@ -217,6 +219,10 @@ body {
   --destructive: oklch(0.704 0.191 22.216);
   --border: oklch(1 0 0 / 10%);
   --input: oklch(1 0 0 / 15%);
+
+  --notification-security-fg: oklch(0.75 0.015 260);
+  --notification-security-bg: oklch(0.25 0.012 260);
+
   --ring: oklch(0.556 0 0);
   --chart-1: oklch(0.488 0.243 264.376);
   --chart-2: oklch(0.696 0.17 162.48);

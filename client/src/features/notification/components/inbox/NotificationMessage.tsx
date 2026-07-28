@@ -140,6 +140,32 @@ const NotificationMessage = ({
           </p>
         </div>
       );
+
+    case "password_changed":
+      return (
+        <div className="truncate">
+          <h4 className="truncate text-sm font-medium text-foreground">
+            Passwort erfolgreich geändert
+          </h4>
+
+          <p className="max-w-3xl text-sm leading-6 text-muted-foreground">
+            Das Passwort für dein Konto wurde erfolgreich geändert.
+          </p>
+        </div>
+      );
+
+    case "email_changed":
+      return (
+        <div className="truncate">
+          <h4 className="truncate text-sm font-medium text-foreground">
+            E-Mail-Adresse erfolgreich geändert
+          </h4>
+
+          <p className="max-w-3xl text-sm leading-6 text-muted-foreground">
+            Die E-Mail-Adresse deines Kontos wurde erfolgreich aktualisiert.
+          </p>
+        </div>
+      );
   }
 };
 export default NotificationMessage;

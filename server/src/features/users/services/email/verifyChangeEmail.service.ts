@@ -2,7 +2,9 @@ import { VerificationTokenModel } from "@/features/verification-tokens/models/ve
 import { AppError } from "@/utils/AppError";
 import { hashToken } from "@/utils/hashToken";
 import { UserModel } from "@/features/users/models/user.modal";
-import { Types } from "mongoose";
+import mongoose, { Types } from "mongoose";
+import { eventBus } from "@/shared/events/eventBus";
+import type { EmailChangedEvent } from "@/features/users/events/userEvents";
 
 type VerifyChangeEmailInput = {
   workspaceId: Types.ObjectId;
@@ -16,52 +18,75 @@ export const verifyChangeEmail = async ({
   userId,
 }: VerifyChangeEmailInput) => {
   const hashedToken = hashToken(token);
-
-  const verificationToken = await VerificationTokenModel.findOne({
-    tokenHash: hashedToken,
-    type: "email_change",
-  });
-
-  if (!verificationToken) {
-    throw new AppError("Token not found", 400);
-  }
-
-  if (verificationToken.usedAt) {
-    throw new AppError("Token was already used", 409);
-  }
-
   const now = new Date();
 
-  if (verificationToken.expiresAt <= now) {
-    throw new AppError("Token has expired", 410);
-  }
+  await mongoose.connection.transaction(async (session) => {
+    const verificationToken = await VerificationTokenModel.findOne({
+      tokenHash: hashedToken,
+      type: "email_change",
+    }).session(session);
 
-  if (!verificationToken.userId.equals(userId)) {
-    throw new AppError("UserId is wrong", 403);
-  }
+    if (!verificationToken) {
+      throw new AppError("Token not found", 400);
+    }
 
-  if (!verificationToken.newEmail) {
-    throw new AppError("New email does not exist", 400);
-  }
+    if (verificationToken.usedAt) {
+      throw new AppError("Token was already used", 409);
+    }
 
-  const user = await UserModel.findOne({ _id: userId, workspaceId });
+    if (verificationToken.expiresAt <= now) {
+      throw new AppError("Token has expired", 410);
+    }
 
-  if (!user) {
-    throw new AppError("User not found", 404);
-  }
+    if (!verificationToken.userId.equals(userId)) {
+      throw new AppError("UserId is wrong", 403);
+    }
 
-  const existingEmail = await UserModel.findOne({
-    email: verificationToken.newEmail,
-    _id: { $ne: userId },
+    if (!verificationToken.newEmail) {
+      throw new AppError("New email does not exist", 400);
+    }
+
+    const user = await UserModel.findOne({ _id: userId, workspaceId }).session(
+      session,
+    );
+
+    if (!user) {
+      throw new AppError("User not found", 404);
+    }
+
+    const existingEmail = await UserModel.findOne({
+      email: verificationToken.newEmail,
+      _id: { $ne: userId },
+    }).session(session);
+
+    if (existingEmail) {
+      throw new AppError("Email already in use", 409);
+    }
+
+    const tokenResult = await VerificationTokenModel.updateOne(
+      {
+        _id: verificationToken._id,
+        usedAt: null,
+      },
+      {
+        $set: {
+          usedAt: now,
+        },
+      },
+      { session },
+    );
+
+    if (tokenResult.modifiedCount === 0) {
+      throw new AppError("Token was already used", 409);
+    }
+
+    user.email = verificationToken.newEmail;
+
+    await user.save({ session });
   });
 
-  if (existingEmail) {
-    throw new AppError("Email already in use", 409);
-  }
-
-  user.email = verificationToken.newEmail;
-  verificationToken.usedAt = now;
-
-  await user.save();
-  await verificationToken.save();
+  await eventBus.emit<EmailChangedEvent>("user.email_changed", {
+    workspaceId,
+    recipientId: new mongoose.Types.ObjectId(userId),
+  });
 };

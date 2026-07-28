@@ -11,6 +11,8 @@ export const NOTIFICATION_TYPES = [
   "comment_mention",
   "comment_reply",
   "role_changed",
+  "password_changed",
+  "email_changed",
 ] as const;
 
 export const NOTIFICATION_ENTITY_TYPES = [
