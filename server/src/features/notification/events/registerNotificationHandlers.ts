@@ -3,7 +3,6 @@ import {
   type TaskUpdateEvent,
   type TaskCreatedEvent,
 } from "@/features/tasks/events/taskEvents";
-import { createNotification } from "@/features/notification/services/createNotification.service";
 import { handleTaskUpdatedNotification } from "@/features/notification/handlers/handleTaskUpdatedNotification";
 import {
   ProjectCreatedEvent,
@@ -11,31 +10,29 @@ import {
 } from "@/features/projects/events/projectEvent";
 import { handleCreateProjectNotification } from "@/features/notification/handlers/handleCreateProjectNotification";
 import { handleProjectMembersAddedNotification } from "@/features/notification/handlers/handleProjectMembersAddedNotification";
-import { ChangeUserRoleEvent } from "@/features/users/events/userEvents";
+import {
+  ChangeUserRoleEvent,
+  EmailChangedEvent,
+} from "@/features/users/events/userEvents";
 import { handleChangeUserRoleNotification } from "@/features/notification/handlers/handleChangeUserRoleNotification";
 import type { CommentReplyEvent } from "@/features/comments/events/commentEvents";
-import { handleCommentReply } from "../handlers/handleCommentReply";
+import { handleCommentReply } from "@/features/notification/handlers/handleCommentReply";
+import type { PasswordChangedEvent } from "@/features/auth/events/authEvents";
+import { handlePasswordChangedNotification } from "@/features/notification/handlers/handlePasswordChangedNotification";
+import { handleEmailChangedNotification } from "@/features/notification/handlers/handleEmailChangedNotification";
+import { handleTaskCreatedNotification } from "@/features/notification/handlers/handleTaskCreatedNotification";
 
-export const registerTaskNotificationHandlers = () => {
-  eventBus.on<TaskCreatedEvent>("task.created", async ({ task, actorId }) => {
-    const recipientIds = task.collaboratorIds.filter(
-      (id) => !id.equals(actorId),
-    );
-
-    await Promise.all(
-      recipientIds.map((recipientId) =>
-        createNotification({
-          workspaceId: task.workspaceId,
-          actorId,
-          recipientId,
-          type: "task_assigned",
-          entityType: "task",
-          entityId: task._id,
-          projectId: task.projectId,
-        }),
-      ),
-    );
-  });
+export const registerNotificationHandlers = () => {
+  eventBus.on<TaskCreatedEvent>(
+    "task.created",
+    async ({ task, actorId, workspaceId }) => {
+      await handleTaskCreatedNotification({
+        workspaceId,
+        actorId,
+        task,
+      });
+    },
+  );
 
   eventBus.on<TaskUpdateEvent>(
     "task.updated",
@@ -111,6 +108,20 @@ export const registerTaskNotificationHandlers = () => {
         commentId,
         projectId,
       });
+    },
+  );
+
+  eventBus.on<PasswordChangedEvent>(
+    "user.password_changed",
+    async ({ workspaceId, recipientId }) => {
+      await handlePasswordChangedNotification({ workspaceId, recipientId });
+    },
+  );
+
+  eventBus.on<EmailChangedEvent>(
+    "user.email_changed",
+    async ({ workspaceId, recipientId }) => {
+      await handleEmailChangedNotification({ workspaceId, recipientId });
     },
   );
 };

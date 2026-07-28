@@ -1,12 +1,8 @@
 import { UserModel } from "@/features/users/models/user.modal";
-import {
-  comparePassword,
-  hashPassword,
-} from "@/features/auth/utils/password";
+import { comparePassword, hashPassword } from "@/features/auth/utils/password";
 import { createAccessToken } from "@/features/auth/utils/tokens";
 import {
   LoginInput,
-  PasswordInput,
   RegisterInput,
 } from "@/features/auth/validators/auth.validators";
 import { toAuthUserDto } from "@/features/users/mappers/user.mapper";

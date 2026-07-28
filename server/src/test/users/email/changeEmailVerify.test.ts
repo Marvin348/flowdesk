@@ -1,6 +1,15 @@
 import app from "@/app";
 import request from "supertest";
-import { beforeAll, beforeEach, afterAll, describe, expect, it } from "vitest";
+import {
+  beforeAll,
+  beforeEach,
+  afterAll,
+  afterEach,
+  describe,
+  expect,
+  it,
+  vi,
+} from "vitest";
 import {
   clearTestDb,
   connectTestDb,
@@ -12,6 +21,7 @@ import { WorkspaceModel } from "@/features/workspace/models/workspace.model";
 import { createAccessToken } from "@/features/auth/utils/tokens";
 import { VerificationTokenModel } from "@/features/verification-tokens/models/verificationToken.model";
 import { hashToken } from "@/utils/hashToken";
+import { eventBus } from "@/shared/events/eventBus";
 
 beforeAll(async () => {
   await connectTestDb();
@@ -19,6 +29,10 @@ beforeAll(async () => {
 
 beforeEach(async () => {
   await clearTestDb();
+});
+
+afterEach(() => {
+  vi.restoreAllMocks();
 });
 
 afterAll(async () => {
@@ -285,5 +299,72 @@ describe("POST /users/me/change-email/verify", () => {
       verificationToken._id,
     );
     expect(usedToken?.usedAt).toBeInstanceOf(Date);
+  });
+
+  it("allows only one concurrent request to verify an email change token", async () => {
+    const userId = new mongoose.Types.ObjectId();
+    const workspaceId = new mongoose.Types.ObjectId();
+
+    await WorkspaceModel.create({
+      _id: workspaceId,
+      name: "Test Workspace",
+      ownerId: userId,
+    });
+
+    await UserModel.create({
+      _id: userId,
+      email: "test@example.com",
+      name: "Test User",
+      passwordHash: "hashed-password",
+      workspaceId,
+      role: "admin",
+      isEmailVerified: true,
+    });
+
+    const token = "concurrent-email-change-token";
+    const verificationToken = await VerificationTokenModel.create({
+      userId,
+      tokenHash: hashToken(token),
+      type: "email_change",
+      newEmail: "new@example.com",
+      expiresAt: new Date(Date.now() + 60_000),
+    });
+
+    const emitSpy = vi.spyOn(eventBus, "emit").mockResolvedValue(undefined);
+    const accessToken = createAccessToken(userId.toString());
+
+    const responses = await Promise.all([
+      request(app)
+        .post("/users/me/change-email/verify")
+        .send({ token })
+        .set("Cookie", [`accessToken=${accessToken}`]),
+      request(app)
+        .post("/users/me/change-email/verify")
+        .send({ token })
+        .set("Cookie", [`accessToken=${accessToken}`]),
+    ]);
+
+    const statuses = responses.map((response) => response.status).sort();
+
+    expect(statuses).toEqual([200, 409]);
+    expect(responses.find((response) => response.status === 409)?.body).toEqual(
+      {
+        message: "Token was already used",
+      },
+    );
+
+    const updatedUser = await UserModel.findById(userId);
+    expect(updatedUser?.email).toBe("new@example.com");
+
+    const usedToken = await VerificationTokenModel.findById(
+      verificationToken._id,
+    );
+    expect(usedToken?.usedAt).toBeInstanceOf(Date);
+
+    expect(emitSpy).toHaveBeenCalledTimes(1);
+    expect(emitSpy).toHaveBeenCalledWith("user.email_changed", {
+      workspaceId,
+      recipientId: userId,
+    });
   });
 });

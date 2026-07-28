@@ -1,3 +1,5 @@
+import { icons } from "lucide-react";
+
 export const notificationColors = {
   task: {
     icon: "text-[var(--notification-task-fg)]",
@@ -22,6 +24,10 @@ export const notificationColors = {
   danger: {
     icon: "text-[var(--notification-danger-fg)]",
     background: "bg-[var(--notification-danger-bg)]",
+  },
+  security: {
+    icon: "text-[var(--notification-security-fg)]",
+    background: "bg-[var(--notification-security-bg)]",
   },
 } as const;
 

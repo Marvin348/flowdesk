@@ -14,7 +14,13 @@ const ChangePasswordVerificationContent = ({ token }: { token: string }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    mutate(token);
+    const timeoutId = window.setTimeout(() => {
+      mutate(token);
+    }, 0);
+
+    return () => {
+      window.clearTimeout(timeoutId);
+    };
   }, [mutate, token]);
 
   const onLogin = () => {

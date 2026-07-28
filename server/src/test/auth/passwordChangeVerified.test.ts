@@ -2,7 +2,16 @@ import app from "@/app";
 import { hashPassword } from "@/features/auth/utils/password";
 import { VerificationTokenModel } from "@/features/verification-tokens/models/verificationToken.model";
 import request from "supertest";
-import { beforeAll, beforeEach, afterAll, describe, expect, it } from "vitest";
+import {
+  beforeAll,
+  beforeEach,
+  afterAll,
+  afterEach,
+  describe,
+  expect,
+  it,
+  vi,
+} from "vitest";
 import {
   clearTestDb,
   connectTestDb,
@@ -12,6 +21,7 @@ import { createAuthedUserContext } from "@/test/helpers/testFactories";
 import { hashToken } from "@/utils/hashToken";
 import mongoose from "mongoose";
 import { UserModel } from "@/features/users/models/user.modal";
+import { eventBus } from "@/shared/events/eventBus";
 
 beforeAll(async () => {
   await connectTestDb();
@@ -19,6 +29,10 @@ beforeAll(async () => {
 
 beforeEach(async () => {
   await clearTestDb();
+});
+
+afterEach(() => {
+  vi.restoreAllMocks();
 });
 
 afterAll(async () => {
@@ -36,6 +50,18 @@ describe("POST auth/password/change/verify", () => {
 
     expect(response.status).toBe(400);
     expect(response.body).toEqual({ message: "Invalid token" });
+  });
+
+  it("returns 400 if the token does not exist", async () => {
+    const { authCookie } = await createAuthedUserContext();
+
+    const response = await request(app)
+      .post("/auth/password/change/verify")
+      .send({ token: "missing-password-change-token" })
+      .set("Cookie", authCookie);
+
+    expect(response.status).toBe(400);
+    expect(response.body).toEqual({ message: "Token not found" });
   });
 
   it("returns 409 if the token was used", async () => {
@@ -165,5 +191,59 @@ describe("POST auth/password/change/verify", () => {
     });
 
     expect(usedToken?.usedAt).toBeInstanceOf(Date);
+  });
+
+  it("allows only one concurrent request to verify a password change token", async () => {
+    const token = "concurrent-password-change-token";
+    const newPasswordHash = await hashPassword("NewPassword123!");
+    const { authCookie, userId, workspaceId } = await createAuthedUserContext();
+
+    const verificationToken = await VerificationTokenModel.create({
+      userId,
+      tokenHash: hashToken(token),
+      type: "password_change",
+      newPasswordHash,
+      expiresAt: new Date(Date.now() + 60_000),
+    });
+
+    const emitSpy = vi.spyOn(eventBus, "emit").mockResolvedValue(undefined);
+
+    const responses = await Promise.all([
+      request(app)
+        .post("/auth/password/change/verify")
+        .send({ token })
+        .set("Cookie", authCookie),
+      request(app)
+        .post("/auth/password/change/verify")
+        .send({ token })
+        .set("Cookie", authCookie),
+    ]);
+
+    const statuses = responses.map((response) => response.status).sort();
+
+    expect(statuses).toEqual([200, 409]);
+    expect(
+      responses.find((response) => response.status === 409)?.body,
+    ).toEqual({
+      message: "Token was already used",
+    });
+
+    const updatedUser =
+      await UserModel.findById(userId).select("+passwordHash");
+
+    expect(updatedUser).not.toBeNull();
+    expect(updatedUser!.passwordHash).toBe(newPasswordHash);
+    expect(updatedUser!.passwordChangedAt).toBeInstanceOf(Date);
+
+    const usedToken = await VerificationTokenModel.findById(
+      verificationToken._id,
+    );
+    expect(usedToken?.usedAt).toBeInstanceOf(Date);
+
+    expect(emitSpy).toHaveBeenCalledTimes(1);
+    expect(emitSpy).toHaveBeenCalledWith("user.password_changed", {
+      workspaceId,
+      recipientId: userId,
+    });
   });
 });
