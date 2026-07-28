@@ -17,6 +17,11 @@ export const getNotifications = async ({
   return res.data.data;
 };
 
+export const getUnreadNotificationCount = async (): Promise<number> => {
+  const res = await apiClient.get("/notifications/unread-count");
+  return res.data.unreadCount;
+};
+
 export const markNotificationAsRead = async (
   notificationId: string,
 ): Promise<string> => {

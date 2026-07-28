@@ -68,7 +68,7 @@ export const router = createBrowserRouter([
             element: <TeamPage />,
           },
           {
-            path: "/notification",
+            path: "/notifications",
             element: <NotificationPage />,
           },
           { path: "/activity", element: <ActivityPage /> },
