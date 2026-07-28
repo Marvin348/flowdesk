@@ -60,11 +60,41 @@ const ActivityMessage = ({ activity }: { activity: ActivityDto }) => {
       );
     }
 
+    case "task.status_changed": {
+      const taskTitle =
+        typeof activity.metadata.taskTitle === "string"
+          ? activity.metadata.taskTitle
+          : "einer Aufgabe";
+
+      return (
+        <>
+          hat den Status von{" "}
+          <span className="font-medium text-foreground">{taskTitle}</span>{" "}
+          geändert
+        </>
+      );
+    }
+
+    case "task.deleted": {
+      const taskTitle =
+        typeof activity.metadata.taskTitle === "string"
+          ? activity.metadata.taskTitle
+          : "eine Aufgabe";
+
+      return (
+        <>
+          hat{" "}
+          <span className="font-medium text-foreground">{taskTitle}</span>{" "}
+          gelöscht
+        </>
+      );
+    }
+
     case "project.created": {
       const projectTitle =
         typeof activity.metadata.projectTitle === "string"
           ? activity.metadata.projectTitle
-          : "einem Projekt";
+          : "ein Projekt";
 
       return (
         <>
@@ -79,7 +109,7 @@ const ActivityMessage = ({ activity }: { activity: ActivityDto }) => {
       const projectTitle =
         typeof activity.metadata.projectTitle === "string"
           ? activity.metadata.projectTitle
-          : "einem Projekt";
+          : "ein Projekt";
 
       return (
         <>
@@ -105,8 +135,22 @@ const ActivityMessage = ({ activity }: { activity: ActivityDto }) => {
       );
     }
 
-    case "workspace_invite.accepted":
-      return <>ist dem Workspace beigetreten</>;
+    case "workspace_invite.accepted": {
+      const joinedUserName =
+        typeof activity.metadata.joinedUserName === "string"
+          ? activity.metadata.joinedUserName
+          : null;
+
+      if (!joinedUserName) return <>ist dem Workspace beigetreten</>;
+
+      return (
+        <>
+          hat{" "}
+          <span className="font-medium text-foreground">{joinedUserName}</span>{" "}
+          dem Workspace hinzugefügt
+        </>
+      );
+    }
 
     default:
       return <>hat eine Aktion ausgeführt</>;

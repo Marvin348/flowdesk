@@ -13,48 +13,63 @@ const ActivityItem = ({ activity, isLast }: ActivityItemProps) => {
   const { type, createdAt, metadata, actor } = activity;
 
   const IconType = ACTIVITY_ICON[type].icon;
-  
+
   const commentMessage =
-    typeof metadata.message === "string" ? metadata.message : null;
+    typeof metadata.commentMessage === "string"
+      ? metadata.commentMessage
+      : null;
 
   return (
-    <div className="flex gap-4">
-      <div className="flex flex-col items-center">
-        <div className="flex size-7 items-center justify-center rounded-full bg-accent/20 text-accent">
+    <article className="grid grid-cols-[2.25rem_minmax(0,1fr)] gap-4 px-4 py-3 sm:grid-cols-[2.5rem_minmax(0,1fr)_auto] sm:px-5">
+      <div className="relative flex justify-center">
+        {!isLast && (
+          <span
+            aria-hidden="true"
+            className="absolute top-10 -bottom-5 w-px bg-border"
+          />
+        )}
+
+        <div className="relative z-10 flex size-9 items-center justify-center rounded-full border bg-background text-accent shadow-xs">
           <IconType className="size-4" />
         </div>
-
-        {!isLast && <div className="w-px flex-1 bg-border" />}
       </div>
 
-      <div className="flex min-w-0 flex-1 items- gap-3 pb-6">
-        <div className="shrink-0">
+      <div className="min-w-0">
+        <div className="flex min-w-0 items-start gap-3">
           <Avatar
             avatarKey={actor.avatarKey}
             avatarUrl={actor.avatarUrl}
             size="sm"
           />
-        </div>
 
-        <div className="min-w-0 flex-1 pt-1.5">
-          <div className="flex flex-wrap items-center gap-1 text-sm">
-            <p className="font-medium">{actor.name}</p>
-            <p className="text-muted-foreground">
+          <div className="min-w-0 flex-1">
+            <div className="text-sm leading-6 text-muted-foreground">
+              <span className="font-semibold text-foreground">
+                {actor.name}
+              </span>{" "}
               <ActivityMessage activity={activity} />
+            </div>
+
+            <p className="mt-1 text-xs text-muted-foreground sm:hidden">
+              {formatDate(createdAt)}
             </p>
 
-            <span className="text-muted-foreground">·</span>
-            <p className="text-muted-foreground">{formatDate(createdAt)}</p>
+            {commentMessage && (
+              <div className="mt-4 max-w-2xl rounded-md border bg-surface px-4 py-3 text-sm leading-6 text-muted-foreground">
+                {commentMessage}
+              </div>
+            )}
           </div>
-
-          {commentMessage && (
-            <div className="mt-2 w-fit rounded-md border bg-card p-3 text-sm text-muted-foreground">
-              {commentMessage}
-            </div>
-          )}
         </div>
       </div>
-    </div>
+
+      <time
+        dateTime={createdAt}
+        className="hidden min-w-28 text-right text-xs leading-6 text-muted-foreground sm:block"
+      >
+        {formatDate(createdAt)}
+      </time>
+    </article>
   );
 };
 export default ActivityItem;
