@@ -5,9 +5,10 @@
   "main": "index.js",
   "scripts": {
     "dev": "tsx watch src/server.ts",
-    "build": "tsdown src/server.ts --format esm --out-dir dist --clean",
+    "build": "tsdown src/server.ts src/jobs/deadlineJob.ts --format esm --out-dir dist --clean",
     "start": "node dist/server.mjs",
-    "job:deadlines": "tsx src/jobs/deadlineJob.ts",
+    "job:deadlines:dev": "tsx src/jobs/deadlineJob.ts",
+    "job:deadlines": "node dist/jobs/deadlineJob.mjs",
     "seed": "tsx src/scripts/seed.ts",
     "test": "vitest",
     "test:run": "vitest run"

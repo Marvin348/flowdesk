@@ -1,6 +1,7 @@
 import { Types } from "mongoose";
 import { NotificationModel } from "@/features/notification/models/notification.model";
 import { MongoServerError } from "mongodb";
+import { isDuplicateKeyError } from "@/features/notification/services/deadlines/utils/isDuplicateKeyError";
 
 type CreateDeadlineNotificationInput = {
   workspaceId: Types.ObjectId;
@@ -32,7 +33,7 @@ export const createDeadlineNotification = async ({
       deadlineAt,
     });
   } catch (error) {
-    if (error instanceof MongoServerError && error.code === 11000) {
+    if (isDuplicateKeyError(error)) {
       return;
     }
 
