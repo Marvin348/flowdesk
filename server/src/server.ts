@@ -8,13 +8,18 @@ const PORT = Number(process.env.PORT) || 3001;
 const HOST = process.env.HOST || "0.0.0.0";
 
 const startServer = async () => {
-  await connectDb();
+  try {
+    await connectDb();
 
-  registerNotificationHandlers();
+    registerNotificationHandlers();
 
-  app.listen(PORT, HOST, () => {
-    console.log(`server running on port ${PORT}`);
-  });
+    app.listen(PORT, HOST, () => {
+      console.log(`server running on port ${PORT}`);
+    });
+  } catch (error) {
+    console.error("Server startup failed:", error);
+    process.exitCode = 1;
+  }
 };
 
 startServer();

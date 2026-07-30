@@ -33,7 +33,7 @@ const NotificationMessage = ({
   switch (notification.type) {
     case "task_assigned":
       return (
-        <div className="truncate">
+        <div className="min-w-0">
           <h4 className="truncate text-sm font-medium text-foreground">
             Du wurdest einer Aufgabe zugewiesen
           </h4>
@@ -47,35 +47,33 @@ const NotificationMessage = ({
 
     case "task_due_soon":
       return (
-        <div className="truncate">
+        <div className="min-w-0">
           <h4 className="truncate text-sm font-medium text-foreground">
             Aufgabe bald fällig
           </h4>
 
-          <p className="max-w-3xl text-sm leading-6 text-muted-foreground">
-            <span>{actorName}</span> erinnert dich daran, dass die Aufgabe{" "}
-            <span>{taskTitle}</span> bald fällig ist.
+          <p className="truncate text-sm leading-6 text-muted-foreground">
+            Die Aufgabe <span>{taskTitle}</span> ist bald fällig.
           </p>
         </div>
       );
 
     case "task_overdue":
       return (
-        <div className="truncate">
+        <div className="min-w-0">
           <h4 className="truncate text-sm font-medium text-foreground">
             Aufgabe überfällig
           </h4>
 
-          <p className="max-w-3xl text-sm leading-6 text-muted-foreground">
-            <span>{actorName}</span> weist dich darauf hin, dass die Aufgabe{" "}
-            <span>{taskTitle}</span> überfällig ist.
+          <p className="max-w-3xl truncate text-sm leading-6 text-muted-foreground">
+            Die Aufgabe <span>{taskTitle}</span> ist überfällig.
           </p>
         </div>
       );
 
     case "project_assigned":
       return (
-        <div className="truncate">
+        <div className="min-w-0">
           <h4 className="truncate text-sm font-medium text-foreground">
             Du wurdest einem Projekt zugewiesen
           </h4>
@@ -89,21 +87,20 @@ const NotificationMessage = ({
 
     case "project_due_soon":
       return (
-        <div className="truncate">
+        <div className="min-w-0">
           <h4 className="truncate text-sm font-medium text-foreground">
             Projekt bald fällig
           </h4>
 
           <p className="max-w-3xl text-sm leading-6 text-muted-foreground">
-            <span>{actorName}</span> erinnert dich daran, dass das Projekt{" "}
-            <span>{projectTitle}</span> bald fällig ist.
+            Das Projekt <span>{taskTitle}</span> ist bald fällig.
           </p>
         </div>
       );
 
     case "comment_mention":
       return (
-        <div className="truncate">
+        <div className="min-w-0">
           <h4 className="truncate text-sm font-medium text-foreground">
             Neue Erwähnung
           </h4>
@@ -116,7 +113,7 @@ const NotificationMessage = ({
 
     case "comment_reply":
       return (
-        <div className="truncate">
+        <div className="min-w-0">
           <h4 className="truncate text-sm font-medium text-foreground">
             Neue Antwort
           </h4>
@@ -129,7 +126,7 @@ const NotificationMessage = ({
 
     case "role_changed":
       return (
-        <div className="truncate">
+        <div className="min-w-0">
           <h4 className="truncate text-sm font-medium text-foreground">
             Deine Rolle wurde geändert zu <span>{currentRole}</span>
           </h4>
@@ -143,7 +140,7 @@ const NotificationMessage = ({
 
     case "password_changed":
       return (
-        <div className="truncate">
+        <div className="min-w-0">
           <h4 className="truncate text-sm font-medium text-foreground">
             Passwort erfolgreich geändert
           </h4>
@@ -156,7 +153,7 @@ const NotificationMessage = ({
 
     case "email_changed":
       return (
-        <div className="truncate">
+        <div className="min-w-0">
           <h4 className="truncate text-sm font-medium text-foreground">
             E-Mail-Adresse erfolgreich geändert
           </h4>

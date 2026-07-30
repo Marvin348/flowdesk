@@ -3,7 +3,7 @@ import {
   FolderKanban,
   MessageSquareText,
   ShieldCheck,
-  TimerOff,
+  CalendarOff,
   ClipboardList,
   CalendarClock,
   LockKeyhole,
@@ -29,7 +29,7 @@ export const notificationConfig = {
   },
 
   task_overdue: {
-    icon: TimerOff,
+    icon: CalendarOff,
     label: "Aufgabe überfällig",
     entityLabel: "Aufgabe",
     color: "danger",

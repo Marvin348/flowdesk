@@ -24,6 +24,8 @@ export type NotificationDocument = {
     currentRole: UserRole;
   };
 
+  deadlineAt?: Date;
+
   isRead: boolean;
   readAt?: Date;
 

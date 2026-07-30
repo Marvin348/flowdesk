@@ -5,7 +5,11 @@ import { defineConfig } from "tsdown";
 const currentDirectory = path.dirname(fileURLToPath(import.meta.url));
 
 export default defineConfig({
-  entry: ["src/server.ts"],
+  entry: {
+    server: "src/server.ts",
+    deadlineJob: "src/jobs/deadlineJob.ts",
+  },
+
   platform: "node",
   format: ["esm"],
   outDir: "dist",
