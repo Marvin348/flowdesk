@@ -11,7 +11,8 @@
     "job:deadlines": "node dist/jobs/deadlineJob.mjs",
     "seed": "tsx src/scripts/seed.ts",
     "test": "vitest",
-    "test:run": "vitest run"
+    "test:run": "vitest run",
+    "typecheck": "tsc --noEmit"
   },
   "keywords": [],
   "author": "",
