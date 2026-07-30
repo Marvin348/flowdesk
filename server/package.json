@@ -7,6 +7,7 @@
     "dev": "tsx watch src/server.ts",
     "build": "tsdown src/server.ts --format esm --out-dir dist --clean",
     "start": "node dist/server.mjs",
+    "job:deadlines": "tsx src/jobs/deadlineJob.ts",
     "seed": "tsx src/scripts/seed.ts",
     "test": "vitest",
     "test:run": "vitest run"

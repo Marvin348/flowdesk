@@ -31,7 +31,7 @@ const NotificationItem = ({ notification }: NotificationItemProps) => {
     >
       <div
         className={cn(
-          "flex shrink-0 size-10 items-center justify-center rounded-md border",
+          "flex shrink-0 size-10 items-center justify-center rounded-md",
           colors.background,
         )}
       >

@@ -62,6 +62,10 @@ const notificationSchema = new mongoose.Schema(
       default: false,
     },
 
+    deadlineAt: {
+      type: Date,
+    },
+
     readAt: {
       type: Date,
     },
@@ -76,6 +80,24 @@ notificationSchema.index({
   recipientId: 1,
   createdAt: -1,
 });
+
+notificationSchema.index(
+  {
+    recipientId: 1,
+    type: 1,
+    entityId: 1,
+    deadlineAt: 1,
+  },
+  {
+    unique: true,
+    partialFilterExpression: {
+      type: {
+        $in: ["task_due_soon", "task_overdue", "project_due_soon"],
+      },
+      deadlineAt: { $type: "date" },
+    },
+  },
+);
 
 export const NotificationModel = mongoose.model<NotificationDocument>(
   "Notification",
