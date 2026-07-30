@@ -1,8 +1,21 @@
 name: CI
 
 on:
-  push:
   pull_request:
+    branches:
+      - main
+    paths:
+      - "server/**"
+      - "shared/**"
+      - ".github/workflows/ci.yml"
+
+  push:
+    branches:
+      - main
+    paths:
+      - "server/**"
+      - "shared/**"
+      - ".github/workflows/ci.yml"
 
 jobs:
   backend-ci:
