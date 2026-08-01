@@ -11,9 +11,9 @@ const SettingsPage = () => {
           <SettingsTabs />
         </aside>
 
-        <main className="flex-1 max-w-200">
+        <div className="flex-1 max-w-200">
           <Outlet />
-        </main>
+        </div>
       </div>
     </div>
   );

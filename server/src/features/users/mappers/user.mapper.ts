@@ -44,10 +44,17 @@ export const toAuthUserDto = (user: UserDocument): AuthUser => ({
   role: user.role,
   avatarKey: user.avatarKey,
   avatarUrl: bulidPublicFileUrl(user.avatarStorageKey),
-  appearanceSettings: {
-    theme: user.appearanceSettings?.theme ?? "system",
-    density: user.appearanceSettings?.density ?? "default",
-    startView: user.appearanceSettings?.startView ?? "dashboard",
+  settings: {
+    appearance: {
+      theme: user.settings.appearance?.theme ?? "system",
+      density: user.settings.appearance?.density ?? "default",
+      startView: user.settings.appearance?.startView ?? "dashboard",
+    },
+    notifications: {
+      assignments: user.settings.notifications?.assignments ?? true,
+      comments: user.settings.notifications?.comments ?? true,
+      deadlines: user.settings.notifications?.deadlines ?? true,
+    },
   },
 });
 

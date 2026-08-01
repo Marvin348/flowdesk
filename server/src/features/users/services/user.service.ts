@@ -56,7 +56,7 @@ export const updateAppearanceSettings = async ({
   const updateData: Record<string, unknown> = {};
 
   for (const [key, value] of Object.entries(input)) {
-    updateData[`appearanceSettings.${key}`] = value;
+    updateData[`settings.appearance.${key}`] = value;
   }
 
   const user = await UserModel.findOneAndUpdate(

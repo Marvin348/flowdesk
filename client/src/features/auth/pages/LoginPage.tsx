@@ -43,7 +43,7 @@ const LoginPage = () => {
           return;
         }
 
-        const path = getStartViewPath(user.appearanceSettings.startView);
+        const path = getStartViewPath(user.settings.appearance.startView);
         navigate(path, { replace: true });
       },
     });

@@ -3,7 +3,7 @@ import { useApplyTheme } from "@/shared/hooks/useApplyTheme";
 import type { AuthUser } from "@shared/types/user";
 
 const ProtectedApp = ({ user }: { user: AuthUser }) => {
-  useApplyTheme(user.appearanceSettings.theme);
+  useApplyTheme(user.settings.appearance.theme);
 
   return <Outlet />;
 };

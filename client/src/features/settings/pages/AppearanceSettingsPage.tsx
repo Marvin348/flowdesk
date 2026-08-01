@@ -1,10 +1,6 @@
 import AppearanceSettings from "../components/AppearanceSettings";
 
 const AppearanceSettingsPage = () => {
-  return (
-    <div>
-      <AppearanceSettings />
-    </div>
-  );
+  return <AppearanceSettings />;
 };
 export default AppearanceSettingsPage;

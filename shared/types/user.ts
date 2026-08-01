@@ -1,4 +1,5 @@
 export type UserRole = (typeof USER_ROLE)[number];
+import type { NotificationSettings } from "@shared/types/notificationSettings/notificationSettings";
 
 export type User = {
   id: string;
@@ -11,7 +12,10 @@ export type User = {
 };
 
 export type AuthUser = User & {
-  appearanceSettings: AppearanceSettingsType;
+  settings: {
+    appearance: AppearanceSettingsType;
+    notifications: NotificationSettings;
+  };
 };
 
 export type UserSecurityOverviewDto = {
