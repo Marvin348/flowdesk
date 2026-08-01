@@ -55,10 +55,17 @@ describe("GET /auth/me", () => {
       name: "Test User",
       email: "test@example.com",
       role: "admin",
-      appearanceSettings: {
-        theme: "system",
-        density: "default",
-        startView: "dashboard",
+      settings: {
+        appearance: {
+          theme: "system",
+          density: "default",
+          startView: "dashboard",
+        },
+        notifications: {
+          assignments: true,
+          comments: true,
+          deadlines: true,
+        },
       },
     });
   });

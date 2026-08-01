@@ -1,5 +1,6 @@
 import type { Types } from "mongoose";
 import type { AppearanceSettingsType } from "@shared/types/user";
+import type { NotificationSettings } from "@shared/types/notificationSettings/notificationSettings";
 
 export type UserRole = "admin" | "member" | "manager";
 
@@ -14,11 +15,16 @@ export type UserDocument = {
   passwordChangedAt: Date;
   twoFactorEnabled: boolean;
   emailVerifiedAt?: Date;
-  
+
   avatarStorageKey?: string;
   avatarKey?: string;
   role: UserRole;
   jobTitle?: string;
 
-  appearanceSettings: AppearanceSettingsType;
+  settings: UserSettings;
+};
+
+export type UserSettings = {
+  appearance: AppearanceSettingsType;
+  notifications: NotificationSettings;
 };

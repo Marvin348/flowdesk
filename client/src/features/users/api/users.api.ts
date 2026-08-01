@@ -10,6 +10,7 @@ import type { UpdateUserProfileInput } from "@/features/users/types/updateUserPr
 import type { UpdateAppearanceSettingsInput } from "@/features/users/types/UpdateAppearanceSettings";
 import type { UserAvatarDto } from "@shared/types/dto/common/userPreview.dto";
 import type { ChangeEmailSettingsFields } from "@/features/settings/schemas/profileSettingsSchema";
+import type { UpdateNotificationSettingsInput } from "@/features/users/types/updateNotificationSettings";
 
 export const fetchUsers = async (): Promise<User[]> => {
   const res = await apiClient.get("/users");
@@ -63,8 +64,15 @@ export const updateUserProfile = async (
 export const updateAppearanceSettings = async (
   input: UpdateAppearanceSettingsInput,
 ): Promise<AuthUser> => {
-  const res = await apiClient.patch("/users/appearance", input);
+  const res = await apiClient.patch("/users/me/appearance-settings", input);
   return res.data.user;
+};
+
+export const updateNotificationSettings = async (
+  input: UpdateNotificationSettingsInput,
+) => {
+  const res = await apiClient.patch("/users/me/notification-settings", input);
+  return res.data.message;
 };
 
 export const uploadAvatar = async (avatar: File): Promise<UserAvatarDto> => {

@@ -15,7 +15,7 @@ const AppearanceSettings = () => {
 
   if (!user) return null;
 
-  const appearanceSettings = user.appearanceSettings;
+  const appearanceSettings = user.settings.appearance;
 
   const handleAppearanceChange = <K extends keyof AppearanceSettingsType>(
     key: K,
@@ -30,14 +30,14 @@ const AppearanceSettings = () => {
 
   return (
     <section>
-      <div className="border-b p-4">
+      <div className="border-b pb-4">
         <h3 className="text-lg font-semibold">Darstellung</h3>
         <p className="mt-1 text-sm text-muted-foreground">
           Passe an, wie FlowDesk auf deinem Gerät aussieht.
         </p>
       </div>
 
-      <div className="space-y-8 p-4">
+      <div className="space-y-8 mt-4">
         <div className="rounded-md">
           <div className="flex items-start justify-between gap-4">
             <div>

@@ -67,21 +67,38 @@ const userSchema = new mongoose.Schema(
       type: Date,
     },
 
-    appearanceSettings: {
-      theme: {
-        type: String,
-        enum: APPEARANCE_THEMES,
-        default: "system",
+    settings: {
+      appearance: {
+        theme: {
+          type: String,
+          enum: APPEARANCE_THEMES,
+          default: "system",
+        },
+        density: {
+          type: String,
+          enum: APPEARANCE_DENSITIES,
+          default: "default",
+        },
+        startView: {
+          type: String,
+          enum: APPEARANCE_START_VIEWS,
+          default: "dashboard",
+        },
       },
-      density: {
-        type: String,
-        enum: APPEARANCE_DENSITIES,
-        default: "default",
-      },
-      startView: {
-        type: String,
-        enum: APPEARANCE_START_VIEWS,
-        default: "dashboard",
+
+      notifications: {
+        assignments: {
+          type: Boolean,
+          default: true,
+        },
+        comments: {
+          type: Boolean,
+          default: true,
+        },
+        deadlines: {
+          type: Boolean,
+          default: true,
+        },
       },
     },
   },

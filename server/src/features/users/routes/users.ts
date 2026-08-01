@@ -36,6 +36,8 @@ import { changeEmail } from "@/features/users/services/email/changeEmail.service
 import { verificationTokenSchema } from "@/features/verification-tokens/validators/verifyEmailSchema";
 import { verifyChangeEmail } from "@/features/users/services/email/verifyChangeEmail.service";
 import { getMySecurityOverview } from "../services/security/getMySecurityOverview.service";
+import { changeUserNotificationSettings } from "../services/settings/changeUserNotificationSettings.service";
+import { userNotificationSettingsSchema } from "../validators/changeUserNotificationSettingsSchema";
 
 const router = express.Router();
 
@@ -108,7 +110,10 @@ router.get(
   asyncHandler(async (req, res) => {
     const { userId, workspaceId } = getAuthContext(req);
 
-    const securityOverview = await getMySecurityOverview({ userId, workspaceId });
+    const securityOverview = await getMySecurityOverview({
+      userId,
+      workspaceId,
+    });
 
     return res.status(200).json({ user: securityOverview });
   }),
@@ -151,7 +156,7 @@ router.post(
 );
 
 router.patch(
-  "/appearance",
+  "/me/appearance-settings",
   asyncHandler(async (req, res) => {
     const result = appearanceSettingsSchema.safeParse(req.body);
 
@@ -170,6 +175,27 @@ router.patch(
     });
 
     return res.status(201).json({ user: updatedUserSettings });
+  }),
+);
+
+router.patch(
+  "/me/notification-settings",
+  asyncHandler(async (req, res) => {
+    const result = userNotificationSettingsSchema.safeParse(req.body);
+
+    if (!result.success) {
+      throw new AppError("Invalid notification settings", 400);
+    }
+
+    const { userId, workspaceId } = getAuthContext(req);
+
+    await changeUserNotificationSettings({
+      workspaceId,
+      userId,
+      input: result.data,
+    });
+
+    return res.status(200).json({message: "Updated Notification settings successful"})
   }),
 );
 
