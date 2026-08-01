@@ -1,12 +1,13 @@
 import { findTasksOverdue } from "@/features/notification/services/deadlines/findTasksOverdue.service";
-import { createDeadlineNotification } from "@/features/notification/services/deadlines/createDeadlineNotification.service";
+import { createNotification } from "@/features/notification/services/createNotification.service";
+
 
 export const processTaskOverdueNotifications = async () => {
   const tasks = await findTasksOverdue();
 
   for (const task of tasks) {
     for (const recipientId of task.collaboratorIds) {
-      await createDeadlineNotification({
+      await createNotification({
         workspaceId: task.workspaceId,
         recipientId,
         entityId: task._id,

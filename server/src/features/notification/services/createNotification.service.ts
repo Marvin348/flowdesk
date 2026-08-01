@@ -3,8 +3,10 @@ import type {
   NotificationType,
   EntityType,
 } from "@shared/types/dto/notification/notification.dto";
-import { NotificationModel } from "../models/notification.model";
+import { NotificationModel } from "@/features/notification/models/notification.model";
 import type { UserRole } from "@shared/types/user";
+import { shouldCreateNotification } from "@/features/notification/services/shouldCreateNotification.service";
+import { isDuplicateKeyError } from "@/features/notification/services/deadlines/utils/isDuplicateKeyError";
 
 type CreateNotificationInput = {
   workspaceId: Types.ObjectId;
@@ -21,6 +23,7 @@ type CreateNotificationInput = {
 
   entityId?: Types.ObjectId;
   projectId?: Types.ObjectId;
+  deadlineAt?: Date;
 };
 
 export const createNotification = async ({
@@ -32,20 +35,36 @@ export const createNotification = async ({
   entityId,
   projectId,
   metadata,
+  deadlineAt,
 }: CreateNotificationInput) => {
-  if (actorId && actorId.equals(recipientId)) {
-    return null;
-  }
+  if (actorId && actorId.equals(recipientId)) return null;
 
-  return NotificationModel.create({
-    workspaceId,
+  const shouldCreate = await shouldCreateNotification({
     recipientId,
-    actorId,
+    workspaceId,
     type,
-    entityType,
-    entityId,
-    metadata,
-    projectId,
-    isRead: false,
   });
+
+  if (!shouldCreate) return;
+
+  try {
+    await NotificationModel.create({
+      workspaceId,
+      recipientId,
+      actorId,
+      type,
+      entityType,
+      entityId,
+      metadata,
+      projectId,
+      isRead: false,
+      deadlineAt,
+    });
+  } catch (error) {
+    if (isDuplicateKeyError(error)) {
+      return;
+    }
+
+    throw error;
+  }
 };

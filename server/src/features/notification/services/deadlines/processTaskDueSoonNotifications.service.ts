@@ -1,12 +1,13 @@
 import { findTasksDueSoon } from "@/features/notification/services/deadlines/findTasksDueSoon.service";
-import { createDeadlineNotification } from "@/features/notification/services/deadlines/createDeadlineNotification.service";
+import { createNotification } from "@/features/notification/services/createNotification.service";
+
 
 export const processTaskDueSoonNotifications = async () => {
   const tasks = await findTasksDueSoon();
 
   for (const task of tasks) {
     for (const recipientId of task.collaboratorIds) {
-      await createDeadlineNotification({
+      await createNotification({
         workspaceId: task.workspaceId,
         recipientId,
         entityId: task._id,
