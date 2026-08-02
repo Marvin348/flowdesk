@@ -1,5 +1,4 @@
 import type { ProjectTasksResponseDto } from "@shared/types/dto/projects/projectTasks.dto";
-import { toTaskStatsDto } from "@/features/tasks/mappers/taskStatus.mapper";
 import { Types } from "mongoose";
 import type { StatusBase } from "@shared/types/StatusBase";
 import type { Priority } from "@shared/types/Priority";
@@ -27,23 +26,67 @@ export type ProjectTasksAggregationUser = {
   avatarStorageKey?: string;
 };
 
+type TaskStatusTotal = {
+  _id: StatusBase;
+  total: number;
+};
+
 export type ProjectTasksAggregationResult = {
-  tasks: ProjectTasksAggregationTask[];
+  pendingTasks: ProjectTasksAggregationTask[];
+  inProgressTasks: ProjectTasksAggregationTask[];
+  doneTasks: ProjectTasksAggregationTask[];
+
+  totals: TaskStatusTotal[];
   collaborators: ProjectTasksAggregationUser[];
 };
 
 export const toProjectTasksDto = (
   taskResult: ProjectTasksAggregationResult,
 ): ProjectTasksResponseDto => {
-  const usersById = new Map(
-    taskResult.collaborators.map((u) => [u._id.toString(), u]),
+  const { pendingTasks, inProgressTasks, doneTasks, totals, collaborators } =
+    taskResult;
+
+  const pendingTotal =
+    totals.find((item) => item._id === "pending")?.total ?? 0;
+  const inProgressTotal =
+    totals.find((item) => item._id === "in_progress")?.total ?? 0;
+  const doneTotal = totals.find((item) => item._id === "done")?.total ?? 0;
+
+  return {
+    pending: {
+      tasks: mapTasksWithCollaborators(pendingTasks, collaborators),
+      total: pendingTotal,
+      hasMore: pendingTasks.length < pendingTotal,
+    },
+    in_progress: {
+      tasks: mapTasksWithCollaborators(inProgressTasks, collaborators),
+      total: inProgressTotal,
+      hasMore: inProgressTasks.length < inProgressTotal,
+    },
+    done: {
+      tasks: mapTasksWithCollaborators(doneTasks, collaborators),
+      total: doneTotal,
+      hasMore: doneTasks.length < doneTotal,
+    },
+  };
+};
+
+export type ProjectTasksByStatusAggregationResult = {
+  tasks: ProjectTasksAggregationTask[];
+  collaborators: ProjectTasksAggregationUser[];
+};
+
+export const mapTasksWithCollaborators = (
+  tasks: ProjectTasksAggregationTask[],
+  collaborators: ProjectTasksAggregationUser[],
+) => {
+  const collaboratorsById = new Map(
+    collaborators.map((coll) => [coll._id.toString(), coll]),
   );
 
-  const taskStats = toTaskStatsDto(taskResult.tasks);
-
-  const projectTasks = taskResult.tasks.map((task) => {
+  return tasks.map((task) => {
     const collaborators = task.collaboratorIds
-      .map((id) => usersById.get(id.toString()))
+      .map((id) => collaboratorsById.get(id.toString()))
       .filter(isDefined)
       .map((user) => toUserAvatarDto(user));
 
@@ -61,9 +104,4 @@ export const toProjectTasksDto = (
       collaborators,
     };
   });
-
-  return {
-    tasks: projectTasks,
-    taskStats,
-  };
 };

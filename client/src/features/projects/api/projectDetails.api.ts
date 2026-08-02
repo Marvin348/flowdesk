@@ -8,6 +8,9 @@ import type { ProjectCollaboratorsInput } from "@shared/types/inputs/projectColl
 import type { ProjectTasksResponseDto } from "@shared/types/dto/projects/projectTasks.dto.js";
 import type { ProjectCommentsInput } from "@shared/types/inputs/projectCommentsInput";
 import type { ProjectWorkloadInput } from "@shared/types/inputs/projectWorkloadInput";
+import type { ProjectTasksByTypeInput } from "@/features/projects/types/projectTasksByTypeInput";
+import type { ProjectTasksByStatus } from "@shared/types/dto/projects/projectTasks.dto";
+
 
 export const fetchProjectDetailsShell = async (
   id: string,
@@ -23,11 +26,27 @@ export const fetchProjectOverview = async (
   return res.data.data;
 };
 
-export const fetchProjectTasks = async (
+export const fetchProjectTasksOverview = async (
   id: string,
 ): Promise<ProjectTasksResponseDto> => {
-  const res = await apiClient.get(`/projects/${id}/tasks`);
+  const res = await apiClient.get(`/projects/${id}/tasks/overview`);
   return res.data.data;
+};
+
+export const fetchProjectTasksByStatus = async ({
+  projectId,
+  taskStatus,
+  limit,
+  offset,
+}: ProjectTasksByTypeInput): Promise<ProjectTasksByStatus[]> => {
+  const res = await apiClient.get(`/projects/${projectId}/tasks`, {
+    params: {
+      taskStatus,
+      limit,
+      offset,
+    },
+  });
+  return res.data.data
 };
 
 export const fetchProjectCollaborators = async (
@@ -83,4 +102,3 @@ export const fetchProjectWorkload = async (
   );
   return res.data.data;
 };
-

@@ -1,4 +1,10 @@
-import { CircleDashed, LoaderCircle, Circle } from "lucide-react";
+import {
+  CircleDashed,
+  LoaderCircle,
+  Circle,
+  type LucideIcon,
+} from "lucide-react";
+import type { StatusBase } from "@shared/types/StatusBase";
 
 export const STATUS_OPTIONS = {
   pending: {
@@ -19,4 +25,14 @@ export const STATUS_OPTIONS = {
     color: "#86EFAC",
     icon: Circle,
   },
-} as const;
+} as const satisfies Record<
+  StatusBase,
+  {
+    label: string;
+    value: StatusBase;
+    color: string;
+    icon: LucideIcon;
+  }
+>;
+
+export type StatusOption = (typeof STATUS_OPTIONS)[StatusBase];

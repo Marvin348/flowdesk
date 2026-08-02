@@ -1,35 +1,38 @@
 import { Types } from "mongoose";
 import mongoose from "mongoose";
-import { buildProjectTasksPipeline } from "@/features/projects/queries/projectTasks.pipeline";
+import { buildProjectTasksOverviewPipeline } from "@/features/projects/queries/tasks/projectTasksOverview.pipeline";
 import { TaskModel } from "@/features/tasks/models/task.model";
 import {
   toProjectTasksDto,
   type ProjectTasksAggregationResult,
 } from "@/features/projects/mappers/projectTasks.mapper";
-import { AppError } from "@/utils/AppError";
 
-type GetProjectTasksInput = {
+type GetProjectTasksOverviewInput = {
   workspaceId: Types.ObjectId;
   projectId: string;
 };
 
-export const getProjectTasks = async ({
+export const getProjectTasksOverview = async ({
   workspaceId,
   projectId,
-}: GetProjectTasksInput) => {
+}: GetProjectTasksOverviewInput) => {
   const projectObjectId = new mongoose.Types.ObjectId(projectId);
 
-  const pipeline = buildProjectTasksPipeline({
+  const pipeline = buildProjectTasksOverviewPipeline({
     workspaceId,
     projectId: projectObjectId,
   });
 
-  const [projectTasks] =
+  const [aggregationResult] =
     await TaskModel.aggregate<ProjectTasksAggregationResult>(pipeline);
 
-  if (!projectTasks) {
-    throw new AppError("ProjectTask not found", 404);
-  }
+  const projectTasks = aggregationResult ?? {
+    pendingTasks: [],
+    inProgressTasks: [],
+    doneTasks: [],
+    totals: [],
+    collaborators: [],
+  };
 
   return toProjectTasksDto(projectTasks);
 };
