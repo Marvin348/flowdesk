@@ -9,4 +9,6 @@ export const PAGE_LIMITS = {
   notifications: 5,
 } as const;
 
+export const PROJECT_TASKS_LIMIT = 5
+
 export const MAX_PAGE_LIMIT = 50;

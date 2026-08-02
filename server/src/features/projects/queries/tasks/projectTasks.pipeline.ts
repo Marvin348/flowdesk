@@ -1,32 +1,51 @@
 import { Types, PipelineStage } from "mongoose";
+import { ProjectTasksQuery } from "@/features/projects/validation/projectTasksSchema.validator";
 
 type BuildProjectTasksPipelineInput = {
   workspaceId: Types.ObjectId;
   projectId: Types.ObjectId;
+  query: ProjectTasksQuery;
 };
 
 export const buildProjectTasksPipeline = ({
   workspaceId,
   projectId,
+  query,
 }: BuildProjectTasksPipelineInput): PipelineStage[] => {
+  const { taskStatus, limit, offset } = query;
+
   return [
     {
-      $match: { workspaceId, projectId },
+      $match: {
+        projectId,
+        workspaceId,
+        taskStatus,
+      },
     },
-
+    {
+      $sort: {
+        dueDate: 1,
+        _id: 1,
+      },
+    },
+    {
+      $skip: offset,
+    },
+    {
+      $limit: limit,
+    },
     {
       $project: {
         _id: 1,
-        projectId: 1,
         title: 1,
-        dueDate: 1,
+        projectId: 1,
         taskStatus: 1,
         taskPriority: 1,
-        description: 1,
-        collaboratorIds: 1,
         tags: 1,
-        reminderAt: 1,
-        completedAt: 1,
+        collaboratorIds: 1,
+        dueDate: 1,
+        createdAt: 1,
+        updatedAt: 1,
       },
     },
 
@@ -39,7 +58,7 @@ export const buildProjectTasksPipeline = ({
     },
 
     {
-      $addFields: {
+      $set: {
         taskCollaboratorIds: {
           $reduce: {
             input: "$collaboratorIdArrays",
@@ -82,6 +101,7 @@ export const buildProjectTasksPipeline = ({
     {
       $project: {
         tasks: 1,
+        _id: 0,
         collaborators: 1,
       },
     },

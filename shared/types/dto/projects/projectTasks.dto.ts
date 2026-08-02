@@ -1,7 +1,6 @@
 import type { Priority } from "../../Priority.js";
 import type { StatusBase } from "../../StatusBase.js";
 import type { UserAvatarDto } from "../../dto/common/userPreview.dto.js";
-import type { TaskStatsDto } from "../common/taskStats.dto.js";
 
 export type ProjectTaskDto = {
   id: string;
@@ -18,6 +17,23 @@ export type ProjectTaskDto = {
 };
 
 export type ProjectTasksResponseDto = {
-  tasks: ProjectTaskDto[];
-  taskStats: TaskStatsDto;
+  pending: {
+    tasks: ProjectTaskDto[];
+    total: number;
+    hasMore: boolean;
+  };
+
+  in_progress: {
+    tasks: ProjectTaskDto[];
+    total: number;
+    hasMore: boolean;
+  };
+
+  done: {
+    tasks: ProjectTaskDto[];
+    total: number;
+    hasMore: boolean;
+  };
 };
+
+export type ProjectTasksByStatus = ProjectTaskDto;
