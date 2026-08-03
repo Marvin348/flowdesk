@@ -1,8 +1,8 @@
 FROM node:24-alpine
 
-WORKDIR /app
+WORKDIR /app/client
 
-COPY package.json package-lock.json ./
+COPY client/package.json client/package-lock.json ./
 
 RUN npm ci
 
