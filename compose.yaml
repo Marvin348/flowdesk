@@ -38,4 +38,4 @@ services:
     volumes:
       - ./client:/app/client
       - ./shared:/app/shared
-      - /app/node_modules
+      - /app/client/node_modules
