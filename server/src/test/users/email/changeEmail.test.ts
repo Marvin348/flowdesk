@@ -18,9 +18,9 @@ import {
 import { UserModel } from "@/features/users/models/user.modal";
 import mongoose from "mongoose";
 import { WorkspaceModel } from "@/features/workspace/models/workspace.model";
-import { createAccessToken } from "@/features/auth/utils/tokens";
 import { VerificationTokenModel } from "@/features/verification-tokens/models/verificationToken.model";
 import { sendEmailChangeVerificationEmail } from "@/features/email/services/sendEmailChangeVerificationEmail.service";
+import { createAuthCookie } from "@/test/helpers/testFactories";
 
 beforeAll(async () => {
   await connectTestDb();
@@ -56,11 +56,11 @@ describe("PATCH /users/me/change-email", () => {
       isEmailVerified: true,
     });
 
-    const accessToken = createAccessToken(userId.toString());
+    const authCookie = await createAuthCookie(userId);
 
     const response = await request(app)
       .patch("/users/me/change-email")
-      .set("Cookie", [`accessToken=${accessToken}`]);
+      .set("Cookie", authCookie);
 
     expect(response.status).toBe(400);
     expect(response.body).toEqual({ message: "Invalid email" });
@@ -86,12 +86,12 @@ describe("PATCH /users/me/change-email", () => {
       isEmailVerified: true,
     });
 
-    const accessToken = createAccessToken(userId.toString());
+    const authCookie = await createAuthCookie(userId);
 
     const response = await request(app)
       .patch("/users/me/change-email")
       .send({ email: "test@example.com" })
-      .set("Cookie", [`accessToken=${accessToken}`]);
+      .set("Cookie", authCookie);
 
     expect(response.status).toBe(409);
     expect(response.body).toEqual({ message: "Email is already same" });
@@ -117,12 +117,12 @@ describe("PATCH /users/me/change-email", () => {
       isEmailVerified: false,
     });
 
-    const accessToken = createAccessToken(userId.toString());
+    const authCookie = await createAuthCookie(userId);
 
     const response = await request(app)
       .patch("/users/me/change-email")
       .send({ email: "test@example.com" })
-      .set("Cookie", [`accessToken=${accessToken}`]);
+      .set("Cookie", authCookie);
 
     expect(response.status).toBe(401);
     expect(response.body).toEqual({ message: "Email needs to be verifyt" });
@@ -152,12 +152,12 @@ describe("PATCH /users/me/change-email", () => {
         isEmailVerified: true,
       });
 
-      const accessToken = createAccessToken(userId.toString());
+      const authCookie = await createAuthCookie(userId);
 
       const response = await request(app)
         .patch("/users/me/change-email")
         .send({ email: "new@example.com" })
-        .set("Cookie", [`accessToken=${accessToken}`]);
+        .set("Cookie", authCookie);
 
       expect(response.status).toBe(403);
       expect(response.body).toEqual({
@@ -200,12 +200,12 @@ describe("PATCH /users/me/change-email", () => {
       isEmailVerified: true,
     });
 
-    const accessToken = createAccessToken(userId.toString());
+    const authCookie = await createAuthCookie(userId);
 
     const response = await request(app)
       .patch("/users/me/change-email")
       .send({ email: "new@example.com" })
-      .set("Cookie", [`accessToken=${accessToken}`]);
+      .set("Cookie", authCookie);
 
     expect(response.status).toBe(200);
     expect(response.body).toEqual({
@@ -241,12 +241,12 @@ describe("PATCH /users/me/change-email", () => {
       isEmailVerified: true,
     });
 
-    const accessToken = createAccessToken(userId.toString());
+    const authCookie = await createAuthCookie(userId);
 
     const response = await request(app)
       .patch("/users/me/change-email")
       .send({ email: "new@example.com" })
-      .set("Cookie", [`accessToken=${accessToken}`]);
+      .set("Cookie", authCookie);
 
     expect(response.status).toBe(200);
     expect(sendEmailChangeVerificationEmail).toHaveBeenCalledTimes(1);

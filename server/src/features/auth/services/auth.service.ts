@@ -1,6 +1,5 @@
 import { UserModel } from "@/features/users/models/user.modal";
 import { comparePassword, hashPassword } from "@/features/auth/utils/password";
-import { createAccessToken } from "@/features/auth/utils/tokens";
 import {
   LoginInput,
   RegisterInput,
@@ -11,6 +10,7 @@ import { Types } from "mongoose";
 import { AppError } from "@/utils/AppError";
 import { createVerificationToken } from "@/features/verification-tokens/services/createVerificationToken.service";
 import { sendAccountVerificationEmail } from "@/features/email/services/sendAccountVerificationEmail.service";
+import { createSession } from "@/features/sessions/services/createSession.service";
 
 export const registerUser = async (input: RegisterInput) => {
   const { email, name, password } = input;
@@ -74,10 +74,10 @@ export const loginUser = async (input: LoginInput) => {
     throw new AppError("Please verify your email first.", 403);
   }
 
-  const accessToken = createAccessToken(user._id.toString());
+  const sessionId = await createSession(user._id);
 
   return {
     user: toAuthUserDto(user),
-    accessToken,
+    sessionId,
   };
 };

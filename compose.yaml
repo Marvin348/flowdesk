@@ -39,3 +39,9 @@ services:
       - ./client:/app/client
       - ./shared:/app/shared
       - /app/client/node_modules
+
+  redis:
+    image: redis:7-alpine
+    container_name: flowdesk-redis-container
+    ports:
+      - "6379:6379"

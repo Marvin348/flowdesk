@@ -11,7 +11,7 @@ import mongoose from "mongoose";
 import { WorkspaceModel } from "@/features/workspace/models/workspace.model";
 import { TaskModel } from "@/features/tasks/models/task.model";
 import { ProjectModel } from "@/features/projects/models/project.model";
-import { createAccessToken } from "@/features/auth/utils/tokens";
+import { createAuthCookie } from "@/test/helpers/testFactories";
 
 beforeAll(async () => {
   await connectTestDb();
@@ -46,11 +46,11 @@ describe("PATCH /tasks/:taskId/status", () => {
       isEmailVerified: true,
     });
 
-    const accessToken = createAccessToken(userId.toString());
+    const authCookie = await createAuthCookie(userId);
 
     const response = await request(app)
       .patch(`/tasks/${"taskid"}/status`)
-      .set("Cookie", [`accessToken=${accessToken}`])
+      .set("Cookie", authCookie)
       .send({ wrongBody: "test" });
 
     expect(response.status).toBe(400);
@@ -97,11 +97,11 @@ describe("PATCH /tasks/:taskId/status", () => {
       tags: ["test"],
     });
 
-    const accessToken = createAccessToken(userId.toString());
+    const authCookie = await createAuthCookie(userId);
 
     const response = await request(app)
       .patch(`/tasks/${task._id.toString()}/status`)
-      .set("Cookie", [`accessToken=${accessToken}`])
+      .set("Cookie", authCookie)
       .send({ taskStatus: "done" });
 
     expect(response.status).toBe(200);
@@ -142,11 +142,11 @@ describe("PATCH /tasks/:taskId/status", () => {
       isEmailVerified: true,
     });
 
-    const accessToken = createAccessToken(userId.toString());
+    const authCookie = await createAuthCookie(userId);
 
     const response = await request(app)
       .patch(`/tasks/${taskId.toString()}/status`)
-      .set("Cookie", [`accessToken=${accessToken}`])
+      .set("Cookie", authCookie)
       .send({ taskStatus: "done" });
 
     expect(response.status).toBe(404);

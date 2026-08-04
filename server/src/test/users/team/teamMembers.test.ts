@@ -9,8 +9,8 @@ import {
 import { UserModel } from "@/features/users/models/user.modal";
 import mongoose from "mongoose";
 import { WorkspaceModel } from "@/features/workspace/models/workspace.model";
-import { createAccessToken } from "@/features/auth/utils/tokens";
 import { TaskModel } from "@/features/tasks/models/task.model";
+import { createAuthCookie } from "@/test/helpers/testFactories";
 
 beforeAll(async () => {
   await connectTestDb();
@@ -53,12 +53,12 @@ describe("GET /users/team", () => {
       isEmailVerified: true,
     });
 
-    const accessToken = createAccessToken(userId.toString());
+    const authCookie = await createAuthCookie(userId);
 
     const response = await request(app)
       .get("/users/team")
       .query({ page: "fake-query" })
-      .set("Cookie", [`accessToken=${accessToken}`]);
+      .set("Cookie", authCookie);
 
     expect(response.status).toBe(400);
     expect(response.body).toEqual({ message: "Invalid query params" });
@@ -118,11 +118,11 @@ describe("GET /users/team", () => {
       },
     ]);
 
-    const accessToken = createAccessToken(adminId.toString());
+    const authCookie = await createAuthCookie(adminId);
 
     const response = await request(app)
       .get("/users/team")
-      .set("Cookie", [`accessToken=${accessToken}`]);
+      .set("Cookie", authCookie);
 
     expect(response.status).toBe(200);
     expect(response.body.data.pagination).toEqual({
@@ -210,7 +210,7 @@ describe("GET /users/team", () => {
       taskPriority: "medium",
     });
 
-    const accessToken = createAccessToken(adminId.toString());
+    const authCookie = await createAuthCookie(adminId);
 
     const response = await request(app)
       .get("/users/team")
@@ -223,7 +223,7 @@ describe("GET /users/team", () => {
         page: 1,
         limit: 10,
       })
-      .set("Cookie", [`accessToken=${accessToken}`]);
+      .set("Cookie", authCookie);
 
     expect(response.status).toBe(200);
     expect(response.body.data.pagination).toEqual({

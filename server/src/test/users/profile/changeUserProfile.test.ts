@@ -1,7 +1,7 @@
 import app from "@/app";
-import { createAccessToken } from "@/features/auth/utils/tokens";
 import { UserModel } from "@/features/users/models/user.modal";
 import { WorkspaceModel } from "@/features/workspace/models/workspace.model";
+import { createAuthCookie } from "@/test/helpers/testFactories";
 import {
   clearTestDb,
   connectTestDb,
@@ -46,7 +46,7 @@ const createTestUser = async () => {
 
   return {
     userId,
-    accessToken: createAccessToken(userId.toString()),
+    authCookie: await createAuthCookie(userId),
   };
 };
 
@@ -61,48 +61,48 @@ describe("PATCH /users/me", () => {
   });
 
   it("returns 400 if no profile field is provided", async () => {
-    const { accessToken } = await createTestUser();
+    const { authCookie } = await createTestUser();
 
     const response = await request(app)
       .patch("/users/me")
       .send({})
-      .set("Cookie", [`accessToken=${accessToken}`]);
+      .set("Cookie", authCookie);
 
     expect(response.status).toBe(400);
     expect(response.body).toEqual({ message: "Invalid profile data" });
   });
 
   it("returns 400 if the name is too short", async () => {
-    const { accessToken } = await createTestUser();
+    const { authCookie } = await createTestUser();
 
     const response = await request(app)
       .patch("/users/me")
       .send({ name: "A" })
-      .set("Cookie", [`accessToken=${accessToken}`]);
+      .set("Cookie", authCookie);
 
     expect(response.status).toBe(400);
     expect(response.body).toEqual({ message: "Invalid profile data" });
   });
 
   it("returns 400 if the job title is too long", async () => {
-    const { accessToken } = await createTestUser();
+    const { authCookie } = await createTestUser();
 
     const response = await request(app)
       .patch("/users/me")
       .send({ jobTitle: "A".repeat(31) })
-      .set("Cookie", [`accessToken=${accessToken}`]);
+      .set("Cookie", authCookie);
 
     expect(response.status).toBe(400);
     expect(response.body).toEqual({ message: "Invalid profile data" });
   });
 
   it("does not allow email or role to be updated through the profile route", async () => {
-    const { userId, accessToken } = await createTestUser();
+    const { userId, authCookie } = await createTestUser();
 
     const response = await request(app)
       .patch("/users/me")
       .send({ email: "other@example.com", role: "member" })
-      .set("Cookie", [`accessToken=${accessToken}`]);
+      .set("Cookie", authCookie);
 
     expect(response.status).toBe(400);
 
@@ -112,12 +112,12 @@ describe("PATCH /users/me", () => {
   });
 
   it("returns 201 and updates name and job title", async () => {
-    const { userId, accessToken } = await createTestUser();
+    const { userId, authCookie } = await createTestUser();
 
     const response = await request(app)
       .patch("/users/me")
       .send({ name: "  Updated User  ", jobTitle: "  Product Manager  " })
-      .set("Cookie", [`accessToken=${accessToken}`]);
+      .set("Cookie", authCookie);
 
     expect(response.status).toBe(201);
     expect(response.body.user).toEqual({
@@ -134,12 +134,12 @@ describe("PATCH /users/me", () => {
   });
 
   it("returns 201 and only updates the provided profile field", async () => {
-    const { userId, accessToken } = await createTestUser();
+    const { userId, authCookie } = await createTestUser();
 
     const response = await request(app)
       .patch("/users/me")
       .send({ name: "Renamed User" })
-      .set("Cookie", [`accessToken=${accessToken}`]);
+      .set("Cookie", authCookie);
 
     expect(response.status).toBe(201);
 

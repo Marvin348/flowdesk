@@ -1,6 +1,5 @@
 import app from "@/app";
 import { AttachmentModel } from "@/features/attachments/models/attachment.model";
-import { createAccessToken } from "@/features/auth/utils/tokens";
 import { ProjectModel } from "@/features/projects/models/project.model";
 import { TaskModel } from "@/features/tasks/models/task.model";
 import { UserModel } from "@/features/users/models/user.modal";
@@ -20,6 +19,7 @@ import {
 } from "@/test/setupTestDb";
 import mongoose from "mongoose";
 import request from "supertest";
+import { createAuthCookie } from "@/test/helpers/testFactories";
 
 beforeAll(async () => {
   await connectTestDb();
@@ -62,10 +62,10 @@ const createAuthedProjectContext = async () => {
     dueDate: "2026-07-15",
   });
 
-  const accessToken = createAccessToken(userId.toString());
+  const authCookie = await createAuthCookie(userId);
 
   return {
-    accessToken,
+    authCookie,
     project,
     user,
     userId,
@@ -110,19 +110,19 @@ describe("GET /projects/:projectId/files", () => {
   });
 
   it("returns 404 when the project does not exist", async () => {
-    const { accessToken } = await createAuthedProjectContext();
+    const { authCookie } = await createAuthedProjectContext();
     const missingProjectId = new mongoose.Types.ObjectId();
 
     const response = await request(app)
       .get(`/projects/${missingProjectId}/files`)
-      .set("Cookie", [`accessToken=${accessToken}`]);
+      .set("Cookie", authCookie);
 
     expect(response.status).toBe(404);
     expect(response.body).toEqual({ message: "Project not found" });
   });
 
   it("returns attachments with uploadedBy", async () => {
-    const { accessToken, project, user, userId, workspaceId } =
+    const { authCookie, project, user, userId, workspaceId } =
       await createAuthedProjectContext();
 
     const attachment = await createAttachment({
@@ -135,7 +135,7 @@ describe("GET /projects/:projectId/files", () => {
 
     const response = await request(app)
       .get(`/projects/${project._id}/files`)
-      .set("Cookie", [`accessToken=${accessToken}`]);
+      .set("Cookie", authCookie);
 
     expect(response.status).toBe(200);
     expect(response.body.data.items).toHaveLength(1);
@@ -157,7 +157,7 @@ describe("GET /projects/:projectId/files", () => {
   });
 
   it("returns task when taskId exists", async () => {
-    const { accessToken, project, userId, workspaceId } =
+    const { authCookie, project, userId, workspaceId } =
       await createAuthedProjectContext();
 
     const task = await TaskModel.create({
@@ -180,7 +180,7 @@ describe("GET /projects/:projectId/files", () => {
 
     const response = await request(app)
       .get(`/projects/${project._id}/files`)
-      .set("Cookie", [`accessToken=${accessToken}`]);
+      .set("Cookie", authCookie);
 
     expect(response.status).toBe(200);
     expect(response.body.data.items).toHaveLength(1);
@@ -194,7 +194,7 @@ describe("GET /projects/:projectId/files", () => {
   });
 
   it("returns task null when no taskId exists", async () => {
-    const { accessToken, project, userId, workspaceId } =
+    const { authCookie, project, userId, workspaceId } =
       await createAuthedProjectContext();
 
     await createAttachment({
@@ -207,7 +207,7 @@ describe("GET /projects/:projectId/files", () => {
 
     const response = await request(app)
       .get(`/projects/${project._id}/files`)
-      .set("Cookie", [`accessToken=${accessToken}`]);
+      .set("Cookie", authCookie);
 
     expect(response.status).toBe(200);
     expect(response.body.data.items).toHaveLength(1);
@@ -218,7 +218,7 @@ describe("GET /projects/:projectId/files", () => {
   });
 
   it("filters search by fileName and mimeType", async () => {
-    const { accessToken, project, userId, workspaceId } =
+    const { authCookie, project, userId, workspaceId } =
       await createAuthedProjectContext();
 
     await AttachmentModel.create([
@@ -257,7 +257,7 @@ describe("GET /projects/:projectId/files", () => {
     const fileNameResponse = await request(app)
       .get(`/projects/${project._id}/files`)
       .query({ search: "invoice" })
-      .set("Cookie", [`accessToken=${accessToken}`]);
+      .set("Cookie", authCookie);
 
     expect(fileNameResponse.status).toBe(200);
     expect(fileNameResponse.body.data.items).toHaveLength(1);
@@ -268,7 +268,7 @@ describe("GET /projects/:projectId/files", () => {
     const mimeTypeResponse = await request(app)
       .get(`/projects/${project._id}/files`)
       .query({ search: "image" })
-      .set("Cookie", [`accessToken=${accessToken}`]);
+      .set("Cookie", authCookie);
 
     expect(mimeTypeResponse.status).toBe(200);
     expect(mimeTypeResponse.body.data.items).toHaveLength(1);
@@ -279,7 +279,7 @@ describe("GET /projects/:projectId/files", () => {
   });
 
   it("returns totalPages and currentPage for pagination", async () => {
-    const { accessToken, project, userId, workspaceId } =
+    const { authCookie, project, userId, workspaceId } =
       await createAuthedProjectContext();
 
     await AttachmentModel.create(
@@ -298,7 +298,7 @@ describe("GET /projects/:projectId/files", () => {
     const response = await request(app)
       .get(`/projects/${project._id}/files`)
       .query({ page: 2, limit: 2 })
-      .set("Cookie", [`accessToken=${accessToken}`]);
+      .set("Cookie", authCookie);
 
     expect(response.status).toBe(200);
     expect(response.body.data.items).toHaveLength(2);

@@ -8,8 +8,8 @@ import {
 } from "@/test/setupTestDb";
 import { UserModel } from "@/features/users/models/user.modal";
 import mongoose from "mongoose";
-import { createAccessToken } from "@/features/auth/utils/tokens";
 import { WorkspaceModel } from "@/features/workspace/models/workspace.model";
+import { createAuthCookie } from "@/test/helpers/testFactories";
 
 beforeAll(async () => {
   await connectTestDb();
@@ -24,7 +24,7 @@ afterAll(async () => {
 });
 
 describe("GET /auth/me", () => {
-  it("returns 200 and the current user when access token is valid", async () => {
+  it("returns 200 and the current user when session cookie is valid", async () => {
     const userId = new mongoose.Types.ObjectId();
     const workspaceId = new mongoose.Types.ObjectId();
 
@@ -42,11 +42,11 @@ describe("GET /auth/me", () => {
       role: "admin",
     });
 
-    const accessToken = createAccessToken(user._id.toString());
+    const authCookie = await createAuthCookie(user._id);
 
     const response = await request(app)
       .get("/auth/me")
-      .set("Cookie", [`accessToken=${accessToken}`]);
+      .set("Cookie", authCookie);
 
     expect(response.status).toBe(200);
 
@@ -70,18 +70,18 @@ describe("GET /auth/me", () => {
     });
   });
 
-  it("returns 401 when no access token cookie is provided", async () => {
+  it("returns 401 when no session cookie is provided", async () => {
     const response = await request(app).get("/auth/me");
 
     expect(response.status).toBe(401);
   });
 
-  it("returns 401 when access token is invalid", async () => {
+  it("returns 401 when session cookie is invalid", async () => {
     const response = await request(app)
       .get("/auth/me")
-      .set("Cookie", ["accessToken=invalid-token"]);
+      .set("Cookie", ["sessionId=invalid-session"]);
 
     expect(response.status).toBe(401);
-    expect(response.body).toEqual({ message: "Not authenticated" });
+    expect(response.body).toEqual({ message: "Session expired or invalid" });
   });
 });

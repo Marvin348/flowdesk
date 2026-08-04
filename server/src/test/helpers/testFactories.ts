@@ -1,5 +1,4 @@
 import { AttachmentModel } from "@/features/attachments/models/attachment.model";
-import { createAccessToken } from "@/features/auth/utils/tokens";
 import { CommentModel } from "@/features/comments/models/comment.model";
 import { ProjectModel } from "@/features/projects/models/project.model";
 import { TaskModel } from "@/features/tasks/models/task.model";
@@ -9,6 +8,7 @@ import mongoose from "mongoose";
 import type { StatusBase } from "@shared/types/StatusBase";
 import type { UserRole } from "@shared/types/user";
 import type { Priority } from "@shared/types/Priority";
+import { createSession } from "@/features/sessions/services/createSession.service";
 
 let testEmailCounter = 0;
 
@@ -158,9 +158,11 @@ export const createComment = async (
   });
 };
 
-export const createAuthCookie = (userId: string) => {
-  const accessToken = createAccessToken(userId);
-  return [`accessToken=${accessToken}`];
+export const createAuthCookie = async (
+  userId: mongoose.Types.ObjectId | string,
+) => {
+  const sessionId = await createSession(new mongoose.Types.ObjectId(userId));
+  return [`sessionId=${sessionId}`];
 };
 
 export const createAuthedUserContext = async (
@@ -190,11 +192,11 @@ export const createAuthedUserContext = async (
     passwordHash: overrides?.passwordHash,
   });
 
-  const accessToken = createAccessToken(user._id.toString());
+  const sessionId = await createSession(user._id);
 
   return {
-    accessToken,
-    authCookie: [`accessToken=${accessToken}`],
+    sessionId,
+    authCookie: [`sessionId=${sessionId}`],
     user,
     userId,
     workspace,

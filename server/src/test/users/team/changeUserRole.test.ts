@@ -18,9 +18,9 @@ import {
 import { UserModel } from "@/features/users/models/user.modal";
 import mongoose from "mongoose";
 import { WorkspaceModel } from "@/features/workspace/models/workspace.model";
-import { createAccessToken } from "@/features/auth/utils/tokens";
 import { eventBus } from "@/shared/events/eventBus";
 import type { ChangeUserRoleEvent } from "@/features/users/events/userEvents";
+import { createAuthCookie } from "@/test/helpers/testFactories";
 
 beforeAll(async () => {
   await connectTestDb();
@@ -59,11 +59,11 @@ describe("PATCH /users/id", () => {
       isEmailVerified: true,
     });
 
-    const accessToken = createAccessToken(userId.toString());
+    const authCookie = await createAuthCookie(userId);
 
     const response = await request(app)
       .patch("/users/invalid-userId")
-      .set("Cookie", [`accessToken=${accessToken}`]);
+      .set("Cookie", authCookie);
 
     expect(response.status).toBe(400);
     expect(response.body).toEqual({ message: "Invalid userId" });
@@ -89,12 +89,12 @@ describe("PATCH /users/id", () => {
       isEmailVerified: true,
     });
 
-    const accessToken = createAccessToken(userId.toString());
+    const authCookie = await createAuthCookie(userId);
 
     const response = await request(app)
       .patch(`/users/${userId}`)
       .send("test-boy")
-      .set("Cookie", [`accessToken=${accessToken}`]);
+      .set("Cookie", authCookie);
 
     expect(response.status).toBe(400);
     expect(response.body).toEqual({ message: "Invalid input" });
@@ -133,13 +133,13 @@ describe("PATCH /users/id", () => {
       },
     ]);
 
-    const accessToken = createAccessToken(adminId.toString());
+    const authCookie = await createAuthCookie(adminId);
     const emitSpy = vi.spyOn(eventBus, "emit").mockResolvedValue(undefined);
 
     const response = await request(app)
       .patch(`/users/${memberId}`)
       .send({ role: "manager" })
-      .set("Cookie", [`accessToken=${accessToken}`]);
+      .set("Cookie", authCookie);
 
     expect(response.status).toBe(200);
     expect(response.body.data).toEqual({
@@ -212,12 +212,12 @@ describe("PATCH /users/id", () => {
       },
     ]);
 
-    const accessToken = createAccessToken(memberId.toString());
+    const authCookie = await createAuthCookie(memberId);
 
     const response = await request(app)
       .patch(`/users/${targetUserId}`)
       .send({ role: "admin" })
-      .set("Cookie", [`accessToken=${accessToken}`]);
+      .set("Cookie", authCookie);
 
     expect(response.status).toBe(403);
     expect(response.body).toEqual({
@@ -248,12 +248,12 @@ describe("PATCH /users/id", () => {
       isEmailVerified: true,
     });
 
-    const accessToken = createAccessToken(adminId.toString());
+    const authCookie = await createAuthCookie(adminId);
 
     const response = await request(app)
       .patch(`/users/${adminId}`)
       .send({ role: "member" })
-      .set("Cookie", [`accessToken=${accessToken}`]);
+      .set("Cookie", authCookie);
 
     expect(response.status).toBe(403);
     expect(response.body).toEqual({

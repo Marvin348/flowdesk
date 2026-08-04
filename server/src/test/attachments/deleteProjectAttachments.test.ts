@@ -1,7 +1,6 @@
 import app from "@/app";
 import { ActivityModel } from "@/features/activity/models/activity.model";
 import { AttachmentModel } from "@/features/attachments/models/attachment.model";
-import { createAccessToken } from "@/features/auth/utils/tokens";
 import { ProjectModel } from "@/features/projects/models/project.model";
 import { UserModel } from "@/features/users/models/user.modal";
 import { WorkspaceModel } from "@/features/workspace/models/workspace.model";
@@ -22,6 +21,7 @@ import {
 } from "@/test/setupTestDb";
 import mongoose from "mongoose";
 import request from "supertest";
+import { createAuthCookie } from "@/test/helpers/testFactories";
 
 vi.mock("@/lib/storage/r2Storage.js", () => ({
   deleteFileFromR2: vi.fn(),
@@ -91,12 +91,12 @@ const createAuthedProjectContext = async () => {
     fileSize: 1024,
   });
 
-  const accessToken = createAccessToken(userId.toString());
-  const accessTokenMember = createAccessToken(memberUserId.toString());
+  const authCookie = await createAuthCookie(userId);
+  const memberAuthCookie = await createAuthCookie(memberUserId);
 
   return {
-    accessToken,
-    accessTokenMember,
+    authCookie,
+    memberAuthCookie,
     project,
     user,
     attachment,
@@ -107,24 +107,24 @@ const createAuthedProjectContext = async () => {
 
 describe("DELETE /projects/:id/files/:fileId", () => {
   it("returns 404 if attachment does not exist", async () => {
-    const { accessToken, project } = await createAuthedProjectContext();
+    const { authCookie, project } = await createAuthedProjectContext();
 
     const fakeAttachmentId = new mongoose.Types.ObjectId();
 
     const response = await request(app)
       .delete(`/projects/${project._id}/files/${fakeAttachmentId}`)
-      .set("Cookie", [`accessToken=${accessToken}`]);
+      .set("Cookie", authCookie);
 
     expect(response.status).toBe(404);
   });
 
   it("returns 403 if the user is not a admin", async () => {
-    const { accessTokenMember, project, attachment } =
+    const { memberAuthCookie, project, attachment } =
       await createAuthedProjectContext();
 
     const response = await request(app)
       .delete(`/projects/${project._id}/files/${attachment._id}`)
-      .set("Cookie", [`accessToken=${accessTokenMember}`]);
+      .set("Cookie", memberAuthCookie);
 
     expect(response.status).toBe(403);
     expect(response.body).toEqual({ message: "Only admins can delete attachments" });
@@ -133,11 +133,11 @@ describe("DELETE /projects/:id/files/:fileId", () => {
   it("deletes an attachment and removes the file from R2", async () => {
     vi.mocked(deleteFileFromR2).mockResolvedValue(undefined);
 
-    const { accessToken, project, attachment } = await createAuthedProjectContext();
+    const { authCookie, project, attachment } = await createAuthedProjectContext();
 
     const response = await request(app)
       .delete(`/projects/${project._id}/files/${attachment._id}`)
-      .set("Cookie", [`accessToken=${accessToken}`]);
+      .set("Cookie", authCookie);
 
     expect(response.status).toBe(200);
     expect(response.body.data).toMatchObject({
@@ -158,12 +158,12 @@ describe("DELETE /projects/:id/files/:fileId", () => {
   it("creates an activity entry when an attachment is deleted", async () => {
     vi.mocked(deleteFileFromR2).mockResolvedValue(undefined);
 
-    const { accessToken, project, attachment, userId, workspaceId } =
+    const { authCookie, project, attachment, userId, workspaceId } =
       await createAuthedProjectContext();
 
     const response = await request(app)
       .delete(`/projects/${project._id}/files/${attachment._id}`)
-      .set("Cookie", [`accessToken=${accessToken}`]);
+      .set("Cookie", authCookie);
 
     expect(response.status).toBe(200);
 
@@ -183,12 +183,12 @@ describe("DELETE /projects/:id/files/:fileId", () => {
   });
 
   it("returns 404 if the project does not exist", async () => {
-    const { accessToken, attachment } = await createAuthedProjectContext();
+    const { authCookie, attachment } = await createAuthedProjectContext();
     const missingProjectId = new mongoose.Types.ObjectId();
 
     const response = await request(app)
       .delete(`/projects/${missingProjectId}/files/${attachment._id}`)
-      .set("Cookie", [`accessToken=${accessToken}`]);
+      .set("Cookie", authCookie);
 
     expect(response.status).toBe(404);
     expect(response.body).toEqual({ message: "Project not found" });

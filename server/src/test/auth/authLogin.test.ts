@@ -1,6 +1,14 @@
 import app from "@/app";
 import request from "supertest";
-import { beforeAll, beforeEach, afterAll, describe, expect, it } from "vitest";
+import {
+  beforeAll,
+  beforeEach,
+  afterAll,
+  describe,
+  expect,
+  it,
+  vi,
+} from "vitest";
 import {
   clearTestDb,
   connectTestDb,
@@ -10,6 +18,13 @@ import { UserModel } from "@/features/users/models/user.modal";
 import mongoose from "mongoose";
 import { WorkspaceModel } from "@/features/workspace/models/workspace.model";
 import bcrypt from "bcryptjs";
+import { saveSession } from "@/features/sessions/repository/session.repository";
+
+vi.mock("@/features/sessions/repository/session.repository", () => ({
+  saveSession: vi.fn(),
+  findSession: vi.fn(),
+  deleteSession: vi.fn(),
+}));
 
 beforeAll(async () => {
   await connectTestDb();
@@ -17,6 +32,7 @@ beforeAll(async () => {
 
 beforeEach(async () => {
   await clearTestDb();
+  vi.clearAllMocks();
 });
 
 afterAll(async () => {
@@ -56,6 +72,15 @@ describe("POST /auth/login", () => {
     expect(response.status).toBe(200);
 
     expect(response.headers["set-cookie"]).toBeDefined();
+    expect(response.headers["set-cookie"][0]).toContain("sessionId=");
+    expect(saveSession).toHaveBeenCalledWith({
+      sessionId: expect.any(String),
+      session: expect.objectContaining({
+        userId: user._id.toString(),
+        createdAt: expect.any(String),
+        absoluteExpiresAt: expect.any(String),
+      }),
+    });
 
     expect(response.body.user).toMatchObject({
       id: user._id.toString(),

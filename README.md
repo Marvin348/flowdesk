@@ -12,8 +12,8 @@ FlowDesk is actively being developed as a fullstack portfolio project with a foc
 
 - **Node + Express**
 - **MongoDB with Mongoose**
-- **Docker**
-- **JWT authentication with HttpOnly cookies**
+- **Redis**
+- **Redis-backed server-side sessions with HttpOnly cookies**
 - **Cloudflare R2 for private file storage**
 - **Resend (E-Mail Provider)**
 - **Zod**
@@ -32,11 +32,18 @@ FlowDesk is actively being developed as a fullstack portfolio project with a foc
 - **Recharts**
 - **shadcn/ui**
 
+### Infrastructure & Local Development
+
+- **Docker**
+- **Docker Compose**
+- **Redis container for session storage**
+- **Separate client and API containers for local development**
+
 ## Features
 
 - User registration and login
 - Email verification with hashed one-time tokens
-- Cookie-based authentication using HttpOnly JWTs
+- Cookie-based authentication using Redis-backed server-side sessions
 - Protected backend routes with reusable authentication middleware
 - Workspace-based user context
 - Project overview and project detail pages
@@ -52,7 +59,7 @@ FlowDesk is actively being developed as a fullstack portfolio project with a foc
 
 FlowDesk uses a custom Express backend instead of a BaaS solution. The backend is responsible for authentication, authorization, validation, database access, file handling, and response shaping.
 
-Authentication is handled through JWTs stored in HttpOnly cookies. Protected routes use a reusable requireAuth middleware that verifies the access token and attaches the authenticated user context to the request.
+Authentication is handled through server-side sessions. On login, the backend creates a random session ID, stores the session data in Redis with a TTL, and sends the session ID to the browser in an HttpOnly cookie. Protected routes use a reusable requireAuth middleware that reads the session cookie, loads the session from Redis, and attaches the authenticated user context to the request.
 
 Most API responses are shaped through DTO and mapper functions. This keeps frontend data predictable and avoids exposing database-specific fields such as \_id, \_\_v, or internal storage keys unless needed.
 
