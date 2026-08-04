@@ -17,8 +17,8 @@ import {
 import { UserModel } from "@/features/users/models/user.modal";
 import mongoose from "mongoose";
 import { WorkspaceModel } from "@/features/workspace/models/workspace.model";
-import { createAccessToken } from "@/features/auth/utils/tokens";
 import { uploadFileToR2, deleteFileFromR2 } from "@/lib/storage/r2Storage";
+import { createAuthCookie } from "@/test/helpers/testFactories";
 
 vi.mock("@/lib/storage/r2Storage.js", () => ({
   uploadFileToR2: vi.fn(),
@@ -67,11 +67,11 @@ describe("PATCH /users/me/avatar", () => {
       isEmailVerified: true,
     });
 
-    const accessToken = createAccessToken(userId.toString());
+    const authCookie = await createAuthCookie(userId);
 
     const response = await request(app)
       .patch("/users/me/avatar")
-      .set("Cookie", [`accessToken=${accessToken}`])
+      .set("Cookie", authCookie)
       .field("unused", "value");
 
     expect(response.status).toBe(400);
@@ -91,11 +91,11 @@ describe("PATCH /users/me/avatar", () => {
       isEmailVerified: true,
     });
 
-    const accessToken = createAccessToken(user._id.toString());
+    const authCookie = await createAuthCookie(user._id);
 
     const response = await request(app)
       .patch("/users/me/avatar")
-      .set("Cookie", [`accessToken=${accessToken}`])
+      .set("Cookie", authCookie)
       .attach("avatar", Buffer.from("fake-image-content"), "avatar.png");
 
     expect(response.status).toBe(200);
@@ -140,11 +140,11 @@ describe("PATCH /users/me/avatar", () => {
       isEmailVerified: true,
     });
 
-    const accessToken = createAccessToken(userId.toString());
+    const authCookie = await createAuthCookie(userId);
 
     const response = await request(app)
       .patch("/users/me/avatar")
-      .set("Cookie", [`accessToken=${accessToken}`])
+      .set("Cookie", authCookie)
       .attach("avatar", Buffer.from("fake-image-content"), "avatar.png");
 
     expect(response.status).toBe(200);

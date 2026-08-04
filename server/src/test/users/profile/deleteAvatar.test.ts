@@ -16,8 +16,8 @@ import {
 } from "@/test/setupTestDb";
 import { UserModel } from "@/features/users/models/user.modal";
 import mongoose from "mongoose";
-import { createAccessToken } from "@/features/auth/utils/tokens";
 import { deleteFileFromR2 } from "@/lib/storage/r2Storage";
+import { createAuthCookie } from "@/test/helpers/testFactories";
 
 vi.mock("@/lib/storage/r2Storage.js", () => ({
   deleteFileFromR2: vi.fn(),
@@ -50,11 +50,11 @@ describe("DELETE /users/me/avatar", () => {
       isEmailVerified: true,
     });
 
-    const accessToken = createAccessToken(user._id.toString());
+    const authCookie = await createAuthCookie(user._id);
 
     const response = await request(app)
       .delete("/users/me/avatar")
-      .set("Cookie", [`accessToken=${accessToken}`]);
+      .set("Cookie", authCookie);
 
     expect(response.status).toBe(200);
     expect(response.body).toEqual({ message: "Avatar deleted successfully" });
@@ -78,11 +78,11 @@ describe("DELETE /users/me/avatar", () => {
       isEmailVerified: true,
     });
 
-    const accessToken = createAccessToken(user._id.toString());
+    const authCookie = await createAuthCookie(user._id);
 
     const response = await request(app)
       .delete("/users/me/avatar")
-      .set("Cookie", [`accessToken=${accessToken}`]);
+      .set("Cookie", authCookie);
 
     expect(response.status).toBe(200);
     expect(response.body).toEqual({ message: "Avatar deleted successfully" });

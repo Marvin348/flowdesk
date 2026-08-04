@@ -20,9 +20,9 @@ import mongoose from "mongoose";
 import { WorkspaceModel } from "@/features/workspace/models/workspace.model";
 import { TaskModel } from "@/features/tasks/models/task.model";
 import { ProjectModel } from "@/features/projects/models/project.model";
-import { createAccessToken } from "@/features/auth/utils/tokens";
 import { eventBus } from "@/shared/events/eventBus";
 import type { TaskCreatedEvent } from "@/features/tasks/events/taskEvents";
+import { createAuthCookie } from "@/test/helpers/testFactories";
 
 beforeAll(async () => {
   await connectTestDb();
@@ -61,11 +61,11 @@ describe("POST /tasks", () => {
       isEmailVerified: true,
     });
 
-    const accessToken = createAccessToken(userId.toString());
+    const authCookie = await createAuthCookie(userId);
 
     const response = await request(app)
       .post("/tasks")
-      .set("Cookie", [`accessToken=${accessToken}`])
+      .set("Cookie", authCookie)
       .send({ projectId: "false projectId", taskStatus: "false" });
 
     expect(response.status).toBe(400);
@@ -101,12 +101,12 @@ describe("POST /tasks", () => {
       dueDate: "2026-07-15",
     });
 
-    const accessToken = createAccessToken(userId.toString());
+    const authCookie = await createAuthCookie(userId);
     const emitSpy = vi.spyOn(eventBus, "emit").mockResolvedValue(undefined);
 
     const response = await request(app)
       .post("/tasks")
-      .set("Cookie", [`accessToken=${accessToken}`])
+      .set("Cookie", authCookie)
       .send({
         projectId: project._id.toString(),
         title: "Create task tests",
@@ -190,11 +190,11 @@ describe("POST /tasks", () => {
       dueDate: "2026-07-20",
     });
 
-    const accessToken = createAccessToken(userId.toString());
+    const authCookie = await createAuthCookie(userId);
 
     const response = await request(app)
       .post("/tasks")
-      .set("Cookie", [`accessToken=${accessToken}`])
+      .set("Cookie", authCookie)
       .send({
         projectId: otherProject._id.toString(),
         title: "Forbidden workspace task",
@@ -257,11 +257,11 @@ describe("POST /tasks", () => {
       dueDate: "2026-07-15",
     });
 
-    const accessToken = createAccessToken(userId.toString());
+    const authCookie = await createAuthCookie(userId);
 
     const response = await request(app)
       .post("/tasks")
-      .set("Cookie", [`accessToken=${accessToken}`])
+      .set("Cookie", authCookie)
       .send({
         projectId: project._id.toString(),
         title: "Invalid collaborator task",

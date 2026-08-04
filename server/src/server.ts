@@ -3,6 +3,7 @@ import "dotenv/config";
 import app from "@/app";
 import { connectDb } from "@/shared/config/db";
 import { registerNotificationHandlers } from "@/features/notification/events/registerNotificationHandlers";
+import { connectRedis } from "@/shared/config/redis";
 
 const PORT = Number(process.env.PORT) || 3001;
 const HOST = process.env.HOST || "0.0.0.0";
@@ -10,6 +11,7 @@ const HOST = process.env.HOST || "0.0.0.0";
 const startServer = async () => {
   try {
     await connectDb();
+    await connectRedis();
 
     registerNotificationHandlers();
 

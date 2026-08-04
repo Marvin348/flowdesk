@@ -1,32 +1,28 @@
 import type { Request, Response, NextFunction } from "express";
-import { verifyAccessToken } from "@/features/auth/utils/tokens";
 import { UserModel } from "@/features/users/models/user.modal";
 import { AppError } from "@/utils/AppError";
 import { asyncHandler } from "@/utils/asyncHandler";
+import { findSession } from "@/features/sessions/repository/session.repository";
 
 export const requireAuth = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
-    const token = req.cookies.accessToken;
+    const sessionId = req.cookies.sessionId;
 
-    if (!token) {
+    if (!sessionId) {
       throw new AppError("Not authenticated", 401);
     }
 
-    let payload;
+    const session = await findSession(sessionId);
 
-    try {
-      payload = verifyAccessToken(token);
-    } catch {
-      throw new AppError("Not authenticated", 401);
+    if (!session) {
+      throw new AppError("Session expired or invalid", 401);
     }
 
-    if (typeof payload === "string" || !payload.sub) {
-      throw new AppError("Not authenticated", 401);
-    }
+    const userId = session.userId;
 
-    const userId = payload.sub;
-
-    const user = await UserModel.findById(userId).lean();
+    const user = await UserModel.findById(userId)
+      .select("_id workspaceId role")
+      .lean();
 
     if (!user) {
       throw new AppError("Invalid User", 401);

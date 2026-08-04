@@ -1,6 +1,5 @@
 import app from "@/app";
 import { AttachmentModel } from "@/features/attachments/models/attachment.model";
-import { createAccessToken } from "@/features/auth/utils/tokens";
 import { ProjectModel } from "@/features/projects/models/project.model";
 import { UserModel } from "@/features/users/models/user.modal";
 import { WorkspaceModel } from "@/features/workspace/models/workspace.model";
@@ -21,6 +20,7 @@ import {
 } from "@/test/setupTestDb";
 import mongoose from "mongoose";
 import request from "supertest";
+import { createAuthCookie } from "@/test/helpers/testFactories";
 
 vi.mock("@/lib/storage/r2Storage.js", () => ({
   createSignedDownloadUrl: vi.fn(),
@@ -79,10 +79,10 @@ const createAuthedProjectContext = async () => {
     fileSize: 1024,
   });
 
-  const accessToken = createAccessToken(userId.toString());
+  const authCookie = await createAuthCookie(userId);
 
   return {
-    accessToken,
+    authCookie,
     project,
     user,
     attachment,
@@ -93,7 +93,7 @@ const createAuthedProjectContext = async () => {
 
 describe("GET /attachments/:attachmentId/download", () => {
   it("redirects to a signed download url", async () => {
-    const { accessToken, attachment } = await createAuthedProjectContext();
+    const { authCookie, attachment } = await createAuthedProjectContext();
 
     vi.mocked(createSignedDownloadUrl).mockResolvedValue(
       "https://signed-download-url.test/file.pdf",
@@ -101,7 +101,7 @@ describe("GET /attachments/:attachmentId/download", () => {
 
     const response = await request(app)
       .get(`/attachments/${attachment._id}/download`)
-      .set("Cookie", [`accessToken=${accessToken}`]);
+      .set("Cookie", authCookie);
 
     expect(response.status).toBe(302);
     expect(response.headers.location).toBe(
@@ -112,13 +112,13 @@ describe("GET /attachments/:attachmentId/download", () => {
   });
 
   it("returns 404 if attachment does not exist", async () => {
-    const { accessToken } = await createAuthedProjectContext();
+    const { authCookie } = await createAuthedProjectContext();
 
     const fakeAttachmentId = new mongoose.Types.ObjectId();
 
     const response = await request(app)
       .get(`/attachments/${fakeAttachmentId}/download`)
-      .set("Cookie", [`accessToken=${accessToken}`]);
+      .set("Cookie", authCookie);
 
     expect(response.status).toBe(404);
     expect(response.body).toEqual({ message: "Attachment not found" });

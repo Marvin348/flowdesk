@@ -18,10 +18,10 @@ import {
 import { UserModel } from "@/features/users/models/user.modal";
 import mongoose from "mongoose";
 import { WorkspaceModel } from "@/features/workspace/models/workspace.model";
-import { createAccessToken } from "@/features/auth/utils/tokens";
 import { VerificationTokenModel } from "@/features/verification-tokens/models/verificationToken.model";
 import { hashToken } from "@/utils/hashToken";
 import { eventBus } from "@/shared/events/eventBus";
+import { createAuthCookie } from "@/test/helpers/testFactories";
 
 beforeAll(async () => {
   await connectTestDb();
@@ -60,12 +60,12 @@ describe("POST /users/me/change-email/verify", () => {
       isEmailVerified: true,
     });
 
-    const accessToken = createAccessToken(userId.toString());
+    const authCookie = await createAuthCookie(userId);
 
     const response = await request(app)
       .post("/users/me/change-email/verify")
       .send("fake-token")
-      .set("Cookie", [`accessToken=${accessToken}`]);
+      .set("Cookie", authCookie);
 
     expect(response.status).toBe(400);
     expect(response.body).toEqual({ message: "Invalid token" });
@@ -91,7 +91,7 @@ describe("POST /users/me/change-email/verify", () => {
       isEmailVerified: true,
     });
 
-    const accessToken = createAccessToken(userId.toString());
+    const authCookie = await createAuthCookie(userId);
     const token = "expired-email-change-token";
 
     await VerificationTokenModel.create({
@@ -105,7 +105,7 @@ describe("POST /users/me/change-email/verify", () => {
     const response = await request(app)
       .post("/users/me/change-email/verify")
       .send({ token })
-      .set("Cookie", [`accessToken=${accessToken}`]);
+      .set("Cookie", authCookie);
 
     expect(response.status).toBe(410);
     expect(response.body).toEqual({ message: "Token has expired" });
@@ -153,11 +153,11 @@ describe("POST /users/me/change-email/verify", () => {
       expiresAt: new Date(Date.now() + 60_000),
     });
 
-    const accessToken = createAccessToken(userId.toString());
+    const authCookie = await createAuthCookie(userId);
     const response = await request(app)
       .post("/users/me/change-email/verify")
       .send({ token })
-      .set("Cookie", [`accessToken=${accessToken}`]);
+      .set("Cookie", authCookie);
 
     expect(response.status).toBe(403);
     expect(response.body).toEqual({ message: "UserId is wrong" });
@@ -205,11 +205,11 @@ describe("POST /users/me/change-email/verify", () => {
       expiresAt: new Date(Date.now() + 60_000),
     });
 
-    const accessToken = createAccessToken(userId.toString());
+    const authCookie = await createAuthCookie(userId);
     const response = await request(app)
       .post("/users/me/change-email/verify")
       .send({ token })
-      .set("Cookie", [`accessToken=${accessToken}`]);
+      .set("Cookie", authCookie);
 
     expect(response.status).toBe(409);
     expect(response.body).toEqual({ message: "Email already in use" });
@@ -245,11 +245,11 @@ describe("POST /users/me/change-email/verify", () => {
       expiresAt: new Date(Date.now() + 60_000),
     });
 
-    const accessToken = createAccessToken(userId.toString());
+    const authCookie = await createAuthCookie(userId);
     const response = await request(app)
       .post("/users/me/change-email/verify")
       .send({ token })
-      .set("Cookie", [`accessToken=${accessToken}`]);
+      .set("Cookie", authCookie);
 
     expect(response.status).toBe(200);
     expect(response.body).toEqual({ message: "Email successfully changed" });
@@ -287,11 +287,11 @@ describe("POST /users/me/change-email/verify", () => {
       expiresAt: new Date(Date.now() + 60_000),
     });
 
-    const accessToken = createAccessToken(userId.toString());
+    const authCookie = await createAuthCookie(userId);
     const response = await request(app)
       .post("/users/me/change-email/verify")
       .send({ token })
-      .set("Cookie", [`accessToken=${accessToken}`]);
+      .set("Cookie", authCookie);
 
     expect(response.status).toBe(200);
 
@@ -331,17 +331,17 @@ describe("POST /users/me/change-email/verify", () => {
     });
 
     const emitSpy = vi.spyOn(eventBus, "emit").mockResolvedValue(undefined);
-    const accessToken = createAccessToken(userId.toString());
+    const authCookie = await createAuthCookie(userId);
 
     const responses = await Promise.all([
       request(app)
         .post("/users/me/change-email/verify")
         .send({ token })
-        .set("Cookie", [`accessToken=${accessToken}`]),
+        .set("Cookie", authCookie),
       request(app)
         .post("/users/me/change-email/verify")
         .send({ token })
-        .set("Cookie", [`accessToken=${accessToken}`]),
+        .set("Cookie", authCookie),
     ]);
 
     const statuses = responses.map((response) => response.status).sort();

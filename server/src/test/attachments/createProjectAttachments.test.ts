@@ -1,7 +1,6 @@
 import app from "@/app";
 import { ActivityModel } from "@/features/activity/models/activity.model";
 import { AttachmentModel } from "@/features/attachments/models/attachment.model";
-import { createAccessToken } from "@/features/auth/utils/tokens";
 import { ProjectModel } from "@/features/projects/models/project.model";
 import { TaskModel } from "@/features/tasks/models/task.model";
 import { UserModel } from "@/features/users/models/user.modal";
@@ -23,6 +22,7 @@ import {
 } from "@/test/setupTestDb";
 import mongoose from "mongoose";
 import request from "supertest";
+import { createAuthCookie } from "@/test/helpers/testFactories";
 
 vi.mock("@/lib/storage/r2Storage.js", () => ({
   uploadFileToR2: vi.fn(),
@@ -72,10 +72,10 @@ const createAuthedProjectContext = async () => {
     dueDate: "2026-07-15",
   });
 
-  const accessToken = createAccessToken(userId.toString());
+  const authCookie = await createAuthCookie(userId);
 
   return {
-    accessToken,
+    authCookie,
     project,
     user,
     userId,
@@ -96,11 +96,11 @@ describe("POST /projects/:id/files", () => {
   });
 
   it("returns 400 when no files are uploaded", async () => {
-    const { accessToken, project } = await createAuthedProjectContext();
+    const { authCookie, project } = await createAuthedProjectContext();
 
     const response = await request(app)
       .post(`/projects/${project._id}/files`)
-      .set("Cookie", [`accessToken=${accessToken}`])
+      .set("Cookie", authCookie)
       .field("taskId", "");
 
     expect(response.status).toBe(400);
@@ -110,12 +110,12 @@ describe("POST /projects/:id/files", () => {
   it("returns 404 when the project does not exist", async () => {
     vi.mocked(uploadFileToR2).mockResolvedValue("attachments/briefing.pdf");
 
-    const { accessToken } = await createAuthedProjectContext();
+    const { authCookie } = await createAuthedProjectContext();
     const missingProjectId = new mongoose.Types.ObjectId();
 
     const response = await request(app)
       .post(`/projects/${missingProjectId}/files`)
-      .set("Cookie", [`accessToken=${accessToken}`])
+      .set("Cookie", authCookie)
       .attach("files", Buffer.from("fake-file-content"), "briefing.pdf");
 
     expect(response.status).toBe(404);
@@ -126,12 +126,12 @@ describe("POST /projects/:id/files", () => {
   it("returns 404 when taskId does not exist in the project", async () => {
     vi.mocked(uploadFileToR2).mockResolvedValue("attachments/briefing.pdf");
 
-    const { accessToken, project } = await createAuthedProjectContext();
+    const { authCookie, project } = await createAuthedProjectContext();
     const missingTaskId = new mongoose.Types.ObjectId();
 
     const response = await request(app)
       .post(`/projects/${project._id}/files`)
-      .set("Cookie", [`accessToken=${accessToken}`])
+      .set("Cookie", authCookie)
       .field("taskId", missingTaskId.toString())
       .attach("files", Buffer.from("fake-file-content"), "briefing.pdf");
 
@@ -145,12 +145,12 @@ describe("POST /projects/:id/files", () => {
       .mockResolvedValueOnce("attachments/briefing.pdf")
       .mockResolvedValueOnce("attachments/design.png");
 
-    const { accessToken, project, userId, workspaceId } =
+    const { authCookie, project, userId, workspaceId } =
       await createAuthedProjectContext();
 
     const response = await request(app)
       .post(`/projects/${project._id}/files`)
-      .set("Cookie", [`accessToken=${accessToken}`])
+      .set("Cookie", authCookie)
       .attach("files", Buffer.from("pdf-content"), "briefing.pdf")
       .attach("files", Buffer.from("image-content"), "design.png");
 
@@ -195,7 +195,7 @@ describe("POST /projects/:id/files", () => {
   it("uploads files and stores taskId when taskId exists", async () => {
     vi.mocked(uploadFileToR2).mockResolvedValue("attachments/task-file.pdf");
 
-    const { accessToken, project, userId, workspaceId } =
+    const { authCookie, project, userId, workspaceId } =
       await createAuthedProjectContext();
 
     const task = await TaskModel.create({
@@ -210,7 +210,7 @@ describe("POST /projects/:id/files", () => {
 
     const response = await request(app)
       .post(`/projects/${project._id}/files`)
-      .set("Cookie", [`accessToken=${accessToken}`])
+      .set("Cookie", authCookie)
       .field("taskId", task._id.toString())
       .attach("files", Buffer.from("fake-file-content"), "task-file.pdf");
 
@@ -242,12 +242,12 @@ describe("POST /projects/:id/files", () => {
       .mockResolvedValueOnce("attachments/briefing.pdf")
       .mockResolvedValueOnce("attachments/design.png");
 
-    const { accessToken, project, userId, workspaceId } =
+    const { authCookie, project, userId, workspaceId } =
       await createAuthedProjectContext();
 
     const response = await request(app)
       .post(`/projects/${project._id}/files`)
-      .set("Cookie", [`accessToken=${accessToken}`])
+      .set("Cookie", authCookie)
       .attach("files", Buffer.from("pdf-content"), "briefing.pdf")
       .attach("files", Buffer.from("image-content"), "design.png");
 
