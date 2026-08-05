@@ -1,4 +1,4 @@
-import { createBrowserRouter, Navigate } from "react-router";
+import { createBrowserRouter } from "react-router";
 import AppLayout from "@/shared/components/layout/AppLayout";
 import DashboardPage from "@/features/dashboard/pages/DashboardPage";
 import ProjectsPage from "@/features/projects/pages/ProjectsPage";
@@ -22,13 +22,14 @@ import ConfirmEmailChangePage from "@/features/auth/pages/ConfirmEmailChangePage
 import ConfirmPasswordChangePage from "@/features/auth/pages/ConfirmPasswordChangePage";
 import InviteSuccessPage from "@/features/workspace-invites/pages/InviteSuccessPage";
 import NotificationPage from "@/features/notification/pages/NotificationPage";
+import RootRedirect from "@/features/auth/routes/RootRedirect";
 
 export const router = createBrowserRouter([
   {
     path: "/",
     element: <PublicLayout />,
     children: [
-      { index: true, element: <Navigate to="/login" replace /> },
+      { index: true, element: <RootRedirect/> },
       { path: "login", element: <LoginPage /> },
       { path: "register", element: <RegisterPage /> },
       { path: "check-email", element: <CheckEmailPage /> },
