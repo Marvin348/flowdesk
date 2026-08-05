@@ -4,6 +4,7 @@ import { AppError } from "@/utils/AppError";
 import { toTaskDto } from "@/features/tasks/mappers/task.mapper";
 import { touchProject } from "@/features/projects/services/project.service";
 import { Types } from "mongoose";
+import { synchronizeProjectStatus } from "@/features/projects/services/synchronizeProjectStatus.service";
 
 type ChangeTaskStatusInput = {
   taskId: string;
@@ -26,6 +27,11 @@ export const changeTaskStatus = async ({
   }
 
   await touchProject({ projectId: changedTask.projectId, workspaceId });
+
+  await synchronizeProjectStatus({
+    projectId: changedTask.projectId,
+    workspaceId,
+  });
 
   return toTaskDto(changedTask);
 };

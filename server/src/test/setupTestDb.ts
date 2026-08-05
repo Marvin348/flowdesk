@@ -1,21 +1,21 @@
 import mongoose from "mongoose";
-import { MongoMemoryReplSet } from "mongodb-memory-server";
-
-let mongoServer: MongoMemoryReplSet;
+import { inject } from "vitest";
 
 export const connectTestDb = async () => {
-  mongoServer = await MongoMemoryReplSet.create({
-    binary: {
-      version: "7.0.14",
-    },
-    replSet: {
-      count: 1,
-      storageEngine: "wiredTiger",
-    },
-  });
-  const uri = mongoServer.getUri();
+  const mongoUri = inject("mongoUri");
 
-  await mongoose.connect(uri);
+  if (!mongoUri) {
+    throw new Error(
+      "mongoUri was not provided. Check whether Vitest globalSetup is configured correctly.",
+    );
+  }
+
+  const workerId = process.env.VITEST_POOL_ID ?? "0";
+  const dbName = `flowdesk_test_${workerId}`;
+
+  await mongoose.connect(mongoUri, {
+    dbName,
+  });
 };
 
 export const clearTestDb = async () => {
@@ -28,5 +28,4 @@ export const clearTestDb = async () => {
 
 export const disconnectTestDb = async () => {
   await mongoose.disconnect();
-  await mongoServer?.stop();
 };
