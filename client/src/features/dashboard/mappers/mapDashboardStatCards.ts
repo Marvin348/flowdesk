@@ -4,7 +4,6 @@ export type StatCardItem = {
   id: string;
   label: string;
   value: number;
-  iconKey: "projects" | "totalTasks" | "completionRate" | "openTasks";
 };
 
 export const mapDashboardStatCards = (
@@ -15,25 +14,21 @@ export const mapDashboardStatCards = (
       id: "activeProjects",
       label: "Aktive Projekte",
       value: stats.activeProjects,
-      iconKey: "projects",
-    },
-    {
-      id: "allTasks",
-      label: "Alle Aufgaben",
-      value: stats.totalTasks,
-      iconKey: "totalTasks",
     },
     {
       id: "openTasks",
-      label: "Aktive Aufgaben",
+      label: "Offene Aufgaben",
       value: stats.openTasks,
-      iconKey: "openTasks",
     },
     {
-      id: "rate",
-      label: "Completion Rate",
-      value: stats.completionRate,
-      iconKey: "completionRate",
+      id: "overdueTasks",
+      label: "Überfällig",
+      value: stats.overdueTasks,
+    },
+    {
+      id: "tasksDueThisWeek",
+      label: "Diese Woche fällig",
+      value: stats.tasksDueThisWeek,
     },
   ];
 };

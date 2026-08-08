@@ -1,34 +1,35 @@
-import {
-  Folders,
-  ClipboardClock,
-  TrendingUp,
-  ClipboardList,
-} from "lucide-react";
+import type { StatCardItem } from "@/features/dashboard/mappers/mapDashboardStatCards";
+import { CARD_META } from "@/features/dashboard/constants/StatCardMeta";
 
-const ICON_LOOKUP = {
-  projects: { icon: Folders, color: "#FFD580" },
-  totalTasks: { icon: ClipboardList, color: "#DAB1DA" },
-  openTasks: { icon: ClipboardClock, color: "#ADD8E6" },
-  completionRate: { icon: TrendingUp, color: "#90EE90" },
+type DashboardStatCardProps = {
+  stat: StatCardItem;
+  isPrimary?: boolean;
 };
 
-import type { StatCardItem } from "@/features/dashboard/mappers/mapDashboardStatCards";
-
-const DashboardStatCard = ({ stat }: { stat: StatCardItem }) => {
-  const Icon = ICON_LOOKUP[stat.iconKey].icon;
+const DashboardStatCard = ({ stat, isPrimary = false }: DashboardStatCardProps) => {
+  const meta = CARD_META[stat.id];
+  const cardSizeClass = isPrimary ? "min-h-32" : "min-h-28";
+  const valueSizeClass = isPrimary ? "text-4xl" : "text-3xl";
 
   return (
-    <div className="flex items-center justify-center gap-3 border-r last:border-none">
-      <div className="flex flex-col gap-2 truncate">
-        <div className="flex items-center gap-4">
-          <Icon className="shrink-0 text-muted-foreground" />
-          <p className="font-medium text-2xl">
-            {stat.id === "rate" ? `${stat.value}%` : stat.value}
+    <article
+      className={`flex ${cardSizeClass} flex-col justify-between rounded-md border p-4 ${meta.cardClassName}`}
+    >
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <p className="text-xs font-medium uppercase tracking-normal text-muted-foreground">
+            {meta.eyebrow}
           </p>
+          <h2 className="mt-1 text-sm font-medium text-foreground">
+            {stat.label}
+          </h2>
         </div>
-        <p className="text-muted-foreground">{stat.label}</p>
       </div>
-    </div>
+
+      <p className={`mt-6 font-semibold leading-none ${valueSizeClass} ${meta.valueClassName}`}>
+        {stat.value}
+      </p>
+    </article>
   );
 };
 export default DashboardStatCard;

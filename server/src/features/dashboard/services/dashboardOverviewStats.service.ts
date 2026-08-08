@@ -1,38 +1,48 @@
 import { mapDashboardOverviewStats } from "@/features/dashboard/mappers/mapDashboardOverviewStats";
-import { getProjects } from "@/features/projects/services/project.service";
+import { ProjectModel } from "@/features/projects/models/project.model";
 import { TaskModel } from "@/features/tasks/models/task.model";
 import { Types } from "mongoose";
+import { getDashboardDateRange } from "@/features/dashboard/utils/getDashboardDateRange";
 
 export const getOverviewStats = async ({
   workspaceId,
 }: {
   workspaceId: Types.ObjectId;
 }) => {
-  const projects = await getProjects({ workspaceId });
+  const { startOfToday, endOfWeek } = getDashboardDateRange();
 
-  const projectIds = projects.map((project) => project.id);
-  const activeProjects = projects.filter(
-    (project) => project.projectStatus !== "done",
-  ).length;
+  const [activeProjects, openTasks, overdueTasks, tasksDueThisWeek] =
+    await Promise.all([
+      ProjectModel.countDocuments({
+        workspaceId,
+        projectStatus: { $ne: "done" },
+      }),
 
-  const [totalTasks, doneTasks, openTasks] = await Promise.all([
-    TaskModel.countDocuments({ workspaceId, projectId: { $in: projectIds } }),
-    TaskModel.countDocuments({
-      workspaceId,
-      projectId: { $in: projectIds },
-      taskStatus: "done",
-    }),
-    TaskModel.countDocuments({
-      workspaceId,
-      projectId: { $in: projectIds },
-      taskStatus: { $in: ["pending", "in_progress"] },
-    }),
-  ]);
+      TaskModel.countDocuments({
+        workspaceId,
+        taskStatus: { $in: ["pending", "in_progress"] },
+      }),
+
+      TaskModel.countDocuments({
+        workspaceId,
+        taskStatus: { $in: ["pending", "in_progress"] },
+        dueDate: { $lt: startOfToday },
+      }),
+
+      TaskModel.countDocuments({
+        workspaceId,
+        taskStatus: { $in: ["pending", "in_progress"] },
+        dueDate: {
+          $gte: startOfToday,
+          $lte: endOfWeek,
+        },
+      }),
+    ]);
 
   return mapDashboardOverviewStats({
     activeProjects,
-    totalTasks,
-    doneTasks,
     openTasks,
+    overdueTasks,
+    tasksDueThisWeek,
   });
 };

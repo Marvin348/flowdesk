@@ -1,5 +1,4 @@
 import { mapTaskStatusDistribution } from "@/features/dashboard/mappers/mapTaskStatusDistribution";
-import { getProjects } from "@/features/projects/services/project.service";
 import { TaskModel } from "@/features/tasks/models/task.model";
 import { STATUSBASE, type StatusBase } from "@shared/types/StatusBase";
 import { Types } from "mongoose";
@@ -14,14 +13,10 @@ export const getTaskStatusDistribution = async ({
 }: {
   workspaceId: Types.ObjectId;
 }) => {
-  const projects = await getProjects({ workspaceId });
-  const projectIds = projects.map((project) => new Types.ObjectId(project.id));
-
   const statusCounts = await TaskModel.aggregate<TaskStatusCount>([
     {
       $match: {
         workspaceId,
-        projectId: { $in: projectIds },
       },
     },
     {
