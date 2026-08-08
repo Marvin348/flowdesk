@@ -1,6 +1,6 @@
 export type DashboardOverviewStatsDto = {
   activeProjects: number;
-  totalTasks: number;
   openTasks: number;
-  completionRate: number;
+  overdueTasks: number;
+  tasksDueThisWeek: number;
 };

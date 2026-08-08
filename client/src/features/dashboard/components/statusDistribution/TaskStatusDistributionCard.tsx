@@ -5,30 +5,19 @@ const TaskStatusDistributionCard = ({
 }: {
   item: TaskStatusDistributionItem;
 }) => {
+  const { label, value, color } = item;
   return (
-    <div
-      style={{
-        width: item.value ? `${item.value}%` : "100%",
-      }}
-    >
-      <div
-        className="mt-6"
-        style={{
-          borderLeft: `2px solid ${item.color}`,
-        }}
-      >
-        <div className="px-4 pb-2">
-          <p className="mb-2 text-muted-foreground">{item.label}</p>
-          <p className="font-semibold text-lg">{item.value}%</p>
-        </div>
+    <div>
+      <div className="mb-2 flex items-center justify-between">
+        <span>{label}</span>
+        <span className="font-semibold">{value}%</span>
+      </div>
 
+      <div className="h-2 w-full rounded-full bg-muted">
         <div
-          className="h-8 rounded-r-md"
-          style={{
-            background: item.color,
-            opacity: 0.3,
-          }}
-        ></div>
+          className="h-full rounded-full "
+          style={{ width: `${value}%`, backgroundColor: color }}
+        />
       </div>
     </div>
   );

@@ -1,8 +1,9 @@
 import type { TaskStatusDistributionItem } from "@/features/dashboard/mappers/mapTaskStatusDistribution";
-import { EllipsisVertical } from "lucide-react";
-import TaskStatusDistributionCard from "./TaskStatusDistributionCard";
+import { ChartBar } from "lucide-react";
+import TaskStatusDistributionCard from "@/features/dashboard/components/statusDistribution/TaskStatusDistributionCard";
 import CardEmptyState from "@/shared/components/CardEmptyState";
 import { ListChecks } from "lucide-react";
+import DashboardCardHeader from "@/features/dashboard/components/DashboardCardHeader";
 
 const TaskStatusDistribution = ({
   statusItems,
@@ -12,7 +13,13 @@ const TaskStatusDistribution = ({
   const hasNoStatusData = statusItems.every((status) => status.value === 0);
 
   return (
-    <section className="flex flex-col h-full p-4 border rounded-md">
+    <section className="flex flex-col h-full p-4 bg-card border rounded-md">
+      <DashboardCardHeader
+        eyebrow="chart"
+        title="Aufgabenverteilung"
+        icon={<ChartBar className="size-5" />}
+      />
+
       <div className="flex flex-col flex-1">
         {hasNoStatusData ? (
           <CardEmptyState
@@ -22,14 +29,7 @@ const TaskStatusDistribution = ({
           />
         ) : (
           <>
-            <div className="flex items-center justify-between">
-              <h3 className="font-medium text-xl">Aufgabenverteilung</h3>
-              <button>
-                <EllipsisVertical strokeWidth={1} fill="black" />
-              </button>
-            </div>
-
-            <div className="flex items-center gap-6">
+            <div className="flex flex-col gap-6">
               {statusItems.map((item) => (
                 <TaskStatusDistributionCard key={item.id} item={item} />
               ))}

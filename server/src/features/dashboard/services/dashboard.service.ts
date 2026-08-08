@@ -1,30 +1,29 @@
 import { getOverviewStats } from "@/features/dashboard/services/dashboardOverviewStats.service";
-import { getPerformanceHighlights } from "@/features/dashboard/services/dashboardPerformanceHighlights.service";
-import { getTaskPriorityDistribution } from "@/features/dashboard/services/dashboardTaskPriorityDistribution.service";
 import { getTaskStatusDistribution } from "@/features/dashboard/services/dashboardTaskStatusDistribution.service";
-import { getUpcomingTasks } from "@/features/dashboard/services/dashboardUpcomingTasks.service";
 import { Types } from "mongoose";
+import { getDashboardUrgentTasks } from "@/features/dashboard/services/dashboardUrgentTasks.service";
+import { getDashboardAttentionItems } from "@/features/dashboard/services/dashboardAttentionItems.service";
+import type { DashboardOverviewDto } from "@shared/types/dto/dashboard/dashboardOverview.dto";
 
-export const getDashboardOverview = async (workspaceId: Types.ObjectId) => {
+export const getDashboardOverview = async (
+  workspaceId: Types.ObjectId,
+): Promise<DashboardOverviewDto> => {
   const [
     overviewStats,
+    urgentTasks,
+    attentionRequired,
     taskStatusDistribution,
-    taskPriorityDistribution,
-    upcomingTasks,
-    performanceHighlights,
   ] = await Promise.all([
     getOverviewStats({ workspaceId }),
+    getDashboardUrgentTasks({ workspaceId }),
+    getDashboardAttentionItems({ workspaceId }),
     getTaskStatusDistribution({ workspaceId }),
-    getTaskPriorityDistribution({ workspaceId }),
-    getUpcomingTasks({ workspaceId }),
-    getPerformanceHighlights({ workspaceId }),
   ]);
 
   return {
     overviewStats,
+    urgentTasks,
+    attentionRequired,
     taskStatusDistribution,
-    taskPriorityDistribution,
-    upcomingTasks,
-    performanceHighlights,
   };
 };
