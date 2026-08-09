@@ -2,10 +2,10 @@ import { Types } from "mongoose";
 import { createNotification } from "@/features/notification/services/createNotification.service";
 
 type CreateProjectNotificationInput = {
-  workspaceId: Types.ObjectId;
-  actorId: Types.ObjectId;
-  projectId: Types.ObjectId;
-  invitedUserIds: Types.ObjectId[];
+  workspaceId: string;
+  actorId: string;
+  projectId: string;
+  invitedUserIds: string[];
 };
 export const handleCreateProjectNotification = async ({
   workspaceId,
@@ -13,17 +13,21 @@ export const handleCreateProjectNotification = async ({
   projectId,
   invitedUserIds,
 }: CreateProjectNotificationInput) => {
-  const recipientIds = invitedUserIds.filter((id) => !id.equals(actorId));
+  const actorObjectId = new Types.ObjectId(actorId);
+  const workspaceObjectId = new Types.ObjectId(workspaceId);
+  const projectObjectId = new Types.ObjectId(projectId);
+  
+  const recipientIds = invitedUserIds.filter((id) => id !== actorId);
 
   await Promise.all(
     recipientIds.map((recipientId) =>
       createNotification({
-        workspaceId,
-        recipientId,
-        actorId,
+        workspaceId: workspaceObjectId,
+        recipientId: new Types.ObjectId(recipientId),
+        actorId: actorObjectId,
         type: "project_assigned",
         entityType: "project",
-        entityId: projectId,
+        entityId: projectObjectId,
       }),
     ),
   );

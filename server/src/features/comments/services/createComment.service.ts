@@ -7,8 +7,7 @@ import { toCommentDto } from "@/features/comments/mappers/comment.mapper";
 import { createActivity } from "@/features/activity/services/createActivity.service";
 import mongoose, { Types } from "mongoose";
 import type { CreateCommentBody } from "@/features/comments/validation/comments.validator";
-import { eventBus } from "@/shared/events/eventBus";
-import type { CommentReplyEvent } from "@/features/comments/events/commentEvents";
+import { notificationQueue } from "@/queues/notificationQueue";
 
 type CreateCommentInput = {
   workspaceId: Types.ObjectId;
@@ -71,6 +70,7 @@ export const createComment = async ({
 
   await touchProject({ projectId: task.projectId.toString(), workspaceId });
 
+  // refactor later
   await createActivity({
     workspaceId,
     actorId: userId,
@@ -86,12 +86,12 @@ export const createComment = async ({
   });
 
   if (parentComment) {
-    await eventBus.emit<CommentReplyEvent>("comment.reply", {
-      workspaceId,
-      actorId: userObjectId,
-      recipientId: parentComment.userId,
-      commentId: newComment._id,
-      projectId: task.projectId,
+    await notificationQueue.add("comment-reply", {
+      workspaceId: workspaceId.toString(),
+      actorId: userObjectId.toString(),
+      recipientId: parentComment.userId.toString(),
+      commentId: newComment._id.toString(),
+      projectId: task.projectId.toString(),
     });
   }
 

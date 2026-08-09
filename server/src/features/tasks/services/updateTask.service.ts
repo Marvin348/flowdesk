@@ -4,8 +4,7 @@ import { EditTaskBodyParams } from "@/features/tasks/validators/editTask.validat
 import { UserRole } from "@shared/types/user";
 import { AppError } from "@/utils/AppError";
 import { toTaskDto } from "@/features/tasks/mappers/task.mapper";
-import { eventBus } from "@/shared/events/eventBus";
-import type { TaskUpdateEvent } from "../events/taskEvents";
+import { notificationQueue } from "@/queues/notificationQueue";
 
 type UpdateTaskInput = {
   workspaceId: Types.ObjectId;
@@ -49,13 +48,17 @@ export const updateTask = async ({
     throw new AppError("Task not found", 404);
   }
 
-  await eventBus.emit<TaskUpdateEvent>("task.updated", {
-    actorId: userObjectId,
-    workspaceId,
-    taskId: changedTask._id,
-    previousCollaboratorIds: existingTask.collaboratorIds,
-    projectId: existingTask.projectId,
-    currentCollaboratorIds: changedTask.collaboratorIds,
+  await notificationQueue.add("task-updated", {
+    actorId: userObjectId.toString(),
+    workspaceId: workspaceId.toString(),
+    taskId: changedTask._id.toString(),
+    previousCollaboratorIds: existingTask.collaboratorIds.map((id) =>
+      id.toString(),
+    ),
+    projectId: existingTask.projectId.toString(),
+    currentCollaboratorIds: changedTask.collaboratorIds.map((id) =>
+      id.toString(),
+    ),
   });
 
   return toTaskDto(changedTask);

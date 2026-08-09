@@ -1,10 +1,9 @@
 import { UserModel } from "@/features/users/models/user.modal";
 import { VerificationTokenModel } from "@/features/verification-tokens/models/verificationToken.model";
-import { eventBus } from "@/shared/events/eventBus";
 import { AppError } from "@/utils/AppError";
 import { hashToken } from "@/utils/hashToken";
 import mongoose, { Types } from "mongoose";
-import type { PasswordChangedEvent } from "@/features/auth/events/authEvents";
+import { notificationQueue } from "@/queues/notificationQueue";
 
 type VerifyPasswordChangeInput = {
   userId: string;
@@ -77,8 +76,8 @@ export const verifyPasswordChange = async ({
     await user.save({ session });
   });
 
-  await eventBus.emit<PasswordChangedEvent>("user.password_changed", {
-    workspaceId,
-    recipientId: new mongoose.Types.ObjectId(userId),
+  await notificationQueue.add("user-password.changed", {
+    workspaceId: workspaceId.toString(),
+    recipientId: userId,
   });
 };

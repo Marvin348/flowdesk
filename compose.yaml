@@ -9,6 +9,7 @@ services:
     environment:
       MONGOMS_VERSION: "7.0.14"
       MONGOMS_DISTRO: "ubuntu-22.04"
+      BULLMQ_REDIS_URL: redis://redis:6379
 
     env_file:
       - server/.env

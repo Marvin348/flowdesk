@@ -1,29 +1,37 @@
 import { Types } from "mongoose";
-import type { TaskDocument } from "@/features/tasks/types/task.document";
 import { createNotification } from "@/features/notification/services/createNotification.service";
 
 type HandleTaskCreatedNotification = {
-  actorId: Types.ObjectId;
-  workspaceId: Types.ObjectId;
-  task: TaskDocument;
+  actorId: string;
+  workspaceId: string;
+  taskId: string;
+  projectId: string;
+  collaboratorIds: string[];
 };
 export const handleTaskCreatedNotification = async ({
   actorId,
   workspaceId,
-  task,
+  taskId,
+  projectId,
+  collaboratorIds,
 }: HandleTaskCreatedNotification) => {
-  const recipientIds = task.collaboratorIds.filter((id) => !id.equals(actorId));
+  const actorObjectId = new Types.ObjectId(actorId);
+  const workspaceObjectId = new Types.ObjectId(workspaceId);
+  const taskObjectId = new Types.ObjectId(taskId);
+  const projectObjectId = new Types.ObjectId(projectId);
+  
+  const recipientIds = collaboratorIds.filter((id) => id !== actorId);
 
   await Promise.all(
     recipientIds.map((recipientId) =>
       createNotification({
-        workspaceId,
-        actorId,
-        recipientId,
+        workspaceId: workspaceObjectId,
+        actorId: actorObjectId,
+        recipientId: new Types.ObjectId(recipientId),
         type: "task_assigned",
         entityType: "task",
-        entityId: task._id,
-        projectId: task.projectId,
+        entityId: taskObjectId,
+        projectId: projectObjectId,
       }),
     ),
   );

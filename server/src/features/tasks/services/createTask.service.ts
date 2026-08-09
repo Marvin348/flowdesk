@@ -9,8 +9,7 @@ import { toTaskDto } from "@/features/tasks/mappers/task.mapper";
 import { createActivity } from "@/features/activity/services/createActivity.service";
 import { UserModel } from "@/features/users/models/user.modal";
 import mongoose, { Types } from "mongoose";
-import { eventBus } from "@/shared/events/eventBus";
-import type { TaskCreatedEvent } from "@/features/tasks/events/taskEvents";
+import { notificationQueue } from "@/queues/notificationQueue";
 
 type CreateTaskInput = {
   input: CreateTaskFields;
@@ -72,6 +71,7 @@ export const createTask = async ({
 
   await touchProject({ projectId: projectObjectId, workspaceId });
 
+  // refactor later
   await createActivity({
     workspaceId,
     actorId: userId,
@@ -84,10 +84,12 @@ export const createTask = async ({
     },
   });
 
-  await eventBus.emit<TaskCreatedEvent>("task.created", {
-    actorId: userObjectId,
-    workspaceId,
-    task: newTask,
+  await notificationQueue.add("task-assigned", {
+    actorId: userObjectId.toString(),
+    workspaceId: workspaceId.toString(),
+    taskId: newTask._id.toString(),
+    projectId: newTask.projectId.toString(),
+    collaboratorIds: newTask.collaboratorIds.map((id) => id.toString()),
   });
 
   return toTaskDto(newTask.toObject());

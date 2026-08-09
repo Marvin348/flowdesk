@@ -4,8 +4,7 @@ import mongoose from "mongoose";
 import { ProjectModel } from "@/features/projects/models/project.model";
 import { AppError } from "@/utils/AppError";
 import { UserModel } from "@/features/users/models/user.modal";
-import { eventBus } from "@/shared/events/eventBus";
-import { ProjectMembersAddedEvent } from "@/features/projects/events/projectEvent";
+import { notificationQueue } from "@/queues/notificationQueue";
 
 type AddProjectMembersInput = {
   workspaceId: Types.ObjectId;
@@ -71,11 +70,11 @@ export const addProjectMembers = async ({
   );
 
   if (addedUserIds.length > 0) {
-    await eventBus.emit<ProjectMembersAddedEvent>("project.members_added", {
-      actorId: userObjectId,
-      workspaceId,
-      projectId: projectObjectId,
-      addedUserIds,
+    await notificationQueue.add("project-members.assigned", {
+      actorId: userObjectId.toString(),
+      workspaceId: workspaceId.toString(),
+      projectId: projectObjectId.toString(),
+      addedUserIds: addedUserIds.map((id) => id.toString()),
     });
   }
 };

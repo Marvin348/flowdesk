@@ -3,8 +3,7 @@ import { AppError } from "@/utils/AppError";
 import { UserModel } from "@/features/users/models/user.modal";
 import { toUserDto } from "@/features/users/mappers/user.mapper";
 import mongoose, { Types } from "mongoose";
-import { eventBus } from "@/shared/events/eventBus";
-import type { ChangeUserRoleEvent } from "@/features/users/events/userEvents";
+import { notificationQueue } from "@/queues/notificationQueue";
 
 type UpdateUserRoleInput = {
   workspaceId: Types.ObjectId;
@@ -49,10 +48,10 @@ export const updateUserRole = async ({
     throw new AppError("User not found", 404);
   }
 
-  await eventBus.emit<ChangeUserRoleEvent>("user.role_changed", {
-    actorId: currentUserObjectId,
-    workspaceId,
-    recipientId: targetUserObjectId,
+  await notificationQueue.add("user-role.changed", {
+    actorId: currentUserObjectId.toString(),
+    workspaceId: workspaceId.toString(),
+    recipientId: targetUserObjectId.toString(),
     previousRole: user.role,
     currentRole: role,
   });

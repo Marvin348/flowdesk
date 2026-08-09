@@ -3,8 +3,7 @@ import { AppError } from "@/utils/AppError";
 import { hashToken } from "@/utils/hashToken";
 import { UserModel } from "@/features/users/models/user.modal";
 import mongoose, { Types } from "mongoose";
-import { eventBus } from "@/shared/events/eventBus";
-import type { EmailChangedEvent } from "@/features/users/events/userEvents";
+import { notificationQueue } from "@/queues/notificationQueue";
 
 type VerifyChangeEmailInput = {
   workspaceId: Types.ObjectId;
@@ -85,8 +84,8 @@ export const verifyChangeEmail = async ({
     await user.save({ session });
   });
 
-  await eventBus.emit<EmailChangedEvent>("user.email_changed", {
-    workspaceId,
-    recipientId: new mongoose.Types.ObjectId(userId),
+  await notificationQueue.add("user-email.changed", {
+    workspaceId: workspaceId.toString(),
+    recipientId: userId,
   });
 };
