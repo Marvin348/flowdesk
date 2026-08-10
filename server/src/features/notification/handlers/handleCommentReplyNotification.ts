@@ -1,38 +1,36 @@
-import type { UserRole } from "@shared/types/user";
 import { Types } from "mongoose";
 import { createNotification } from "@/features/notification/services/createNotification.service";
 
-type ChangeUserRoleInput = {
+type HandleCommentReplyNotificationInput = {
   workspaceId: string;
   actorId: string;
   recipientId: string;
-  previousRole: UserRole;
-  currentRole: UserRole;
+  commentId: string;
+  projectId: string;
 };
 
-export const handleChangeUserRoleNotification = async ({
+export const handleCommentReplyNotification = async ({
   workspaceId,
   actorId,
   recipientId,
-  previousRole,
-  currentRole,
-}: ChangeUserRoleInput) => {
+  commentId,
+  projectId,
+}: HandleCommentReplyNotificationInput) => {
   if (actorId === recipientId) return;
 
   const actorObjectId = new Types.ObjectId(actorId);
   const workspaceObjectId = new Types.ObjectId(workspaceId);
   const recipientObjectId = new Types.ObjectId(recipientId);
+  const commentObjectId = new Types.ObjectId(commentId);
+  const projectObjectId = new Types.ObjectId(projectId);
 
   await createNotification({
     workspaceId: workspaceObjectId,
     actorId: actorObjectId,
     recipientId: recipientObjectId,
-    type: "role_changed",
-    entityType: "user",
-    entityId: recipientObjectId,
-    metadata: {
-      previousRole,
-      currentRole,
-    },
+    type: "comment_reply",
+    entityType: "comment",
+    entityId: commentObjectId,
+    projectId: projectObjectId,
   });
 };

@@ -9,6 +9,7 @@ services:
     environment:
       MONGOMS_VERSION: "7.0.14"
       MONGOMS_DISTRO: "ubuntu-22.04"
+      BULLMQ_REDIS_URL: redis://redis:6379
 
     env_file:
       - server/.env
@@ -22,6 +23,29 @@ services:
       - ./server:/app/server
       - ./shared:/app/shared
       - /app/server/node_modules
+
+  notification-worker:
+    build:
+      context: .
+      dockerfile: server/Dockerfile
+
+    container_name: flowdesk-notification-worker-container
+
+    environment:
+      BULLMQ_REDIS_URL: redis://redis:6379
+
+    env_file:
+      - server/.env
+
+    command: npm run worker:notifications:dev
+
+    volumes:
+      - ./server:/app/server
+      - ./shared:/app/shared
+      - /app/server/node_modules
+
+    depends_on:
+      - redis
 
   client:
     build:

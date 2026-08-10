@@ -1,4 +1,3 @@
-import app from "@/app";
 import {
   afterAll,
   afterEach,
@@ -9,6 +8,8 @@ import {
   it,
   vi,
 } from "vitest";
+
+import app from "@/app";
 import {
   clearTestDb,
   connectTestDb,
@@ -22,8 +23,7 @@ import {
 } from "@/test/helpers/testFactories";
 import mongoose from "mongoose";
 import { TaskModel } from "@/features/tasks/models/task.model";
-import { eventBus } from "@/shared/events/eventBus";
-import type { TaskUpdateEvent } from "@/features/tasks/events/taskEvents";
+import { notificationQueue } from "@/queues/notificationQueue";
 
 beforeAll(async () => {
   await connectTestDb();
@@ -100,7 +100,8 @@ describe("PATCH /tasks/:taskId", () => {
       tags: ["old"],
     });
     
-    const emitSpy = vi.spyOn(eventBus, "emit").mockResolvedValue(undefined);
+    const queueAddMock = vi.mocked(notificationQueue.add);
+    queueAddMock.mockResolvedValue(undefined as never);
 
     const response = await request(app)
       .patch(`/tasks/${task._id.toString()}`)
@@ -139,23 +140,14 @@ describe("PATCH /tasks/:taskId", () => {
     expect(updatedTask.description).toBe("Updated description");
     expect(updatedTask.tags).toEqual(["new", "api"]);
 
-    expect(emitSpy).toHaveBeenCalledOnce();
-
-    const [eventName, payload] = emitSpy.mock.calls[0];
-    const taskUpdatedPayload = payload as TaskUpdateEvent;
-
-    expect(eventName).toBe("task.updated");
-    expect(taskUpdatedPayload.actorId.toString()).toBe(userId.toString());
-    expect(taskUpdatedPayload.workspaceId.toString()).toBe(
-      workspaceId.toString(),
-    );
-    expect(taskUpdatedPayload.taskId.toString()).toBe(task._id.toString());
-    expect(taskUpdatedPayload.projectId.toString()).toBe(projectId.toString());
-    expect(taskUpdatedPayload.previousCollaboratorIds.map(String)).toEqual([
-      userId.toString(),
-    ]);
-    expect(taskUpdatedPayload.currentCollaboratorIds.map(String)).toEqual([
-      newCollaborator._id.toString(),
-    ]);
+    expect(queueAddMock).toHaveBeenCalledOnce();
+    expect(queueAddMock).toHaveBeenCalledWith("task-updated", {
+      actorId: userId.toString(),
+      workspaceId: workspaceId.toString(),
+      taskId: task._id.toString(),
+      previousCollaboratorIds: [userId.toString()],
+      projectId: projectId.toString(),
+      currentCollaboratorIds: [newCollaborator._id.toString()],
+    });
   });
 });

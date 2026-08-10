@@ -2,12 +2,12 @@ import { Types } from "mongoose";
 import { createNotification } from "@/features/notification/services/createNotification.service";
 
 type TaskUpdatedNotificationInput = {
-  actorId: Types.ObjectId;
-  workspaceId: Types.ObjectId;
-  taskId: Types.ObjectId;
-  projectId: Types.ObjectId;
-  previousCollaboratorIds: Types.ObjectId[];
-  currentCollaboratorIds: Types.ObjectId[];
+  actorId: string;
+  workspaceId: string;
+  taskId: string;
+  projectId: string;
+  previousCollaboratorIds: string[];
+  currentCollaboratorIds: string[];
 };
 
 export const handleTaskUpdatedNotification = async ({
@@ -18,22 +18,27 @@ export const handleTaskUpdatedNotification = async ({
   previousCollaboratorIds,
   currentCollaboratorIds,
 }: TaskUpdatedNotificationInput) => {
+  const actorObjectId = new Types.ObjectId(actorId);
+  const workspaceObjectId = new Types.ObjectId(workspaceId);
+  const taskObjectId = new Types.ObjectId(taskId);
+  const projectObjectId = new Types.ObjectId(projectId);
+  
   const addedCollaboratorIds = currentCollaboratorIds.filter(
-    (newId) => !previousCollaboratorIds.some((oldId) => oldId.equals(newId)),
+    (newId) => !previousCollaboratorIds.some((oldId) => oldId === newId),
   );
 
-  const recipientIds = addedCollaboratorIds.filter((id) => !id.equals(actorId));
+  const recipientIds = addedCollaboratorIds.filter((id) => id !== actorId);
 
   await Promise.all(
     recipientIds.map((recipientId) =>
       createNotification({
-        workspaceId,
-        recipientId,
-        actorId,
+        workspaceId: workspaceObjectId,
+        recipientId: new Types.ObjectId(recipientId),
+        actorId: actorObjectId,
         type: "task_assigned",
         entityType: "task",
-        entityId: taskId,
-        projectId,
+        entityId: taskObjectId,
+        projectId: projectObjectId,
       }),
     ),
   );

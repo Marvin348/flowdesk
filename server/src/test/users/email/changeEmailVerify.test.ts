@@ -1,5 +1,3 @@
-import app from "@/app";
-import request from "supertest";
 import {
   beforeAll,
   beforeEach,
@@ -10,6 +8,9 @@ import {
   it,
   vi,
 } from "vitest";
+
+import app from "@/app";
+import request from "supertest";
 import {
   clearTestDb,
   connectTestDb,
@@ -20,8 +21,8 @@ import mongoose from "mongoose";
 import { WorkspaceModel } from "@/features/workspace/models/workspace.model";
 import { VerificationTokenModel } from "@/features/verification-tokens/models/verificationToken.model";
 import { hashToken } from "@/utils/hashToken";
-import { eventBus } from "@/shared/events/eventBus";
 import { createAuthCookie } from "@/test/helpers/testFactories";
+import { notificationQueue } from "@/queues/notificationQueue";
 
 beforeAll(async () => {
   await connectTestDb();
@@ -330,7 +331,8 @@ describe("POST /users/me/change-email/verify", () => {
       expiresAt: new Date(Date.now() + 60_000),
     });
 
-    const emitSpy = vi.spyOn(eventBus, "emit").mockResolvedValue(undefined);
+    const queueAddMock = vi.mocked(notificationQueue.add);
+    queueAddMock.mockResolvedValue(undefined as never);
     const authCookie = await createAuthCookie(userId);
 
     const responses = await Promise.all([
@@ -361,10 +363,10 @@ describe("POST /users/me/change-email/verify", () => {
     );
     expect(usedToken?.usedAt).toBeInstanceOf(Date);
 
-    expect(emitSpy).toHaveBeenCalledTimes(1);
-    expect(emitSpy).toHaveBeenCalledWith("user.email_changed", {
-      workspaceId,
-      recipientId: userId,
+    expect(queueAddMock).toHaveBeenCalledTimes(1);
+    expect(queueAddMock).toHaveBeenCalledWith("user-email.changed", {
+      workspaceId: workspaceId.toString(),
+      recipientId: userId.toString(),
     });
   });
 });

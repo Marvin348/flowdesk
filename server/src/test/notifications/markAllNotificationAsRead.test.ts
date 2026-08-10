@@ -1,13 +1,6 @@
 import app from "@/app";
 import { NotificationModel } from "@/features/notification/models/notification.model";
-import {
-  afterAll,
-  beforeAll,
-  beforeEach,
-  describe,
-  expect,
-  it,
-} from "vitest";
+import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
 import {
   clearTestDb,
   connectTestDb,
@@ -40,55 +33,62 @@ describe("PATCH /notifications/read-all", () => {
     const otherRecipient = await createUser({ workspaceId });
     const otherWorkspaceId = new mongoose.Types.ObjectId();
     const project = await createProject({ workspaceId });
+    const readProject = await createProject({ workspaceId });
+    const otherWorkspaceProjectId = new mongoose.Types.ObjectId();
 
     const readAt = new Date("2026-07-20T10:00:00.000Z");
 
-    const [firstUnreadNotification, secondUnreadNotification, readNotification] =
-      await NotificationModel.create([
-        {
-          workspaceId,
-          actorId: actor._id,
+    const otherProject = await createProject({ workspaceId });
+
+    const [
+      firstUnreadNotification,
+      secondUnreadNotification,
+      readNotification,
+    ] = await NotificationModel.create([
+      {
+        workspaceId,
+        actorId: actor._id,
+        recipientId: userId,
+        type: "project_assigned",
+        entityType: "project",
+        entityId: project._id,
+        isRead: false,
+      },
+      {
+        workspaceId,
+        actorId: actor._id,
+        recipientId: userId,
+        type: "project_due_soon",
+        entityType: "project",
+        entityId: otherProject._id,
+        isRead: false,
+      },
+      {
+        workspaceId,
+        actorId: actor._id,
           recipientId: userId,
           type: "project_assigned",
           entityType: "project",
-          entityId: project._id,
-          isRead: false,
-        },
-        {
-          workspaceId,
-          actorId: actor._id,
-          recipientId: userId,
-          type: "project_due_soon",
-          entityType: "project",
-          entityId: project._id,
-          isRead: false,
-        },
-        {
-          workspaceId,
-          actorId: actor._id,
-          recipientId: userId,
-          type: "project_assigned",
-          entityType: "project",
-          entityId: project._id,
+          entityId: readProject._id,
           isRead: true,
           readAt,
         },
-        {
-          workspaceId,
-          actorId: actor._id,
-          recipientId: otherRecipient._id,
-          type: "project_assigned",
-          entityType: "project",
-          entityId: project._id,
-          isRead: false,
-        },
-        {
-          workspaceId: otherWorkspaceId,
-          actorId: actor._id,
+      {
+        workspaceId,
+        actorId: actor._id,
+        recipientId: otherRecipient._id,
+        type: "project_assigned",
+        entityType: "project",
+        entityId: otherProject._id,
+        isRead: false,
+      },
+      {
+        workspaceId: otherWorkspaceId,
+        actorId: actor._id,
           recipientId: userId,
           type: "project_assigned",
           entityType: "project",
-          entityId: project._id,
+          entityId: otherWorkspaceProjectId,
           isRead: false,
         },
       ]);

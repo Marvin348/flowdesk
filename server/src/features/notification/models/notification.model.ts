@@ -99,6 +99,30 @@ notificationSchema.index(
   },
 );
 
+notificationSchema.index(
+  {
+    recipientId: 1,
+    type: 1,
+    entityId: 1,
+  },
+  {
+    unique: true,
+    partialFilterExpression: {
+      type: {
+        $in: [
+          "task_assigned",
+          "project_assigned",
+          "comment_mention",
+          "comment_reply",
+          "role_changed",
+          "password_changed",
+          "email_changed",
+        ],
+      },
+    },
+  },
+);
+
 export const NotificationModel = mongoose.model<NotificationDocument>(
   "Notification",
   notificationSchema,

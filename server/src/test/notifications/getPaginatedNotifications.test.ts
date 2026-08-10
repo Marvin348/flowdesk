@@ -88,6 +88,7 @@ describe("GET /notifications", () => {
       projectId: project._id,
       title: "Notification Task",
     });
+    const otherWorkspaceProjectId = new mongoose.Types.ObjectId();
     const matchingProjectNotificationId = new mongoose.Types.ObjectId();
     const matchingTaskNotificationId = new mongoose.Types.ObjectId();
 
@@ -128,7 +129,7 @@ describe("GET /notifications", () => {
         recipientId: userId,
         type: "project_assigned",
         entityType: "project",
-        entityId: project._id,
+        entityId: otherWorkspaceProjectId,
         isRead: false,
       },
     ]);

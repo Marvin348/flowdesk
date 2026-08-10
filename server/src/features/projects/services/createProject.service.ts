@@ -5,8 +5,7 @@ import { createActivity } from "@/features/activity/services/createActivity.serv
 import { AppError } from "@/utils/AppError";
 import { UserModel } from "@/features/users/models/user.modal";
 import mongoose, { Types } from "mongoose";
-import { eventBus } from "@/shared/events/eventBus";
-import { ProjectCreatedEvent } from "@/features/projects/events/projectEvent";
+import { notificationQueue } from "@/queues/notificationQueue";
 
 type CreateProjectInput = {
   input: CreateProjectParams;
@@ -65,11 +64,11 @@ export const createProject = async ({
     },
   });
 
-  await eventBus.emit<ProjectCreatedEvent>("project.created", {
-    actorId: userObjectId,
-    workspaceId,
-    projectId: newProject._id,
-    invitedUserIds: newProject.invitedUserIds,
+  await notificationQueue.add("project-assigned", {
+    actorId: userObjectId.toString(),
+    workspaceId: workspaceId.toString(),
+    projectId: newProject._id.toString(),
+    invitedUserIds: newProject.invitedUserIds.map((id) => id.toString()),
   });
 
   return toProjectDto(newProject.toObject());

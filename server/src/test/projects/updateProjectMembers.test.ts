@@ -1,5 +1,3 @@
-import app from "@/app";
-import { ProjectModel } from "@/features/projects/models/project.model";
 import {
   afterAll,
   afterEach,
@@ -10,6 +8,9 @@ import {
   it,
   vi,
 } from "vitest";
+
+import app from "@/app";
+import { ProjectModel } from "@/features/projects/models/project.model";
 import {
   clearTestDb,
   connectTestDb,
@@ -22,8 +23,7 @@ import {
   createUser,
 } from "@/test/helpers/testFactories";
 import mongoose from "mongoose";
-import { eventBus } from "@/shared/events/eventBus";
-import type { ProjectMembersAddedEvent } from "@/features/projects/events/projectEvent";
+import { notificationQueue } from "@/queues/notificationQueue";
 
 beforeAll(async () => {
   await connectTestDb();
@@ -138,7 +138,9 @@ describe("PATCH /projects/:projectId/members", () => {
     const firstUser = await createUser({ workspaceId });
     const secondUser = await createUser({ workspaceId });
     const project = await createProject({ workspaceId });
-    const emitSpy = vi.spyOn(eventBus, "emit").mockResolvedValue(undefined);
+
+    const queueAddMock = vi.mocked(notificationQueue.add);
+    queueAddMock.mockResolvedValue(undefined as never);
 
     const response = await request(app)
       .patch(`/projects/${project._id.toString()}/members`)
@@ -154,26 +156,23 @@ describe("PATCH /projects/:projectId/members", () => {
 
     const updatedProject = await ProjectModel.findById(project._id).lean();
     expect(updatedProject).not.toBeNull();
-    expect(updatedProject?.invitedUserIds.map((id) => id.toString()).sort()).toEqual(
-      [firstUser._id.toString(), secondUser._id.toString()].sort(),
-    );
+    expect(
+      updatedProject?.invitedUserIds.map((id) => id.toString()).sort(),
+    ).toEqual([firstUser._id.toString(), secondUser._id.toString()].sort());
 
-    expect(emitSpy).toHaveBeenCalledOnce();
-
-    const [eventName, payload] = emitSpy.mock.calls[0];
-    const membersAddedPayload = payload as ProjectMembersAddedEvent;
-
-    expect(eventName).toBe("project.members_added");
-    expect(membersAddedPayload.actorId.toString()).toBe(userId.toString());
-    expect(membersAddedPayload.workspaceId.toString()).toBe(
-      workspaceId.toString(),
-    );
-    expect(membersAddedPayload.projectId.toString()).toBe(
-      project._id.toString(),
-    );
-    expect(membersAddedPayload.addedUserIds.map(String).sort()).toEqual(
-      [firstUser._id.toString(), secondUser._id.toString()].sort(),
-    );
+    expect(queueAddMock).toHaveBeenCalledOnce();
+    expect(queueAddMock).toHaveBeenCalledWith("project-members.assigned", {
+      actorId: userId.toString(),
+      workspaceId: workspaceId.toString(),
+      projectId: project._id.toString(),
+      addedUserIds: expect.arrayContaining([
+        firstUser._id.toString(),
+        secondUser._id.toString(),
+      ]),
+    });
+    expect(
+      queueAddMock.mock.calls[0][1].addedUserIds,
+    ).toHaveLength(2);
   });
 
   it("returns 200 and does not duplicate users that are already in the project", async () => {
@@ -184,7 +183,9 @@ describe("PATCH /projects/:projectId/members", () => {
       workspaceId,
       invitedUserIds: [existingUser._id],
     });
-    const emitSpy = vi.spyOn(eventBus, "emit").mockResolvedValue(undefined);
+    
+    const queueAddMock = vi.mocked(notificationQueue.add);
+    queueAddMock.mockResolvedValue(undefined as never);
 
     const response = await request(app)
       .patch(`/projects/${project._id.toString()}/members`)
@@ -211,21 +212,12 @@ describe("PATCH /projects/:projectId/members", () => {
       invitedUserIds.filter((id) => id === existingUser._id.toString()),
     ).toHaveLength(1);
 
-    expect(emitSpy).toHaveBeenCalledOnce();
-
-    const [eventName, payload] = emitSpy.mock.calls[0];
-    const membersAddedPayload = payload as ProjectMembersAddedEvent;
-
-    expect(eventName).toBe("project.members_added");
-    expect(membersAddedPayload.actorId.toString()).toBe(userId.toString());
-    expect(membersAddedPayload.workspaceId.toString()).toBe(
-      workspaceId.toString(),
-    );
-    expect(membersAddedPayload.projectId.toString()).toBe(
-      project._id.toString(),
-    );
-    expect(membersAddedPayload.addedUserIds.map(String)).toEqual([
-      newUser._id.toString(),
-    ]);
+    expect(queueAddMock).toHaveBeenCalledOnce();
+    expect(queueAddMock).toHaveBeenCalledWith("project-members.assigned", {
+      actorId: userId.toString(),
+      workspaceId: workspaceId.toString(),
+      projectId: project._id.toString(),
+      addedUserIds: [newUser._id.toString()],
+    });
   });
 });
