@@ -25,8 +25,7 @@ import {
 import { ActivityModel } from "@/features/activity/models/activity.model";
 import { CommentModel } from "@/features/comments/models/comment.model";
 import mongoose from "mongoose";
-import { eventBus } from "@/shared/events/eventBus";
-import type { CommentReplyEvent } from "@/features/comments/events/commentEvents";
+import { notificationQueue } from "@/queues/notificationQueue";
 
 beforeAll(async () => {
   await connectTestDb();
@@ -199,7 +198,9 @@ describe("POST /comments", () => {
       message: "Parent comment",
     });
 
-    const emitSpy = vi.spyOn(eventBus, "emit").mockResolvedValue(undefined);
+    const queueAddMock = vi.mocked(notificationQueue.add);
+    queueAddMock.mockClear();
+    queueAddMock.mockResolvedValue(undefined as never);
 
     const response = await request(app)
       .post("/comments")
@@ -220,22 +221,13 @@ describe("POST /comments", () => {
       parentCommentId: parentComment._id.toString(),
     });
 
-    expect(emitSpy).toHaveBeenCalledOnce();
-
-    const [eventName, payload] = emitSpy.mock.calls[0];
-    const commentReplyPayload = payload as CommentReplyEvent;
-
-    expect(eventName).toBe("comment.reply");
-    expect(commentReplyPayload.workspaceId.toString()).toBe(
-      workspaceId.toString(),
-    );
-    expect(commentReplyPayload.actorId.toString()).toBe(userId.toString());
-    expect(commentReplyPayload.recipientId.toString()).toBe(
-      parentAuthor._id.toString(),
-    );
-    expect(commentReplyPayload.commentId.toString()).toBe(
-      response.body.data.id,
-    );
-    expect(commentReplyPayload.projectId.toString()).toBe(projectId.toString());
+    expect(queueAddMock).toHaveBeenCalledOnce();
+    expect(queueAddMock).toHaveBeenCalledWith("comment-reply", {
+      workspaceId: workspaceId.toString(),
+      actorId: userId.toString(),
+      recipientId: parentAuthor._id.toString(),
+      commentId: response.body.data.id,
+      projectId: projectId.toString(),
+    });
   });
 });

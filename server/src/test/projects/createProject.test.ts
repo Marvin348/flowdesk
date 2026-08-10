@@ -1,5 +1,3 @@
-import app from "@/app";
-import { ProjectModel } from "@/features/projects/models/project.model";
 import {
   afterAll,
   afterEach,
@@ -10,6 +8,9 @@ import {
   it,
   vi,
 } from "vitest";
+
+import app from "@/app";
+import { ProjectModel } from "@/features/projects/models/project.model";
 import {
   clearTestDb,
   connectTestDb,
@@ -21,8 +22,7 @@ import {
   createUser,
 } from "@/test/helpers/testFactories";
 import mongoose from "mongoose";
-import { eventBus } from "@/shared/events/eventBus";
-import type { ProjectCreatedEvent } from "@/features/projects/events/projectEvent";
+import { notificationQueue } from "@/queues/notificationQueue";
 
 beforeAll(async () => {
   await connectTestDb();
@@ -114,7 +114,9 @@ describe("POST /projects", () => {
       workspaceId,
       role: "member",
     });
-    const emitSpy = vi.spyOn(eventBus, "emit").mockResolvedValue(undefined);
+    
+    const queueAddMock = vi.mocked(notificationQueue.add);
+    queueAddMock.mockResolvedValue(undefined as never);
 
     const response = await request(app)
       .post("/projects")
@@ -140,21 +142,12 @@ describe("POST /projects", () => {
     const project = await ProjectModel.findById(response.body.data.id);
     expect(project).not.toBeNull();
 
-    expect(emitSpy).toHaveBeenCalledOnce();
-
-    const [eventName, payload] = emitSpy.mock.calls[0];
-    const projectCreatedPayload = payload as ProjectCreatedEvent;
-
-    expect(eventName).toBe("project.created");
-    expect(projectCreatedPayload.actorId.toString()).toBe(userId.toString());
-    expect(projectCreatedPayload.workspaceId.toString()).toBe(
-      workspaceId.toString(),
-    );
-    expect(projectCreatedPayload.projectId.toString()).toBe(
-      response.body.data.id,
-    );
-    expect(projectCreatedPayload.invitedUserIds.map(String)).toEqual([
-      invitedUser._id.toString(),
-    ]);
+    expect(queueAddMock).toHaveBeenCalledOnce();
+    expect(queueAddMock).toHaveBeenCalledWith("project-assigned", {
+      actorId: userId.toString(),
+      workspaceId: workspaceId.toString(),
+      projectId: response.body.data.id,
+      invitedUserIds: [invitedUser._id.toString()],
+    });
   });
 });

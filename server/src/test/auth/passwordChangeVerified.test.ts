@@ -1,7 +1,3 @@
-import app from "@/app";
-import { hashPassword } from "@/features/auth/utils/password";
-import { VerificationTokenModel } from "@/features/verification-tokens/models/verificationToken.model";
-import request from "supertest";
 import {
   beforeAll,
   beforeEach,
@@ -12,6 +8,11 @@ import {
   it,
   vi,
 } from "vitest";
+
+import app from "@/app";
+import { hashPassword } from "@/features/auth/utils/password";
+import { VerificationTokenModel } from "@/features/verification-tokens/models/verificationToken.model";
+import request from "supertest";
 import {
   clearTestDb,
   connectTestDb,
@@ -21,7 +22,7 @@ import { createAuthedUserContext } from "@/test/helpers/testFactories";
 import { hashToken } from "@/utils/hashToken";
 import mongoose from "mongoose";
 import { UserModel } from "@/features/users/models/user.modal";
-import { eventBus } from "@/shared/events/eventBus";
+import { notificationQueue } from "@/queues/notificationQueue";
 
 beforeAll(async () => {
   await connectTestDb();
@@ -160,7 +161,11 @@ describe("POST auth/password/change/verify", () => {
 
   it("changes the password successfully", async () => {
     const token = "valid-password-change-token";
-    const { authCookie, userId } = await createAuthedUserContext();
+    const { authCookie, userId, workspaceId } = await createAuthedUserContext();
+    
+    const queueAddMock = vi.mocked(notificationQueue.add);
+    queueAddMock.mockClear();
+    queueAddMock.mockResolvedValue(undefined as never);
 
     const verificationToken = await VerificationTokenModel.create({
       userId,
@@ -191,6 +196,12 @@ describe("POST auth/password/change/verify", () => {
     });
 
     expect(usedToken?.usedAt).toBeInstanceOf(Date);
+
+    expect(queueAddMock).toHaveBeenCalledOnce();
+    expect(queueAddMock).toHaveBeenCalledWith("user-password.changed", {
+      workspaceId: workspaceId.toString(),
+      recipientId: userId.toString(),
+    });
   });
 
   it("allows only one concurrent request to verify a password change token", async () => {
@@ -206,7 +217,9 @@ describe("POST auth/password/change/verify", () => {
       expiresAt: new Date(Date.now() + 60_000),
     });
 
-    const emitSpy = vi.spyOn(eventBus, "emit").mockResolvedValue(undefined);
+    const queueAddMock = vi.mocked(notificationQueue.add);
+    queueAddMock.mockClear();
+    queueAddMock.mockResolvedValue(undefined as never);
 
     const responses = await Promise.all([
       request(app)
@@ -240,10 +253,10 @@ describe("POST auth/password/change/verify", () => {
     );
     expect(usedToken?.usedAt).toBeInstanceOf(Date);
 
-    expect(emitSpy).toHaveBeenCalledTimes(1);
-    expect(emitSpy).toHaveBeenCalledWith("user.password_changed", {
-      workspaceId,
-      recipientId: userId,
+    expect(queueAddMock).toHaveBeenCalledTimes(1);
+    expect(queueAddMock).toHaveBeenCalledWith("user-password.changed", {
+      workspaceId: workspaceId.toString(),
+      recipientId: userId.toString(),
     });
   });
 });

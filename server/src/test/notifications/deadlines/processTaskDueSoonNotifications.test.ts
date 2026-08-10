@@ -1,4 +1,3 @@
-import { NotificationModel } from "@/features/notification/models/notification.model";
 import {
   afterAll,
   afterEach,
@@ -21,6 +20,7 @@ import {
   createUser,
 } from "@/test/helpers/testFactories";
 import { processTaskDueSoonNotifications } from "@/features/notification/services/deadlines/processTaskDueSoonNotifications.service";
+import { notificationQueue } from "@/queues/notificationQueue";
 
 beforeAll(async () => {
   await connectTestDb();
@@ -32,6 +32,7 @@ beforeEach(async () => {
 
 afterEach(() => {
   vi.useRealTimers();
+  vi.mocked(notificationQueue.add).mockClear();
 });
 
 afterAll(async () => {
@@ -39,9 +40,12 @@ afterAll(async () => {
 });
 
 describe("processTaskDueSoonNotifications", () => {
-  it("creates one task_due_soon notification for each task collaborator", async () => {
+  it("queues a task-due-soon notification job with all task collaborators", async () => {
     vi.useFakeTimers({ toFake: ["Date"] });
     vi.setSystemTime(new Date("2026-07-30T10:00:00.000Z"));
+
+    const queueAddMock = vi.mocked(notificationQueue.add);
+    queueAddMock.mockResolvedValue(undefined as never);
 
     const { userId, workspaceId } = await createAuthedUserContext();
     const collaborator = await createUser({ workspaceId });
@@ -54,41 +58,26 @@ describe("processTaskDueSoonNotifications", () => {
       dueDate,
       collaboratorIds: [userId, collaborator._id],
     });
+    queueAddMock.mockClear();
 
     await processTaskDueSoonNotifications();
 
-    const notifications = await NotificationModel.find({}).lean();
-
-    expect(notifications).toHaveLength(2);
-    expect(notifications).toEqual(
-      expect.arrayContaining([
-        expect.objectContaining({
-          workspaceId,
-          recipientId: userId,
-          entityId: task._id,
-          type: "task_due_soon",
-          entityType: "task",
-          projectId: project._id,
-          deadlineAt: dueDate,
-          isRead: false,
-        }),
-        expect.objectContaining({
-          workspaceId,
-          recipientId: collaborator._id,
-          entityId: task._id,
-          type: "task_due_soon",
-          entityType: "task",
-          projectId: project._id,
-          deadlineAt: dueDate,
-          isRead: false,
-        }),
-      ]),
-    );
+    expect(queueAddMock).toHaveBeenCalledOnce();
+    expect(queueAddMock).toHaveBeenCalledWith("task-due-soon", {
+      workspaceId: workspaceId.toString(),
+      taskId: task._id.toString(),
+      projectId: project._id.toString(),
+      collaboratorIds: [userId.toString(), collaborator._id.toString()],
+      deadlineAt: dueDate.toISOString(),
+    });
   });
 
-  it("does not create a notification for done tasks", async () => {
+  it("does not queue notification jobs for done tasks", async () => {
     vi.useFakeTimers({ toFake: ["Date"] });
     vi.setSystemTime(new Date("2026-07-30T10:00:00.000Z"));
+
+    const queueAddMock = vi.mocked(notificationQueue.add);
+    queueAddMock.mockResolvedValue(undefined as never);
 
     const { userId, workspaceId } = await createAuthedUserContext();
     const collaborator = await createUser({ workspaceId });
@@ -102,16 +91,19 @@ describe("processTaskDueSoonNotifications", () => {
       taskStatus: "done",
       collaboratorIds: [userId, collaborator._id],
     });
+    queueAddMock.mockClear();
 
     await processTaskDueSoonNotifications();
 
-    const notifications = await NotificationModel.find({}).lean();
-    expect(notifications).toHaveLength(0);
+    expect(queueAddMock).not.toHaveBeenCalled();
   });
 
-  it("does not create notifications for tasks without collaborators", async () => {
+  it("does not queue notification jobs for tasks without collaborators", async () => {
     vi.useFakeTimers({ toFake: ["Date"] });
     vi.setSystemTime(new Date("2026-07-30T10:00:00.000Z"));
+
+    const queueAddMock = vi.mocked(notificationQueue.add);
+    queueAddMock.mockResolvedValue(undefined as never);
 
     const { workspaceId } = await createAuthedUserContext();
     const project = await createProject({ workspaceId });
@@ -123,16 +115,19 @@ describe("processTaskDueSoonNotifications", () => {
       dueDate,
       collaboratorIds: [],
     });
+    queueAddMock.mockClear();
 
     await processTaskDueSoonNotifications();
 
-    const notifications = await NotificationModel.find({}).lean();
-    expect(notifications).toHaveLength(0);
+    expect(queueAddMock).not.toHaveBeenCalled();
   });
 
-  it("does not create notifications for tasks outside the 72 hour window", async () => {
+  it("does not queue notification jobs for tasks outside the 72 hour window", async () => {
     vi.useFakeTimers({ toFake: ["Date"] });
     vi.setSystemTime(new Date("2026-07-30T10:00:00.000Z"));
+
+    const queueAddMock = vi.mocked(notificationQueue.add);
+    queueAddMock.mockResolvedValue(undefined as never);
 
     const { userId, workspaceId } = await createAuthedUserContext();
     const collaborator = await createUser({ workspaceId });
@@ -145,16 +140,19 @@ describe("processTaskDueSoonNotifications", () => {
       dueDate,
       collaboratorIds: [userId, collaborator._id],
     });
+    queueAddMock.mockClear();
 
     await processTaskDueSoonNotifications();
 
-    const notifications = await NotificationModel.find({}).lean();
-    expect(notifications).toHaveLength(0);
+    expect(queueAddMock).not.toHaveBeenCalled();
   });
 
-  it("does not create duplicate notifications when the process runs twice", async () => {
+  it("queues matching task jobs each time the process runs", async () => {
     vi.useFakeTimers({ toFake: ["Date"] });
     vi.setSystemTime(new Date("2026-07-30T10:00:00.000Z"));
+
+    const queueAddMock = vi.mocked(notificationQueue.add);
+    queueAddMock.mockResolvedValue(undefined as never);
 
     const { userId, workspaceId } = await createAuthedUserContext();
     const collaborator = await createUser({ workspaceId });
@@ -167,27 +165,34 @@ describe("processTaskDueSoonNotifications", () => {
       dueDate,
       collaboratorIds: [userId, collaborator._id],
     });
+    queueAddMock.mockClear();
 
     await processTaskDueSoonNotifications();
     await processTaskDueSoonNotifications();
 
-    const notifications = await NotificationModel.find({
-      type: "task_due_soon",
-      entityId: task._id,
-    }).lean();
-
-    expect(notifications).toHaveLength(2);
-
-    expect(
-      notifications
-        .map((notification) => notification.recipientId.toString())
-        .sort(),
-    ).toEqual([userId.toString(), collaborator._id.toString()].sort());
+    expect(queueAddMock).toHaveBeenCalledTimes(2);
+    expect(queueAddMock).toHaveBeenNthCalledWith(1, "task-due-soon", {
+      workspaceId: workspaceId.toString(),
+      taskId: task._id.toString(),
+      projectId: project._id.toString(),
+      collaboratorIds: [userId.toString(), collaborator._id.toString()],
+      deadlineAt: dueDate.toISOString(),
+    });
+    expect(queueAddMock).toHaveBeenNthCalledWith(2, "task-due-soon", {
+      workspaceId: workspaceId.toString(),
+      taskId: task._id.toString(),
+      projectId: project._id.toString(),
+      collaboratorIds: [userId.toString(), collaborator._id.toString()],
+      deadlineAt: dueDate.toISOString(),
+    });
   });
 
-  it("does not create notifications for tasks with an already passed deadline", async () => {
+  it("does not queue notification jobs for tasks with an already passed deadline", async () => {
     vi.useFakeTimers({ toFake: ["Date"] });
     vi.setSystemTime(new Date("2026-07-30T10:00:00.000Z"));
+
+    const queueAddMock = vi.mocked(notificationQueue.add);
+    queueAddMock.mockResolvedValue(undefined as never);
 
     const { userId, workspaceId } = await createAuthedUserContext();
     const collaborator = await createUser({ workspaceId });
@@ -200,17 +205,19 @@ describe("processTaskDueSoonNotifications", () => {
       dueDate,
       collaboratorIds: [userId, collaborator._id],
     });
+    queueAddMock.mockClear();
 
     await processTaskDueSoonNotifications();
 
-    const notifications = await NotificationModel.find({}).lean();
-
-    expect(notifications).toHaveLength(0);
+    expect(queueAddMock).not.toHaveBeenCalled();
   });
 
-  it("creates new notifications when the task deadline changes", async () => {
+  it("queues jobs with the current task deadline when the task deadline changes", async () => {
     vi.useFakeTimers({ toFake: ["Date"] });
     vi.setSystemTime(new Date("2026-07-30T10:00:00.000Z"));
+    
+    const queueAddMock = vi.mocked(notificationQueue.add);
+    queueAddMock.mockResolvedValue(undefined as never);
 
     const { userId, workspaceId } = await createAuthedUserContext();
     const collaborator = await createUser({ workspaceId });
@@ -224,26 +231,26 @@ describe("processTaskDueSoonNotifications", () => {
       dueDate: firstDueDate,
       collaboratorIds: [userId, collaborator._id],
     });
+    queueAddMock.mockClear();
 
     await processTaskDueSoonNotifications();
     await task.updateOne({ dueDate: changedDueDate });
     await processTaskDueSoonNotifications();
 
-    const notifications = await NotificationModel.find({
-      type: "task_due_soon",
-      entityId: task._id,
-    }).lean();
-
-    expect(notifications).toHaveLength(4);
-    expect(
-      notifications
-        .map((notification) => notification.deadlineAt?.toISOString())
-        .sort(),
-    ).toEqual([
-      firstDueDate.toISOString(),
-      firstDueDate.toISOString(),
-      changedDueDate.toISOString(),
-      changedDueDate.toISOString(),
-    ]);
+    expect(queueAddMock).toHaveBeenCalledTimes(2);
+    expect(queueAddMock).toHaveBeenNthCalledWith(1, "task-due-soon", {
+      workspaceId: workspaceId.toString(),
+      taskId: task._id.toString(),
+      projectId: project._id.toString(),
+      collaboratorIds: [userId.toString(), collaborator._id.toString()],
+      deadlineAt: firstDueDate.toISOString(),
+    });
+    expect(queueAddMock).toHaveBeenNthCalledWith(2, "task-due-soon", {
+      workspaceId: workspaceId.toString(),
+      taskId: task._id.toString(),
+      projectId: project._id.toString(),
+      collaboratorIds: [userId.toString(), collaborator._id.toString()],
+      deadlineAt: changedDueDate.toISOString(),
+    });
   });
 });

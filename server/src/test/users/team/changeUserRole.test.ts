@@ -1,5 +1,3 @@
-import app from "@/app";
-import request from "supertest";
 import {
   beforeAll,
   beforeEach,
@@ -10,6 +8,9 @@ import {
   it,
   vi,
 } from "vitest";
+
+import app from "@/app";
+import request from "supertest";
 import {
   clearTestDb,
   connectTestDb,
@@ -18,9 +19,8 @@ import {
 import { UserModel } from "@/features/users/models/user.modal";
 import mongoose from "mongoose";
 import { WorkspaceModel } from "@/features/workspace/models/workspace.model";
-import { eventBus } from "@/shared/events/eventBus";
-import type { ChangeUserRoleEvent } from "@/features/users/events/userEvents";
 import { createAuthCookie } from "@/test/helpers/testFactories";
+import { notificationQueue } from "@/queues/notificationQueue";
 
 beforeAll(async () => {
   await connectTestDb();
@@ -134,7 +134,9 @@ describe("PATCH /users/id", () => {
     ]);
 
     const authCookie = await createAuthCookie(adminId);
-    const emitSpy = vi.spyOn(eventBus, "emit").mockResolvedValue(undefined);
+    
+    const queueAddMock = vi.mocked(notificationQueue.add);
+    queueAddMock.mockResolvedValue(undefined as never);
 
     const response = await request(app)
       .patch(`/users/${memberId}`)
@@ -153,21 +155,14 @@ describe("PATCH /users/id", () => {
     const updatedMember = await UserModel.findById(memberId).lean();
     expect(updatedMember?.role).toBe("manager");
 
-    expect(emitSpy).toHaveBeenCalledOnce();
-
-    const [eventName, payload] = emitSpy.mock.calls[0];
-    const roleChangedPayload = payload as ChangeUserRoleEvent;
-
-    expect(eventName).toBe("user.role_changed");
-    expect(roleChangedPayload.actorId.toString()).toBe(adminId.toString());
-    expect(roleChangedPayload.workspaceId.toString()).toBe(
-      workspaceId.toString(),
-    );
-    expect(roleChangedPayload.recipientId.toString()).toBe(
-      memberId.toString(),
-    );
-    expect(roleChangedPayload.previousRole).toBe("member");
-    expect(roleChangedPayload.currentRole).toBe("manager");
+    expect(queueAddMock).toHaveBeenCalledOnce();
+    expect(queueAddMock).toHaveBeenCalledWith("user-role.changed", {
+      actorId: adminId.toString(),
+      workspaceId: workspaceId.toString(),
+      recipientId: memberId.toString(),
+      previousRole: "member",
+      currentRole: "manager",
+    });
   });
 
   it("does not allow a non-admin to change another user's role", async () => {

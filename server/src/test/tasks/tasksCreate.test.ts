@@ -1,5 +1,3 @@
-import app from "@/app";
-import request from "supertest";
 import {
   beforeAll,
   beforeEach,
@@ -10,6 +8,9 @@ import {
   it,
   vi,
 } from "vitest";
+
+import app from "@/app";
+import request from "supertest";
 import {
   clearTestDb,
   connectTestDb,
@@ -17,11 +18,10 @@ import {
 } from "@/test/setupTestDb";
 import { UserModel } from "@/features/users/models/user.modal";
 import mongoose from "mongoose";
+import { notificationQueue } from "@/queues/notificationQueue";
 import { WorkspaceModel } from "@/features/workspace/models/workspace.model";
 import { TaskModel } from "@/features/tasks/models/task.model";
 import { ProjectModel } from "@/features/projects/models/project.model";
-import { eventBus } from "@/shared/events/eventBus";
-import type { TaskCreatedEvent } from "@/features/tasks/events/taskEvents";
 import { createAuthCookie } from "@/test/helpers/testFactories";
 
 beforeAll(async () => {
@@ -102,7 +102,9 @@ describe("POST /tasks", () => {
     });
 
     const authCookie = await createAuthCookie(userId);
-    const emitSpy = vi.spyOn(eventBus, "emit").mockResolvedValue(undefined);
+
+    const queueAddMock = vi.mocked(notificationQueue.add);
+    queueAddMock.mockResolvedValue(undefined as never);
 
     const response = await request(app)
       .post("/tasks")
@@ -140,23 +142,14 @@ describe("POST /tasks", () => {
     expect(createdTask.dueDate).toEqual(new Date("2026-07-10"));
     expect(createdTask.taskStatus).toBe("pending");
 
-    expect(emitSpy).toHaveBeenCalledOnce();
-
-    const [eventName, payload] = emitSpy.mock.calls[0];
-    const taskCreatedPayload = payload as TaskCreatedEvent;
-
-    expect(eventName).toBe("task.created");
-    expect(taskCreatedPayload.actorId.toString()).toBe(userId.toString());
-    expect(taskCreatedPayload.workspaceId.toString()).toBe(
-      workspaceId.toString(),
-    );
-    expect(taskCreatedPayload.task._id.toString()).toBe(response.body.data.id);
-    expect(taskCreatedPayload.task.projectId.toString()).toBe(
-      project._id.toString(),
-    );
-    expect(taskCreatedPayload.task.collaboratorIds.map(String)).toEqual([
-      userId.toString(),
-    ]);
+    expect(queueAddMock).toHaveBeenCalledOnce();
+    expect(queueAddMock).toHaveBeenCalledWith("task-assigned", {
+      actorId: userId.toString(),
+      workspaceId: workspaceId.toString(),
+      taskId: response.body.data.id,
+      projectId: project._id.toString(),
+      collaboratorIds: [userId.toString()],
+    });
   });
 
   it("returns 404 when the project belongs to another workspace", async () => {
