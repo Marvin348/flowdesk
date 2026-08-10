@@ -10,15 +10,12 @@ const DashboardHeader = () => {
   return (
     <section className="mb-6 border-b border-border/80 pb-5">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-        <div className="flex min-w-0 items-start gap-3">
+        <div className="flex min-w-0 items-center gap-3">
           <div className="flex size-10 shrink-0 items-center justify-center rounded-md border border-accent/20 bg-accent/10 text-accent">
             <Home className="size-5" />
           </div>
 
           <div className="min-w-0">
-            <p className="text-xs font-medium uppercase tracking-normal text-muted-foreground">
-              Übersicht
-            </p>
             <h1 className="mt-1 text-2xl font-semibold text-foreground">
               Hallo {user.name}
             </h1>
