@@ -1,9 +1,6 @@
 import { UserModel } from "@/features/users/models/user.modal";
 import { comparePassword, hashPassword } from "@/features/auth/utils/password";
-import {
-  LoginInput,
-  RegisterInput,
-} from "@/features/auth/validators/auth.validators";
+import { RegisterInput } from "@/features/auth/validators/auth.validators";
 import { toAuthUserDto } from "@/features/users/mappers/user.mapper";
 import { WorkspaceModel } from "@/features/workspace/models/workspace.model";
 import { Types } from "mongoose";
@@ -11,6 +8,7 @@ import { AppError } from "@/utils/AppError";
 import { createVerificationToken } from "@/features/verification-tokens/services/createVerificationToken.service";
 import { sendAccountVerificationEmail } from "@/features/email/services/sendAccountVerificationEmail.service";
 import { createSession } from "@/features/sessions/services/createSession.service";
+import type { AuthLoginInput } from "@/features/auth/types/loginInput";
 
 export const registerUser = async (input: RegisterInput) => {
   const { email, name, password } = input;
@@ -55,7 +53,7 @@ export const registerUser = async (input: RegisterInput) => {
   });
 };
 
-export const loginUser = async (input: LoginInput) => {
+export const loginUser = async ({ input, sessionMetadata }: AuthLoginInput) => {
   const { email, password } = input;
 
   const user = await UserModel.findOne({ email }).lean();
@@ -74,7 +72,7 @@ export const loginUser = async (input: LoginInput) => {
     throw new AppError("Please verify your email first.", 403);
   }
 
-  const sessionId = await createSession(user._id);
+  const sessionId = await createSession({ userId: user._id, sessionMetadata });
 
   return {
     user: toAuthUserDto(user),

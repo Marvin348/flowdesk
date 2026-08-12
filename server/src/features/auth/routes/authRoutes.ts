@@ -1,10 +1,9 @@
 import express from "express";
 import {
-  loginSchema,
   passwordSchema,
   registerSchema,
 } from "@/features/auth/validators/auth.validators";
-import { loginUser, registerUser } from "@/features/auth/services/auth.service";
+import { registerUser } from "@/features/auth/services/auth.service";
 import { requestPasswordChange } from "@/features/auth/services/requestPasswordChange.service";
 import { UserModel } from "@/features/users/models/user.modal";
 import { toAuthUserDto } from "@/features/users/mappers/user.mapper";
@@ -19,9 +18,9 @@ import {
 import { verifyEmail } from "@/features/verification-tokens/services/verifyEmail.service";
 import { resendVerificationEmail } from "@/features/verification-tokens/services/resendVerificationEmail.service";
 import { verifyPasswordChange } from "@/features/auth/services/verifyPasswordChange.service";
-import { authCookieOptions } from "@/shared/config/auth-cookie";
-import { SESSION_TTL_SECONDS } from "@/features/sessions/constants/session.constants";
-import { deleteSession } from "@/features/sessions/repository/session.repository";
+import { loginController } from "@/features/auth/controller/loginController.controller";
+import { sessionsController } from "@/features/auth/controller/sessionsController.controller";
+import { logoutController } from "@/features/auth/controller/logoutController.controller";
 
 const router = express.Router();
 
@@ -41,39 +40,11 @@ router.get(
   }),
 );
 
-router.post(
-  "/login",
-  asyncHandler(async (req, res) => {
-    const result = loginSchema.safeParse(req.body);
+router.post("/login", asyncHandler(loginController));
 
-    if (!result.success) {
-      throw new AppError("Invalid request body", 400);
-    }
+router.get("/sessions", requireAuth, asyncHandler(sessionsController));
 
-    const input = result.data;
-
-    const { user, sessionId } = await loginUser(input);
-
-    res.cookie("sessionId", sessionId, {
-      ...authCookieOptions,
-      maxAge: SESSION_TTL_SECONDS * 1000,
-    });
-
-    return res.status(200).json({ user });
-  }),
-);
-
-router.post("/logout", async (req, res) => {
-  const sessionId = req.cookies.sessionId;
-
-  if (sessionId) {
-    await deleteSession(sessionId);
-  }
-
-  res.clearCookie("sessionId", authCookieOptions);
-
-  return res.status(200).json({ message: "Logout successful" });
-});
+router.post("/logout", requireAuth, logoutController);
 
 router.post(
   "/register",

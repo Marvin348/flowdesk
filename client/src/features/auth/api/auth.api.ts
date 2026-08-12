@@ -3,6 +3,7 @@ import type { AuthUser } from "@shared/types/user";
 import type { PasswordFields } from "@/features/auth/schemas/securitySchema";
 import type { RegisterFields } from "@/features/auth/schemas/registerSchema";
 import type { LoginFields } from "@/features/auth/schemas/loginSchema";
+import type { UserSessionDto } from "@shared/types/dto/session/session.dto";
 
 export const login = async (input: LoginFields) => {
   const res = await apiClient.post("/auth/login", input);
@@ -46,4 +47,9 @@ export const requestUpdatePassword = async (input: PasswordFields) => {
 export const verifyChangePassword = async (token: string) => {
   const res = await apiClient.post("/auth/password/change/verify", { token });
   return res.data.message;
+};
+
+export const getUserSessions = async (): Promise<UserSessionDto[]> => {
+  const res = await apiClient.get("auth/sessions");
+  return res.data.userSessions;
 };

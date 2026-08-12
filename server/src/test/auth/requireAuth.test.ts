@@ -22,12 +22,6 @@ import {
 } from "@/test/setupTestDb";
 import { createUser, createWorkspace } from "@/test/helpers/testFactories";
 
-vi.mock("@/features/sessions/repository/session.repository", () => ({
-  saveSession: vi.fn(),
-  findSession: vi.fn(),
-  deleteSession: vi.fn(),
-}));
-
 const buildTestApp = () => {
   const app = express();
 

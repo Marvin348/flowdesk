@@ -19,12 +19,7 @@ import mongoose from "mongoose";
 import { WorkspaceModel } from "@/features/workspace/models/workspace.model";
 import bcrypt from "bcryptjs";
 import { saveSession } from "@/features/sessions/repository/session.repository";
-
-vi.mock("@/features/sessions/repository/session.repository", () => ({
-  saveSession: vi.fn(),
-  findSession: vi.fn(),
-  deleteSession: vi.fn(),
-}));
+import { addUserSessions } from "@/features/sessions/repository/userSessions.repository";
 
 beforeAll(async () => {
   await connectTestDb();
@@ -38,7 +33,6 @@ beforeEach(async () => {
 afterAll(async () => {
   await disconnectTestDb();
 });
-
 
 describe("POST /auth/login", () => {
   it("returns 200 when the login was successful", async () => {
@@ -80,6 +74,13 @@ describe("POST /auth/login", () => {
         createdAt: expect.any(String),
         absoluteExpiresAt: expect.any(String),
       }),
+    });
+
+    const savedSessionId = vi.mocked(saveSession).mock.calls[0][0].sessionId;
+
+    expect(addUserSessions).toHaveBeenCalledWith({
+      userId: user._id.toString(),
+      sessionId: savedSessionId,
     });
 
     expect(response.body.user).toMatchObject({
