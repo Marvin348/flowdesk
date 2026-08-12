@@ -1,6 +1,7 @@
 import PasswordSecurityCard from "@/features/settings/components/security/PasswordSecurityCard";
 import TwoFactorSecurityCard from "@/features/settings/components/security/TwoFactorSecurityCard";
 import { useGetMySecurityOverview } from "@/features/users/hooks/security/useGetMySecurityOverview";
+import SessionsCard from "../components/security/SessionsCard";
 
 const SecuritySettingsPage = () => {
   const {
@@ -34,6 +35,8 @@ const SecuritySettingsPage = () => {
         />
         <TwoFactorSecurityCard isTwoFactorEnabled={twoFactorEnabled} />
       </section>
+
+      <SessionsCard />
     </div>
   );
 };

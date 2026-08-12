@@ -161,7 +161,13 @@ export const createComment = async (
 export const createAuthCookie = async (
   userId: mongoose.Types.ObjectId | string,
 ) => {
-  const sessionId = await createSession(new mongoose.Types.ObjectId(userId));
+  const sessionUserId =
+    typeof userId === "string" ? new mongoose.Types.ObjectId(userId) : userId;
+
+  const sessionId = await createSession({
+    userId: sessionUserId,
+    sessionMetadata: {},
+  });
   return [`sessionId=${sessionId}`];
 };
 
@@ -192,7 +198,10 @@ export const createAuthedUserContext = async (
     passwordHash: overrides?.passwordHash,
   });
 
-  const sessionId = await createSession(user._id);
+  const sessionId = await createSession({
+    userId: user._id,
+    sessionMetadata: {},
+  });
 
   return {
     sessionId,
