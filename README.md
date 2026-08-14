@@ -150,7 +150,15 @@ After the initial build, you can usually start the application with:
 docker compose up
 ```
 
-#### 4. Stop the application
+### 4. Seed the local database
+
+After the containers are running, seed the local MongoDB database with demo data:
+
+```bash
+docker compose exec api npm run seed
+```
+
+#### 5. Stop the application
 
 Press Ctrl + C and then run:
 
