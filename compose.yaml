@@ -11,6 +11,10 @@ services:
       MONGOMS_DISTRO: "ubuntu-22.04"
       BULLMQ_REDIS_URL: redis://redis:6379
 
+    depends_on:
+      - mongodb
+      - redis
+
     env_file:
       - server/.env
 
@@ -34,6 +38,10 @@ services:
     environment:
       BULLMQ_REDIS_URL: redis://redis:6379
 
+    depends_on:
+      - mongodb
+      - redis
+
     env_file:
       - server/.env
 
@@ -43,9 +51,6 @@ services:
       - ./server:/app/server
       - ./shared:/app/shared
       - /app/server/node_modules
-
-    depends_on:
-      - redis
 
   client:
     build:
@@ -64,8 +69,21 @@ services:
       - ./shared:/app/shared
       - /app/client/node_modules
 
+  mongodb:
+    image: mongo:8
+    container_name: flowdesk-mongodb-container
+
+    ports:
+      - "27017:27017"
+
+    volumes:
+      - mongodb_data:/data/db
+
   redis:
     image: redis:7-alpine
     container_name: flowdesk-redis-container
     ports:
       - "6379:6379"
+
+volumes:
+  mongodb_data:
