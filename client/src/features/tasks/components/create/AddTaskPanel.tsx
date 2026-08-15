@@ -7,14 +7,12 @@ type AddTaskPanelProps = {
   isOpen: boolean;
   projectId: string;
   teamUserIds: string[];
-  initialCollaboratorIds: string[];
 };
 
 const AddTaskPanel = ({
   isOpen,
   projectId,
   teamUserIds,
-  initialCollaboratorIds,
 }: AddTaskPanelProps) => {
   const closeTaskModal = useAppStore((state) => state.closeTaskModal);
 
@@ -41,7 +39,6 @@ const AddTaskPanel = ({
             <AddTaskForm
               projectId={projectId}
               teamUserIds={teamUserIds}
-              initialCollaboratorIds={initialCollaboratorIds}
             />
           </div>
         </div>

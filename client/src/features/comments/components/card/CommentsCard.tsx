@@ -6,27 +6,29 @@ import OverviewCardHeader from "@/shared/components/ui/overview-card/OverviewCar
 import { Plus } from "lucide-react";
 import OverviewCommentsList from "@/features/comments/components/card/OverviewCommentsList";
 import type { OverviewCommentDto } from "@shared/types/dto/projects/projectOverview.dto";
+import { Link } from "react-router";
 
 type CommentsCardProps = {
   comments: OverviewCommentDto[];
-  onMore: () => void;
 };
 
-const CommentsCard = ({ comments, onMore }: CommentsCardProps) => {
+const CommentsCard = ({ comments }: CommentsCardProps) => {
   return (
     <OverviewCard>
       <OverviewCardHeader
         title="Kommentare"
         action={
-          <Button onClick={onMore} variant="accentOutline">
-            <Plus /> <span>Kommentare</span>
+          <Button asChild variant="accentOutline">
+            <Link to="../comments">
+              <Plus /> <span>Kommentare</span>
+            </Link>
           </Button>
         }
       />
       <OverviewCardBody>
         <OverviewCommentsList comments={comments} />
       </OverviewCardBody>
-      <OverviewCardFooter onClick={onMore} />
+      <OverviewCardFooter to="../comments" />
     </OverviewCard>
   );
 };

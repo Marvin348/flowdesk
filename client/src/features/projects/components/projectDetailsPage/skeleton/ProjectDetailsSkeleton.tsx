@@ -1,7 +1,7 @@
 import {
   OverviewCardSkeleton,
   SmallOverviewCardSkeleton,
-} from "@/features/projects/components/projectDetailsPage/tabs/overview/OverviewCardSkeleton";
+} from "@/features/projects/components/projectDetailsPage/skeleton/OverviewCardSkeleton";
 
 const ProjectDetailsSkeleton = () => {
   return (

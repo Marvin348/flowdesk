@@ -7,8 +7,15 @@ import {
   createTaskModalSlice,
   type TaskModalSlice,
 } from "@/store/slices/taskModel";
+import {
+  createProjectInviteSlice,
+  type ProjectInviteModalSlice,
+} from "@/store/slices/projectInvited";
 
-export type AppStore = FilterSlice & ProjectBadgeSlice & TaskModalSlice;
+export type AppStore = FilterSlice &
+  ProjectBadgeSlice &
+  TaskModalSlice &
+  ProjectInviteModalSlice;
 
 export const useAppStore = create<AppStore>()(
   persist(
@@ -16,6 +23,7 @@ export const useAppStore = create<AppStore>()(
       ...createFilterSlice(...a),
       ...createProjectBadgeSlice(...a),
       ...createTaskModalSlice(...a),
+      ...createProjectInviteSlice(...a),
     }),
     {
       name: "AppStore",

@@ -10,13 +10,11 @@ import WorkloadCompactTable from "./WorkloadCompactTable";
 type WorkloadProps = {
   workload: UserWorkload[];
   onCreateTask: () => void;
-  onMore: () => void;
 };
 
 const WorkloadCard = ({
   workload,
   onCreateTask,
-  onMore,
 }: WorkloadProps) => {
   return (
     <OverviewCard>
@@ -35,7 +33,7 @@ const WorkloadCard = ({
         </div>
       </OverviewCardBody>
 
-      <OverviewCardFooter onClick={onMore} />
+      <OverviewCardFooter to="../workload" />
     </OverviewCard>
   );
 };

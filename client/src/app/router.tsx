@@ -3,7 +3,6 @@ import AppLayout from "@/shared/components/layout/AppLayout";
 import DashboardPage from "@/features/dashboard/pages/DashboardPage";
 import ProjectsPage from "@/features/projects/pages/ProjectsPage";
 import TeamPage from "@/features/users/pages/TeamPage";
-import ProjectDetailsPage from "@/features/projects/pages/ProjectDetailsPage";
 import SettingsPage from "@/features/settings/pages/SettingsPage";
 import PublicLayout from "@/features/auth/routes/PublicLayout";
 import LoginPage from "@/features/auth/pages/LoginPage";
@@ -23,13 +22,21 @@ import ConfirmPasswordChangePage from "@/features/auth/pages/ConfirmPasswordChan
 import InviteSuccessPage from "@/features/workspace-invites/pages/InviteSuccessPage";
 import NotificationPage from "@/features/notification/pages/NotificationPage";
 import RootRedirect from "@/features/auth/routes/RootRedirect";
+import ProjectLayout from "@/features/projects/pages/ProjectLayout";
+import ProjectTasksPage from "@/features/tasks/pages/ProjectTasksPage";
+import ProjectAttachmentsPage from "@/features/attachments/pages/ProjectAttachmentsPage";
+import ProjectCollaboratorsPage from "@/features/projects/pages/projectDetails/ProjectCollaboratorsPage";
+import ProjectWorkloadPage from "@/features/projects/pages/projectDetails/ProjectWorkloadPage";
+import ProjectCommentsPage from "@/features/comments/pages/ProjectCommentsPage";
+import ProjectOverviewPage from "@/features/projects/pages/projectDetails/ProjectOverviewPage";
+import { Navigate } from "react-router";
 
 export const router = createBrowserRouter([
   {
     path: "/",
     element: <PublicLayout />,
     children: [
-      { index: true, element: <RootRedirect/> },
+      { index: true, element: <RootRedirect /> },
       { path: "login", element: <LoginPage /> },
       { path: "register", element: <RegisterPage /> },
       { path: "check-email", element: <CheckEmailPage /> },
@@ -60,10 +67,21 @@ export const router = createBrowserRouter([
             path: "/projects",
             element: <ProjectsPage />,
           },
+
           {
-            path: "/project/:id",
-            element: <ProjectDetailsPage />,
+            path: "/project/:projectId",
+            element: <ProjectLayout />,
+            children: [
+              { index: true, element: <Navigate to="overview" replace /> },
+              { path: "overview", element: <ProjectOverviewPage /> },
+              { path: "tasks", element: <ProjectTasksPage /> },
+              { path: "files", element: <ProjectAttachmentsPage /> },
+              { path: "collaborators", element: <ProjectCollaboratorsPage /> },
+              { path: "workload", element: <ProjectWorkloadPage /> },
+              { path: "comments", element: <ProjectCommentsPage /> },
+            ],
           },
+
           {
             path: "/team",
             element: <TeamPage />,

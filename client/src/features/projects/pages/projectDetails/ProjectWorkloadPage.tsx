@@ -2,14 +2,13 @@ import { useProjectWorkload } from "@/features/projects/hooks/details/useProject
 import WorkloadTable from "@/features/users/components/workload/WorkloadTable";
 import { useProjectWorkloadSearchParams } from "@/features/projects/hooks/searchParams/useProjectWorkloadSearchParams";
 import Pagination from "@/shared/components/ui/Pagination";
-import ProjectWorkloadSkeleton from "@/features/projects/components/projectDetailsPage/tabs/workload/ProjectWorkloadSkeleton";
+import ProjectWorkloadSkeleton from "@/features/projects/components/projectDetailsPage/skeleton/ProjectWorkloadSkeleton";
 import { PAGE_LIMITS, DEFAULT_PAGE } from "@shared/constants/pagination";
+import { useProjectContext } from "@/features/projects/hooks/useProjectContext";
 
-type WorkloadViewProps = {
-  projectId: string;
-};
+const ProjectWorkloadPage = () => {
+  const { projectId } = useProjectContext();
 
-const WorkloadView = ({ projectId }: WorkloadViewProps) => {
   const { page, workloadSort, actions } = useProjectWorkloadSearchParams();
 
   const input = {
@@ -46,4 +45,4 @@ const WorkloadView = ({ projectId }: WorkloadViewProps) => {
     </section>
   );
 };
-export default WorkloadView;
+export default ProjectWorkloadPage;
