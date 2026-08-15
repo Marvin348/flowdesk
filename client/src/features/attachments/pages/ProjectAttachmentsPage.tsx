@@ -8,16 +8,16 @@ import { useState } from "react";
 import { useDebounce } from "@/shared/hooks/useDebounce";
 import Pagination from "@/shared/components/ui/Pagination";
 import { PAGE_LIMITS, DEFAULT_PAGE } from "@shared/constants/pagination";
-import ProjectAttachmentListSkeleton from "@/features/projects/components/projectDetailsPage/tabs/files/ProjectAttachmentListSkeleton";
+import ProjectAttachmentListSkeleton from "@/features/attachments/components/skeleton/ProjectAttachmentListSkeleton";
 import { useCreateAttachment } from "@/features/projects/hooks/mutations/useCreateAttachment";
 import { useAttachmentUploadQueue } from "@/features/attachments/hooks/useAttachmentUploadQueue";
 import ErrorMessage from "@/shared/components/ErrorMessage";
+import { useProjectContext } from "@/features/projects/hooks/useProjectContext";
 
-type AttachmentsViewProps = {
-  projectId: string;
-};
 
-const AttachmentsView = ({ projectId }: AttachmentsViewProps) => {
+const ProjectAttachmentsPage = () => {
+  const { projectId } = useProjectContext();
+
   const { page, actions } = useProjectAttachmentSearchParams();
 
   const [searchInput, setSearchInput] = useState("");
@@ -117,4 +117,4 @@ const AttachmentsView = ({ projectId }: AttachmentsViewProps) => {
     </div>
   );
 };
-export default AttachmentsView;
+export default ProjectAttachmentsPage;

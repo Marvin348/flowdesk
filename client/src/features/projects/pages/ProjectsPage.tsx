@@ -1,4 +1,4 @@
-import ProjectList from "@/features/projects/components/projectPage/ProjectList";
+import ProjectList from "@/features/projects/components/ProjectList";
 import FilterDrawer from "@/features/projects/components/projectPage/FilterDrawer";
 import CreateProjectModal from "@/features/projects/components/create/CreateProjectModal";
 import { useState } from "react";

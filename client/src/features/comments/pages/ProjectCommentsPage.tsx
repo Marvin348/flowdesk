@@ -5,13 +5,12 @@ import CommentThreadList from "@/features/comments/components/CommentThreadList"
 import { useProjectComments } from "@/features/projects/hooks/details/useProjectComments";
 import { useProjectCommentsSearchParams } from "@/features/projects/hooks/searchParams/useProjectCommentsSearchParams";
 import { useState } from "react";
-import ProjectCommentsSkeleton from "@/features/projects/components/projectDetailsPage/tabs/comments/ProjectCommentsSkeleton";
+import ProjectCommentsSkeleton from "@/features/comments/components/ProjectCommentsSkeleton";
+import { useProjectContext } from "@/features/projects/hooks/useProjectContext";
 
-type CommentsViewProps = {
-  projectId: string;
-};
+const ProjectCommentsPage = () => {
+  const { projectId } = useProjectContext();
 
-const CommentsView = ({ projectId }: CommentsViewProps) => {
   const [limit, setLimit] = useState(8);
 
   const { commentsSort, toggleCommentsSort } = useProjectCommentsSearchParams();
@@ -65,4 +64,4 @@ const CommentsView = ({ projectId }: CommentsViewProps) => {
     </section>
   );
 };
-export default CommentsView;
+export default ProjectCommentsPage;

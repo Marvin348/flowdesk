@@ -3,17 +3,15 @@ import CollaboratorsCard from "@/features/users/components/card/CollaboratorsCar
 import OpenTasksCard from "@/features/tasks/components/card/OpenTasksCard";
 import CommentsCard from "@/features/comments/components/card/CommentsCard";
 import WorkloadCard from "@/features/users/components/workload/WorkloadCard";
-import type { ActiveTab } from "@/features/projects/types/activeTab";
 import { useProjectOverview } from "@/features/projects/hooks/details/useProjectOverview";
 import { useAppStore } from "@/store";
+import { useProjectContext } from "@/features/projects/hooks/useProjectContext";
 
-type OverviewProps = {
-  inviteOpen: () => void;
-  onNavigate: (tab: ActiveTab) => void;
-  projectId: string;
-};
+const ProjectOverviewPage = () => {
+  const { projectId } = useProjectContext();
 
-const Overview = ({ inviteOpen, onNavigate, projectId }: OverviewProps) => {
+  const openProjectInvite = useAppStore((state) => state.openProjectInvite);
+
   const { data, error } = useProjectOverview(projectId);
   const openCreateTask = useAppStore((state) => state.openCreateTask);
 
@@ -29,13 +27,12 @@ const Overview = ({ inviteOpen, onNavigate, projectId }: OverviewProps) => {
       <div className="h-full md:row-span-2">
         <CollaboratorsCard
           collaborators={collaborators}
-          inviteOpen={inviteOpen}
-          onMore={() => onNavigate("collaborators")}
+          inviteOpen={() => openProjectInvite()}
         />
       </div>
 
       <div className="h-full md:row-span-2">
-        <OpenTasksCard tasks={openTasks} onMore={() => onNavigate("list")} />
+        <OpenTasksCard tasks={openTasks} />
       </div>
 
       <div className="border rounded-md h-full xl:col-start-3 xl:row-span-1">
@@ -43,20 +40,16 @@ const Overview = ({ inviteOpen, onNavigate, projectId }: OverviewProps) => {
       </div>
 
       <div className="h-full xl:col-start-3 xl:row-start-2  xl:row-span-3">
-        <CommentsCard
-          comments={recentComments}
-          onMore={() => onNavigate("comments")}
-        />
+        <CommentsCard comments={recentComments} />
       </div>
 
       <div className="h-full md:col-span-2 xl:row-span-2">
         <WorkloadCard
           workload={workload}
-          onCreateTask={() => openCreateTask(projectId)}
-          onMore={() => onNavigate("workload")}
+          onCreateTask={() => openCreateTask({ projectId })}
         />
       </div>
     </div>
   );
 };
-export default Overview;
+export default ProjectOverviewPage;

@@ -58,7 +58,7 @@ const ProjectTaskStatusSection = ({
           <Button
             variant="outline"
             className="size-8"
-            onClick={() => openCreateTask(projectId)}
+            onClick={() => openCreateTask({ projectId })}
           >
             <Plus className="size-4" />
           </Button>

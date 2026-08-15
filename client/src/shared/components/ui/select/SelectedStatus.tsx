@@ -24,7 +24,7 @@ const SelectedStatus = ({ onChange, value }: SelectedStatusProps) => {
       <SelectTrigger className="w-full">
         <SelectValue placeholder="Wähle einen Status" />
       </SelectTrigger>
-      <SelectContent>
+      <SelectContent position="popper">
         <SelectGroup className="z-60">
           <SelectLabel>Status</SelectLabel>
           {Object.values(STATUS_OPTIONS).map((opt) => (

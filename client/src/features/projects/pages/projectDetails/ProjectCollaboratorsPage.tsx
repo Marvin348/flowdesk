@@ -11,30 +11,34 @@ import { COLLABORATOR_TABLE_OPTIONS } from "@/shared/constants/table-header";
 import { useProjectCollaborators } from "@/features/projects/hooks/details/useProjectCollaborators";
 import { useProjectCollaboratorSearchParams } from "@/features/projects/hooks/searchParams/useProjectCollaboratorSearchParams";
 import Pagination from "@/shared/components/ui/Pagination";
-import ProjectCollaboratorSkeleton from "@/features/projects/components/projectDetailsPage/tabs/collaborators/ProjectCollaboratorSkeleton";
+import ProjectCollaboratorSkeleton from "@/features/projects/components/projectDetailsPage/skeleton/ProjectCollaboratorSkeleton";
 import { DEFAULT_PAGE, PAGE_LIMITS } from "@shared/constants/pagination";
+import { useProjectContext } from "@/features/projects/hooks/useProjectContext";
 import { useAppStore } from "@/store";
-
-type CollaboratorsViewProps = {
-  projectId: string;
-  selectedCollaboratorIds: string[];
-  toggleBulk: (value: string) => void;
-  onClearSelection: () => void;
-};
 
 export type CollaboratorSortKey = "name" | "email" | "role";
 export type Actions = "change_role" | "reassign_tasks" | "delete";
 
-const CollaboratorsView = ({
-  projectId,
-  selectedCollaboratorIds,
-  toggleBulk,
-  onClearSelection,
-}: CollaboratorsViewProps) => {
+const ProjectCollaboratorsPage = () => {
+  const { projectId } = useProjectContext();
+
   const [openActionId, setOpenActionId] = useState<string | null>(null);
+
+  const [selectedCollaboratorIds, setSelectedCollaboratorIds] = useState<
+    string[]
+  >([]);
+
   const [selectedCollaboratorId, setSelectedCollaboratorId] = useState<
     string | null
   >(null);
+
+  const toggleCollaboratorBulk = (id: string) =>
+    setSelectedCollaboratorIds((prev) =>
+      prev.includes(id)
+        ? prev.filter((collId) => collId !== id)
+        : [...prev, id],
+    );
+
   const [activeAction, setActiveAction] = useState<Actions | null>(null);
 
   const openCreateTask = useAppStore((state) => state.openCreateTask);
@@ -88,8 +92,13 @@ const CollaboratorsView = ({
       {selectedCollaboratorIds.length > 0 && (
         <BulkCollaboratorActions
           collaboratorCount={selectedCollaboratorIds.length}
-          onClearSelection={onClearSelection}
-          onCreateTask={() => openCreateTask(projectId)}
+          onClearSelection={() => setSelectedCollaboratorIds([])}
+          onCreateTask={() =>
+            openCreateTask({
+              projectId,
+              initialCollaboratorIds: selectedCollaboratorIds,
+            })
+          }
         />
       )}
 
@@ -131,7 +140,7 @@ const CollaboratorsView = ({
               >
                 <div
                   className="flex items-center gap-4 cursor-pointer w-fit"
-                  onClick={() => toggleBulk(coll.id)}
+                  onClick={() => toggleCollaboratorBulk(coll.id)}
                 >
                   <input
                     type="checkbox"
@@ -224,4 +233,4 @@ const CollaboratorsView = ({
     </section>
   );
 };
-export default CollaboratorsView;
+export default ProjectCollaboratorsPage;

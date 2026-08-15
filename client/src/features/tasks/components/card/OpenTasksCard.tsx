@@ -9,10 +9,9 @@ import type { OverviewTaskDto } from "@shared/types/dto/projects/projectOverview
 
 type OpenTasksCardProps = {
   tasks: OverviewTaskDto[];
-  onMore: () => void;
 };
 
-const OpenTasksCard = ({ tasks, onMore }: OpenTasksCardProps) => {
+const OpenTasksCard = ({ tasks }: OpenTasksCardProps) => {
   const [index, setIndex] = useState(0);
   const taskItem = tasks[index];
 
@@ -38,7 +37,7 @@ const OpenTasksCard = ({ tasks, onMore }: OpenTasksCardProps) => {
           )}
         </div>
       </OverviewCardBody>
-      <OverviewCardFooter onClick={onMore} />
+      <OverviewCardFooter to="../tasks" />
     </OverviewCard>
   );
 };

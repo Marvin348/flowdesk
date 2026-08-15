@@ -3,20 +3,18 @@ import OverviewCardBody from "@/shared/components/ui/overview-card/OverviewCardB
 import OverviewCardFooter from "@/shared/components/ui/overview-card/OverviewCardFooter";
 import OverviewCardHeader from "@/shared/components/ui/overview-card/OverviewCardHeader";
 import Collaborator from "@/features/users/components/card/Collaborator";
-import type {UserPreviewDto} from "@shared/types/dto/common/userPreview.dto"
+import type { UserPreviewDto } from "@shared/types/dto/common/userPreview.dto";
 import { UserRoundPlus } from "lucide-react";
 import { Button } from "@/shared/components/ui/button";
 
 type CollaboratorsCardProps = {
   collaborators: UserPreviewDto[];
   inviteOpen: () => void;
-  onMore: () => void;
 };
 
 const CollaboratorsCard = ({
   collaborators,
   inviteOpen,
-  onMore,
 }: CollaboratorsCardProps) => {
   return (
     <OverviewCard>
@@ -24,7 +22,7 @@ const CollaboratorsCard = ({
         title="Mitarbeiter"
         action={
           <Button onClick={inviteOpen} variant="accentOutline">
-            <UserRoundPlus/>
+            <UserRoundPlus />
             <span>Einladen</span>
           </Button>
         }
@@ -41,7 +39,7 @@ const CollaboratorsCard = ({
           ))}
         </div>
       </OverviewCardBody>
-      <OverviewCardFooter onClick={onMore} />
+      <OverviewCardFooter to="../collaborators" />
     </OverviewCard>
   );
 };

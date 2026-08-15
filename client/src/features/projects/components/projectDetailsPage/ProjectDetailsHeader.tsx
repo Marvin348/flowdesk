@@ -5,15 +5,16 @@ import AssigneeAvatars from "@/shared/components/ui/avatar/AvatarGroup";
 import { Button } from "@/shared/components/ui/button";
 import { formatDate } from "@/shared/utils/formatDate";
 import type { ProjectDetailsShellDto } from "@shared/types/dto/projects/projectDetailsShell.dto";
+import { useAppStore } from "@/store";
 
 type ProjectDetailsHeaderProps = {
   project: ProjectDetailsShellDto;
-  onOpen: () => void;
 };
 const ProjectDetailsHeader = ({
   project,
-  onOpen,
 }: ProjectDetailsHeaderProps) => {
+  const openProjectInvite = useAppStore((state) => state.openProjectInvite);
+
   const { title, projectStatus, invitedUsers, updatedAt, progressPercent } =
     project;
 
@@ -72,7 +73,7 @@ const ProjectDetailsHeader = ({
         <Button
           className="bg-accent hover:bg-accent/95"
           size="sm"
-          onClick={onOpen}
+          onClick={() => openProjectInvite()}
         >
           <UserRoundPlus />
           <span className="hidden sm:inline">Einladen</span>

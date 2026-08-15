@@ -8,6 +8,7 @@ export type TaskModalState = {
   mode: TaskModalMode;
   taskId: string | null;
   projectId: string | null;
+  initialCollaboratorIds: string[];
 };
 
 export type TaskModalSlice = {
@@ -15,8 +16,13 @@ export type TaskModalSlice = {
   mode: TaskModalMode;
   taskId: string | null;
   projectId: string | null;
+  initialCollaboratorIds: string[];
 
-  openCreateTask: (projectId: string) => void;
+  openCreateTask: (input: {
+    projectId: string;
+    initialCollaboratorIds?: string[];
+  }) => void;
+
   openEditTask: (projectId: string, taskId: string) => void;
   closeTaskModal: () => void;
 };
@@ -31,13 +37,15 @@ export const createTaskModalSlice: StateCreator<
   mode: "create",
   taskId: null,
   projectId: null,
+  initialCollaboratorIds: [],
 
-  openCreateTask: (projectId) =>
+  openCreateTask: ({ projectId, initialCollaboratorIds = [] }) =>
     set({
       isOpen: true,
       mode: "create",
       projectId,
       taskId: null,
+      initialCollaboratorIds,
     }),
 
   openEditTask: (projectId, taskId) =>
@@ -54,6 +62,6 @@ export const createTaskModalSlice: StateCreator<
       mode: "create",
       projectId: null,
       taskId: null,
+      initialCollaboratorIds: [],
     }),
-
 });

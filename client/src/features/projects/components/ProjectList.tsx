@@ -2,11 +2,11 @@ import ProjectCard from "@/features/projects/components/card/ProjectCard";
 import { useNavigate } from "react-router";
 import type { ProjectListVM } from "@/features/projects/types/projectsList";
 
-type ProjectListType = {
+type ProjectListProps = {
   projects: ProjectListVM[];
 };
 
-const ProjectList = ({ projects }: ProjectListType) => {
+const ProjectList = ({ projects }: ProjectListProps) => {
   const navigate = useNavigate();
 
   return (

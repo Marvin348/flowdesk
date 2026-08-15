@@ -30,13 +30,11 @@ import { getTaskMutationErrorMessage } from "@/features/tasks/utils/getTaskMutat
 type AddTaskFormProps = {
   projectId: string;
   teamUserIds: string[];
-  initialCollaboratorIds: string[];
 };
 
 const AddTaskForm = ({
   projectId,
   teamUserIds,
-  initialCollaboratorIds,
 }: AddTaskFormProps) => {
   const createTaskMutation = useCreateTask(projectId);
   const updateTaskMutation = useUpdateTask();
@@ -44,6 +42,10 @@ const AddTaskForm = ({
   const taskId = useAppStore((state) => state.taskId);
   const mode = useAppStore((state) => state.mode);
   const closeTaskModal = useAppStore((state) => state.closeTaskModal);
+
+  const initialCollaboratorIds = useAppStore(
+  (state) => state.initialCollaboratorIds,
+);
 
   const {
     data: task,

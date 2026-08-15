@@ -1,4 +1,4 @@
-const TaskListSkeleton = () => {
+const ProjectTaskPageSkeleton = () => {
   return (
     <section className="animate-pulse">
       <div className="grid grid-cols-4 gap-2 p-2 bg-muted rounded-md">
@@ -44,4 +44,4 @@ const TaskListSkeleton = () => {
     </section>
   );
 };
-export default TaskListSkeleton;
+export default ProjectTaskPageSkeleton;

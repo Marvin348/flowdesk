@@ -1,5 +1,5 @@
 import { useSearchParams } from "react-router";
-import type { CollaboratorSortKey } from "@/features/projects/components/projectDetailsPage/tabs/collaborators/CollaboratorsView";
+import type { CollaboratorSortKey } from "@/features/projects/pages/projectDetails/ProjectCollaboratorsPage";
 import { parseCollaboratorSort } from "@shared/parsers/parseCollaboratorSort";
 import { updateQueryParam } from "@/shared/utils/updateQueryParam";
 import { DEFAULT_PAGE } from "@shared/constants/pagination";

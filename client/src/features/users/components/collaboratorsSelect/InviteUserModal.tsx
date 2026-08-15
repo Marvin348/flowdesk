@@ -5,25 +5,22 @@ import { useScrollLock } from "@/shared/hooks/useScrollLock";
 import { useUpdateProjectMembers } from "@/features/projects/hooks/mutations/useUpdateProjectMembers";
 import { Spinner } from "@/shared/components/ui/spinner";
 import ErrorMessage from "@/shared/components/ErrorMessage";
+import { useAppStore } from "@/store";
 
 type InviteUserModalProps = {
-  onClose: () => void;
-  onInviteOpen: boolean;
   teamUserIds: string[];
-  invitedUserIds: string[];
   projectId: string;
 };
 
-const InviteUserModal = ({
-  onClose,
-  onInviteOpen,
-  teamUserIds,
-  projectId,
-}: InviteUserModalProps) => {
+const InviteUserModal = ({ teamUserIds, projectId }: InviteUserModalProps) => {
   const [selectedUserIds, setSelectedIds] = useState<string[]>([]);
-  useScrollLock(onInviteOpen);
 
   const { mutate, isPending, isError } = useUpdateProjectMembers(projectId);
+
+  const isProjectInviteOpen = useAppStore((state) => state.isProjectInviteOpen);
+  const closeProjectInvite = useAppStore((state) => state.closeProjectInvite);
+
+  useScrollLock(isProjectInviteOpen);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -35,7 +32,7 @@ const InviteUserModal = ({
 
     mutate(input, {
       onSuccess: () => {
-        onClose();
+        closeProjectInvite();
       },
     });
   };
@@ -68,7 +65,7 @@ const InviteUserModal = ({
                 variant="outline"
                 type="button"
                 className="hover:bg-surface/5"
-                onClick={onClose}
+                onClick={() => closeProjectInvite()}
               >
                 Schließen
               </Button>
