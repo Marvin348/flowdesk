@@ -48,33 +48,17 @@ const ChangePasswordVerificationContent = ({ token }: { token: string }) => {
       );
     }
 
-    if (status === 409) {
+    if (status === 404) {
       return (
         <VerificationCard>
-          <VerificationError
-            title="Link wurde bereits verwendet"
-            message="Dieser Bestätigungslink wurde schon benutzt. Starte die Passwortänderung bitte erneut."
-          />
-        </VerificationCard>
-      );
-    }
-
-    if (status === 410) {
-      return (
-        <VerificationCard>
-          <VerificationError
-            title="Link abgelaufen"
-            message="Dieser Bestätigungslink ist abgelaufen. Starte die Passwortänderung bitte erneut."
-          />
+          <VerificationError message="Benutzer konnte nicht gefunden werden." />
         </VerificationCard>
       );
     }
 
     return (
       <VerificationCard>
-        <VerificationError
-          message={"Dein Passwort konnte nicht geändert werden."}
-        />
+        <VerificationError message="Dein Passwort konnte nicht geändert werden." />
       </VerificationCard>
     );
   }

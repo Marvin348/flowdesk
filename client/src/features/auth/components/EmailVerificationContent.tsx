@@ -4,10 +4,9 @@ import VerificationPending from "@/features/auth/components/verification/Verific
 import VerificationCard from "@/features/auth/components/verification/VerificationCard";
 import { VerificationError } from "@/features/auth/components/verification/VerificationError";
 import VerificationSuccess from "@/features/auth/components/verification/VerificationSuccess";
-import { getApiErrorStatus } from "@/shared/api/getApiError";
 
 const EmailVerificationContent = ({ token }: { token: string }) => {
-  const { mutate, isPending, isError, error, isSuccess } = useVerifyEmail();
+  const { mutate, isPending, isError, isSuccess } = useVerifyEmail();
 
   useEffect(() => {
     const timeoutId = window.setTimeout(() => {
@@ -18,8 +17,6 @@ const EmailVerificationContent = ({ token }: { token: string }) => {
       window.clearTimeout(timeoutId);
     };
   }, [mutate, token]);
-
-  const status = getApiErrorStatus(error);
 
   if (isPending)
     return (
@@ -39,32 +36,11 @@ const EmailVerificationContent = ({ token }: { token: string }) => {
     );
 
   if (isError) {
-    if (status === 409) {
-      return (
-        <VerificationCard>
-          <VerificationError
-            title="Link wurde bereits verwendet"
-            message="Dieser Bestätigungslink wurde schon benutzt. Starte die Emailverifizierung bitte erneut."
-          />
-        </VerificationCard>
-      );
-    }
-
-    if (status === 410) {
-      return (
-        <VerificationCard>
-          <VerificationError
-            title="Link abgelaufen"
-            message="Dieser Bestätigungslink ist abgelaufen. Starte die Emailverifizierung bitte erneut."
-          />
-        </VerificationCard>
-      );
-    }
-
     return (
       <VerificationCard>
         <VerificationError
-          message={"Deine E-Mail konnte nicht verifiziert werden."}
+          title="Bestätigung nicht möglich"
+          message="Dieser Bestätigungslink ist ungültig, abgelaufen oder wurde bereits verwendet."
         />
       </VerificationCard>
     );

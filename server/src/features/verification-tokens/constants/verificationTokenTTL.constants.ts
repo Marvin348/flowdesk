@@ -1,0 +1,1 @@
+export const VERIFICATION_TOKEN_TTL_SECONDS = 900;

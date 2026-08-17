@@ -10,7 +10,6 @@ vi.mock(
 import app from "@/app";
 import { hashPassword } from "@/features/auth/utils/password";
 import { sendPasswordChangeVerificationEmail } from "@/features/email/services/sendPasswordChangeVerificationEmail.service";
-import { VerificationTokenModel } from "@/features/verification-tokens/models/verificationToken.model";
 import request from "supertest";
 import { beforeAll, beforeEach, afterAll, describe, expect, it } from "vitest";
 import {
@@ -19,6 +18,7 @@ import {
   disconnectTestDb,
 } from "@/test/setupTestDb";
 import { createAuthedUserContext } from "@/test/helpers/testFactories";
+import { verificationTokenMock } from "@/test/setupVerificationTokenRepositoryMock";
 
 beforeAll(async () => {
   await connectTestDb();
@@ -87,7 +87,7 @@ describe("POST /auth/password/change-request", () => {
 
     try {
       const passwordHash = await hashPassword("Password123!");
-      const { authCookie, userId } = await createAuthedUserContext({
+      const { authCookie } = await createAuthedUserContext({
         email: process.env.DEMO_ACCOUNT_EMAIL,
         passwordHash,
       });
@@ -106,12 +106,10 @@ describe("POST /auth/password/change-request", () => {
         message: "The demo account password cannot be changed.",
       });
 
-      const verificationToken = await VerificationTokenModel.findOne({
-        userId,
-        type: "password_change",
-      });
+      expect(
+        verificationTokenMock.replaceCurrentVerificationToken,
+      ).not.toHaveBeenCalled();
 
-      expect(verificationToken).toBeNull();
       expect(sendPasswordChangeVerificationEmail).not.toHaveBeenCalled();
     } finally {
       if (previousDemoAccountEmail === undefined) {
@@ -141,6 +139,7 @@ describe("POST /auth/password/change-request", () => {
     expect(response.body).toEqual({
       message: "New password must be different from current password",
     });
+
     expect(sendPasswordChangeVerificationEmail).not.toHaveBeenCalled();
   });
 
@@ -165,14 +164,30 @@ describe("POST /auth/password/change-request", () => {
       message: "Password change verification email sent",
     });
 
-    const verificationToken = await VerificationTokenModel.findOne({
-      userId,
-      type: "password_change",
-    });
+    expect(
+      verificationTokenMock.replaceCurrentVerificationToken,
+    ).toHaveBeenCalledTimes(1);
 
-    expect(verificationToken).not.toBeNull();
-    expect(verificationToken?.newPasswordHash).toBeDefined();
-    expect(verificationToken?.newPasswordHash).not.toBe(passwordHash);
+    expect(
+      verificationTokenMock.replaceCurrentVerificationToken,
+    ).toHaveBeenCalledWith(
+      expect.objectContaining({
+        verificationToken: expect.any(String),
+        userId: userId.toString(),
+        type: "password_change",
+        verificationData: expect.objectContaining({
+          userId: userId.toString(),
+          type: "password_change",
+          newPasswordHash: expect.any(String),
+        }),
+      }),
+    );
+
+    const [{ verificationData }] = vi.mocked(
+      verificationTokenMock.replaceCurrentVerificationToken,
+    ).mock.calls[0];
+
+    expect(verificationData.newPasswordHash).not.toBe(passwordHash);
 
     expect(sendPasswordChangeVerificationEmail).toHaveBeenCalledTimes(1);
     expect(sendPasswordChangeVerificationEmail).toHaveBeenCalledWith({

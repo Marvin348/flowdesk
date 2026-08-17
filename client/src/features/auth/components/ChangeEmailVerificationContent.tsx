@@ -62,19 +62,8 @@ const ChangeEmailVerificationContent = ({ token }: { token: string }) => {
       return (
         <VerificationCard>
           <VerificationError
-            title="Link wurde bereits verwendet"
-            message="Dieser Bestätigungslink wurde schon benutzt. Starte die Emailänderung bitte erneut."
-          />
-        </VerificationCard>
-      );
-    }
-
-    if (status === 410) {
-      return (
-        <VerificationCard>
-          <VerificationError
-            title="Link abgelaufen"
-            message="Dieser Bestätigungslink ist abgelaufen. Starte die E-Mailänderung bitte erneut."
+            title="E-Mail nicht verfügbar"
+            message="Diese E-Mail-Adresse wird bereits verwendet. Starte die E-Mailänderung bitte mit einer anderen Adresse erneut."
           />
         </VerificationCard>
       );

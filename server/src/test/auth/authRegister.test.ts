@@ -1,8 +1,11 @@
 import { vi } from "vitest";
 
-vi.mock("@/features/email/services/sendAccountVerificationEmail.service.js", () => ({
-  sendAccountVerificationEmail: vi.fn(),
-}));
+vi.mock(
+  "@/features/email/services/sendAccountVerificationEmail.service.js",
+  () => ({
+    sendAccountVerificationEmail: vi.fn(),
+  }),
+);
 
 import app from "@/app";
 import { sendAccountVerificationEmail } from "@/features/email/services/sendAccountVerificationEmail.service";
@@ -16,7 +19,7 @@ import {
 import { UserModel } from "@/features/users/models/user.modal";
 import mongoose from "mongoose";
 import { WorkspaceModel } from "@/features/workspace/models/workspace.model";
-import { VerificationTokenModel } from "@/features/verification-tokens/models/verificationToken.model";
+import { verificationTokenMock } from "@/test/setupVerificationTokenRepositoryMock";
 
 beforeAll(async () => {
   await connectTestDb();
@@ -64,11 +67,23 @@ describe("POST /auth/register", () => {
 
     expect(workspace.ownerId.toString()).toBe(user._id.toString());
 
-    const verificationToken = await VerificationTokenModel.findOne({
-      userId: user._id,
-    });
+    expect(
+      verificationTokenMock.replaceCurrentVerificationToken,
+    ).toHaveBeenCalledTimes(1);
 
-    expect(verificationToken).not.toBeNull();
+    expect(
+      verificationTokenMock.replaceCurrentVerificationToken,
+    ).toHaveBeenCalledWith(
+      expect.objectContaining({
+        verificationToken: expect.any(String),
+        userId: user._id.toString(),
+        type: "email_verification",
+        verificationData: {
+          userId: user._id.toString(),
+          type: "email_verification",
+        },
+      }),
+    );
 
     expect(sendAccountVerificationEmail).toHaveBeenCalledWith({
       to: "test@example.com",
