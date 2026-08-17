@@ -1,10 +1,9 @@
 import { createRandomToken } from "@/utils/createRandomToken";
-import { addDays } from "@/utils/date";
 import { hashToken } from "@/utils/hashToken";
-import { VerificationTokenModel } from "@/features/verification-tokens/models/verificationToken.model";
 import { Types } from "mongoose";
 import { VerificationTokenType } from "@/features/verification-tokens/types/verificationToken.document";
 import { AppError } from "@/utils/AppError";
+import { replaceCurrentVerificationToken } from "@/features/verification-tokens/repository/currentVerificationToken.repository";
 
 type CreateVerificationTokenInput = {
   userId: Types.ObjectId;
@@ -30,20 +29,16 @@ export const createVerificationToken = async ({
   const token = createRandomToken();
   const tokenHash = hashToken(token);
 
-  const expiresAt = addDays(1);
-
-  await VerificationTokenModel.deleteMany({
-    userId,
-    type: type,
-  });
-
-  await VerificationTokenModel.create({
-    userId,
-    tokenHash,
-    type: type,
-    expiresAt,
-    ...(newEmail && { newEmail }),
-    ...(newPasswordHash && { newPasswordHash }),
+  await replaceCurrentVerificationToken({
+    verificationToken: tokenHash,
+    userId: userId.toString(),
+    type,
+    verificationData: {
+      userId: userId.toString(),
+      type: type,
+      ...(newEmail && { newEmail }),
+      ...(newPasswordHash && { newPasswordHash }),
+    },
   });
 
   return token;

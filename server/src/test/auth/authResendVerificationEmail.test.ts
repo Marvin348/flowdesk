@@ -1,8 +1,11 @@
 import { vi } from "vitest";
 
-vi.mock("@/features/email/services/sendAccountVerificationEmail.service.js", () => ({
-  sendAccountVerificationEmail: vi.fn(),
-}));
+vi.mock(
+  "@/features/email/services/sendAccountVerificationEmail.service.js",
+  () => ({
+    sendAccountVerificationEmail: vi.fn(),
+  }),
+);
 
 import app from "@/app";
 import { sendAccountVerificationEmail } from "@/features/email/services/sendAccountVerificationEmail.service";
@@ -15,8 +18,9 @@ import {
 } from "@/test/setupTestDb";
 import { UserModel } from "@/features/users/models/user.modal";
 import { WorkspaceModel } from "@/features/workspace/models/workspace.model";
-import { VerificationTokenModel } from "@/features/verification-tokens/models/verificationToken.model";
 import mongoose from "mongoose";
+import { createAuthedUserContext } from "../helpers/testFactories";
+import { verificationTokenMock } from "@/test/setupVerificationTokenRepositoryMock";
 
 beforeAll(async () => {
   await connectTestDb();
@@ -40,23 +44,16 @@ describe("POST /auth/resend-verification-email", () => {
   });
 
   it("returns 200 and sends a verification email when user exists and is not verified", async () => {
-    const existingUserId = new mongoose.Types.ObjectId();
-    const workspaceId = new mongoose.Types.ObjectId();
-
-    await WorkspaceModel.create({
-      _id: workspaceId,
-      name: "Existing Workspace",
-      ownerId: existingUserId,
+    const { userId } = await createAuthedUserContext({
+      email: "test@example.com",
     });
 
-    await UserModel.create({
-      _id: existingUserId,
-      email: "test@example.com",
-      name: "Existing User",
-      passwordHash: "hashed-password",
-      workspaceId,
-      role: "admin",
-      isEmailVerified: false,
+    await UserModel.updateOne({
+      _id: userId,
+    }, {
+      $set: {
+        isEmailVerified: false,
+      },
     });
 
     const response = await request(app)
@@ -70,11 +67,23 @@ describe("POST /auth/resend-verification-email", () => {
       message: "If an account exists, a new verification email has been sent.",
     });
 
-    const verificationToken = await VerificationTokenModel.findOne({
-      userId: existingUserId,
-    });
+    expect(
+      verificationTokenMock.replaceCurrentVerificationToken,
+    ).toHaveBeenCalledTimes(1);
 
-    expect(verificationToken).not.toBeNull();
+    expect(
+      verificationTokenMock.replaceCurrentVerificationToken,
+    ).toHaveBeenCalledWith(
+      expect.objectContaining({
+        verificationToken: expect.any(String),
+        userId: userId.toString(),
+        type: "email_verification",
+        verificationData: {
+          userId: userId.toString(),
+          type: "email_verification",
+        },
+      }),
+    );
 
     expect(sendAccountVerificationEmail).toHaveBeenCalledTimes(1);
 
@@ -128,11 +137,8 @@ describe("POST /auth/resend-verification-email", () => {
     });
 
     expect(sendAccountVerificationEmail).not.toHaveBeenCalled();
-
-    const verificationToken = await VerificationTokenModel.findOne({
-      userId: existingUserId,
-    });
-
-    expect(verificationToken).toBeNull();
+    expect(
+      verificationTokenMock.replaceCurrentVerificationToken,
+    ).not.toHaveBeenCalled();
   });
 });

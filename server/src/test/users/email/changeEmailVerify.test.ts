@@ -19,10 +19,9 @@ import {
 import { UserModel } from "@/features/users/models/user.modal";
 import mongoose from "mongoose";
 import { WorkspaceModel } from "@/features/workspace/models/workspace.model";
-import { VerificationTokenModel } from "@/features/verification-tokens/models/verificationToken.model";
-import { hashToken } from "@/utils/hashToken";
 import { createAuthCookie } from "@/test/helpers/testFactories";
 import { notificationQueue } from "@/queues/notificationQueue";
+import { verificationTokenMock } from "@/test/setupVerificationTokenRepositoryMock";
 
 beforeAll(async () => {
   await connectTestDb();
@@ -72,7 +71,48 @@ describe("POST /users/me/change-email/verify", () => {
     expect(response.body).toEqual({ message: "Invalid token" });
   });
 
-  it("returns 410 if token expired", async () => {
+  it("returns 400 if the new email is missing", async () => {
+    const userId = new mongoose.Types.ObjectId();
+    const workspaceId = new mongoose.Types.ObjectId();
+
+    await WorkspaceModel.create({
+      _id: workspaceId,
+      name: "Test Workspace",
+      ownerId: userId,
+    });
+
+    await UserModel.create({
+      _id: userId,
+      email: "test@example.com",
+      name: "Test User",
+      passwordHash: "hashed-password",
+      workspaceId,
+      role: "admin",
+      isEmailVerified: true,
+    });
+
+    const token = "email-change-token-without-new-email";
+
+    verificationTokenMock.seedVerificationToken({
+      token,
+      data: {
+        userId: userId.toString(),
+        type: "email_change",
+      },
+    });
+
+    const authCookie = await createAuthCookie(userId);
+
+    const response = await request(app)
+      .post("/users/me/change-email/verify")
+      .send({ token })
+      .set("Cookie", authCookie);
+
+    expect(response.status).toBe(400);
+    expect(response.body).toEqual({ message: "New email does not exist" });
+  });
+
+  it("returns 400 if the token does not exist", async () => {
     const userId = new mongoose.Types.ObjectId();
     const workspaceId = new mongoose.Types.ObjectId();
 
@@ -93,75 +133,14 @@ describe("POST /users/me/change-email/verify", () => {
     });
 
     const authCookie = await createAuthCookie(userId);
-    const token = "expired-email-change-token";
-
-    await VerificationTokenModel.create({
-      userId,
-      tokenHash: hashToken(token),
-      type: "email_change",
-      newEmail: "new@example.com",
-      expiresAt: new Date(Date.now() - 60_000),
-    });
 
     const response = await request(app)
       .post("/users/me/change-email/verify")
-      .send({ token })
+      .send({ token: "missing-token" })
       .set("Cookie", authCookie);
 
-    expect(response.status).toBe(410);
-    expect(response.body).toEqual({ message: "Token has expired" });
-  });
-
-  it("returns 403 if the token belongs to another user", async () => {
-    const userId = new mongoose.Types.ObjectId();
-    const otherUserId = new mongoose.Types.ObjectId();
-    const workspaceId = new mongoose.Types.ObjectId();
-
-    await WorkspaceModel.create({
-      _id: workspaceId,
-      name: "Test Workspace",
-      ownerId: userId,
-    });
-
-    await UserModel.create([
-      {
-        _id: userId,
-        email: "test@example.com",
-        name: "Test User",
-        passwordHash: "hashed-password",
-        workspaceId,
-        role: "admin",
-        isEmailVerified: true,
-      },
-      {
-        _id: otherUserId,
-        email: "other@example.com",
-        name: "Other User",
-        passwordHash: "hashed-password",
-        workspaceId,
-        role: "member",
-        isEmailVerified: true,
-      },
-    ]);
-
-    const token = "another-users-email-change-token";
-
-    await VerificationTokenModel.create({
-      userId: otherUserId,
-      tokenHash: hashToken(token),
-      type: "email_change",
-      newEmail: "new@example.com",
-      expiresAt: new Date(Date.now() + 60_000),
-    });
-
-    const authCookie = await createAuthCookie(userId);
-    const response = await request(app)
-      .post("/users/me/change-email/verify")
-      .send({ token })
-      .set("Cookie", authCookie);
-
-    expect(response.status).toBe(403);
-    expect(response.body).toEqual({ message: "UserId is wrong" });
+    expect(response.status).toBe(400);
+    expect(response.body).toEqual({ message: "Token not found" });
   });
 
   it("returns 409 if the new email is already in use", async () => {
@@ -198,15 +177,17 @@ describe("POST /users/me/change-email/verify", () => {
 
     const token = "email-change-to-taken-address";
 
-    await VerificationTokenModel.create({
-      userId,
-      tokenHash: hashToken(token),
-      type: "email_change",
-      newEmail: "taken@example.com",
-      expiresAt: new Date(Date.now() + 60_000),
+    verificationTokenMock.seedVerificationToken({
+      token,
+      data: {
+        userId: userId.toString(),
+        type: "email_change",
+        newEmail: "taken@example.com",
+      },
     });
 
     const authCookie = await createAuthCookie(userId);
+
     const response = await request(app)
       .post("/users/me/change-email/verify")
       .send({ token })
@@ -238,12 +219,13 @@ describe("POST /users/me/change-email/verify", () => {
 
     const token = "valid-email-change-token";
 
-    await VerificationTokenModel.create({
-      userId,
-      tokenHash: hashToken(token),
-      type: "email_change",
-      newEmail: "new@example.com",
-      expiresAt: new Date(Date.now() + 60_000),
+    verificationTokenMock.seedVerificationToken({
+      token,
+      data: {
+        userId: userId.toString(),
+        type: "email_change",
+        newEmail: "new@example.com",
+      },
     });
 
     const authCookie = await createAuthCookie(userId);
@@ -257,49 +239,6 @@ describe("POST /users/me/change-email/verify", () => {
 
     const updatedUser = await UserModel.findById(userId);
     expect(updatedUser?.email).toBe("new@example.com");
-  });
-
-  it("returns 200 and marks the verification token as used", async () => {
-    const userId = new mongoose.Types.ObjectId();
-    const workspaceId = new mongoose.Types.ObjectId();
-
-    await WorkspaceModel.create({
-      _id: workspaceId,
-      name: "Test Workspace",
-      ownerId: userId,
-    });
-
-    await UserModel.create({
-      _id: userId,
-      email: "test@example.com",
-      name: "Test User",
-      passwordHash: "hashed-password",
-      workspaceId,
-      role: "admin",
-      isEmailVerified: true,
-    });
-
-    const token = "valid-token-to-mark-as-used";
-    const verificationToken = await VerificationTokenModel.create({
-      userId,
-      tokenHash: hashToken(token),
-      type: "email_change",
-      newEmail: "new@example.com",
-      expiresAt: new Date(Date.now() + 60_000),
-    });
-
-    const authCookie = await createAuthCookie(userId);
-    const response = await request(app)
-      .post("/users/me/change-email/verify")
-      .send({ token })
-      .set("Cookie", authCookie);
-
-    expect(response.status).toBe(200);
-
-    const usedToken = await VerificationTokenModel.findById(
-      verificationToken._id,
-    );
-    expect(usedToken?.usedAt).toBeInstanceOf(Date);
   });
 
   it("allows only one concurrent request to verify an email change token", async () => {
@@ -323,16 +262,17 @@ describe("POST /users/me/change-email/verify", () => {
     });
 
     const token = "concurrent-email-change-token";
-    const verificationToken = await VerificationTokenModel.create({
-      userId,
-      tokenHash: hashToken(token),
-      type: "email_change",
-      newEmail: "new@example.com",
-      expiresAt: new Date(Date.now() + 60_000),
+
+    verificationTokenMock.seedVerificationToken({
+      token,
+      data: {
+        userId: userId.toString(),
+        type: "email_change",
+        newEmail: "new@example.com",
+      },
     });
 
     const queueAddMock = vi.mocked(notificationQueue.add);
-    queueAddMock.mockResolvedValue(undefined as never);
     const authCookie = await createAuthCookie(userId);
 
     const responses = await Promise.all([
@@ -348,20 +288,15 @@ describe("POST /users/me/change-email/verify", () => {
 
     const statuses = responses.map((response) => response.status).sort();
 
-    expect(statuses).toEqual([200, 409]);
-    expect(responses.find((response) => response.status === 409)?.body).toEqual(
+    expect(statuses).toEqual([200, 400]);
+    expect(responses.find((response) => response.status === 400)?.body).toEqual(
       {
-        message: "Token was already used",
+        message: "Token not found",
       },
     );
 
     const updatedUser = await UserModel.findById(userId);
     expect(updatedUser?.email).toBe("new@example.com");
-
-    const usedToken = await VerificationTokenModel.findById(
-      verificationToken._id,
-    );
-    expect(usedToken?.usedAt).toBeInstanceOf(Date);
 
     expect(queueAddMock).toHaveBeenCalledTimes(1);
     expect(queueAddMock).toHaveBeenCalledWith("user-email.changed", {

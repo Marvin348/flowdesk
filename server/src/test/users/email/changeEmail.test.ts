@@ -18,9 +18,9 @@ import {
 import { UserModel } from "@/features/users/models/user.modal";
 import mongoose from "mongoose";
 import { WorkspaceModel } from "@/features/workspace/models/workspace.model";
-import { VerificationTokenModel } from "@/features/verification-tokens/models/verificationToken.model";
 import { sendEmailChangeVerificationEmail } from "@/features/email/services/sendEmailChangeVerificationEmail.service";
 import { createAuthCookie } from "@/test/helpers/testFactories";
+import { verificationTokenMock } from "@/test/setupVerificationTokenRepositoryMock";
 
 beforeAll(async () => {
   await connectTestDb();
@@ -164,13 +164,12 @@ describe("PATCH /users/me/change-email", () => {
         message: "The demo account email cannot be changed.",
       });
 
-      const verificationToken = await VerificationTokenModel.findOne({
-        userId,
-        type: "email_change",
-      });
+      expect(
+        verificationTokenMock.replaceCurrentVerificationToken,
+      ).not.toHaveBeenCalled();
 
-      expect(verificationToken).toBeNull();
       expect(sendEmailChangeVerificationEmail).not.toHaveBeenCalled();
+
     } finally {
       if (previousDemoAccountEmail === undefined) {
         delete process.env.DEMO_ACCOUNT_EMAIL;
@@ -183,7 +182,7 @@ describe("PATCH /users/me/change-email", () => {
   it("returns 200 and creates an email_change token with the new email", async () => {
     const userId = new mongoose.Types.ObjectId();
     const workspaceId = new mongoose.Types.ObjectId();
-    
+
     await WorkspaceModel.create({
       _id: workspaceId,
       name: "Test Workspace",
@@ -212,13 +211,24 @@ describe("PATCH /users/me/change-email", () => {
       message: "Email verification has been send",
     });
 
-    const verificationToken = await VerificationTokenModel.findOne({
-      userId,
-      type: "email_change",
-    });
-
-    expect(verificationToken).not.toBeNull();
-    expect(verificationToken?.newEmail).toBe("new@example.com");
+    expect(
+      verificationTokenMock.replaceCurrentVerificationToken,
+    ).toHaveBeenCalledTimes(1);
+    
+    expect(
+      verificationTokenMock.replaceCurrentVerificationToken,
+    ).toHaveBeenCalledWith(
+      expect.objectContaining({
+        verificationToken: expect.any(String),
+        userId: userId.toString(),
+        type: "email_change",
+        verificationData: {
+          userId: userId.toString(),
+          type: "email_change",
+          newEmail: "new@example.com",
+        },
+      }),
+    );
   });
 
   it("returns 200 and calls the email change mail service", async () => {

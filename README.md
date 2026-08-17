@@ -12,8 +12,7 @@ FlowDesk is actively being developed as a fullstack portfolio project with a foc
 
 - **Node + Express**
 - **MongoDB with Mongoose**
-- **Redis**
-- **Redis-backed server-side sessions with HttpOnly cookies**
+- **Redis + BullMQ**
 - **Cloudflare R2 for private file storage**
 - **Resend (E-Mail Provider)**
 - **Zod**
@@ -67,11 +66,13 @@ Data-heavy endpoints handle filtering, search, pagination, and aggregation on th
 
 ## Authentication & Email Verification
 
-New users are not activated immediately after registration. During registration, the backend creates a one-time email verification token, stores only its hashed value, and sends a verification link via email.
+New users are not activated immediately after registration. During registration, the backend creates a one-time email verification token and stores its hashed value together with the required verification data in Redis with a short TTL.
 
-When the user opens the verification link, the backend validates the token, checks its expiration and usage state, marks the account as verified, and only then allows the user to log in.
+Only the latest verification token for a user and verification type remains valid. Reissuing a token atomically replaces the previous one.
 
-This separates account creation from account activation and follows a more realistic authentication flow.
+When the user opens the verification link, the backend atomically validates and consumes the token from Redis. If the token is valid, the account is marked as verified and the temporary token state is removed immediately. Unused tokens expire automatically through Redis TTL.
+
+This keeps short-lived verification state out of the primary database while ensuring that verification tokens are temporary, single-use, and safely replaced when a new token is requested.
 
 ## File Uploads & Downloads
 

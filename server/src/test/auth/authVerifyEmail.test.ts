@@ -9,8 +9,7 @@ import {
 import { UserModel } from "@/features/users/models/user.modal";
 import mongoose from "mongoose";
 import { WorkspaceModel } from "@/features/workspace/models/workspace.model";
-import { VerificationTokenModel } from "@/features/verification-tokens/models/verificationToken.model";
-import { hashToken } from "@/utils/hashToken";
+import { verificationTokenMock } from "@/test/setupVerificationTokenRepositoryMock";
 
 beforeAll(async () => {
   await connectTestDb();
@@ -53,11 +52,12 @@ describe("POST /auth/verify-email", () => {
       isEmailVerified: false,
     });
 
-    const verificationToken = await VerificationTokenModel.create({
-      userId,
-      tokenHash: hashToken(token),
-      type: "email_verification",
-      expiresAt: new Date(Date.now() + 1000 * 60 * 60),
+    verificationTokenMock.seedVerificationToken({
+      token,
+      data: {
+        userId: userId.toString(),
+        type: "email_verification",
+      },
     });
 
     const response = await request(app).post("/auth/verify-email").send({
@@ -78,16 +78,6 @@ describe("POST /auth/verify-email", () => {
 
     expect(verifiedUser.isEmailVerified).toBe(true);
     expect(verifiedUser.emailVerifiedAt).toBeDefined();
-
-    const usedToken = await VerificationTokenModel.findById(
-      verificationToken._id,
-    );
-
-    if (!usedToken) {
-      throw new Error("Expected verification token to exist");
-    }
-
-    expect(usedToken.usedAt).toBeDefined();
   });
 
   it("returns 400 when the verification token is invalid", async () => {
@@ -99,88 +89,16 @@ describe("POST /auth/verify-email", () => {
     expect(response.body).toEqual({ message: "Token not found" });
   });
 
-  it("returns 409 when the verification token was already used", async () => {
-    const userId = new mongoose.Types.ObjectId();
-    const workspaceId = new mongoose.Types.ObjectId();
-    const token = "used-verification-token";
-
-    await WorkspaceModel.create({
-      _id: workspaceId,
-      name: "Test Workspace",
-      ownerId: userId,
-    });
-
-    await UserModel.create({
-      _id: userId,
-      email: "test@example.com",
-      name: "Test User",
-      passwordHash: "hashed-password",
-      workspaceId,
-      role: "admin",
-      isEmailVerified: false,
-    });
-
-    await VerificationTokenModel.create({
-      userId,
-      tokenHash: hashToken(token),
-      type: "email_verification",
-      usedAt: new Date(),
-      expiresAt: new Date(Date.now() + 1000 * 60 * 60),
-    });
-
-    const response = await request(app).post("/auth/verify-email").send({
-      token,
-    });
-
-    expect(response.status).toBe(409);
-    expect(response.body).toEqual({ message: "Token was already used" });
-  });
-
-  it("returns 410 when the verification token is expired", async () => {
-    const userId = new mongoose.Types.ObjectId();
-    const workspaceId = new mongoose.Types.ObjectId();
-    const token = "expired-verification-token";
-
-    await WorkspaceModel.create({
-      _id: workspaceId,
-      name: "Test Workspace",
-      ownerId: userId,
-    });
-
-    await UserModel.create({
-      _id: userId,
-      email: "test@example.com",
-      name: "Test User",
-      passwordHash: "hashed-password",
-      workspaceId,
-      role: "admin",
-      isEmailVerified: false,
-    });
-
-    await VerificationTokenModel.create({
-      userId,
-      tokenHash: hashToken(token),
-      type: "email_verification",
-      expiresAt: new Date(Date.now() - 60_000),
-    });
-
-    const response = await request(app).post("/auth/verify-email").send({
-      token,
-    });
-
-    expect(response.status).toBe(410);
-    expect(response.body).toEqual({ message: "Token has expired" });
-  });
-
   it("returns 404 when the verification token user does not exist", async () => {
     const userId = new mongoose.Types.ObjectId();
     const token = "missing-user-verification-token";
 
-    await VerificationTokenModel.create({
-      userId,
-      tokenHash: hashToken(token),
-      type: "email_verification",
-      expiresAt: new Date(Date.now() + 1000 * 60 * 60),
+    verificationTokenMock.seedVerificationToken({
+      token,
+      data: {
+        userId: userId.toString(),
+        type: "email_verification",
+      },
     });
 
     const response = await request(app).post("/auth/verify-email").send({
@@ -212,11 +130,12 @@ describe("POST /auth/verify-email", () => {
       isEmailVerified: false,
     });
 
-    const verificationToken = await VerificationTokenModel.create({
-      userId,
-      tokenHash: hashToken(token),
-      type: "email_verification",
-      expiresAt: new Date(Date.now() + 1000 * 60 * 60),
+    verificationTokenMock.seedVerificationToken({
+      token,
+      data: {
+        userId: userId.toString(),
+        type: "email_verification",
+      },
     });
 
     const responses = await Promise.all([
@@ -226,21 +145,16 @@ describe("POST /auth/verify-email", () => {
 
     const statuses = responses.map((response) => response.status).sort();
 
-    expect(statuses).toEqual([200, 409]);
+    expect(statuses).toEqual([200, 400]);
     expect(
-      responses.find((response) => response.status === 409)?.body,
+      responses.find((response) => response.status === 400)?.body,
     ).toEqual({
-      message: "Token was already used",
+      message: "Token not found",
     });
 
     const verifiedUser = await UserModel.findById(userId);
     expect(verifiedUser).not.toBeNull();
     expect(verifiedUser?.isEmailVerified).toBe(true);
     expect(verifiedUser?.emailVerifiedAt).toBeInstanceOf(Date);
-
-    const usedToken = await VerificationTokenModel.findById(
-      verificationToken._id,
-    );
-    expect(usedToken?.usedAt).toBeInstanceOf(Date);
   });
 });
