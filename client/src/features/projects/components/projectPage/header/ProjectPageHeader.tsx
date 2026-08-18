@@ -16,7 +16,7 @@ const ProjectPageHeader = ({
   createProjectOpen,
 }: ProjectPageHeaderProps) => {
   return (
-    <header className="mb-5">
+    <header>
       <div className="mb-6 flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
         <div className="flex min-w-0 items-center gap-3">
           <div className="flex size-10 shrink-0 items-center justify-center rounded-md border border-accent/20 bg-accent/10 text-accent">

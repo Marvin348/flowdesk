@@ -13,6 +13,10 @@ export const useCreateTask = (projectId: string) => {
       queryClient.invalidateQueries({
         queryKey: ["projects", projectId, "details"],
       });
+
+      queryClient.invalidateQueries({
+        queryKey: ["projects", projectId, "tasks"],
+      });
     },
   });
 };

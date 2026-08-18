@@ -41,7 +41,7 @@ const ProjectToolbar = ({
             data-state={filter.view === value ? "active" : "inactive"}
             onClick={() => setFilter({ view: value })}
           >
-            <Icon size={15} /> {label}
+            <Icon size={15}/> {label}
             <span
               className="text-sm font-bold data-[state=active]:text-accent"
               data-state={filter.view === value ? "active" : "inactive"}
