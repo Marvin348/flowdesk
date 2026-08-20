@@ -10,14 +10,23 @@ import { verifyEmailController } from "@/features/auth/controller/verifyEmailCon
 import { resendVerificationEmailController } from "@/features/auth/controller/resendVerificationEmailController.controller";
 import { changePasswordController } from "@/features/auth/controller/changePasswordController.controller";
 import { verifyChangePasswordController } from "@/features/auth/controller/verifyChangePasswordController.controller";
+import { rateLimitMiddleware } from "@/features/rate-limits/middleware/rateLimitMiddleware";
 
 const router = express.Router();
 
 router.get("/me", requireAuth, asyncHandler(meController));
 
-router.post("/register", asyncHandler(registerController));
+router.post(
+  "/register",
+  rateLimitMiddleware("register"),
+  asyncHandler(registerController),
+);
 
-router.post("/login", asyncHandler(loginController));
+router.post(
+  "/login",
+  rateLimitMiddleware("login"),
+  asyncHandler(loginController),
+);
 
 router.get("/sessions", requireAuth, asyncHandler(sessionsController));
 
@@ -27,12 +36,14 @@ router.post("/verify-email", asyncHandler(verifyEmailController));
 
 router.post(
   "/resend-verification-email",
+  rateLimitMiddleware("resend_verification_email"),
   asyncHandler(resendVerificationEmailController),
 );
 
 router.post(
   "/password/change-request",
   requireAuth,
+  rateLimitMiddleware("change_password"),
   asyncHandler(changePasswordController),
 );
 

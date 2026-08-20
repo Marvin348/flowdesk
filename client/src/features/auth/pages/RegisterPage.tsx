@@ -11,6 +11,8 @@ import type { RegisterFields } from "@/features/auth/schemas/registerSchema";
 import { registerSchema } from "@/features/auth/schemas/registerSchema";
 import { FormInput } from "@/shared/components/ui/FormInput";
 import { PasswordInput } from "@/shared/components/ui/PasswordInput";
+import { getRateLimitError } from "@/features/auth/utils/getRateLimitError";
+import RateLimitError from "@/shared/components/RateLimitError";
 
 const RegisterPage = () => {
   const navigate = useNavigate();
@@ -37,6 +39,8 @@ const RegisterPage = () => {
       },
     });
   };
+
+  const rateLimitError = getRateLimitError(error);
 
   return (
     <div className="flex min-h-screen px-5 py-6 text-foreground sm:px-8">
@@ -149,9 +153,15 @@ const RegisterPage = () => {
                 </span>
               )}
             </Button>
-            {error && (
+
+            {rateLimitError ? (
+              <RateLimitError
+                message={rateLimitError.message}
+                retryAfterSeconds={rateLimitError.retryAfter}
+              />
+            ) : error ? (
               <ErrorMessage message="Diese E-Mail ist bereits registriert" />
-            )}
+            ) : null}
           </form>
 
           <p className="mt-6 text-center text-sm text-muted-foreground">

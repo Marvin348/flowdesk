@@ -15,3 +15,4 @@ vi.mock("@/queues/notificationQueue", () => ({
 
 import "./setupSessionRepositoryMock";
 import "./setupVerificationTokenRepositoryMock";
+import "./setupRateLimitRepositoryMock";
