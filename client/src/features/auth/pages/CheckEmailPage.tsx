@@ -4,6 +4,8 @@ import { Button } from "@/shared/components/ui/button";
 import { useResendVerificationEmail } from "@/features/auth/hooks/useResendVerificationEmail";
 import ErrorMessage from "@/shared/components/ErrorMessage";
 import { Spinner } from "@/shared/components/ui/spinner";
+import { getRateLimitError } from "@/features/auth/utils/getRateLimitError";
+import RateLimitError from "@/shared/components/RateLimitError";
 
 type CheckEmailLocationState = {
   email?: string;
@@ -14,14 +16,15 @@ const CheckEmailPage = () => {
   const email = (location.state as CheckEmailLocationState | null)?.email;
   const recipient = email ?? "deine E-Mail-Adresse";
 
-  const { mutate, isPending, isError, isSuccess } =
-    useResendVerificationEmail();
+  const { mutate, isPending, error, isSuccess } = useResendVerificationEmail();
 
   const handleResend = () => {
     if (!email) return;
 
     mutate(email);
   };
+
+  const rateLimitError = getRateLimitError(error);
 
   return (
     <section className="flex min-h-screen items-center justify-center px-5 py-6 text-foreground">
@@ -71,9 +74,15 @@ const CheckEmailPage = () => {
             Zurück zum Login
           </Link>
         </div>
-        {isError && (
+
+        {rateLimitError ? (
+          <RateLimitError
+            message={rateLimitError.message}
+            retryAfterSeconds={rateLimitError.retryAfter}
+          />
+        ) : error ? (
           <ErrorMessage message="E-Mail konnte nicht nochmal gesendet werden." />
-        )}
+        ) : null}
       </div>
     </section>
   );

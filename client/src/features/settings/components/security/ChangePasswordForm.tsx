@@ -9,6 +9,8 @@ import { Spinner } from "@/shared/components/ui/spinner";
 import ErrorMessage from "@/shared/components/ErrorMessage";
 import { PasswordInput } from "@/shared/components/ui/PasswordInput";
 import { getApiErrorMessage } from "@/shared/api/getApiError";
+import { getRateLimitError } from "@/features/auth/utils/getRateLimitError";
+import RateLimitError from "@/shared/components/RateLimitError";
 
 const ChangePasswordForm = ({ onClose }: { onClose: () => void }) => {
   const { mutate, isPending, error, isSuccess } = useRequestUpdatePassword();
@@ -50,6 +52,7 @@ const ChangePasswordForm = ({ onClose }: { onClose: () => void }) => {
   };
 
   const errorMessage = getApiErrorMessage(error);
+  const rateLimitError = getRateLimitError(error);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="p-4">
@@ -103,9 +106,14 @@ const ChangePasswordForm = ({ onClose }: { onClose: () => void }) => {
         </div>
       </div>
 
-      {errorMessage && (
+      {rateLimitError ? (
+        <RateLimitError
+          message={rateLimitError.message}
+          retryAfterSeconds={rateLimitError.retryAfter}
+        />
+      ) : errorMessage ? (
         <ErrorMessage message={errorMessage} className="mt-4 px-4 text-right" />
-      )}
+      ) : null}
 
       {isSuccess && (
         <div className="mt-6 flex items-center gap-2 border bg-muted rounded-md px-4 py-3 text-sm">

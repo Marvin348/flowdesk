@@ -26,8 +26,11 @@ app.use(
   cors({
     origin: CLIENT_URL,
     credentials: true,
+    exposedHeaders: ["Retry-After"],
   }),
 );
+
+app.set("trust proxy", 1);
 
 app.use(express.json());
 app.use(cookieParser());

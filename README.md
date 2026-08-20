@@ -74,6 +74,18 @@ When the user opens the verification link, the backend atomically validates and 
 
 This keeps short-lived verification state out of the primary database while ensuring that verification tokens are temporary, single-use, and safely replaced when a new token is requested.
 
+### Rate Limiting
+
+Sensitive authentication routes are protected by Redis-backed rate limits.
+
+- Multiple identifiers are supported depending on the route, such as IP address, email address, or authenticated user ID.
+- Rate-limit counters are stored in Redis with route-specific request limits and TTLs.
+- Counter increments and expiration setup are executed atomically using a Lua script.
+- Requests exceeding the configured limit return `429 Too Many Requests`.
+- The remaining cooldown is exposed through the `Retry-After` response header.
+- The frontend displays a dedicated rate-limit message with a countdown.
+- Express `trust proxy` is configured so client IPs can be resolved correctly behind the production proxy.
+
 ## File Uploads & Downloads
 
 FlowDesk stores uploaded files in Cloudflare R2 using S3-compatible APIs. The database stores file metadata such as filename, MIME type, file size, storage key, project reference, task reference, workspace reference, and uploader reference.

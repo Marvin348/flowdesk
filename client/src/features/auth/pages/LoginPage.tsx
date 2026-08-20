@@ -13,6 +13,8 @@ import type { LoginFields } from "@/features/auth/schemas/loginSchema";
 import { getStartViewPath } from "@/shared/lib/getStartViewPath";
 import { FormInput } from "@/shared/components/ui/FormInput";
 import { PasswordInput } from "@/shared/components/ui/PasswordInput";
+import { getRateLimitError } from "@/features/auth/utils/getRateLimitError";
+import RateLimitError from "@/shared/components/RateLimitError";
 
 const LoginPage = () => {
   const [searchParams] = useSearchParams();
@@ -59,6 +61,8 @@ const LoginPage = () => {
       shouldValidate: true,
     });
   };
+
+  const rateLimitError = getRateLimitError(error);
 
   return (
     <div className="flex min-h-screen px-5 py-6 text-foreground sm:px-8">
@@ -145,9 +149,15 @@ const LoginPage = () => {
                 <Spinner />
               )}
             </Button>
-            {error && (
+
+            {rateLimitError ? (
+              <RateLimitError
+                message={rateLimitError.message}
+                retryAfterSeconds={rateLimitError.retryAfter}
+              />
+            ) : error ? (
               <ErrorMessage message="E-Mail oder Passwort ist falsch!" />
-            )}
+            ) : null}
 
             <button
               type="button"
