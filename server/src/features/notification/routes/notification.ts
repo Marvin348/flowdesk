@@ -1,85 +1,30 @@
 import { asyncHandler } from "@/utils/asyncHandler";
 import express from "express";
-import {
-  NotificationQuerySchema,
-  NotificationReadParamsSchema,
-} from "@/features/notification/validators/notification.validator";
-import { AppError } from "@/utils/AppError";
-import { getAuthContext } from "@/features/auth/utils/getAuthContext";
-import { getNotifications } from "@/features/notification/services/getNotifications.service";
-import { markNotificationAsRead } from "@/features/notification/services/markNotificationAsRead.service";
-import { markAllNotificationsAsRead } from "@/features/notification/services/markAllNotificationsAsRead.service";
-import { getUnreadNotificationCount } from "../services/getUnreadNotificationCount.service";
+import { pinNotificationController } from "@/features/notification/controller/pinNotificationController.controller";
+import { archiveNotificationController } from "@/features/notification/controller/archiveNotificationController.controller";
+import { notificationController } from "@/features/notification/controller/notificationController.controller";
+import { unreadCountNotificationController } from "@/features/notification/controller/unreadCountNotificationController.controller";
+import { readAllNotificationController } from "@/features/notification/controller/readAllNotificationController.controller";
+import { markNotificationAsReadController } from "@/features/notification/controller/markNotificationAsReadController.controller";
 
 const router = express.Router();
 
-router.get(
-  "/",
-  asyncHandler(async (req, res) => {
-    const query = NotificationQuerySchema.safeParse(req.query);
+router.get("/", asyncHandler(notificationController));
 
-    if (!query.success) {
-      throw new AppError("Invalid query", 400);
-    }
+router.get("/unread-count", asyncHandler(unreadCountNotificationController));
 
-    const { workspaceId, userId } = getAuthContext(req);
+router.patch("/read-all", asyncHandler(readAllNotificationController));
 
-    const paginatedNotifications = await getNotifications({
-      workspaceId,
-      userId,
-      query: query.data,
-    });
-
-    return res.status(200).json({ data: paginatedNotifications });
-  }),
-);
-
-router.get(
-  "/unread-count",
-  asyncHandler(async (req, res) => {
-    const { workspaceId, userId } = getAuthContext(req);
-
-    const unreadCount = await getUnreadNotificationCount({
-      workspaceId,
-      userId,
-    });
-
-    return res.status(200).json({ unreadCount });
-  }),
-);
+router.patch("/:notificationId/pin", asyncHandler(pinNotificationController));
 
 router.patch(
-  "/read-all",
-  asyncHandler(async (req, res) => {
-    const { workspaceId, userId } = getAuthContext(req);
-
-    await markAllNotificationsAsRead({ workspaceId, userId });
-
-    return res
-      .status(200)
-      .json({ message: "Notifications all marked as read" });
-  }),
+  "/:notificationId/archive",
+  asyncHandler(archiveNotificationController),
 );
 
 router.patch(
   "/:notificationId/read",
-  asyncHandler(async (req, res) => {
-    const params = NotificationReadParamsSchema.safeParse(req.params);
-
-    if (!params.success) {
-      throw new AppError("Invalid notificationId", 400);
-    }
-
-    const { workspaceId, userId } = getAuthContext(req);
-
-    await markNotificationAsRead({
-      workspaceId,
-      userId,
-      notificationId: params.data.notificationId,
-    });
-
-    return res.status(200).json({ message: "Notification marked as read" });
-  }),
+  asyncHandler(markNotificationAsReadController),
 );
 
 export default router;

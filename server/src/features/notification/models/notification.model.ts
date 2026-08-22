@@ -69,6 +69,16 @@ const notificationSchema = new mongoose.Schema(
     readAt: {
       type: Date,
     },
+
+    pinnedAt: {
+      type: Date,
+      default: null,
+    },
+
+    archivedAt: {
+      type: Date,
+      default: null,
+    },
   },
   {
     timestamps: true,

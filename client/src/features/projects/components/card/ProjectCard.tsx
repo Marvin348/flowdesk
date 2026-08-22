@@ -63,7 +63,7 @@ const ProjectCard = ({ project }: ProjectCardType) => {
         <h3 className="font-medium truncate">{title}</h3>
 
         <div className="flex items-center gap-2">
-          <button className="order-1" onClick={onMenuClick}>
+          <button className="order-1 outline-none" onClick={onMenuClick}>
             <EllipsisVertical strokeWidth={1} fill="black"/>
           </button>
 

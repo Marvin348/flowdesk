@@ -2,12 +2,18 @@ import type { NotificationDto } from "@shared/types/dto/notification/notificatio
 import NotificationList from "@/features/notification/components/inbox/NotificationList";
 import NotificationToolbar from "@/features/notification/components/inbox/NotificationToolbar";
 import { MoreHorizontal } from "lucide-react";
+import { NOTIFICATION_VIEW_CONFIG } from "@/features/notification/constants/notificationViewConfig";
+import { useNotificationSearchParams } from "@/features/notification/hooks/useNotificationSearchParams";
 
 type NotificationInboxProps = {
   notifications: NotificationDto[];
 };
 
 const NotificationInbox = ({ notifications }: NotificationInboxProps) => {
+  const { view } = useNotificationSearchParams();
+
+  const currentView = NOTIFICATION_VIEW_CONFIG[view];
+
   return (
     <div>
       <NotificationToolbar />
@@ -15,9 +21,11 @@ const NotificationInbox = ({ notifications }: NotificationInboxProps) => {
         <div className="border-b border-border bg-muted/30 px-4 py-3">
           <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3">
             <div>
-              <p className="text-sm font-medium text-foreground">Inbox</p>
+              <p className="text-sm font-medium text-foreground">
+                {currentView.title}
+              </p>
               <p className="mt-0.5 text-xs text-muted-foreground">
-                Nach neuester Aktivität sortiert
+                {currentView.description}
               </p>
             </div>
             <button
@@ -28,7 +36,7 @@ const NotificationInbox = ({ notifications }: NotificationInboxProps) => {
             </button>
           </div>
         </div>
-        <NotificationList notifications={notifications}/>
+        <NotificationList notifications={notifications} />
       </section>
     </div>
   );

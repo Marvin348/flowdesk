@@ -2,7 +2,6 @@ import NotificationHeader from "@/features/notification/components/NotificationH
 import NotificationContent from "@/features/notification/components/NotificationContent";
 import { useNotifications } from "@/features/notification/hooks/useNotifications";
 import { useNotificationSearchParams } from "@/features/notification/hooks/useNotificationSearchParams";
-import { PAGE_LIMITS } from "@shared/constants/pagination";
 import NotificationInbox from "@/features/notification/components/inbox/NotificationInbox";
 import NotificationSidebar from "@/features/notification/components/sidebar/NotificationSidebar";
 import NotificationPagination from "@/features/notification/components/NotificationPagination";
@@ -11,16 +10,15 @@ import NotificationEmptyState from "@/features/notification/components/skeleton/
 import NotificationErrorState from "@/features/notification/components/skeleton/NotificationErrorState";
 
 const NotificationPage = () => {
-  const { page, status } = useNotificationSearchParams();
+  const { page } = useNotificationSearchParams();
 
-  const { data, isLoading, isError, refetch } = useNotifications({
-    page,
-    status,
-    limit: PAGE_LIMITS.notifications,
-  });
+  const { data, isLoading, isError, refetch } = useNotifications();
 
   const notifications = data?.items ?? [];
+
   const unreadCount = data?.unreadCount ?? 0;
+  const inboxCount = data?.inboxCount ?? 0;
+  const archiveCount = data?.archiveCount ?? 0;
 
   const pagination = data?.pagination ?? {
     currentPage: page,
@@ -58,7 +56,10 @@ const NotificationPage = () => {
           )}
         </div>
 
-        <NotificationSidebar />
+        <NotificationSidebar
+          inboxCount={inboxCount}
+          archiveCount={archiveCount}
+        />
       </NotificationContent>
     </div>
   );

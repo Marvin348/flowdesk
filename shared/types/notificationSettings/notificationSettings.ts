@@ -11,3 +11,7 @@ export const NOTIFICATION_SETTINGS_KEY = [
 ] as const;
 
 export type NotificationSettingKey = (typeof NOTIFICATION_SETTINGS_KEY)[number];
+
+export const NOTIFICATION_VIEW = ["inbox", "archive"] as const;
+
+export type NotificationView = (typeof NOTIFICATION_VIEW)[number];

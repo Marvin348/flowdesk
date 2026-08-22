@@ -1,8 +1,20 @@
-import { Bell, Clock3, UserRoundPlus } from "lucide-react";
-const NotificationSidebar = () => {
+import { Bell, Clock3,} from "lucide-react";
+import MailboxSidebar from "./MailboxSidebar";
+
+type NotificationSidebarProps = {
+  inboxCount: number;
+  archiveCount: number;
+};
+
+const NotificationSidebar = ({
+  inboxCount,
+  archiveCount,
+}: NotificationSidebarProps) => {
   return (
     <div className="h-full">
       <aside className="flex h-full flex-col space-y-6">
+        <MailboxSidebar inboxCount={inboxCount} archiveCount={archiveCount} />
+
         <section className="rounded-md border border-border bg-card p-4 shadow-xs">
           <div className="mb-4 flex items-center justify-between gap-3">
             <div>
@@ -55,43 +67,6 @@ const NotificationSidebar = () => {
               <p className="text-xs text-muted-foreground">Today</p>
               <p className="mt-1 text-xl font-semibold text-foreground">7</p>
             </div>
-          </div>
-        </section>
-
-        <section className="flex-1 rounded-md border border-border bg-card p-4 shadow-xs">
-          <div className="mb-4 flex items-center gap-3">
-            <div className="flex size-9 items-center justify-center rounded-md bg-accent/10 text-accent">
-              <UserRoundPlus className="size-4" />
-            </div>
-            <div>
-              <h2 className="text-sm font-medium text-foreground">
-                Most active
-              </h2>
-              <p className="mt-1 text-xs text-muted-foreground">
-                People behind recent updates
-              </p>
-            </div>
-          </div>
-
-          <div className="space-y-3">
-            {["Mara Hoffmann", "Jonas Weber", "Nina Scholz"].map(
-              (person, index) => (
-                <div key={person} className="flex items-center gap-3">
-                  <div className="flex size-8 items-center justify-center rounded-md bg-surface text-xs font-medium text-white">
-                    {person
-                      .split(" ")
-                      .map((part) => part[0])
-                      .join("")}
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    <p className="truncate text-sm text-foreground">{person}</p>
-                    <p className="text-xs text-muted-foreground">
-                      {4 - index} updates this week
-                    </p>
-                  </div>
-                </div>
-              ),
-            )}
           </div>
         </section>
       </aside>

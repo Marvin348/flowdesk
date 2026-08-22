@@ -1,14 +1,22 @@
 import { BellOff } from "lucide-react";
+import { NOTIFICATION_VIEW_CONFIG } from "@/features/notification/constants/notificationViewConfig";
+import { useNotificationSearchParams } from "@/features/notification/hooks/useNotificationSearchParams";
 
 const NotificationEmptyState = () => {
+  const { view } = useNotificationSearchParams();
+
+  const currentView = NOTIFICATION_VIEW_CONFIG[view];
+
   return (
     <section className="overflow-hidden h-full rounded-md border border-border bg-card shadow-xs">
       <div className="border-b border-border bg-muted/30 px-4 py-3">
         <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3">
           <div>
-            <p className="text-sm font-medium text-foreground">Inbox</p>
+            <p className="text-sm font-medium text-foreground">
+              {currentView.title}
+            </p>
             <p className="mt-0.5 text-xs text-muted-foreground">
-              Nach neuester Aktivität sortiert
+              {currentView.description}
             </p>
           </div>
           <div className="inline-flex size-8 items-center justify-center rounded-md text-muted-foreground">

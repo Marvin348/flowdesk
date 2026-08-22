@@ -1,5 +1,6 @@
-import { Types, PipelineStage } from "mongoose";
-import { NotificationQuery } from "../validators/notification.validator";
+import { Types } from "mongoose";
+import type { PipelineStage } from "mongoose";
+import { NotificationQuery } from "@/features/notification/validators/notification.validator";
 
 type getNotificationPipelineInput = {
   workspaceId: Types.ObjectId;
@@ -12,9 +13,17 @@ export const getNotificationPipeline = ({
   recipientId,
   query,
 }: getNotificationPipelineInput): PipelineStage[] => {
-  const { page, limit, status } = query;
+  const { page, limit, status, view } = query;
 
   const skip = (page - 1) * limit;
+
+  const viewMatch: PipelineStage.Match["$match"] =
+    view === "archive" ? { archivedAt: { $ne: null } } : { archivedAt: null };
+
+  const sortStage: PipelineStage.Sort =
+    view === "archive"
+      ? { $sort: { createdAt: -1 } }
+      : { $sort: { pinnedAt: -1, createdAt: -1 } };
 
   return [
     {
@@ -23,8 +32,9 @@ export const getNotificationPipeline = ({
     {
       $facet: {
         data: [
+          { $match: viewMatch },
           ...(status === "unread" ? [{ $match: { isRead: false } }] : []),
-          { $sort: { createdAt: -1 } },
+          sortStage,
           { $skip: skip },
           { $limit: limit },
 
@@ -143,6 +153,8 @@ export const getNotificationPipeline = ({
               metadata: 1,
               isRead: 1,
               readAt: 1,
+              pinnedAt: 1,
+              archivedAt: 1,
               createdAt: 1,
 
               taskEntity: 1,
@@ -152,13 +164,32 @@ export const getNotificationPipeline = ({
           },
         ],
         metaData: [
+          { $match: viewMatch },
           ...(status === "unread" ? [{ $match: { isRead: false } }] : []),
           { $count: "totalItems" },
         ],
 
         unreadMetaData: [
+          { $match: viewMatch },
           { $match: { isRead: false } },
           { $count: "unreadCount" },
+        ],
+
+        inboxCount: [
+          {
+            $match: { archivedAt: null },
+          },
+          {
+            $count: "count",
+          },
+        ],
+        archiveCount: [
+          {
+            $match: { archivedAt: { $ne: null } },
+          },
+          {
+            $count: "count",
+          },
         ],
       },
     },

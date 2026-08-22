@@ -1,6 +1,6 @@
 import type { NotificationDto } from "@shared/types/dto/notification/notification.dto";
 import { notificationConfig } from "@/features/notification/utils/getNotificationConfig";
-import { Circle, MoreHorizontal, Check } from "lucide-react";
+import { Circle, Check, Pin } from "lucide-react";
 import NotificationMessage from "@/features/notification/components/inbox/NotificationMessage";
 import { Button } from "@/shared/components/ui/button";
 import { notificationColors } from "@/features/notification/utils/notificationColors";
@@ -8,6 +8,7 @@ import { cn } from "@/shared/lib/utils";
 import { calcTimeAgo } from "@/shared/utils/calcTimeAgo";
 import { useMarkNotificationAsRead } from "@/features/notification/hooks/useMarkNotificationAsRead";
 import ErrorMessage from "@/shared/components/ErrorMessage";
+import NotificationActions from "@/features/notification/components/NotificationActions";
 
 type NotificationItemProps = {
   notification: NotificationDto;
@@ -18,6 +19,8 @@ const NotificationItem = ({ notification }: NotificationItemProps) => {
 
   const config = notificationConfig[notification.type];
   const colors = notificationColors[config.color];
+
+  const isPinned = notification.isPinned;
 
   const Icon = config.icon;
   const entityLabel = config.entityLabel;
@@ -57,9 +60,14 @@ const NotificationItem = ({ notification }: NotificationItemProps) => {
       </div>
 
       <div className="flex items-center justify-between gap-3 sm:flex-col sm:items-end">
-        <span className="whitespace-nowrap text-xs text-muted-foreground">
-          {calcTimeAgo(notification.createdAt)}
-        </span>
+        <div className="flex items-center ">
+            {isPinned && <Pin className="size-4 mr-4 text-muted-foreground" />}
+          <span className="whitespace-nowrap text-xs text-muted-foreground">
+            {calcTimeAgo(notification.createdAt)}
+          </span>
+          <span>
+          </span>
+        </div>
         <div className="flex items-center gap-1">
           {!notification.isRead && (
             <Button
@@ -75,13 +83,7 @@ const NotificationItem = ({ notification }: NotificationItemProps) => {
             </Button>
           )}
 
-          <Button
-            variant="ghost"
-            size="sm"
-            aria-label="Open notification actions"
-          >
-            <MoreHorizontal className="size-4" />
-          </Button>
+          <NotificationActions notification={notification} />
         </div>
 
         {isError && <ErrorMessage message="Derzeit nicht möglich" />}
