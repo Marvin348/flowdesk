@@ -1,4 +1,4 @@
-import { Bell, Clock3, UserRoundPlus } from "lucide-react";
+import { Bell, Clock3,} from "lucide-react";
 import MailboxSidebar from "./MailboxSidebar";
 
 type NotificationSidebarProps = {
