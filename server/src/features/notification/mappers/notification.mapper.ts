@@ -36,5 +36,9 @@ export const toNotificationDto = (
 
   isRead: notification.isRead,
   readAt: toIsoString(notification.readAt),
+
+  isPinned: Boolean(notification.pinnedAt),
+  isArchived: Boolean(notification.archivedAt),
+
   createdAt: toIsoString(notification.createdAt),
 });

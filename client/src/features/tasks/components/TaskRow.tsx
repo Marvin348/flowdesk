@@ -49,7 +49,10 @@ const TaskRow = ({ task, handleStatusChange, isUpdating }: TaskRowProps) => {
       </p>
 
       <div ref={useDropdownRef} className="relative">
-        <button onClick={() => setIsDropdownOpen((prev) => !prev)}>
+        <button
+          className="outline-none"
+          onClick={() => setIsDropdownOpen((prev) => !prev)}
+        >
           <EllipsisVertical className="size-5" />
         </button>
 

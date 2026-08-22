@@ -29,5 +29,8 @@ export type NotificationDocument = {
   isRead: boolean;
   readAt?: Date;
 
+  pinnedAt: Date | null;
+  archivedAt: Date | null;
+
   createdAt: Date;
 };

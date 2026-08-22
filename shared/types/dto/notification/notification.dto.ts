@@ -54,6 +54,10 @@ export type NotificationDto = {
 
   isRead: boolean;
   readAt?: string;
+
+  isPinned: boolean;
+  isArchived: boolean;
+
   createdAt: string;
 };
 

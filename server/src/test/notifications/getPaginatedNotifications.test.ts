@@ -65,6 +65,8 @@ describe("GET /notifications", () => {
     expect(response.body.data).toEqual({
       items: [],
       unreadCount: 0,
+      inboxCount: 0,
+      archiveCount: 0,
       pagination: {
         currentPage: 1,
         totalPages: 0,
@@ -146,6 +148,8 @@ describe("GET /notifications", () => {
       totalItems: 2,
     });
     expect(response.body.data.unreadCount).toBe(1);
+    expect(response.body.data.inboxCount).toBe(2);
+    expect(response.body.data.archiveCount).toBe(0);
     expect(response.body.data.items).toHaveLength(2);
 
     expect(response.body.data.items).toEqual(
@@ -229,6 +233,8 @@ describe("GET /notifications", () => {
 
     expect(response.status).toBe(200);
     expect(response.body.data.unreadCount).toBe(1);
+    expect(response.body.data.inboxCount).toBe(2);
+    expect(response.body.data.archiveCount).toBe(0);
     expect(response.body.data.pagination).toEqual({
       currentPage: 1,
       totalPages: 1,
@@ -289,10 +295,200 @@ describe("GET /notifications", () => {
     expect(response.status).toBe(200);
     expect(response.body.data.items).toHaveLength(1);
     expect(response.body.data.unreadCount).toBe(2);
+    expect(response.body.data.inboxCount).toBe(3);
+    expect(response.body.data.archiveCount).toBe(0);
     expect(response.body.data.pagination).toEqual({
       currentPage: 2,
       totalPages: 3,
       totalItems: 3,
     });
+  });
+
+  it("returns inbox notifications by default and excludes archived notifications", async () => {
+    const { authCookie, userId, workspaceId } = await createAuthedUserContext();
+    const actor = await createUser({ workspaceId });
+    const inboxNotificationId = new mongoose.Types.ObjectId();
+    const archivedNotificationId = new mongoose.Types.ObjectId();
+
+    await NotificationModel.create([
+      {
+        _id: inboxNotificationId,
+        workspaceId,
+        actorId: actor._id,
+        recipientId: userId,
+        type: "project_assigned",
+        entityType: "project",
+        entityId: new mongoose.Types.ObjectId(),
+        archivedAt: null,
+      },
+      {
+        _id: archivedNotificationId,
+        workspaceId,
+        actorId: actor._id,
+        recipientId: userId,
+        type: "role_changed",
+        entityType: "user",
+        entityId: userId,
+        archivedAt: new Date("2026-07-21T10:00:00.000Z"),
+      },
+    ]);
+
+    const response = await request(app)
+      .get("/notifications")
+      .set("Cookie", authCookie);
+
+    expect(response.status).toBe(200);
+    expect(response.body.data.items).toHaveLength(1);
+    expect(response.body.data.items[0]).toMatchObject({
+      id: inboxNotificationId.toString(),
+      isArchived: false,
+    });
+    expect(response.body.data.pagination).toEqual({
+      currentPage: 1,
+      totalPages: 1,
+      totalItems: 1,
+    });
+    expect(response.body.data.inboxCount).toBe(1);
+    expect(response.body.data.archiveCount).toBe(1);
+  });
+
+  it("returns only archived notifications when view is archive", async () => {
+    const { authCookie, userId, workspaceId } = await createAuthedUserContext();
+    const actor = await createUser({ workspaceId });
+    const inboxNotificationId = new mongoose.Types.ObjectId();
+    const archivedNotificationId = new mongoose.Types.ObjectId();
+
+    await NotificationModel.create([
+      {
+        _id: inboxNotificationId,
+        workspaceId,
+        actorId: actor._id,
+        recipientId: userId,
+        type: "project_assigned",
+        entityType: "project",
+        entityId: new mongoose.Types.ObjectId(),
+        archivedAt: null,
+      },
+      {
+        _id: archivedNotificationId,
+        workspaceId,
+        actorId: actor._id,
+        recipientId: userId,
+        type: "role_changed",
+        entityType: "user",
+        entityId: userId,
+        archivedAt: new Date("2026-07-21T10:00:00.000Z"),
+      },
+    ]);
+
+    const response = await request(app)
+      .get("/notifications")
+      .query({ view: "archive" })
+      .set("Cookie", authCookie);
+
+    expect(response.status).toBe(200);
+    expect(response.body.data.items).toHaveLength(1);
+    expect(response.body.data.items[0]).toMatchObject({
+      id: archivedNotificationId.toString(),
+      isArchived: true,
+    });
+    expect(response.body.data.pagination).toEqual({
+      currentPage: 1,
+      totalPages: 1,
+      totalItems: 1,
+    });
+    expect(response.body.data.inboxCount).toBe(1);
+    expect(response.body.data.archiveCount).toBe(1);
+  });
+
+  it("sorts pinned inbox notifications before newer unpinned notifications", async () => {
+    const { authCookie, userId, workspaceId } = await createAuthedUserContext();
+    const actor = await createUser({ workspaceId });
+    const pinnedNotificationId = new mongoose.Types.ObjectId();
+    const newestNotificationId = new mongoose.Types.ObjectId();
+
+    await NotificationModel.create([
+      {
+        _id: newestNotificationId,
+        workspaceId,
+        actorId: actor._id,
+        recipientId: userId,
+        type: "project_assigned",
+        entityType: "project",
+        entityId: new mongoose.Types.ObjectId(),
+        pinnedAt: null,
+        createdAt: new Date("2026-07-22T10:00:00.000Z"),
+      },
+      {
+        _id: pinnedNotificationId,
+        workspaceId,
+        actorId: actor._id,
+        recipientId: userId,
+        type: "role_changed",
+        entityType: "user",
+        entityId: userId,
+        pinnedAt: new Date("2026-07-20T10:00:00.000Z"),
+        createdAt: new Date("2026-07-20T10:00:00.000Z"),
+      },
+    ]);
+
+    const response = await request(app)
+      .get("/notifications")
+      .set("Cookie", authCookie);
+
+    expect(response.status).toBe(200);
+    expect(
+      response.body.data.items.map((item: { id: string }) => item.id),
+    ).toEqual([pinnedNotificationId.toString(), newestNotificationId.toString()]);
+    expect(response.body.data.items[0]).toMatchObject({
+      id: pinnedNotificationId.toString(),
+      isPinned: true,
+    });
+  });
+
+  it("sorts archived notifications by createdAt instead of pinnedAt", async () => {
+    const { authCookie, userId, workspaceId } = await createAuthedUserContext();
+    const actor = await createUser({ workspaceId });
+    const pinnedOlderArchivedId = new mongoose.Types.ObjectId();
+    const newestArchivedId = new mongoose.Types.ObjectId();
+
+    await NotificationModel.create([
+      {
+        _id: pinnedOlderArchivedId,
+        workspaceId,
+        actorId: actor._id,
+        recipientId: userId,
+        type: "role_changed",
+        entityType: "user",
+        entityId: userId,
+        pinnedAt: new Date("2026-07-20T10:00:00.000Z"),
+        archivedAt: new Date("2026-07-23T10:00:00.000Z"),
+        createdAt: new Date("2026-07-20T10:00:00.000Z"),
+      },
+      {
+        _id: newestArchivedId,
+        workspaceId,
+        actorId: actor._id,
+        recipientId: userId,
+        type: "project_assigned",
+        entityType: "project",
+        entityId: new mongoose.Types.ObjectId(),
+        pinnedAt: null,
+        archivedAt: new Date("2026-07-23T10:00:00.000Z"),
+        createdAt: new Date("2026-07-22T10:00:00.000Z"),
+      },
+    ]);
+
+    const response = await request(app)
+      .get("/notifications")
+      .query({ view: "archive" })
+      .set("Cookie", authCookie);
+
+    expect(response.status).toBe(200);
+    expect(
+      response.body.data.items.map((item: { id: string }) => item.id),
+    ).toEqual([newestArchivedId.toString(), pinnedOlderArchivedId.toString()]);
+    expect(response.body.data.inboxCount).toBe(0);
+    expect(response.body.data.archiveCount).toBe(2);
   });
 });

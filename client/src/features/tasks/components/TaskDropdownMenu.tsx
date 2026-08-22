@@ -26,7 +26,7 @@ const TaskDropdownMenu = ({
         <button
           disabled={isUpdating}
           onClick={() => handleStatusChange(id, statusAction.nextStatus)}
-          className="w-full rounded-md px-3 py-2 text-left text-sm font-medium text-muted-foreground duration-200 hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-60"
+          className="w-full rounded-md px-3 py-2 text-left text-sm font-medium text-muted-foreground duration-200 hover:bg-muted hover:text-foreground outline-none disabled:pointer-events-none disabled:opacity-60"
         >
           {isUpdating ? "Speichert..." : statusAction.label}
         </button>
@@ -34,7 +34,7 @@ const TaskDropdownMenu = ({
 
       <div className="border-t mt-1">
         <button
-          className="mt-1 w-full rounded-md px-3 py-2 text-left text-sm text-muted-foreground duration-200 hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          className="mt-1 w-full rounded-md px-3 py-2 text-left text-sm text-muted-foreground duration-200 hover:bg-muted hover:text-foreground outline-none"
           onClick={() => openEditTask(projectId, id)}
         >
           Bearbeiten

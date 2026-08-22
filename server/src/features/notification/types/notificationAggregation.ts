@@ -17,6 +17,9 @@ export type NotificationAggregationItem = {
   readAt?: Date;
   createdAt: Date;
 
+  pinnedAt: Date | null;
+  archivedAt: Date | null;
+
   actor?: {
     _id: Types.ObjectId;
     name: string;
@@ -43,5 +46,13 @@ export type NotificationAggregationResult = {
 
   unreadMetaData: Array<{
     unreadCount: number;
+  }>;
+
+  inboxCount: Array<{
+    count: number;
+  }>;
+
+  archiveCount: Array<{
+    count: number;
   }>;
 };

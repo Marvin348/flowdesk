@@ -32,13 +32,18 @@ export const getNotifications = async ({
 
   const notifications = result?.data ?? [];
   const totalItems = result?.metaData[0]?.totalItems ?? 0;
+
   const unreadCount = result?.unreadMetaData[0]?.unreadCount ?? 0;
+  const inboxCount = result?.inboxCount[0]?.count ?? 0;
+  const archiveCount = result?.archiveCount[0]?.count ?? 0;
 
   const totalPages = Math.ceil(totalItems / limit);
 
   return {
     items: notifications.map(toNotificationDto),
     unreadCount,
+    inboxCount,
+    archiveCount,
     pagination: {
       currentPage: page,
       totalPages,
