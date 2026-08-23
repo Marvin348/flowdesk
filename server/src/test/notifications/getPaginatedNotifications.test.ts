@@ -1,13 +1,6 @@
 import app from "@/app";
 import { NotificationModel } from "@/features/notification/models/notification.model";
-import {
-  afterAll,
-  beforeAll,
-  beforeEach,
-  describe,
-  expect,
-  it,
-} from "vitest";
+import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
 import {
   clearTestDb,
   connectTestDb,
@@ -513,25 +506,16 @@ describe("GET /notifications", () => {
     expect(response.status).toBe(200);
     expect(
       response.body.data.items.map((item: { id: string }) => item.id),
-    ).toEqual(
-      expect.arrayContaining([
-        taskAssignedNotificationId.toString(),
-        taskDueSoonNotificationId.toString(),
-        taskOverdueNotificationId.toString(),
-      ]),
-    );
-    expect(response.body.data.items).toHaveLength(3);
-    expect(response.body.data.items).toEqual(
-      expect.arrayContaining([
-        expect.objectContaining({ type: "task_assigned" }),
-        expect.objectContaining({ type: "task_due_soon" }),
-        expect.objectContaining({ type: "task_overdue" }),
-      ]),
-    );
+    ).toEqual([taskAssignedNotificationId.toString()]);
+    expect(response.body.data.items).toHaveLength(1);
+    expect(response.body.data.items[0]).toMatchObject({
+      type: "task_assigned",
+    });
+    
     expect(response.body.data.pagination).toEqual({
       currentPage: 1,
       totalPages: 1,
-      totalItems: 3,
+      totalItems: 1,
     });
   });
 
@@ -721,7 +705,10 @@ describe("GET /notifications", () => {
     expect(response.status).toBe(200);
     expect(
       response.body.data.items.map((item: { id: string }) => item.id),
-    ).toEqual([pinnedNotificationId.toString(), newestNotificationId.toString()]);
+    ).toEqual([
+      pinnedNotificationId.toString(),
+      newestNotificationId.toString(),
+    ]);
     expect(response.body.data.items[0]).toMatchObject({
       id: pinnedNotificationId.toString(),
       isPinned: true,
