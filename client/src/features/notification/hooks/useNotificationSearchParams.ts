@@ -3,8 +3,14 @@ import { DEFAULT_PAGE } from "@shared/constants/pagination";
 import type { NotificationStatus } from "@shared/types/dto/notification/notification.dto";
 import { useSearchParams } from "react-router";
 import { notificationStatusSchema } from "@/features/notification/schemas/notificationStatusSchema";
-import { notificationViewSchema } from "@/features/notification/schemas/notificationViewSchema";
-import type { NotificationView } from "@shared/types/notificationSettings/notificationSettings";
+import {
+  notificationViewSchema,
+  notificationFilterTypeSchema,
+} from "@/features/notification/schemas/notificationFilterSchema";
+import type {
+  NotificationFilterType,
+  NotificationView,
+} from "@shared/types/notificationSettings/notificationSettings";
 
 export const useNotificationSearchParams = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -23,6 +29,14 @@ export const useNotificationSearchParams = () => {
     searchParams.get("view") ?? undefined,
   );
 
+  const filterTypeResult = notificationFilterTypeSchema.safeParse(
+    searchParams.get("filterType"),
+  );
+
+  const filterType = filterTypeResult.success
+    ? filterTypeResult.data
+    : undefined;
+
   const setPage = (newPage: number) =>
     setSearchParams((prev) => updateQueryParam(prev, "page", String(newPage)));
 
@@ -32,10 +46,27 @@ export const useNotificationSearchParams = () => {
   const setNotificationView = (value: NotificationView) =>
     setSearchParams((prev) => updateQueryParam(prev, "view", value, "page"));
 
+  const setFilterType = (value: NotificationFilterType) =>
+    setSearchParams((prev) =>
+      updateQueryParam(prev, "filterType", value, "page"),
+    );
+
+  const clearFilterType = () => {
+    searchParams.delete("filterType");
+    setSearchParams(searchParams);
+  };
+
   return {
     page,
     status,
     view,
-    actions: { setPage, setNotificationStatus, setNotificationView },
+    filterType,
+    actions: {
+      setPage,
+      setNotificationStatus,
+      setNotificationView,
+      setFilterType,
+      clearFilterType,
+    },
   };
 };

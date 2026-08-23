@@ -1,6 +1,7 @@
 import { Types } from "mongoose";
 import type { PipelineStage } from "mongoose";
 import { NotificationQuery } from "@/features/notification/validators/notification.validator";
+import { NOTIFICATION_FILTER_MAP } from "@/features/notification/constants/notificationSettingByType";
 
 type getNotificationPipelineInput = {
   workspaceId: Types.ObjectId;
@@ -13,12 +14,16 @@ export const getNotificationPipeline = ({
   recipientId,
   query,
 }: getNotificationPipelineInput): PipelineStage[] => {
-  const { page, limit, status, view } = query;
+  const { page, limit, status, view, filterType } = query;
 
   const skip = (page - 1) * limit;
 
   const viewMatch: PipelineStage.Match["$match"] =
     view === "archive" ? { archivedAt: { $ne: null } } : { archivedAt: null };
+
+  const filterTypeMatch: PipelineStage.Match["$match"] = filterType
+    ? { type: { $in: NOTIFICATION_FILTER_MAP[filterType] } }
+    : {};
 
   const sortStage: PipelineStage.Sort =
     view === "archive"
@@ -32,7 +37,7 @@ export const getNotificationPipeline = ({
     {
       $facet: {
         data: [
-          { $match: viewMatch },
+          { $match: { ...viewMatch, ...filterTypeMatch } },
           ...(status === "unread" ? [{ $match: { isRead: false } }] : []),
           sortStage,
           { $skip: skip },
@@ -164,13 +169,13 @@ export const getNotificationPipeline = ({
           },
         ],
         metaData: [
-          { $match: viewMatch },
+          { $match: { ...viewMatch, ...filterTypeMatch } },
           ...(status === "unread" ? [{ $match: { isRead: false } }] : []),
           { $count: "totalItems" },
         ],
 
         unreadMetaData: [
-          { $match: viewMatch },
+          { $match: { ...viewMatch, ...filterTypeMatch } },
           { $match: { isRead: false } },
           { $count: "unreadCount" },
         ],

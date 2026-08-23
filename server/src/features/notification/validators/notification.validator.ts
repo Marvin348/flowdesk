@@ -5,7 +5,10 @@ import {
   PAGE_LIMITS,
 } from "@shared/constants/pagination";
 import { NOTIFICATION_STATUS } from "@shared/types/dto/notification/notification.dto";
-import { NOTIFICATION_VIEW } from "@shared/types/notificationSettings/notificationSettings";
+import {
+  NOTIFICATION_FILTER_TYPE,
+  NOTIFICATION_VIEW,
+} from "@shared/types/notificationSettings/notificationSettings";
 import { objectIdSchema } from "@/shared/validators/objectId.validator";
 
 export const notificationQuerySchema = z.object({
@@ -19,6 +22,7 @@ export const notificationQuerySchema = z.object({
 
   status: z.enum(NOTIFICATION_STATUS).default("all"),
   view: z.enum(NOTIFICATION_VIEW).default("inbox"),
+  filterType: z.enum(NOTIFICATION_FILTER_TYPE).optional(),
 });
 
 export type NotificationQuery = z.infer<typeof notificationQuerySchema>;
