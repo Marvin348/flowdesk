@@ -5,7 +5,7 @@ import { useNotificationSearchParams } from "@/features/notification/hooks/useNo
 import { PAGE_LIMITS } from "@shared/constants/pagination";
 
 export const useNotifications = () => {
-  const { page, status, view } = useNotificationSearchParams();
+  const { page, status, view, filterType } = useNotificationSearchParams();
 
   const limit = PAGE_LIMITS.notifications;
 
@@ -19,8 +19,9 @@ export const useNotifications = () => {
         limit,
         status,
         view,
+        filterType,
       }),
-    queryKey: ["notifications", { page, limit, status, view }],
+    queryKey: ["notifications", { page, limit, status, view, filterType }],
   });
 
   return { data, isLoading, isError, refetch };

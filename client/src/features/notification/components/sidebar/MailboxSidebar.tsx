@@ -22,7 +22,7 @@ const MailboxSidebar = ({ inboxCount, archiveCount }: MailboxSidebarProps) => {
         </p>
       </div>
 
-      <div className="grid gap-1">
+      <div className="grid gap-2">
         <Button
           variant="mailbox"
           data-state={view === "inbox" ? "active" : "inactive"}

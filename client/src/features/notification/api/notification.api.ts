@@ -11,6 +11,7 @@ export const getNotifications = async ({
   limit,
   status,
   view,
+  filterType,
 }: NotificationQuery): Promise<PaginatedNotificationsDto> => {
   const res = await apiClient.get("/notifications", {
     params: {
@@ -18,6 +19,7 @@ export const getNotifications = async ({
       limit,
       status,
       view,
+      filterType,
     },
   });
   return res.data.data;

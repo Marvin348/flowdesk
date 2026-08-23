@@ -54,6 +54,18 @@ describe("GET /notifications", () => {
     expect(response.body).toEqual({ message: "Invalid query" });
   });
 
+  it("returns 400 if filterType is invalid", async () => {
+    const { authCookie } = await createAuthedUserContext();
+
+    const response = await request(app)
+      .get("/notifications")
+      .query({ filterType: "invalid-filter" })
+      .set("Cookie", authCookie);
+
+    expect(response.status).toBe(400);
+    expect(response.body).toEqual({ message: "Invalid query" });
+  });
+
   it("returns an empty paginated list when the user has no notifications", async () => {
     const { authCookie } = await createAuthedUserContext();
 
@@ -250,6 +262,276 @@ describe("GET /notifications", () => {
         name: actor.name,
       },
       isRead: false,
+    });
+  });
+
+  it("filters inbox notifications by comments filterType", async () => {
+    const { authCookie, userId, workspaceId } = await createAuthedUserContext();
+    const actor = await createUser({ workspaceId });
+    const mentionNotificationId = new mongoose.Types.ObjectId();
+    const replyNotificationId = new mongoose.Types.ObjectId();
+
+    await NotificationModel.create([
+      {
+        _id: mentionNotificationId,
+        workspaceId,
+        actorId: actor._id,
+        recipientId: userId,
+        type: "comment_mention",
+        entityType: "comment",
+        entityId: new mongoose.Types.ObjectId(),
+        isRead: false,
+      },
+      {
+        _id: replyNotificationId,
+        workspaceId,
+        actorId: actor._id,
+        recipientId: userId,
+        type: "comment_reply",
+        entityType: "comment",
+        entityId: new mongoose.Types.ObjectId(),
+        isRead: false,
+      },
+      {
+        workspaceId,
+        actorId: actor._id,
+        recipientId: userId,
+        type: "comment_reply",
+        entityType: "comment",
+        entityId: new mongoose.Types.ObjectId(),
+        archivedAt: new Date("2026-07-21T10:00:00.000Z"),
+        isRead: true,
+      },
+      {
+        workspaceId,
+        actorId: actor._id,
+        recipientId: userId,
+        type: "task_overdue",
+        entityType: "task",
+        entityId: new mongoose.Types.ObjectId(),
+        isRead: false,
+      },
+      {
+        workspaceId,
+        actorId: actor._id,
+        recipientId: userId,
+        type: "role_changed",
+        entityType: "user",
+        entityId: userId,
+        metadata: {
+          previousRole: "member",
+          currentRole: "manager",
+        },
+        isRead: false,
+      },
+    ]);
+
+    const response = await request(app)
+      .get("/notifications")
+      .query({ filterType: "comments" })
+      .set("Cookie", authCookie);
+
+    expect(response.status).toBe(200);
+    expect(
+      response.body.data.items.map((item: { id: string }) => item.id),
+    ).toEqual(
+      expect.arrayContaining([
+        mentionNotificationId.toString(),
+        replyNotificationId.toString(),
+      ]),
+    );
+    expect(response.body.data.items).toHaveLength(2);
+    expect(response.body.data.items).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ type: "comment_mention" }),
+        expect.objectContaining({ type: "comment_reply" }),
+      ]),
+    );
+    expect(response.body.data.unreadCount).toBe(2);
+    expect(response.body.data.inboxCount).toBe(4);
+    expect(response.body.data.archiveCount).toBe(1);
+    expect(response.body.data.pagination).toEqual({
+      currentPage: 1,
+      totalPages: 1,
+      totalItems: 2,
+    });
+  });
+
+  it("filters archived notifications by deadline filterType", async () => {
+    const { authCookie, userId, workspaceId } = await createAuthedUserContext();
+    const actor = await createUser({ workspaceId });
+    const dueSoonNotificationId = new mongoose.Types.ObjectId();
+    const overdueNotificationId = new mongoose.Types.ObjectId();
+    const projectDueSoonNotificationId = new mongoose.Types.ObjectId();
+
+    await NotificationModel.create([
+      {
+        _id: dueSoonNotificationId,
+        workspaceId,
+        actorId: actor._id,
+        recipientId: userId,
+        type: "task_due_soon",
+        entityType: "task",
+        entityId: new mongoose.Types.ObjectId(),
+        archivedAt: new Date("2026-07-21T10:00:00.000Z"),
+        isRead: false,
+      },
+      {
+        _id: overdueNotificationId,
+        workspaceId,
+        actorId: actor._id,
+        recipientId: userId,
+        type: "task_overdue",
+        entityType: "task",
+        entityId: new mongoose.Types.ObjectId(),
+        archivedAt: new Date("2026-07-21T10:00:00.000Z"),
+        isRead: true,
+      },
+      {
+        _id: projectDueSoonNotificationId,
+        workspaceId,
+        actorId: actor._id,
+        recipientId: userId,
+        type: "project_due_soon",
+        entityType: "project",
+        entityId: new mongoose.Types.ObjectId(),
+        archivedAt: new Date("2026-07-21T10:00:00.000Z"),
+        isRead: false,
+      },
+      {
+        workspaceId,
+        actorId: actor._id,
+        recipientId: userId,
+        type: "comment_mention",
+        entityType: "comment",
+        entityId: new mongoose.Types.ObjectId(),
+        archivedAt: new Date("2026-07-21T10:00:00.000Z"),
+        isRead: false,
+      },
+      {
+        workspaceId,
+        actorId: actor._id,
+        recipientId: userId,
+        type: "task_overdue",
+        entityType: "task",
+        entityId: new mongoose.Types.ObjectId(),
+        isRead: false,
+      },
+    ]);
+
+    const response = await request(app)
+      .get("/notifications")
+      .query({ view: "archive", filterType: "deadline" })
+      .set("Cookie", authCookie);
+
+    expect(response.status).toBe(200);
+    expect(
+      response.body.data.items.map((item: { id: string }) => item.id),
+    ).toEqual(
+      expect.arrayContaining([
+        dueSoonNotificationId.toString(),
+        overdueNotificationId.toString(),
+        projectDueSoonNotificationId.toString(),
+      ]),
+    );
+    expect(response.body.data.items).toHaveLength(3);
+    expect(response.body.data.items).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ type: "task_due_soon" }),
+        expect.objectContaining({ type: "task_overdue" }),
+        expect.objectContaining({ type: "project_due_soon" }),
+      ]),
+    );
+    expect(response.body.data.unreadCount).toBe(2);
+    expect(response.body.data.inboxCount).toBe(1);
+    expect(response.body.data.archiveCount).toBe(4);
+    expect(response.body.data.pagination).toEqual({
+      currentPage: 1,
+      totalPages: 1,
+      totalItems: 3,
+    });
+  });
+
+  it("filters task notifications by tasks filterType", async () => {
+    const { authCookie, userId, workspaceId } = await createAuthedUserContext();
+    const actor = await createUser({ workspaceId });
+    const taskAssignedNotificationId = new mongoose.Types.ObjectId();
+    const taskDueSoonNotificationId = new mongoose.Types.ObjectId();
+    const taskOverdueNotificationId = new mongoose.Types.ObjectId();
+
+    await NotificationModel.create([
+      {
+        _id: taskAssignedNotificationId,
+        workspaceId,
+        actorId: actor._id,
+        recipientId: userId,
+        type: "task_assigned",
+        entityType: "task",
+        entityId: new mongoose.Types.ObjectId(),
+      },
+      {
+        _id: taskDueSoonNotificationId,
+        workspaceId,
+        actorId: actor._id,
+        recipientId: userId,
+        type: "task_due_soon",
+        entityType: "task",
+        entityId: new mongoose.Types.ObjectId(),
+      },
+      {
+        _id: taskOverdueNotificationId,
+        workspaceId,
+        actorId: actor._id,
+        recipientId: userId,
+        type: "task_overdue",
+        entityType: "task",
+        entityId: new mongoose.Types.ObjectId(),
+      },
+      {
+        workspaceId,
+        actorId: actor._id,
+        recipientId: userId,
+        type: "project_due_soon",
+        entityType: "project",
+        entityId: new mongoose.Types.ObjectId(),
+      },
+      {
+        workspaceId,
+        actorId: actor._id,
+        recipientId: userId,
+        type: "comment_reply",
+        entityType: "comment",
+        entityId: new mongoose.Types.ObjectId(),
+      },
+    ]);
+
+    const response = await request(app)
+      .get("/notifications")
+      .query({ filterType: "tasks" })
+      .set("Cookie", authCookie);
+
+    expect(response.status).toBe(200);
+    expect(
+      response.body.data.items.map((item: { id: string }) => item.id),
+    ).toEqual(
+      expect.arrayContaining([
+        taskAssignedNotificationId.toString(),
+        taskDueSoonNotificationId.toString(),
+        taskOverdueNotificationId.toString(),
+      ]),
+    );
+    expect(response.body.data.items).toHaveLength(3);
+    expect(response.body.data.items).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ type: "task_assigned" }),
+        expect.objectContaining({ type: "task_due_soon" }),
+        expect.objectContaining({ type: "task_overdue" }),
+      ]),
+    );
+    expect(response.body.data.pagination).toEqual({
+      currentPage: 1,
+      totalPages: 1,
+      totalItems: 3,
     });
   });
 
