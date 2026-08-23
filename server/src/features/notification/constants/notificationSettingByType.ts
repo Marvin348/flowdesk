@@ -24,7 +24,7 @@ export const notificationSettingByType: Record<
 };
 
 export const NOTIFICATION_FILTER_MAP = {
-  tasks: ["task_assigned", "task_due_soon", "task_overdue"],
+  tasks: ["task_assigned"],
 
   comments: ["comment_mention", "comment_reply"],
 
