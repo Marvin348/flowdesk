@@ -4,17 +4,17 @@ import {
   toProjectDto,
 } from "@/features/projects/mappers/project.mapper";
 import { Types } from "mongoose";
+import type { TouchProjectInput } from "@/features/projects/types/projects";
 
 export const touchProject = async ({
   projectId,
   workspaceId,
-}: {
-  projectId: string | Types.ObjectId;
-  workspaceId: Types.ObjectId;
-}) => {
+  session,
+}: TouchProjectInput) => {
   await ProjectModel.findOneAndUpdate(
     { _id: projectId, workspaceId },
     { updatedAt: new Date() },
+    { session },
   );
 };
 
