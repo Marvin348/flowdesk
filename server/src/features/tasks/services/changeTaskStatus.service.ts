@@ -3,7 +3,7 @@ import { TaskModel } from "@/features/tasks/models/task.model";
 import { AppError } from "@/utils/AppError";
 import { toTaskDto } from "@/features/tasks/mappers/task.mapper";
 import { touchProject } from "@/features/projects/services/project.service";
-import { Types } from "mongoose";
+import mongoose, { Types } from "mongoose";
 import { synchronizeProjectStatus } from "@/features/projects/services/synchronizeProjectStatus.service";
 
 type ChangeTaskStatusInput = {
@@ -16,22 +16,29 @@ export const changeTaskStatus = async ({
   taskStatus,
   workspaceId,
 }: ChangeTaskStatusInput) => {
-  const changedTask = await TaskModel.findOneAndUpdate(
-    { _id: taskId, workspaceId },
-    { $set: { taskStatus } },
-    { returnDocument: "after" },
-  );
+  return mongoose.connection.transaction(async (session) => {
+    const changedTask = await TaskModel.findOneAndUpdate(
+      { _id: taskId, workspaceId },
+      { $set: { taskStatus } },
+      { returnDocument: "after" },
+    ).session(session);
 
-  if (!changedTask) {
-    throw new AppError("Task not found", 404);
-  }
+    if (!changedTask) {
+      throw new AppError("Task not found", 404);
+    }
 
-  await touchProject({ projectId: changedTask.projectId, workspaceId });
+    await touchProject({
+      projectId: changedTask.projectId,
+      workspaceId,
+      session,
+    });
 
-  await synchronizeProjectStatus({
-    projectId: changedTask.projectId,
-    workspaceId,
+    await synchronizeProjectStatus({
+      projectId: changedTask.projectId,
+      workspaceId,
+      session,
+    });
+
+    return toTaskDto(changedTask);
   });
-
-  return toTaskDto(changedTask);
 };

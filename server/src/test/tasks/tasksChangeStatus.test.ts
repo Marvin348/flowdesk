@@ -1,6 +1,14 @@
 import app from "@/app";
 import request from "supertest";
-import { beforeAll, beforeEach, afterAll, describe, expect, it } from "vitest";
+import {
+  beforeAll,
+  beforeEach,
+  afterAll,
+  describe,
+  expect,
+  it,
+  vi,
+} from "vitest";
 import {
   clearTestDb,
   connectTestDb,
@@ -11,7 +19,12 @@ import mongoose from "mongoose";
 import { WorkspaceModel } from "@/features/workspace/models/workspace.model";
 import { TaskModel } from "@/features/tasks/models/task.model";
 import { ProjectModel } from "@/features/projects/models/project.model";
-import { createAuthCookie } from "@/test/helpers/testFactories";
+import {
+  createAuthCookie,
+  createProject,
+  createTask,
+} from "@/test/helpers/testFactories";
+import { createAuthedUserContext } from "@/test/helpers/testFactories";
 
 beforeAll(async () => {
   await connectTestDb();
@@ -223,4 +236,42 @@ describe("PATCH /tasks/:taskId/status", () => {
     expect(response.body).toEqual({ message: "Task not found" });
   });
 
+  it("rolls back the task status change when project status synchronization fails", async () => {
+    const { authCookie, workspaceId, userId } = await createAuthedUserContext();
+    const projectId = new mongoose.Types.ObjectId();
+    const taskId = new mongoose.Types.ObjectId();
+
+    await createProject({
+      _id: projectId,
+      workspaceId,
+      ownerId: userId.toString(),
+      projectStatus: "pending",
+    });
+
+    await createTask({
+      _id: taskId,
+      workspaceId,
+      projectId,
+      taskStatus: "pending",
+    });
+
+    const updateOneSpy = vi
+      .spyOn(ProjectModel, "updateOne")
+      .mockRejectedValueOnce(new Error("sync failed"));
+
+    const response = await request(app)
+      .patch(`/tasks/${taskId.toString()}/status`)
+      .set("Cookie", authCookie)
+      .send({ taskStatus: "in_progress" });
+
+    expect(response.status).toBe(500);
+
+    const unchangedTask = await TaskModel.findById(taskId);
+    const unchangedProject = await ProjectModel.findById(projectId);
+
+    expect(unchangedTask?.taskStatus).toBe("pending");
+    expect(unchangedProject?.projectStatus).toBe("pending");
+
+    updateOneSpy.mockRestore();
+  });
 });
