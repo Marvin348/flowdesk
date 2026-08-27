@@ -5,10 +5,12 @@ import { bullMqConnection } from "@/shared/config/bullMq";
 import { connectDb } from "@/shared/config/db";
 import mongoose from "mongoose";
 import { processNotificationJob } from "@/processors/notificationJobProcessor";
+import { connectRedis } from "@/shared/config/redis";
 
 const startNotificationWorker = async () => {
   try {
     await connectDb();
+    await connectRedis();
 
     const worker = new Worker("notifications", processNotificationJob, {
       connection: bullMqConnection,

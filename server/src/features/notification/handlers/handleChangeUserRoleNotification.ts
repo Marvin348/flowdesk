@@ -1,6 +1,7 @@
 import type { UserRole } from "@shared/types/user";
 import { Types } from "mongoose";
 import { createNotification } from "@/features/notification/services/createNotification.service";
+import { publishRealtimeNotification } from "./publishRealtimeNotification";
 
 type ChangeUserRoleInput = {
   workspaceId: string;
@@ -35,4 +36,6 @@ export const handleChangeUserRoleNotification = async ({
       currentRole,
     },
   });
+
+  await publishRealtimeNotification([recipientId]);
 };

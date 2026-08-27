@@ -19,7 +19,19 @@ import {
   createUser,
 } from "@/test/helpers/testFactories";
 import { processProjectDueSoonNotifications } from "@/features/notification/services/deadlines/processProjectDueSoonNotifications.service";
+import { handleProjectDueSoonNotification } from "@/features/notification/handlers/deadlines/handleProjectDueSoonNotification";
 import { notificationQueue } from "@/queues/notificationQueue";
+import { publishRealtimeNotification } from "@/features/notification/handlers/publishRealtimeNotification";
+import { createNotification } from "@/features/notification/services/createNotification.service";
+import { Types } from "mongoose";
+
+vi.mock("@/features/notification/services/createNotification.service", () => ({
+  createNotification: vi.fn(),
+}));
+
+vi.mock("@/features/notification/handlers/publishRealtimeNotification", () => ({
+  publishRealtimeNotification: vi.fn(),
+}));
 
 beforeAll(async () => {
   await connectTestDb();
@@ -27,6 +39,7 @@ beforeAll(async () => {
 
 beforeEach(async () => {
   await clearTestDb();
+  vi.clearAllMocks();
 });
 
 afterEach(() => {
@@ -225,7 +238,7 @@ describe("processProjectDueSoonNotifications", () => {
   it("queues jobs with the current project deadline when the project deadline changes", async () => {
     vi.useFakeTimers({ toFake: ["Date"] });
     vi.setSystemTime(new Date("2026-07-30T10:00:00.000Z"));
-    
+
     const queueAddMock = vi.mocked(notificationQueue.add);
     queueAddMock.mockResolvedValue(undefined as never);
 
@@ -258,5 +271,28 @@ describe("processProjectDueSoonNotifications", () => {
       invitedUserIds: [userId.toString(), invitedUser._id.toString()],
       deadlineAt: changedDueDate.toISOString(),
     });
+  });
+});
+
+describe("handleProjectDueSoonNotification", () => {
+  it("publishes realtime notifications to invited users", async () => {
+    const workspaceId = new Types.ObjectId().toString();
+    const projectId = new Types.ObjectId().toString();
+    const invitedUserIds = [
+      new Types.ObjectId().toString(),
+      new Types.ObjectId().toString(),
+    ];
+    const deadlineAt = new Date("2026-08-01T09:00:00.000Z").toISOString();
+
+    await handleProjectDueSoonNotification({
+      workspaceId,
+      projectId,
+      invitedUserIds,
+      deadlineAt,
+    });
+
+    expect(createNotification).toHaveBeenCalledTimes(2);
+    expect(publishRealtimeNotification).toHaveBeenCalledOnce();
+    expect(publishRealtimeNotification).toHaveBeenCalledWith(invitedUserIds);
   });
 });

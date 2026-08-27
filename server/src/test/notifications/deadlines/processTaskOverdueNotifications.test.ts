@@ -20,7 +20,19 @@ import {
   createUser,
 } from "@/test/helpers/testFactories";
 import { processTaskOverdueNotifications } from "@/features/notification/services/deadlines/processTaskOverdueNotifications.service";
+import { handleTaskOverdueNotifications } from "@/features/notification/handlers/deadlines/handleTaskOverdueNotifications";
 import { notificationQueue } from "@/queues/notificationQueue";
+import { publishRealtimeNotification } from "@/features/notification/handlers/publishRealtimeNotification";
+import { createNotification } from "@/features/notification/services/createNotification.service";
+import { Types } from "mongoose";
+
+vi.mock("@/features/notification/services/createNotification.service", () => ({
+  createNotification: vi.fn(),
+}));
+
+vi.mock("@/features/notification/handlers/publishRealtimeNotification", () => ({
+  publishRealtimeNotification: vi.fn(),
+}));
 
 beforeAll(async () => {
   await connectTestDb();
@@ -28,6 +40,7 @@ beforeAll(async () => {
 
 beforeEach(async () => {
   await clearTestDb();
+  vi.clearAllMocks();
 });
 
 afterEach(() => {
@@ -225,5 +238,30 @@ describe("processTaskOverdueNotifications", () => {
       collaboratorIds: [userId.toString(), collaborator._id.toString()],
       deadlineAt: changedDueDate.toISOString(),
     });
+  });
+});
+
+describe("handleTaskOverdueNotifications", () => {
+  it("publishes realtime notifications to overdue task collaborators", async () => {
+    const workspaceId = new Types.ObjectId().toString();
+    const taskId = new Types.ObjectId().toString();
+    const projectId = new Types.ObjectId().toString();
+    const collaboratorIds = [
+      new Types.ObjectId().toString(),
+      new Types.ObjectId().toString(),
+    ];
+    const deadlineAt = new Date("2026-07-29T09:00:00.000Z").toISOString();
+
+    await handleTaskOverdueNotifications({
+      workspaceId,
+      taskId,
+      projectId,
+      collaboratorIds,
+      deadlineAt,
+    });
+
+    expect(createNotification).toHaveBeenCalledTimes(2);
+    expect(publishRealtimeNotification).toHaveBeenCalledOnce();
+    expect(publishRealtimeNotification).toHaveBeenCalledWith(collaboratorIds);
   });
 });

@@ -1,5 +1,7 @@
 import { Types } from "mongoose";
 import { createNotification } from "@/features/notification/services/createNotification.service";
+import { redisClient } from "@/shared/config/redis";
+import { publishRealtimeNotification } from "./publishRealtimeNotification";
 
 type CreateProjectNotificationInput = {
   workspaceId: string;
@@ -16,7 +18,7 @@ export const handleCreateProjectNotification = async ({
   const actorObjectId = new Types.ObjectId(actorId);
   const workspaceObjectId = new Types.ObjectId(workspaceId);
   const projectObjectId = new Types.ObjectId(projectId);
-  
+
   const recipientIds = invitedUserIds.filter((id) => id !== actorId);
 
   await Promise.all(
@@ -31,4 +33,6 @@ export const handleCreateProjectNotification = async ({
       }),
     ),
   );
+
+  await publishRealtimeNotification(recipientIds);
 };

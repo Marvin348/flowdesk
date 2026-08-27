@@ -1,5 +1,6 @@
 import { Types } from "mongoose";
 import { createNotification } from "@/features/notification/services/createNotification.service";
+import { publishRealtimeNotification } from "./publishRealtimeNotification";
 
 type HandleTaskCreatedNotification = {
   actorId: string;
@@ -19,7 +20,7 @@ export const handleTaskCreatedNotification = async ({
   const workspaceObjectId = new Types.ObjectId(workspaceId);
   const taskObjectId = new Types.ObjectId(taskId);
   const projectObjectId = new Types.ObjectId(projectId);
-  
+
   const recipientIds = collaboratorIds.filter((id) => id !== actorId);
 
   await Promise.all(
@@ -35,4 +36,6 @@ export const handleTaskCreatedNotification = async ({
       }),
     ),
   );
+
+  await publishRealtimeNotification(recipientIds);
 };

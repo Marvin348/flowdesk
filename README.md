@@ -74,6 +74,13 @@ When the user opens the verification link, the backend atomically validates and 
 
 This keeps short-lived verification state out of the primary database while ensuring that verification tokens are temporary, single-use, and safely replaced when a new token is requested.
 
+### Realtime Notifications
+FlowDesk uses Socket.IO for realtime notification updates.
+
+When a notification is created by the background notification worker, the worker publishes a realtime event via Redis Pub/Sub. The API process subscribes to this channel and forwards the event to the affected user's Socket.IO room.
+
+Each authenticated user joins a dedicated room.
+
 ### Rate Limiting
 
 Sensitive authentication routes are protected by Redis-backed rate limits.

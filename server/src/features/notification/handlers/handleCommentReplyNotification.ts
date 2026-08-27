@@ -1,5 +1,6 @@
 import { Types } from "mongoose";
 import { createNotification } from "@/features/notification/services/createNotification.service";
+import { publishRealtimeNotification } from "./publishRealtimeNotification";
 
 type HandleCommentReplyNotificationInput = {
   workspaceId: string;
@@ -33,4 +34,6 @@ export const handleCommentReplyNotification = async ({
     entityId: commentObjectId,
     projectId: projectObjectId,
   });
+
+  await publishRealtimeNotification([recipientId]);
 };

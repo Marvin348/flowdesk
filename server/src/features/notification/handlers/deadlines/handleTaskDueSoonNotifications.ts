@@ -1,5 +1,6 @@
 import { createNotification } from "@/features/notification/services/createNotification.service";
 import { Types } from "mongoose";
+import { publishRealtimeNotification } from "@/features/notification/handlers/publishRealtimeNotification";
 
 type HandleTaskDueSoonNotificationsInput = {
   workspaceId: string;
@@ -9,7 +10,7 @@ type HandleTaskDueSoonNotificationsInput = {
   deadlineAt: string;
 };
 
-export const handleTaskDueSoonNotifications = async({
+export const handleTaskDueSoonNotifications = async ({
   workspaceId,
   taskId,
   projectId,
@@ -35,4 +36,6 @@ export const handleTaskDueSoonNotifications = async({
       deadlineAt: new Date(deadlineAt),
     });
   }
+
+  await publishRealtimeNotification(collaboratorIds);
 };
