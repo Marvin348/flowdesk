@@ -38,23 +38,7 @@ FlowDesk is actively being developed as a fullstack portfolio project with a foc
 - **Redis container for session storage**
 - **Separate client and API containers for local development**
 
-## Features
-
-- User registration and login
-- Email verification with hashed one-time tokens
-- Cookie-based authentication using Redis-backed server-side sessions
-- Protected backend routes with reusable authentication middleware
-- Workspace-based user context
-- Project overview and project detail pages
-- Task management with status tracking
-- Comments and project-related activity data
-- File attachment upload, download, and deletion
-- Private file storage using Cloudflare R2 and signed download URLs
-- Workspace invite flow with token-based invitation links
-- Server-side search, filtering, pagination, and DTO mapping
-- Demo/development seed data for local testing
-
-## Architecture Notes
+### Architecture Notes
 
 FlowDesk uses a custom Express backend instead of a BaaS solution. The backend is responsible for authentication, authorization, validation, database access, file handling, and response shaping.
 
@@ -64,7 +48,7 @@ Most API responses are shaped through DTO and mapper functions. This keeps front
 
 Data-heavy endpoints handle filtering, search, pagination, and aggregation on the backend. The frontend consumes already structured response data and uses React Query for caching and request state management.
 
-## Authentication & Email Verification
+### Authentication & Email Verification
 
 New users are not activated immediately after registration. During registration, the backend creates a one-time email verification token and stores its hashed value together with the required verification data in Redis with a short TTL.
 
@@ -93,7 +77,7 @@ Sensitive authentication routes are protected by Redis-backed rate limits.
 - The frontend displays a dedicated rate-limit message with a countdown.
 - Express `trust proxy` is configured so client IPs can be resolved correctly behind the production proxy.
 
-## File Uploads & Downloads
+### File Uploads & Downloads
 
 FlowDesk stores uploaded files in Cloudflare R2 using S3-compatible APIs. The database stores file metadata such as filename, MIME type, file size, storage key, project reference, task reference, workspace reference, and uploader reference.
 
@@ -101,19 +85,19 @@ Downloads are handled through signed URLs. The backend first verifies that the a
 
 This keeps private files protected while avoiding unnecessary file streaming through the backend.
 
-## Workspace Invites
+### Workspace Invites
 
 Admins can create invite links for new workspace members. Invites are token-based, expire after a defined time, and can only be used once.
 
 When an invited user registers through a valid invite link, they are added to the existing workspace instead of creating a new isolated workspace.
 
-## Current Status
+### Current Status
 
 FlowDesk is still in active development. Core backend features such as authentication, project data, task data, file attachments, workspace context, email verification, and invite handling are already implemented or being actively refined.
 
 The current focus is on improving route structure, service separation, backend tests, authorization checks, and production-readiness before deployment.
 
-## Planned Improvements
+### Planned Improvements
 
 - Improve workspace and role-based authorization
 - Expand backend test coverage for all major routes
