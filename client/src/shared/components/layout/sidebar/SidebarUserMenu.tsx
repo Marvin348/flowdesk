@@ -3,6 +3,7 @@ import Avatar from "@/shared/components/ui/avatar/Avatar";
 import { ChevronDown, Settings, LogOut, User } from "lucide-react";
 import { useState } from "react";
 import { useLogout } from "@/features/auth/hooks/useLogout";
+import { disconnectSocket } from "@/realtime/socket";
 import { Link, useNavigate } from "react-router";
 
 const SidebarUserMenu = () => {
@@ -18,6 +19,7 @@ const SidebarUserMenu = () => {
     mutate(undefined, {
       onSuccess: () => {
         navigate("/login");
+        disconnectSocket();
         setIsOpen(false);
       },
     });

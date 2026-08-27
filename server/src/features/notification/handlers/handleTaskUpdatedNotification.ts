@@ -1,5 +1,7 @@
 import { Types } from "mongoose";
 import { createNotification } from "@/features/notification/services/createNotification.service";
+import { redisClient } from "@/shared/config/redis";
+import { publishRealtimeNotification } from "./publishRealtimeNotification";
 
 type TaskUpdatedNotificationInput = {
   actorId: string;
@@ -22,7 +24,7 @@ export const handleTaskUpdatedNotification = async ({
   const workspaceObjectId = new Types.ObjectId(workspaceId);
   const taskObjectId = new Types.ObjectId(taskId);
   const projectObjectId = new Types.ObjectId(projectId);
-  
+
   const addedCollaboratorIds = currentCollaboratorIds.filter(
     (newId) => !previousCollaboratorIds.some((oldId) => oldId === newId),
   );
@@ -42,4 +44,6 @@ export const handleTaskUpdatedNotification = async ({
       }),
     ),
   );
+
+  await publishRealtimeNotification(recipientIds);
 };
