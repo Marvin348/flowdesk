@@ -8,6 +8,7 @@ import NotificationPagination from "@/features/notification/components/Notificat
 import NotificationInboxSkeleton from "@/features/notification/components/skeleton/NotificationInboxSkeleton";
 import NotificationEmptyState from "@/features/notification/components/skeleton/NotificationEmptyState";
 import NotificationErrorState from "@/features/notification/components/skeleton/NotificationErrorState";
+import { usePaginationGuard } from "@/features/notification/hooks/usePaginationGuard";
 
 const NotificationPage = () => {
   const { page } = useNotificationSearchParams();
@@ -25,6 +26,11 @@ const NotificationPage = () => {
     totalPages: 0,
     totalItems: 0,
   };
+
+  usePaginationGuard({
+    currentPage: pagination.currentPage,
+    totalPages: pagination.totalPages,
+  });
 
   const isEmpty = !isLoading && notifications.length === 0;
 
