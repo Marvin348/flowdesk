@@ -14,6 +14,7 @@ import type { NotificationDto } from "@shared/types/dto/notification/notificatio
 import { usePinNotification } from "@/features/notification/hooks/usePinNotification";
 import { useArchiveNotification } from "@/features/notification/hooks/useArchiveNotification";
 import { useNotificationSearchParams } from "@/features/notification/hooks/useNotificationSearchParams";
+import { useDeleteNotification } from "@/features/notification/hooks/useDeleteNotification";
 
 type NotificationActionsProps = {
   notification: NotificationDto;
@@ -22,6 +23,7 @@ type NotificationActionsProps = {
 const NotificationActions = ({ notification }: NotificationActionsProps) => {
   const pinNotification = usePinNotification();
   const archiveNotification = useArchiveNotification();
+  const deleteNotification = useDeleteNotification();
 
   const { view } = useNotificationSearchParams();
 
@@ -41,6 +43,10 @@ const NotificationActions = ({ notification }: NotificationActionsProps) => {
         notificationId: notification.id,
         archived: !isArchived,
       });
+    }
+
+    if (action === "delete") {
+      return deleteNotification.mutate(notification.id);
     }
   };
 

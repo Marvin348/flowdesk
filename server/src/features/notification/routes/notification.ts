@@ -6,6 +6,7 @@ import { notificationController } from "@/features/notification/controller/notif
 import { unreadCountNotificationController } from "@/features/notification/controller/unreadCountNotificationController.controller";
 import { readAllNotificationController } from "@/features/notification/controller/readAllNotificationController.controller";
 import { markNotificationAsReadController } from "@/features/notification/controller/markNotificationAsReadController.controller";
+import { deleteNotificationController } from "@/features/notification/controller/deleteNotificationController.controller";
 
 const router = express.Router();
 
@@ -14,6 +15,8 @@ router.get("/", asyncHandler(notificationController));
 router.get("/unread-count", asyncHandler(unreadCountNotificationController));
 
 router.patch("/read-all", asyncHandler(readAllNotificationController));
+
+router.delete("/:notificationId", asyncHandler(deleteNotificationController));
 
 router.patch("/:notificationId/pin", asyncHandler(pinNotificationController));
 

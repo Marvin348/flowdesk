@@ -64,3 +64,8 @@ export const archiveNotification = async ({
   );
   return res.data.message;
 };
+
+export const deleteNotification = async (notificationId: string): Promise<string> => {
+  const res = await apiClient.delete(`/notifications/${notificationId}`);
+  return res.data.message;
+};
