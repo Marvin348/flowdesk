@@ -21,6 +21,7 @@ import {
   createTask,
   createUser,
 } from "@/test/helpers/testFactories";
+import { redisClient } from "@/shared/config/redis";
 import mongoose from "mongoose";
 import { TaskModel } from "@/features/tasks/models/task.model";
 import { notificationQueue } from "@/queues/notificationQueue";
@@ -99,9 +100,12 @@ describe("PATCH /tasks/:taskId", () => {
       description: "Original description",
       tags: ["old"],
     });
-    
+
     const queueAddMock = vi.mocked(notificationQueue.add);
     queueAddMock.mockResolvedValue(undefined as never);
+
+    const redisPublishMock = vi.mocked(redisClient.publish);
+    redisPublishMock.mockResolvedValue(1 as never);
 
     const response = await request(app)
       .patch(`/tasks/${task._id.toString()}`)
@@ -149,5 +153,14 @@ describe("PATCH /tasks/:taskId", () => {
       projectId: projectId.toString(),
       currentCollaboratorIds: [newCollaborator._id.toString()],
     });
+
+    expect(redisPublishMock).toHaveBeenCalledOnce();
+    expect(redisPublishMock).toHaveBeenCalledWith(
+      "realtime-tasks",
+      JSON.stringify({
+        projectId: projectId.toString(),
+        type: "task:updated",
+      }),
+    );
   });
 });

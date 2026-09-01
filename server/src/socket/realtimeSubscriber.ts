@@ -9,4 +9,10 @@ export const connectRealtimeSubscriber = async (io: Server) => {
       io.to(`user:${userId}`).emit("notification:new");
     }
   });
+
+  await redisSubscriber.subscribe("realtime-tasks", (message) => {
+    const data = JSON.parse(message);
+
+    io.to(`project:${data.projectId}`).emit(data.type);
+  });
 };

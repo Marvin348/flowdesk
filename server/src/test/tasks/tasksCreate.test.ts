@@ -19,6 +19,7 @@ import {
 import { UserModel } from "@/features/users/models/user.modal";
 import mongoose from "mongoose";
 import { notificationQueue } from "@/queues/notificationQueue";
+import { redisClient } from "@/shared/config/redis";
 import { WorkspaceModel } from "@/features/workspace/models/workspace.model";
 import { TaskModel } from "@/features/tasks/models/task.model";
 import { ProjectModel } from "@/features/projects/models/project.model";
@@ -105,6 +106,9 @@ describe("POST /tasks", () => {
 
     const queueAddMock = vi.mocked(notificationQueue.add);
     queueAddMock.mockResolvedValue(undefined as never);
+    
+    const redisPublishMock = vi.mocked(redisClient.publish);
+    redisPublishMock.mockResolvedValue(1 as never);
 
     const response = await request(app)
       .post("/tasks")
@@ -150,6 +154,15 @@ describe("POST /tasks", () => {
       projectId: project._id.toString(),
       collaboratorIds: [userId.toString()],
     });
+
+    expect(redisPublishMock).toHaveBeenCalledOnce();
+    expect(redisPublishMock).toHaveBeenCalledWith(
+      "realtime-tasks",
+      JSON.stringify({
+        projectId: project._id.toString(),
+        type: "task:created",
+      }),
+    );
   });
 
   it("returns 404 when the project belongs to another workspace", async () => {

@@ -19,6 +19,7 @@ import mongoose from "mongoose";
 import { WorkspaceModel } from "@/features/workspace/models/workspace.model";
 import { TaskModel } from "@/features/tasks/models/task.model";
 import { ProjectModel } from "@/features/projects/models/project.model";
+import { redisClient } from "@/shared/config/redis";
 import {
   createAuthCookie,
   createProject,
@@ -110,6 +111,9 @@ describe("PATCH /tasks/:taskId/status", () => {
       tags: ["test"],
     });
 
+    const redisPublishMock = vi.mocked(redisClient.publish);
+    redisPublishMock.mockResolvedValue(1 as never);
+
     const authCookie = await createAuthCookie(userId);
 
     const response = await request(app)
@@ -138,6 +142,15 @@ describe("PATCH /tasks/:taskId/status", () => {
 
     expect(updatedTask.taskStatus).toBe("done");
     expect(updatedProject.projectStatus).toBe("done");
+
+    expect(redisPublishMock).toHaveBeenCalledOnce();
+    expect(redisPublishMock).toHaveBeenCalledWith(
+      "realtime-tasks",
+      JSON.stringify({
+        projectId: project._id.toString(),
+        type: "task:status_changed",
+      }),
+    );
   });
 
   it("sets a pending project to in_progress when a task starts", async () => {
@@ -182,6 +195,9 @@ describe("PATCH /tasks/:taskId/status", () => {
 
     const authCookie = await createAuthCookie(userId);
 
+    const redisPublishMock = vi.mocked(redisClient.publish);
+    redisPublishMock.mockResolvedValue(1 as never);
+
     const response = await request(app)
       .patch(`/tasks/${task._id.toString()}/status`)
       .set("Cookie", authCookie)
@@ -202,6 +218,15 @@ describe("PATCH /tasks/:taskId/status", () => {
     }
 
     expect(updatedProject.projectStatus).toBe("in_progress");
+
+    expect(redisPublishMock).toHaveBeenCalledOnce();
+    expect(redisPublishMock).toHaveBeenCalledWith(
+      "realtime-tasks",
+      JSON.stringify({
+        projectId: project._id.toString(),
+        type: "task:status_changed",
+      }),
+    );
   });
 
   it("returns 404 when the task does not exist", async () => {
