@@ -5,6 +5,7 @@ import { UserRole } from "@shared/types/user";
 import { AppError } from "@/utils/AppError";
 import { toTaskDto } from "@/features/tasks/mappers/task.mapper";
 import { notificationQueue } from "@/queues/notificationQueue";
+import { redisClient } from "@/shared/config/redis";
 
 type UpdateTaskInput = {
   workspaceId: Types.ObjectId;
@@ -60,6 +61,14 @@ export const updateTask = async ({
       id.toString(),
     ),
   });
+
+  await redisClient.publish(
+    "realtime-tasks",
+    JSON.stringify({
+      projectId: existingTask.projectId.toString(),
+      type: "task:updated",
+    }),
+  );
 
   return toTaskDto(changedTask);
 };

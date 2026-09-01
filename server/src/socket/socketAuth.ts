@@ -1,6 +1,7 @@
 import { parseCookie } from "cookie";
 import type { Socket } from "socket.io";
 import { findSession } from "@/features/sessions/repository/session.repository";
+import { UserModel } from "@/features/users/models/user.modal";
 
 export const socketAuth = async (
   socket: Socket,
@@ -26,7 +27,14 @@ export const socketAuth = async (
       return next(new Error("Unauthorized"));
     }
 
+    const user = await UserModel.findById(session.userId).select("workspaceId");
+
+    if (!user) {
+      return next(new Error("Unauthorized"));
+    }
+
     socket.data.userId = session.userId;
+    socket.data.workspaceId = user.workspaceId.toString();
 
     next();
   } catch (error) {

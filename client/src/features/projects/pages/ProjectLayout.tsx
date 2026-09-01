@@ -6,9 +6,12 @@ import InviteUserModal from "@/features/users/components/collaboratorsSelect/Inv
 import ProjectDetailsSkeleton from "@/features/projects/components/projectDetailsPage/skeleton/ProjectDetailsSkeleton";
 import { useAppStore } from "@/store";
 import AddTaskPanel from "@/features/tasks/components/create/AddTaskPanel";
+import { useProjectRealtime } from "@/realtime/useProjectRealtime";
 
 const ProjectLayout = () => {
   const { projectId } = useParams();
+
+  useProjectRealtime(projectId);
 
   if (!projectId) return;
 

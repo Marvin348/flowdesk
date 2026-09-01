@@ -10,6 +10,7 @@ import { createActivity } from "@/features/activity/services/createActivity.serv
 import { UserModel } from "@/features/users/models/user.modal";
 import mongoose, { Types } from "mongoose";
 import { notificationQueue } from "@/queues/notificationQueue";
+import { redisClient } from "@/shared/config/redis";
 
 type CreateTaskInput = {
   input: CreateTaskFields;
@@ -91,6 +92,14 @@ export const createTask = async ({
     projectId: newTask.projectId.toString(),
     collaboratorIds: newTask.collaboratorIds.map((id) => id.toString()),
   });
+
+  await redisClient.publish(
+    "realtime-tasks",
+    JSON.stringify({
+      projectId: newTask.projectId.toString(),
+      type: "task:created",
+    }),
+  );
 
   return toTaskDto(newTask.toObject());
 };

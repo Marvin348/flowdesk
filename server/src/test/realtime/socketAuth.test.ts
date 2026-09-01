@@ -1,7 +1,14 @@
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import type { Socket } from "socket.io";
 import { findSession } from "@/features/sessions/repository/session.repository";
 import { socketAuth } from "@/socket/socketAuth";
+import mongoose from "mongoose";
+import {
+  clearTestDb,
+  connectTestDb,
+  disconnectTestDb,
+} from "@/test/setupTestDb";
+import { createUser } from "@/test/helpers/testFactories";
 
 const buildSocket = (cookie?: string) =>
   ({
@@ -19,8 +26,17 @@ const expectUnauthorized = (next: ReturnType<typeof vi.fn>) => {
 };
 
 describe("socketAuth", () => {
-  beforeEach(() => {
+  beforeAll(async () => {
+    await connectTestDb();
+  });
+
+  beforeEach(async () => {
+    await clearTestDb();
     vi.clearAllMocks();
+  });
+
+  afterAll(async () => {
+    await disconnectTestDb();
   });
 
   it("rejects when no cookie header is present", async () => {
@@ -55,9 +71,17 @@ describe("socketAuth", () => {
     expect(findSession).toHaveBeenCalledWith("missing-session");
   });
 
-  it("attaches the session user id to the socket", async () => {
+  it("attaches the session user id and workspace id to the socket", async () => {
+    const userId = new mongoose.Types.ObjectId();
+    const workspaceId = new mongoose.Types.ObjectId();
+
+    await createUser({
+      _id: userId,
+      workspaceId,
+    });
+
     vi.mocked(findSession).mockResolvedValue({
-      userId: "user-1",
+      userId: userId.toString(),
       createdAt: new Date().toISOString(),
       absoluteExpiresAt: new Date(Date.now() + 60_000).toISOString(),
     });
@@ -67,9 +91,29 @@ describe("socketAuth", () => {
 
     await socketAuth(socket, next);
 
-    expect(socket.data.userId).toBe("user-1");
+    expect(socket.data.userId).toBe(userId.toString());
+    expect(socket.data.workspaceId).toBe(workspaceId.toString());
     expect(findSession).toHaveBeenCalledWith("valid-session");
     expect(next).toHaveBeenCalledWith();
+  });
+
+  it("rejects when the session user does not exist", async () => {
+    const userId = new mongoose.Types.ObjectId();
+
+    vi.mocked(findSession).mockResolvedValue({
+      userId: userId.toString(),
+      createdAt: new Date().toISOString(),
+      absoluteExpiresAt: new Date(Date.now() + 60_000).toISOString(),
+    });
+
+    const socket = buildSocket("sessionId=valid-session");
+    const next = vi.fn();
+
+    await socketAuth(socket, next);
+
+    expectUnauthorized(next);
+    expect(socket.data.userId).toBeUndefined();
+    expect(socket.data.workspaceId).toBeUndefined();
   });
 
   it("rejects when session lookup fails", async () => {
