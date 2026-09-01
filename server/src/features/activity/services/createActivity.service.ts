@@ -3,7 +3,7 @@ import type {
   ActivityType,
   EntityType,
 } from "@shared/types/dto/activity/activity.dto";
-import { Types } from "mongoose";
+import { ClientSession, Types } from "mongoose";
 
 type CreateActivityInput = {
   workspaceId: Types.ObjectId;
@@ -12,6 +12,7 @@ type CreateActivityInput = {
   entityType: EntityType;
   entityId: string;
   metadata?: Record<string, unknown>;
+  session?: ClientSession;
 };
 
 export const createActivity = async ({
@@ -21,13 +22,24 @@ export const createActivity = async ({
   entityType,
   entityId,
   metadata,
+  session,
 }: CreateActivityInput) => {
-  return await ActivityModel.create({
+  const activity = {
     workspaceId,
     actorId,
     type,
     entityType,
     entityId,
     metadata,
-  });
+  };
+
+  if (session) {
+    const [createdActivity] = await ActivityModel.create([activity], {
+      session,
+    });
+
+    return createdActivity;
+  }
+
+  return await ActivityModel.create(activity);
 };

@@ -1,8 +1,5 @@
 import { CreateTaskFields } from "@/features/tasks/validators/task.validators";
-import {
-  getProjectById,
-  touchProject,
-} from "@/features/projects/services/project.service";
+import { touchProject } from "@/features/projects/services/project.service";
 import { AppError } from "@/utils/AppError";
 import { TaskModel } from "@/features/tasks/models/task.model";
 import { toTaskDto } from "@/features/tasks/mappers/task.mapper";
@@ -11,6 +8,7 @@ import { UserModel } from "@/features/users/models/user.modal";
 import mongoose, { Types } from "mongoose";
 import { notificationQueue } from "@/queues/notificationQueue";
 import { redisClient } from "@/shared/config/redis";
+import { ProjectModel } from "@/features/projects/models/project.model";
 
 type CreateTaskInput = {
   input: CreateTaskFields;
@@ -37,52 +35,62 @@ export const createTask = async ({
   const projectObjectId = new mongoose.Types.ObjectId(projectId);
   const userObjectId = new mongoose.Types.ObjectId(userId);
 
-  const project = await getProjectById({
-    projectId: projectObjectId,
-    workspaceId,
-  });
+  const newTask = await mongoose.connection.transaction(async (session) => {
+    const project = await ProjectModel.exists({
+      _id: projectObjectId,
+      workspaceId,
+    }).session(session);
 
-  if (!project) {
-    throw new AppError("Project not found", 404);
-  }
+    if (!project) {
+      throw new AppError("Project not found", 404);
+    }
 
-  const uniqueCollaboratorIds = [...new Set(collaboratorIds)];
+    const uniqueCollaboratorIds = [...new Set(collaboratorIds)];
 
-  const matchingUsers = await UserModel.countDocuments({
-    _id: { $in: uniqueCollaboratorIds },
-    workspaceId,
-  });
+    const matchingUsers = await UserModel.countDocuments({
+      _id: { $in: uniqueCollaboratorIds },
+      workspaceId,
+    }).session(session);
 
-  if (matchingUsers !== uniqueCollaboratorIds.length) {
-    throw new AppError("One or more users are invalid", 400);
-  }
+    if (matchingUsers !== uniqueCollaboratorIds.length) {
+      throw new AppError("One or more users are invalid", 400);
+    }
 
-  const newTask = await TaskModel.create({
-    projectId: projectObjectId,
-    title,
-    collaboratorIds,
-    dueDate,
-    taskStatus: "pending",
-    tags,
-    taskPriority,
-    reminderAt: reminderAt ?? "none",
-    description,
-    workspaceId,
-  });
+    const [task] = await TaskModel.create(
+      [
+        {
+          projectId: projectObjectId,
+          title,
+          collaboratorIds,
+          dueDate,
+          taskStatus: "pending",
+          tags,
+          taskPriority,
+          reminderAt: reminderAt ?? "none",
+          description,
+          workspaceId,
+        },
+      ],
+      { session },
+    );
 
-  await touchProject({ projectId: projectObjectId, workspaceId });
+    await touchProject({ projectId: projectObjectId, workspaceId, session });
 
-  // refactor later
-  await createActivity({
-    workspaceId,
-    actorId: userId,
-    type: "task.created",
-    entityType: "task",
-    entityId: newTask._id.toString(),
-    metadata: {
-      taskTitle: newTask.title,
-      taskPriority: newTask.taskPriority,
-    },
+    // refactore later
+    await createActivity({
+      workspaceId,
+      actorId: userId,
+      type: "task.created",
+      entityType: "task",
+      entityId: task._id.toString(),
+      metadata: {
+        taskTitle: task.title,
+        taskPriority: task.taskPriority,
+      },
+      session,
+    });
+
+    return task;
   });
 
   await notificationQueue.add("task-assigned", {
