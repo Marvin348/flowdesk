@@ -7,7 +7,9 @@ const currentDirectory = path.dirname(fileURLToPath(import.meta.url));
 export default defineConfig({
   entry: {
     server: "src/server.ts",
-    deadlineJob: "src/jobs/deadlineJob.ts",
+    "jobs/deadlineJob": "src/jobs/deadlineJob.ts",
+    "workers/notificationWorker": "src/workers/notificationWorker.ts",
+    "workers/emailWorker": "src/workers/emailWorker.ts",
   },
 
   platform: "node",

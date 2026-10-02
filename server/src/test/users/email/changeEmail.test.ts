@@ -1,15 +1,14 @@
-import { vi } from "vitest";
-
-vi.mock(
-  "@/features/email/services/sendEmailChangeVerificationEmail.service",
-  () => ({
-    sendEmailChangeVerificationEmail: vi.fn(),
-  }),
-);
-
 import app from "@/app";
 import request from "supertest";
-import { beforeAll, beforeEach, afterAll, describe, expect, it } from "vitest";
+import {
+  beforeAll,
+  beforeEach,
+  afterAll,
+  describe,
+  expect,
+  it,
+  vi,
+} from "vitest";
 import {
   clearTestDb,
   connectTestDb,
@@ -18,9 +17,10 @@ import {
 import { UserModel } from "@/features/users/models/user.modal";
 import mongoose from "mongoose";
 import { WorkspaceModel } from "@/features/workspace/models/workspace.model";
-import { sendEmailChangeVerificationEmail } from "@/features/email/services/sendEmailChangeVerificationEmail.service";
 import { createAuthCookie } from "@/test/helpers/testFactories";
 import { verificationTokenMock } from "@/test/setupVerificationTokenRepositoryMock";
+import { EmailDeliveryModel } from "@/features/emailDelivery/models/emailDelivery.model";
+import { emailQueue } from "@/queues/emailQueue";
 
 beforeAll(async () => {
   await connectTestDb();
@@ -168,7 +168,7 @@ describe("PATCH /users/me/change-email", () => {
         verificationTokenMock.replaceCurrentVerificationToken,
       ).not.toHaveBeenCalled();
 
-      expect(sendEmailChangeVerificationEmail).not.toHaveBeenCalled();
+      expect(emailQueue.add).not.toHaveBeenCalled();
 
     } finally {
       if (previousDemoAccountEmail === undefined) {
@@ -231,7 +231,7 @@ describe("PATCH /users/me/change-email", () => {
     );
   });
 
-  it("returns 200 and calls the email change mail service", async () => {
+  it("returns 200 and queues the email change delivery", async () => {
     const userId = new mongoose.Types.ObjectId();
     const workspaceId = new mongoose.Types.ObjectId();
 
@@ -259,11 +259,29 @@ describe("PATCH /users/me/change-email", () => {
       .set("Cookie", authCookie);
 
     expect(response.status).toBe(200);
-    expect(sendEmailChangeVerificationEmail).toHaveBeenCalledTimes(1);
-    expect(sendEmailChangeVerificationEmail).toHaveBeenCalledWith({
-      to: "new@example.com",
-      newEmail: "new@example.com",
-      verificationUrl: expect.stringContaining("/confirm-email-change/"),
+    const delivery = await EmailDeliveryModel.findOne({
+      userId,
+      type: "email_change",
     });
+
+    expect(delivery).not.toBeNull();
+
+    if (!delivery) {
+      throw new Error("Expected email delivery to exist");
+    }
+
+    expect(delivery.email).toBe("new@example.com");
+    expect(delivery.status).toBe("pending");
+    expect(delivery.queuedAt).toBeInstanceOf(Date);
+
+    expect(emailQueue.add).toHaveBeenCalledWith(
+      "email_change",
+      {
+        deliveryId: delivery._id.toString(),
+      },
+      {
+        jobId: `email-${delivery._id.toString()}`,
+      },
+    );
   });
 });

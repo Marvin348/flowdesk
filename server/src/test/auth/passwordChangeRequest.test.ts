@@ -1,17 +1,15 @@
-import { vi } from "vitest";
-
-vi.mock(
-  "@/features/email/services/sendPasswordChangeVerificationEmail.service.js",
-  () => ({
-    sendPasswordChangeVerificationEmail: vi.fn(),
-  }),
-);
-
 import app from "@/app";
 import { hashPassword } from "@/features/auth/utils/password";
-import { sendPasswordChangeVerificationEmail } from "@/features/email/services/sendPasswordChangeVerificationEmail.service";
 import request from "supertest";
-import { beforeAll, beforeEach, afterAll, describe, expect, it } from "vitest";
+import {
+  beforeAll,
+  beforeEach,
+  afterAll,
+  describe,
+  expect,
+  it,
+  vi,
+} from "vitest";
 import {
   clearTestDb,
   connectTestDb,
@@ -19,6 +17,8 @@ import {
 } from "@/test/setupTestDb";
 import { createAuthedUserContext } from "@/test/helpers/testFactories";
 import { verificationTokenMock } from "@/test/setupVerificationTokenRepositoryMock";
+import { EmailDeliveryModel } from "@/features/emailDelivery/models/emailDelivery.model";
+import { emailQueue } from "@/queues/emailQueue";
 
 beforeAll(async () => {
   await connectTestDb();
@@ -78,7 +78,7 @@ describe("POST /auth/password/change-request", () => {
     expect(response.body).toEqual({
       message: "Current password is invalid",
     });
-    expect(sendPasswordChangeVerificationEmail).not.toHaveBeenCalled();
+    expect(emailQueue.add).not.toHaveBeenCalled();
   });
 
   it("returns 403 if the password is from demo account", async () => {
@@ -110,7 +110,7 @@ describe("POST /auth/password/change-request", () => {
         verificationTokenMock.replaceCurrentVerificationToken,
       ).not.toHaveBeenCalled();
 
-      expect(sendPasswordChangeVerificationEmail).not.toHaveBeenCalled();
+      expect(emailQueue.add).not.toHaveBeenCalled();
     } finally {
       if (previousDemoAccountEmail === undefined) {
         delete process.env.DEMO_ACCOUNT_EMAIL;
@@ -140,10 +140,10 @@ describe("POST /auth/password/change-request", () => {
       message: "New password must be different from current password",
     });
 
-    expect(sendPasswordChangeVerificationEmail).not.toHaveBeenCalled();
+    expect(emailQueue.add).not.toHaveBeenCalled();
   });
 
-  it("creates a password change token and sends a verification email", async () => {
+  it("creates a password change token and queues a verification email", async () => {
     const passwordHash = await hashPassword("Password123!");
     const { authCookie, userId } = await createAuthedUserContext({
       email: "test@example.com",
@@ -189,10 +189,29 @@ describe("POST /auth/password/change-request", () => {
 
     expect(verificationData.newPasswordHash).not.toBe(passwordHash);
 
-    expect(sendPasswordChangeVerificationEmail).toHaveBeenCalledTimes(1);
-    expect(sendPasswordChangeVerificationEmail).toHaveBeenCalledWith({
-      to: "test@example.com",
-      verificationUrl: expect.stringContaining("/confirm-password-change/"),
+    const delivery = await EmailDeliveryModel.findOne({
+      userId,
+      type: "password_change",
     });
+
+    expect(delivery).not.toBeNull();
+
+    if (!delivery) {
+      throw new Error("Expected email delivery to exist");
+    }
+
+    expect(delivery.email).toBe("test@example.com");
+    expect(delivery.status).toBe("pending");
+    expect(delivery.queuedAt).toBeInstanceOf(Date);
+
+    expect(emailQueue.add).toHaveBeenCalledWith(
+      "password_change",
+      {
+        deliveryId: delivery._id.toString(),
+      },
+      {
+        jobId: `email-${delivery._id.toString()}`,
+      },
+    );
   });
 });

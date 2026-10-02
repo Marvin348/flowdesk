@@ -5,7 +5,9 @@ import { comparePassword } from "../utils/password";
 import { hashPassword } from "../utils/password";
 import { createVerificationToken } from "@/features/verification-tokens/services/createVerificationToken.service";
 import mongoose, { Types } from "mongoose";
-import { sendPasswordChangeVerificationEmail } from "@/features/email/services/sendPasswordChangeVerificationEmail.service";
+import { EmailDeliveryModel } from "@/features/emailDelivery/models/emailDelivery.model";
+import { emailQueue } from "@/queues/emailQueue";
+import { createEmailDelivery } from "@/features/emailDelivery/services/createEmailDelivery";
 
 type RequestPasswordChangeInput = {
   workspaceId: Types.ObjectId;
@@ -61,10 +63,24 @@ export const requestPasswordChange = async ({
     newPasswordHash: hashedNewPassword,
   });
 
-  const verificationUrl = `${process.env.CLIENT_URL}/confirm-password-change/${verificationToken}`;
+  const delivery = await createEmailDelivery({
+    rawToken: verificationToken,
+    userId: userIdObject,
+    email: user.email,
+    type: "password_change",
+  });
 
-  await sendPasswordChangeVerificationEmail({
-    to: user.email,
-    verificationUrl,
+  await emailQueue.add(
+    "password_change",
+    {
+      deliveryId: delivery._id.toString(),
+    },
+    {
+      jobId: `email-${delivery._id.toString()}`,
+    },
+  );
+
+  await EmailDeliveryModel.findByIdAndUpdate(delivery._id, {
+    queuedAt: new Date(),
   });
 };

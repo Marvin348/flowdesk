@@ -1,8 +1,10 @@
 import { AppError } from "@/utils/AppError";
 import { UserModel } from "@/features/users/models/user.modal";
 import { createVerificationToken } from "@/features/verification-tokens/services/createVerificationToken.service";
-import { sendEmailChangeVerificationEmail } from "@/features/email/services/sendEmailChangeVerificationEmail.service";
+import { EmailDeliveryModel } from "@/features/emailDelivery/models/emailDelivery.model";
 import { Types } from "mongoose";
+import { emailQueue } from "@/queues/emailQueue";
+import { createEmailDelivery } from "@/features/emailDelivery/services/createEmailDelivery";
 
 type ChangeEmailInput = {
   userId: string;
@@ -45,11 +47,24 @@ export const changeEmail = async ({
     newEmail,
   });
 
-  const verificationUrl = `${process.env.CLIENT_URL}/confirm-email-change/${verificationToken}`;
+  const delivery = await createEmailDelivery({
+    rawToken: verificationToken,
+    userId: user._id,
+    email: newEmail,
+    type: "email_change",
+  });
 
-  await sendEmailChangeVerificationEmail({
-    to: newEmail,
-    verificationUrl,
-    newEmail,
+  await emailQueue.add(
+    "email_change",
+    {
+      deliveryId: delivery._id.toString(),
+    },
+    {
+      jobId: `email-${delivery._id.toString()}`,
+    },
+  );
+
+  await EmailDeliveryModel.findByIdAndUpdate(delivery._id, {
+    queuedAt: new Date(),
   });
 };
