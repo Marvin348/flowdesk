@@ -52,6 +52,30 @@ services:
       - ./shared:/app/shared
       - /app/server/node_modules
 
+  email-worker:
+    build:
+      context: .
+      dockerfile: server/Dockerfile
+
+    container_name: flowdesk-email-worker-container
+
+    environment:
+      BULLMQ_REDIS_URL: redis://redis:6379
+
+    depends_on:
+      - mongodb
+      - redis
+
+    env_file:
+      - server/.env
+
+    command: npm run worker:emails:dev
+
+    volumes:
+      - ./server:/app/server
+      - ./shared:/app/shared
+      - /app/server/node_modules
+
   client:
     build:
       context: .

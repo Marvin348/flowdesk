@@ -1,16 +1,14 @@
-import { vi } from "vitest";
-
-vi.mock(
-  "@/features/email/services/sendAccountVerificationEmail.service.js",
-  () => ({
-    sendAccountVerificationEmail: vi.fn(),
-  }),
-);
-
 import app from "@/app";
-import { sendAccountVerificationEmail } from "@/features/email/services/sendAccountVerificationEmail.service";
 import request from "supertest";
-import { beforeAll, beforeEach, afterAll, describe, expect, it } from "vitest";
+import {
+  beforeAll,
+  beforeEach,
+  afterAll,
+  describe,
+  expect,
+  it,
+  vi,
+} from "vitest";
 import {
   clearTestDb,
   connectTestDb,
@@ -20,6 +18,8 @@ import { UserModel } from "@/features/users/models/user.modal";
 import mongoose from "mongoose";
 import { WorkspaceModel } from "@/features/workspace/models/workspace.model";
 import { verificationTokenMock } from "@/test/setupVerificationTokenRepositoryMock";
+import { EmailDeliveryModel } from "@/features/emailDelivery/models/emailDelivery.model";
+import { emailQueue } from "@/queues/emailQueue";
 
 beforeAll(async () => {
   await connectTestDb();
@@ -35,7 +35,7 @@ afterAll(async () => {
 });
 
 describe("POST /auth/register", () => {
-  it("creates admin user + workspace + verification token + sends email", async () => {
+  it("creates admin user + workspace + verification token + queues email", async () => {
     const response = await request(app).post("/auth/register").send({
       name: "Test User",
       email: "test@example.com",
@@ -69,10 +69,6 @@ describe("POST /auth/register", () => {
 
     expect(
       verificationTokenMock.replaceCurrentVerificationToken,
-    ).toHaveBeenCalledTimes(1);
-
-    expect(
-      verificationTokenMock.replaceCurrentVerificationToken,
     ).toHaveBeenCalledWith(
       expect.objectContaining({
         verificationToken: expect.any(String),
@@ -85,12 +81,34 @@ describe("POST /auth/register", () => {
       }),
     );
 
-    expect(sendAccountVerificationEmail).toHaveBeenCalledWith({
-      to: "test@example.com",
-      verificationUrl: expect.stringContaining(
-        "http://localhost:5173/verify-email/",
-      ),
+    const delivery = await EmailDeliveryModel.findOne({
+      userId: user._id,
+      type: "account-verification",
     });
+
+    expect(delivery).not.toBeNull();
+
+    if (!delivery) {
+      throw new Error("Expected email delivery to exist");
+    }
+
+    expect(delivery.status).toBe("pending");
+    expect(delivery.queuedAt).toBeInstanceOf(Date);
+    expect(delivery.encryptedPayload).toEqual({
+      ciphertext: expect.any(String),
+      iv: expect.any(String),
+      authTag: expect.any(String),
+    });
+
+    expect(emailQueue.add).toHaveBeenCalledWith(
+      "account-verification",
+      {
+        deliveryId: delivery._id.toString(),
+      },
+      {
+        jobId: `email-${delivery._id.toString()}`,
+      },
+    );
   });
 
   it("returns 400 if request body is invalid", async () => {

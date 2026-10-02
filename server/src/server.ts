@@ -6,6 +6,7 @@ import { connectRedis, connectRedisSubscriber } from "@/shared/config/redis";
 import { createServer } from "http";
 import { createSocketServer } from "@/socket/socket";
 import { connectRealtimeSubscriber } from "@/socket/realtimeSubscriber";
+import { recoverPendingEmailDeliveries } from "./features/emailDelivery/services/recoverPendingEmailDeliveries";
 
 const PORT = Number(process.env.PORT) || 3001;
 const HOST = process.env.HOST || "0.0.0.0";
@@ -27,6 +28,12 @@ const startServer = async () => {
     await connectRedisSubscriber();
 
     await connectRealtimeSubscriber(io);
+
+    try {
+      await recoverPendingEmailDeliveries();
+    } catch (error) {
+      console.error("Failed to recover pending email deliveries:", error);
+    }
 
     httpServer.listen(PORT, HOST, () => {
       console.log(`server running on port ${PORT}`);
