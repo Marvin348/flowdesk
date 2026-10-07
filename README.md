@@ -12,7 +12,8 @@ FlowDesk is actively being developed as a fullstack portfolio project with a foc
 
 - **Node + Express**
 - **MongoDB with Mongoose**
-- **Redis + BullMQ**
+- **Redis**
+- **BullMQ**
 - **Cloudflare R2 for private file storage**
 - **Resend (E-Mail Provider)**
 - **Zod**
@@ -96,18 +97,6 @@ When an invited user registers through a valid invite link, they are added to th
 FlowDesk is still in active development. Core backend features such as authentication, project data, task data, file attachments, workspace context, email verification, and invite handling are already implemented or being actively refined.
 
 The current focus is on improving route structure, service separation, backend tests, authorization checks, and production-readiness before deployment.
-
-### Planned Improvements
-
-- Improve workspace and role-based authorization
-- Expand backend test coverage for all major routes
-- Continue refactoring older routes into service-based architecture
-- Improve frontend empty states and loading states
-- Add more polished task and attachment interactions
-- Improve profile and avatar upload handling
-- Finalize production deployment setup
-- Improve UI animations and layout polish
-- Add more complete project activity and audit log features
 
 ## Installation
 
